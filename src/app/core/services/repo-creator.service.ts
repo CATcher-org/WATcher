@@ -19,7 +19,7 @@ export class RepoCreatorService {
   constructor(private githubService: GithubService, private userService: UserService, private repoCreationConfirmationDialog: MatDialog) {}
 
   /**
-   * Prompts user to allow CATcher to create a repo, if repo does not
+   * Prompts user to allow WATcher to create a repo, if repo does not
    * exist and current phase is the bug reporting phase.
    * @param currentPhase the current phase of the session.
    * @param phaseRepo the name of the specified repository.

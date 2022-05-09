@@ -47,7 +47,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   /**
-   * This listener checks if CATcher has a connection to a network, and will show an error snackbar if it does not.
+   * This listener checks if WATcher has a connection to a network, and will show an error snackbar if it does not.
    */
   addListenerForNetworkOffline() {
     window.addEventListener(

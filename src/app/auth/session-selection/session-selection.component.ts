@@ -13,7 +13,7 @@ import { PhaseService } from '../../core/services/phase.service';
   styleUrls: ['./session-selection.component.css', '../auth.component.css']
 })
 export class SessionSelectionComponent implements OnInit {
-  // isSettingUpSession is used to indicate whether CATcher is in the midst of setting up the session.
+  // isSettingUpSession is used to indicate whether WATcher is in the midst of setting up the session.
   isSettingUpSession: boolean;
   profileForm: FormGroup;
 

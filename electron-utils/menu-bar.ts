@@ -6,7 +6,7 @@ const fileMenu: MenuItemConstructorOptions = {
   label: 'File',
   submenu: [
     {
-      label: 'Quit CATcher',
+      label: 'Quit WATcher',
       accelerator: 'CmdOrCtrl+Q',
       click() {
         app.quit();

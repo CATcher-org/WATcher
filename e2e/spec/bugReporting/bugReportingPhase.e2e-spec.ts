@@ -6,7 +6,7 @@ import { Header } from '../../page-objects/header.po';
 import { NewIssuePage } from '../../page-objects/newIssue.po';
 import { SEVERITY_MEDIUM, TYPE_DOCUMENTATION_BUG } from '../../../tests/constants/label.constants';
 
-describe("CATcher's Bug Reporting Phase", () => {
+describe("WATcher's Bug Reporting Phase", () => {
   let bugReportingPage: BugReportingPage;
   let loginPage: LoginPage;
   let headerComponent: Header;

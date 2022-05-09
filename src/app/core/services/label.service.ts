@@ -123,7 +123,7 @@ const REQUIRED_LABELS = {
 
 /**
  * Responsible for retrieval and parsing and syncing of label data
- * from the GitHub repository for the CATcher application.
+ * from the GitHub repository for the WATcher application.
  */
 export class LabelService {
   private static severityLabels: Label[] = Object.values(REQUIRED_LABELS.severity);

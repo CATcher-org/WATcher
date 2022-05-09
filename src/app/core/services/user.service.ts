@@ -12,7 +12,7 @@ import { GithubService } from './github.service';
 })
 
 /**
- * Responsible for creation of users and teams within the CATcher application.
+ * Responsible for creation of users and teams within the WATcher application.
  */
 export class UserService {
   public currentUser: User;

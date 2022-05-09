@@ -19,7 +19,7 @@ import { GithubService } from './github.service';
 
 /**
  * Responsible for retrieving and parsing data related to staff
- * and student information for the current session in CATcher.
+ * and student information for the current session in WATcher.
  */
 export class DataService {
   public static ROLES = 'roles';

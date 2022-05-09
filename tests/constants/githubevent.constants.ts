@@ -3,7 +3,7 @@ import { ISSUE_WITH_ASSIGNEES, ISSUE_WITH_EMPTY_DESCRIPTION } from './githubissu
 /* Contains a simplified version of the data obtained when we query
    for the latest events on a repository using the Octokit API.
    (specifically, the data obtained from octokit.issues.listEventsForRepo())
-   For repos used by CATcher, these events will only involve issues. */
+   For repos used by WATcher, these events will only involve issues. */
 
 export const CHANGE_TITLE_EVENT = {
   event: 'renamed',

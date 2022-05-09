@@ -13,7 +13,7 @@ import { LoggingService } from '../core/services/logging.service';
 import { PhaseService } from '../core/services/phase.service';
 import { UserService } from '../core/services/user.service';
 
-const APPLICATION_VERSION_OUTDATED_ERROR = 'Please update to the latest version of CATcher.';
+const APPLICATION_VERSION_OUTDATED_ERROR = 'Please update to the latest version of WATcher.';
 
 @Component({
   selector: 'app-auth',
@@ -118,7 +118,7 @@ export class AuthComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Checks whether the current version of CATcher is outdated.
+   * Checks whether the current version of WATcher is outdated.
    */
   checkAppIsOutdated(): Observable<any> {
     return this.appService.isApplicationOutdated().pipe(
@@ -160,7 +160,7 @@ export class AuthComponent implements OnInit, OnDestroy {
 
   /**
    * Extracts organization and data repository details from local storage
-   * and restores them to CATcher.
+   * and restores them to WATcher.
    */
   private restoreOrgDetailsFromLocalStorage() {
     const org = window.localStorage.getItem('org');

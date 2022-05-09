@@ -1,6 +1,6 @@
 {
-  "appId": "CATcher",
-  "productName": "CATcher",
+  "appId": "WATcher",
+  "productName": "WATcher",
   "directories": {
     "output": "release/"
   },

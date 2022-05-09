@@ -10,14 +10,14 @@ import { ElectronService } from './electron.service';
 
 /**
  * Responsible for logging events and errors while the application is
- * running to ease debugging for CATcher developers and maintainers.
+ * running to ease debugging for WATcher developers and maintainers.
  */
 export class LoggingService {
   private logger: ElectronLog | Console;
   private isInSession = false;
-  private readonly LOG_KEY = 'CATcher-Log';
-  private readonly LOG_FILE_NAME = 'CATcher-log.txt';
-  public readonly LOG_START_HEADER = `====== New CATcher v${AppConfig.version} Session Log ======`;
+  private readonly LOG_KEY = 'WATcher-Log';
+  private readonly LOG_FILE_NAME = 'WATcher-log.txt';
+  public readonly LOG_START_HEADER = `====== New WATcher v${AppConfig.version} Session Log ======`;
   public readonly LOG_COUNT_LIMIT = 4;
   public readonly SESSION_LOG_SEPARATOR = '\n'.repeat(2); // More new-lines added for clarity.
 
