@@ -3,8 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../core/guards/auth.guard';
 import { CanDeactivateIssueGuard } from '../core/guards/can-deactivate-issue-guard.service';
 import { IssueComponent } from './issue/issue.component';
-import { NewIssueComponent } from './new-issue/new-issue.component';
 import { IssuesViewerComponent } from './issues-viewer.component';
+import { NewIssueComponent } from './new-issue/new-issue.component';
 
 const routes: Routes = [
   { path: 'issuesViewer', component: IssuesViewerComponent, canActivate: [AuthGuard] },

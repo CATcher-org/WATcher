@@ -4,8 +4,8 @@ import { flatMap } from 'rxjs/operators';
 import { AuthService, AuthState } from '../../core/services/auth.service';
 import { ElectronService } from '../../core/services/electron.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
-import { GithubEventService } from '../../core/services/githubevent.service';
 import { GithubService } from '../../core/services/github.service';
+import { GithubEventService } from '../../core/services/githubevent.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { PhaseService } from '../../core/services/phase.service';
 import { UserService } from '../../core/services/user.service';
@@ -48,7 +48,7 @@ export class ConfirmLoginComponent implements OnInit {
    * Handles the clean up required after authentication and setting up of user data is completed.
    */
   handleAuthSuccess() {
-    //this.authService.setTitleWithPhaseDetail();
+    // this.authService.setTitleWithPhaseDetail();
     this.router.navigateByUrl('/issues-viewer');
     this.authService.changeAuthState(AuthState.Authenticated);
   }
@@ -64,7 +64,7 @@ export class ConfirmLoginComponent implements OnInit {
     this.userService
       .createUserModel(this.username)
       .pipe(
-        //flatMap(() => this.phaseService.sessionSetup()),
+        // flatMap(() => this.phaseService.sessionSetup()),
         flatMap(() => this.githubEventService.setLatestChangeEvent())
       )
       .subscribe(

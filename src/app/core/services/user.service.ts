@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { filter, map, throwIfEmpty } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { GithubUser } from '../models/github-user.model';
-import { Team } from '../models/team.model';
+// import { Team } from '../models/team.model';
 import { User, UserRole } from '../models/user.model';
-import { DataService } from './data.service';
+// import { DataService } from './data.service';
 import { GithubService } from './github.service';
 
 @Injectable({
@@ -17,7 +17,7 @@ import { GithubService } from './github.service';
 export class UserService {
   public currentUser: User;
 
-  constructor(private githubService: GithubService, private dataService: DataService) {}
+  constructor(private githubService: GithubService) {}
 
   /**
    * Get the authenticated user if it exist.
@@ -31,10 +31,10 @@ export class UserService {
   }
 
   createUserModel(userLoginId: string): Observable<User> {
-    this.currentUser = <User>{ loginId: userLoginId, role: UserRole.Student, team: null };
+    this.currentUser = this.createUser({}, userLoginId);
     console.log(this.currentUser);
     // to refactor
-    let o = new Observable<User>((s) => {
+    const o = new Observable<User>((s) => {
       s.next(this.currentUser);
       s.complete();
     });
@@ -48,7 +48,8 @@ export class UserService {
       }),
       filter((user) => user !== null),
       throwIfEmpty(() => new Error('Unauthorized user.'))
-    );*/
+    );
+    */
   }
 
   reset() {
@@ -56,6 +57,9 @@ export class UserService {
   }
 
   private createUser(data: {}, userLoginId: string): User {
+    return <User>{ loginId: userLoginId, role: UserRole.Student, team: null };
+
+    /*
     const lowerCaseUserLoginId = userLoginId.toLowerCase();
 
     const userRole = this.parseUserRole(data, lowerCaseUserLoginId);
@@ -81,15 +85,17 @@ export class UserService {
       default:
         return null;
     }
+    */
   }
 
+  /* Not needed in WATcher
   private createTeamModel(teamData: {}, teamId: string): Team {
     const teammates: Array<User> = Object.values(teamData[teamId]).map(
       (teammate: string) => <User>{ loginId: teammate, role: UserRole.Student }
     );
 
     return new Team({ id: teamId, teamMembers: teammates });
-  }
+  }*/
 
   /**
    * To be used to parse the JSON data containing data pertaining to the user role.
@@ -97,6 +103,7 @@ export class UserService {
    * @return NULL if user is unauthorized, meaning that no role is specified for the user.
    *         else the the role with the highest access rights will be returned.
    */
+  /* No json to parse
   private parseUserRole(data: {}, userLoginId: string): UserRole {
     let userRole: UserRole;
     if (data[DataService.ROLES][DataService.STUDENTS] && data[DataService.ROLES][DataService.STUDENTS][[userLoginId]]) {
@@ -110,4 +117,5 @@ export class UserService {
     }
     return userRole;
   }
+  */
 }

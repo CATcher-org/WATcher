@@ -7,9 +7,9 @@ import { LabelDropdownModule } from '../shared/label-dropdown/label-dropdown.mod
 import { SharedModule } from '../shared/shared.module';
 import { ViewIssueModule } from '../shared/view-issue/view-issue.module';
 import { IssueComponent } from './issue/issue.component';
-import { NewIssueComponent } from './new-issue/new-issue.component';
 import { IssuesViewerRoutingModule } from './issues-viewer-routing.module';
 import { IssuesViewerComponent } from './issues-viewer.component';
+import { NewIssueComponent } from './new-issue/new-issue.component';
 
 @NgModule({
   imports: [
