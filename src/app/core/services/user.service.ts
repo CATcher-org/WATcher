@@ -31,14 +31,24 @@ export class UserService {
   }
 
   createUserModel(userLoginId: string): Observable<User> {
-    return this.dataService.getDataFile().pipe(
+    this.currentUser = <User>{ loginId: userLoginId, role: UserRole.Student, team: null };
+    console.log(this.currentUser);
+    // to refactor
+    let o = new Observable<User>((s) => {
+      s.next(this.currentUser);
+      s.complete();
+    });
+    return o;
+
+    // No data.csv to read
+    /*return this.dataService.getDataFile().pipe(
       map((jsonData: {}) => {
         this.currentUser = this.createUser(jsonData, userLoginId);
         return this.currentUser;
       }),
       filter((user) => user !== null),
       throwIfEmpty(() => new Error('Unauthorized user.'))
-    );
+    );*/
   }
 
   reset() {

@@ -35,9 +35,9 @@ const CATCHER_ORG = 'CATcher-org';
 const CATCHER_REPO = 'CATcher';
 const UNABLE_TO_OPEN_IN_BROWSER = 'Unable to open this issue in Browser';
 
-let ORG_NAME = '';
+let ORG_NAME = ''; // repoOrg
 let MOD_ORG = '';
-let REPO = '';
+let REPO = ''; // repoName
 let DATA_REPO = '';
 const MAX_ITEMS_PER_PAGE = 100;
 
@@ -86,6 +86,7 @@ export class GithubService {
     DATA_REPO = dataRepo;
   }
 
+  // Set feature's repoOrg and repoName
   storePhaseDetails(phaseRepoOwner: string, repoName: string) {
     REPO = repoName;
     ORG_NAME = phaseRepoOwner;
@@ -351,6 +352,8 @@ export class GithubService {
   }
 
   fetchEventsForRepo(): Observable<any[]> {
+    console.log(ORG_NAME + '/' + REPO);
+
     return from(octokit.issues.listEventsForRepo({ owner: ORG_NAME, repo: REPO, headers: GithubService.IF_NONE_MATCH_EMPTY })).pipe(
       map((response) => {
         return response['data'];

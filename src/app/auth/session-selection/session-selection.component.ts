@@ -87,9 +87,10 @@ export class SessionSelectionComponent implements OnInit {
     const repoOrg: string = this.getOrgDetails(repoInformation);
     const repoName: string = this.getDataRepoDetails(repoInformation);
     // Persist repo information in local storage
-    window.localStorage.setItem('repoOrg', repoOrg);
-    window.localStorage.setItem('repoName', repoName);
+    window.localStorage.setItem('org', repoOrg);
+    window.localStorage.setItem('dataRepo', repoName);
     this.githubService.storeOrganizationDetails(repoOrg, repoName);
+    this.githubService.storePhaseDetails(repoOrg, repoName); // in WATcher, these are the same
 
     this.logger.info(`Selected Repo: ${repoInformation}`);
 
