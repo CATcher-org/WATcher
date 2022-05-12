@@ -95,7 +95,7 @@ export class PhaseService {
    */
   updateSessionParameters(sessionData: SessionData) {
     this.sessionData = sessionData;
-    const repos = sessionData.sessionRepo.filter((x) => x.phase == this.currentPhase)[0].repos;
+    const repos = sessionData.sessionRepo.filter((x) => x.phase === this.currentPhase)[0].repos;
     this.currentRepo = repos[0];
     this.otherRepos = repos.slice(1);
     this.githubService.storePhaseDetails(this.currentRepo.owner, this.currentRepo.name);
