@@ -7,8 +7,7 @@ import { PhaseBugReportingModule } from './phase-bug-reporting/phase-bug-reporti
 
 const routes: Routes = [
   { path: '', loadChildren: () => AuthModule },
-  { path: 'issues-viewer', loadChildren: () => IssuesViewerModule, canLoad: [AuthGuard] },
-  { path: 'phaseBugReporting', loadChildren: () => PhaseBugReportingModule, canLoad: [AuthGuard] }
+  { path: 'issuesViewer', loadChildren: () => IssuesViewerModule, canLoad: [AuthGuard] }
 ];
 
 @NgModule({
