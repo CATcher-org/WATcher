@@ -3,10 +3,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthModule } from './auth/auth.module';
 import { AuthGuard } from './core/guards/auth.guard';
 import { IssuesViewerModule } from './issues-viewer/issues-viewer.module';
+import { PhaseBugReportingModule } from './phase-bug-reporting/phase-bug-reporting.module';
 
 const routes: Routes = [
   { path: '', loadChildren: () => AuthModule },
-  { path: 'issues-viewer', loadChildren: () => IssuesViewerModule, canLoad: [AuthGuard] }
+  { path: 'issues-viewer', loadChildren: () => IssuesViewerModule, canLoad: [AuthGuard] },
+  { path: 'phaseBugReporting', loadChildren: () => PhaseBugReportingModule, canLoad: [AuthGuard] }
 ];
 
 @NgModule({

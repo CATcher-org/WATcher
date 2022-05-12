@@ -49,7 +49,7 @@ export class ConfirmLoginComponent implements OnInit {
    */
   handleAuthSuccess() {
     // this.authService.setTitleWithPhaseDetail();
-    this.router.navigateByUrl('/issues-viewer');
+    this.router.navigateByUrl('/phaseBugReporting');
     this.authService.changeAuthState(AuthState.Authenticated);
   }
 
