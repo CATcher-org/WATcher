@@ -3,6 +3,7 @@ import { Observable, pipe } from 'rxjs';
 import { flatMap, map, retry, tap } from 'rxjs/operators';
 import { throwIfFalse } from '../../shared/lib/custom-ops';
 import { Phase } from '../models/phase.model';
+import { Repo } from '../models/repo.model';
 import { assertSessionDataIntegrity, SessionData } from '../models/session.model';
 import { GithubService } from './github.service';
 import { LabelService } from './label.service';
@@ -11,10 +12,7 @@ import { RepoCreatorService } from './repo-creator.service';
 export const SESSION_AVALIABILITY_FIX_FAILED = 'Session Availability Fix failed.';
 
 export const PhaseDescription = {
-  [Phase.phaseBugReporting]: 'Bug Reporting Phase',
-  [Phase.phaseTeamResponse]: "Team's Response Phase",
-  [Phase.phaseTesterResponse]: "Tester's Response Phase",
-  [Phase.phaseModeration]: 'Moderation Phase'
+  [Phase.issuesViewer]: 'Issues Viewer'
 };
 
 @Injectable({
@@ -22,44 +20,32 @@ export const PhaseDescription = {
 })
 
 /**
- * Responsible for managing the current phase of WATcher as well as the
+ * Responsible for managing the current selected feature of WATcher as well as the
  * current session data and repository details related to the session.
  */
 export class PhaseService {
   public currentPhase: Phase;
-  private repoName: string;
-  private orgName: string;
+  public currentRepo: Repo; // main repo of feature, may be data repo or current view
+  public otherRepos: Repo[]; // more repositories relevant to this feature
 
-  public sessionData: SessionData;
-
-  private phaseRepoOwners = {
-    phaseBugReporting: '',
-    phaseTeamResponse: '',
-    phaseTesterResponse: '',
-    phaseModeration: ''
-  };
+  public sessionData: SessionData; // stores current repo + otherrepo for the session
 
   constructor(private githubService: GithubService, private labelService: LabelService, private repoCreatorService: RepoCreatorService) {}
   /**
-   * Stores the location of the repositories belonging to
-   * each phase of the application.
-   * @param org - name of organization.
-   * @param user - name of user.
+   * Sets the current main repository and additional repos if any.
+   * @param repo Main repository
+   * @param repos Additional Repos
    */
-  setPhaseOwners(org: string, user: string): void {
-    this.orgName = org;
-    this.phaseRepoOwners.phaseBugReporting = user;
-    this.phaseRepoOwners.phaseTeamResponse = org;
-    this.phaseRepoOwners.phaseTesterResponse = user;
-    this.phaseRepoOwners.phaseModeration = org;
+  setRepository(repo: Repo, ...repos: Repo[]): void {
+    this.currentRepo = repo;
+    this.otherRepos = repos;
   }
 
   /**
-   * Returns the name of the owner of a given phase.
-   * @param phase
+   * Returns the full repository array of current feature.
    */
-  getPhaseOwner(phase: string): string {
-    return this.phaseRepoOwners[phase];
+  getRepository(): Repo[] {
+    return [this.currentRepo].concat(this.otherRepos);
   }
 
   fetchSessionData(): Observable<SessionData> {
@@ -92,11 +78,7 @@ export class PhaseService {
    * Ref: https://developer.github.com/apps/building-oauth-apps/understanding-scopes-for-oauth-apps/#available-scopes
    */
   githubRepoPermissionLevel(): string {
-    if (this.sessionData.openPhases.includes(Phase.phaseModeration)) {
-      return 'repo';
-    } else {
-      return 'public_repo';
-    }
+    return 'public_repo';
   }
 
   /**
@@ -104,7 +86,7 @@ export class PhaseService {
    * @param sessionData
    */
   verifySessionAvailability(sessionData: SessionData): Observable<boolean> {
-    return this.githubService.isRepositoryPresent(this.phaseRepoOwners[this.currentPhase], sessionData[this.currentPhase]);
+    return this.githubService.isRepositoryPresent(this.currentRepo.owner, this.currentRepo.name);
   }
 
   /**
@@ -113,9 +95,10 @@ export class PhaseService {
    */
   updateSessionParameters(sessionData: SessionData) {
     this.sessionData = sessionData;
-    this.currentPhase = Phase[sessionData.openPhases[0]];
-    this.repoName = sessionData[sessionData.openPhases[0]];
-    this.githubService.storePhaseDetails(this.phaseRepoOwners[this.currentPhase], this.repoName);
+    const repos = sessionData.sessionRepo.filter((x) => x.phase == this.currentPhase)[0].repos;
+    this.currentRepo = repos[0];
+    this.otherRepos = repos.slice(1);
+    this.githubService.storePhaseDetails(this.currentRepo.owner, this.currentRepo.name);
   }
 
   /**
@@ -158,7 +141,7 @@ export class PhaseService {
   }
 
   public getPhaseDetail() {
-    return this.orgName.concat('/').concat(this.repoName);
+    return this.orgName.concat('/').concat(this.repo);
   }
 
   reset() {

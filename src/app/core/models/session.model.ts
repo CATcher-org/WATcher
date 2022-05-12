@@ -1,20 +1,21 @@
 import { pipe } from 'rxjs';
 import { throwIfFalse } from '../../shared/lib/custom-ops';
 import { Phase } from './phase.model';
+import { Repo } from './repo.model';
 
-export interface SessionData {
-  openPhases: Phase[];
-  [Phase.phaseBugReporting]: string;
-  [Phase.phaseTeamResponse]: string;
-  [Phase.phaseTesterResponse]: string;
-  [Phase.phaseModeration]: string;
+export interface SessionRepo {
+  phase: Phase;
+  repos: Repo[];
 }
 
-export const SESSION_DATA_UNAVAILABLE = 'Session Data Unavailable';
-export const SESSION_DATA_MISSING_OPENPHASES_KEY = "Session data does not define an 'openPhases' key";
-export const NO_ACCESSIBLE_PHASES = 'There are no accessible phases';
-export const NO_VALID_OPEN_PHASES = 'Invalid Open Phases detected';
-export const OPENED_PHASE_REPO_UNDEFINED = 'Opened Phase has no repo defined';
+export interface SessionData {
+  sessionRepo: SessionRepo[];
+}
+
+export const SESSION_DATA_UNAVAILABLE = 'Session data does not exist.';
+export const SESSION_DATA_MISSING_FIELDS = 'Session data does not contain any repositories.';
+export const NO_VALID_OPEN_PHASES = 'Invalid phases in Session data.';
+export const OPENED_PHASE_REPO_UNDEFINED = 'Phase has no repo defined.';
 
 export function assertSessionDataIntegrity() {
   return pipe(
@@ -22,10 +23,9 @@ export function assertSessionDataIntegrity() {
       (sessionData) => sessionData !== undefined,
       () => new Error(SESSION_DATA_UNAVAILABLE)
     ),
-    throwIfFalse(isOpenPhasesKeyPresent, () => new Error(SESSION_DATA_MISSING_OPENPHASES_KEY)),
-    throwIfFalse(hasOpenPhases, () => new Error(NO_ACCESSIBLE_PHASES)),
-    throwIfFalse(areOpenPhasesValid, () => new Error(NO_VALID_OPEN_PHASES)),
-    throwIfFalse(isOpenPhasesRepoDefined, () => new Error(OPENED_PHASE_REPO_UNDEFINED))
+    throwIfFalse(hasSessionRepo, () => new Error(SESSION_DATA_MISSING_FIELDS)),
+    throwIfFalse(arePhasesValid, () => new Error(NO_VALID_OPEN_PHASES)),
+    throwIfFalse(areReposDefined, () => new Error(OPENED_PHASE_REPO_UNDEFINED))
   );
 }
 
@@ -33,32 +33,29 @@ export function assertSessionDataIntegrity() {
  * Checks if Session Data has all its crucial fields present.
  * @param sessionData
  */
-function isOpenPhasesKeyPresent(sessionData: SessionData): boolean {
-  return sessionData.openPhases != null;
+function hasSessionRepo(sessionData: SessionData): boolean {
+  return sessionData.sessionRepo != null && Array.isArray(sessionData.sessionRepo) && sessionData.sessionRepo.length > 0;
 }
 
 /**
- * Checks if Open Phases belong to a pre-defined Phase.
+ * Checks if Phases belong to a pre-defined Phase.
  * @param sessionData
  */
-function areOpenPhasesValid(sessionData: SessionData): boolean {
-  return sessionData.openPhases.reduce(
-    (isOpenPhasesValidSoFar: boolean, currentOpenPhase: string) => isOpenPhasesValidSoFar && currentOpenPhase in Phase,
+function arePhasesValid(sessionData: SessionData): boolean {
+  return sessionData.sessionRepo.reduce(
+    (isPhaseValidSoFar: boolean, currentPhaseRepo: SessionRepo) => isPhaseValidSoFar && currentPhaseRepo.phase in Phase,
     true
   );
 }
 
 /**
- * Checks if each stated Open Phase has an associated repo defined as well.
+ * Checks if each Phase has an associated repo defined as well.
  * @param sessionData
  */
-function isOpenPhasesRepoDefined(sessionData: SessionData): boolean {
-  return sessionData.openPhases.reduce(
-    (isOpenPhasesRepoDefinedSoFar: boolean, currentOpenPhase: string) => isOpenPhasesRepoDefinedSoFar && !!sessionData[currentOpenPhase],
+function areReposDefined(sessionData: SessionData): boolean {
+  return sessionData.sessionRepo.reduce(
+    (isPhaseRepoDefinedSoFar: boolean, currentPhaseRepo: SessionRepo) =>
+      isPhaseRepoDefinedSoFar && !!currentPhaseRepo.repos && Array.isArray(currentPhaseRepo.repos) && currentPhaseRepo.repos.length > 0,
     true
   );
-}
-
-function hasOpenPhases(sessionData: SessionData): boolean {
-  return sessionData.openPhases.length !== 0;
 }

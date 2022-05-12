@@ -403,7 +403,7 @@ export class IssueService {
   private createLabelsForIssue(issue: Issue): string[] {
     const result = [];
 
-    if (this.phaseService.currentPhase !== Phase.phaseBugReporting && this.phaseService.currentPhase !== Phase.phaseTesterResponse) {
+    if (this.phaseService.currentPhase !== Phase.issuesViewer && this.phaseService.currentPhase !== Phase.phaseTesterResponse) {
       const studentTeam = issue.teamAssigned.id.split('-');
       result.push(this.createLabel('tutorial', `${studentTeam[0]}-${studentTeam[1]}`), this.createLabel('team', studentTeam[2]));
     }
@@ -451,7 +451,7 @@ export class IssueService {
 
   private createIssueModel(githubIssue: GithubIssue): Issue {
     switch (this.phaseService.currentPhase) {
-      case Phase.phaseBugReporting:
+      case Phase.issuesViewer:
         return Issue.createPhaseBugReportingIssue(githubIssue);
       case Phase.phaseTeamResponse:
         return Issue.createPhaseTeamResponseIssue(githubIssue, this.dataService.getTeam(this.extractTeamIdFromGithubIssue(githubIssue)));
