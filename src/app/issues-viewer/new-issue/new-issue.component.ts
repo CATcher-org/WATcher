@@ -48,7 +48,7 @@ export class NewIssueComponent implements OnInit {
       .subscribe(
         (newIssue) => {
           this.issueService.updateLocalStore(newIssue);
-          this.router.navigateByUrl(`issues-viewer/issues/${newIssue.id}`);
+          this.router.navigateByUrl(`issuesViewer/issues/${newIssue.id}`);
           form.resetForm();
         },
         (error) => {
