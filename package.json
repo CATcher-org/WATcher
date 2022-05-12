@@ -1,6 +1,6 @@
 {
   "name": "WATcher",
-  "version": "3.4.1",
+  "version": "0.0.1",
   "main": "main.js",
   "scripts": {
     "postinstall": "npm run postinstall:electron && electron-builder install-app-deps",
