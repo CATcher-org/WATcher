@@ -59,12 +59,12 @@ export class ConfirmLoginComponent implements OnInit {
   completeLoginProcess(): void {
     this.authService.changeAuthState(AuthState.AwaitingAuthentication);
     console.log(this.currentSessionOrg);
-    this.phaseService.setPhaseOwners(this.currentSessionOrg, this.username);
+    this.phaseService.setRepository({ owner: window.localStorage.getItem('org'), name: window.localStorage.getItem('dataRepo') });
     this.githubService.storePhaseDetails(window.localStorage.getItem('org'), window.localStorage.getItem('dataRepo'));
     this.userService
       .createUserModel(this.username)
       .pipe(
-        // flatMap(() => this.phaseService.sessionSetup()),
+        flatMap(() => this.phaseService.sessionSetup()),
         flatMap(() => this.githubEventService.setLatestChangeEvent())
       )
       .subscribe(

@@ -122,11 +122,11 @@ export class PhaseService {
         this.updateSessionParameters(sessionData);
         return this.verifySessionAvailability(sessionData);
       }),
-      this.repoCreatorService.requestRepoCreationPermissions(this.currentPhase, this.sessionData[this.currentPhase]),
+      this.repoCreatorService.requestRepoCreationPermissions(this.currentPhase, this.currentRepo.name),
       cacheSessionFixPermission(),
       this.repoCreatorService.verifyRepoCreationPermissions(this.currentPhase),
-      this.repoCreatorService.attemptRepoCreation(this.sessionData[this.currentPhase]),
-      this.repoCreatorService.verifyRepoCreation(this.getPhaseOwner(this.currentPhase), this.sessionData[this.currentPhase]),
+      this.repoCreatorService.attemptRepoCreation(this.currentRepo.name),
+      this.repoCreatorService.verifyRepoCreation(this.currentRepo.owner, this.currentRepo.name),
       throwIfFalse(
         (isSessionCreated: boolean) => isSessionCreated,
         () => new Error(SESSION_AVALIABILITY_FIX_FAILED)
@@ -141,7 +141,7 @@ export class PhaseService {
   }
 
   public getPhaseDetail() {
-    return this.orgName.concat('/').concat(this.repo);
+    return this.currentRepo.owner.concat('/').concat(this.currentRepo.name);
   }
 
   reset() {
