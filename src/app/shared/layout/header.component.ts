@@ -73,10 +73,7 @@ export class HeaderComponent implements OnInit {
     }
     // Replace Current Phase Data.
     this.phaseService.currentPhase = Phase[openPhase];
-    this.githubService.storePhaseDetails(
-      this.phaseService.getPhaseOwner(this.phaseService.currentPhase),
-      this.phaseService.sessionData[openPhase]
-    );
+    this.githubService.storePhaseDetails(this.phaseService.getRepository()[0].owner, this.phaseService.sessionData[openPhase]);
 
     // Remove current phase issues and load selected phase issues.
     this.githubService.reset();
