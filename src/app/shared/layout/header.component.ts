@@ -49,6 +49,7 @@ export class HeaderComponent implements OnInit {
     private electronService: ElectronService,
     private dialogService: DialogService
   ) {
+    console.log(this.phaseService.sessionData);
     router.events
       .pipe(
         filter((e: any) => e instanceof RoutesRecognized),
@@ -73,7 +74,7 @@ export class HeaderComponent implements OnInit {
     }
     // Replace Current Phase Data.
     this.phaseService.currentPhase = Phase[openPhase];
-    this.githubService.storePhaseDetails(this.phaseService.getRepository()[0].owner, this.phaseService.sessionData[openPhase]);
+    this.githubService.storePhaseDetails(this.phaseService.getRepository()[0].owner, this.phaseService.getRepository()[0].name);
 
     // Remove current phase issues and load selected phase issues.
     this.githubService.reset();
@@ -111,7 +112,7 @@ export class HeaderComponent implements OnInit {
 
   goBack() {
     if (this.prevUrl === `/${this.phaseService.currentPhase}/issues/new`) {
-      this.router.navigate(['/phaseBugReporting']);
+      this.router.navigateByUrl(this.phaseService.currentPhase);
     } else {
       this.location.back();
     }

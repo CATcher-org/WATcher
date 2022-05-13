@@ -51,8 +51,8 @@ export class ConfirmLoginComponent implements OnInit {
    * Handles the clean up required after authentication and setting up of user data is completed.
    */
   handleAuthSuccess() {
-    // this.authService.setTitleWithPhaseDetail();
-    this.router.navigateByUrl('/issuesViewer');
+    this.authService.setTitleWithPhaseDetail();
+    this.router.navigateByUrl(Phase.issuesViewer);
     this.authService.changeAuthState(AuthState.Authenticated);
   }
 
@@ -66,6 +66,8 @@ export class ConfirmLoginComponent implements OnInit {
       sessionRepo: [{ phase: Phase.issuesViewer, repos: [currentRepo] }]
     };
     window.localStorage.setItem('sessionData', JSON.stringify(sessionData));
+    this.phaseService.currentPhase = Phase.issuesViewer;
+    this.phaseService.setSessionData(); // must set current phase first
     this.phaseService.setRepository(currentRepo);
     this.githubService.storePhaseDetails(currentRepo.owner, currentRepo.name);
     this.userService

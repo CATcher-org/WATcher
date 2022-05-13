@@ -15,12 +15,12 @@
     ({{ this.getPhaseDescription(phaseService.currentPhase) }})
   </span>
 
-  <div *ngIf="auth.isAuthenticated() && this.phaseService.sessionData.openPhases.length > 1">
+  <div *ngIf="auth.isAuthenticated() && this.phaseService.sessionData.sessionRepo.length > 1">
     <button mat-button [matMenuTriggerFor]="menu"><mat-icon style="color: white">expand_more</mat-icon></button>
     <mat-menu #menu="matMenu">
       <button
         mat-menu-item
-        *ngFor="let openPhase of this.phaseService.sessionData.openPhases"
+        *ngFor="let openPhase of this.phaseService.sessionData.sessionRepo.phase"
         (click)="this.routeToSelectedPhase(openPhase)"
       >
         <span>

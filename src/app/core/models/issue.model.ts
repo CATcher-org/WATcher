@@ -320,7 +320,7 @@ export enum STATUS {
 }
 
 export const IssuesFilter = {
-  phaseBugReporting: {
+  issuesViewer: {
     Student: 'FILTER_BY_CREATOR',
     Tutor: 'NO_FILTER',
     Admin: 'NO_FILTER'
