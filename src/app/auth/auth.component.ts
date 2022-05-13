@@ -71,7 +71,7 @@ export class AuthComponent implements OnInit, OnDestroy {
     if (oauthCode) {
       // runs upon receiving oauthCode from the redirect
       this.authService.changeAuthState(AuthState.AwaitingAuthentication);
-      this.restoreOrgDetailsFromLocalStorage();
+      // this.restoreOrgDetailsFromLocalStorage();
       this.logger.info('Obtained authorisation code from Github');
       this.fetchAccessToken(oauthCode, state);
     }

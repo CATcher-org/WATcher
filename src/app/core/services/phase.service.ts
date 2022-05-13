@@ -103,7 +103,7 @@ export class PhaseService {
 
   /**
    * Ensures that the necessary data for the current session is available
-   * and synchronized with the remote server.
+   * and synchronized with the remote server. If there is settings.json.
    */
   sessionSetup(): Observable<any> {
     // Permission Caching Mechanism to prevent repeating permission request.
