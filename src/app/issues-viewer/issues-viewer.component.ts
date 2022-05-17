@@ -11,8 +11,8 @@ import { ACTION_BUTTONS, IssueTablesComponent } from '../shared/issue-tables/iss
   styleUrls: ['./issues-viewer.component.css']
 })
 export class IssuesViewerComponent implements OnInit {
-  readonly displayedColumns = [TABLE_COLUMNS.ID, TABLE_COLUMNS.TITLE, TABLE_COLUMNS.TYPE, TABLE_COLUMNS.SEVERITY, TABLE_COLUMNS.ACTIONS];
-  readonly actionButtons: ACTION_BUTTONS[] = [ACTION_BUTTONS.VIEW_IN_WEB, ACTION_BUTTONS.DELETE_ISSUE, ACTION_BUTTONS.FIX_ISSUE];
+  readonly displayedColumns = [TABLE_COLUMNS.ID, TABLE_COLUMNS.TITLE, TABLE_COLUMNS.ACTIONS];
+  readonly actionButtons: ACTION_BUTTONS[] = [ACTION_BUTTONS.DELETE_ISSUE, ACTION_BUTTONS.FIX_ISSUE];
 
   @ViewChild(IssueTablesComponent, { static: true }) table: IssueTablesComponent;
 

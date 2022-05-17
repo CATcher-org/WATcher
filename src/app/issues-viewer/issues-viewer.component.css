@@ -31,3 +31,7 @@
 .mat-column-severity {
   width: 23%;
 }
+
+.issue-table {
+  width: 348px;
+}

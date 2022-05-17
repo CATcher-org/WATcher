@@ -1,11 +1,11 @@
 .mat-table {
   display: flex;
   flex-wrap: wrap;
-  min-width: 1000px;
+  min-width: 348px;
 }
 
 .mat-paginator {
-  min-width: 1000px;
+  min-width: 348px;
 }
 
 .mat-column {
