@@ -436,7 +436,8 @@ export class GithubService {
       direction: 'desc',
       per_page: 100,
       page: pageNumber,
-      headers: { 'If-None-Match': this.issuesCacheManager.getEtagFor(pageNumber) }
+      headers: { 'If-None-Match': this.issuesCacheManager.getEtagFor(pageNumber) },
+      state: 'all'
     });
     const apiCall$ = from(apiCall);
     return apiCall$.pipe(
