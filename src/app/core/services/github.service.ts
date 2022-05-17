@@ -282,6 +282,20 @@ export class GithubService {
     );
   }
 
+  getUsersAssignable(): Observable<GithubUser[]> {
+    return from(
+      octokit.issues.listAssignees({
+        owner: ORG_NAME,
+        repo: REPO
+      })
+    ).pipe(
+      map((response) => {
+        return response['data'];
+      }),
+      catchError((err) => throwError('Failed to fetch assignable users for repo.'))
+    );
+  }
+
   closeIssue(id: number): Observable<GithubIssue> {
     return from(octokit.issues.update({ owner: ORG_NAME, repo: REPO, issue_number: id, state: 'closed' })).pipe(
       map((response: GithubResponse<GithubIssue>) => {

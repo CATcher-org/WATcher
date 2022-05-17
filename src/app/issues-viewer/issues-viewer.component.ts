@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { GithubService } from '../core/services/github.service';
 import { PermissionService } from '../core/services/permission.service';
 import { UserService } from '../core/services/user.service';
 import { TABLE_COLUMNS } from '../shared/issue-tables/issue-tables-columns';
@@ -15,9 +16,11 @@ export class IssuesViewerComponent implements OnInit {
 
   @ViewChild(IssueTablesComponent, { static: true }) table: IssueTablesComponent;
 
-  constructor(public permissions: PermissionService, public userService: UserService) {}
+  constructor(public permissions: PermissionService, public userService: UserService, public githubService: GithubService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.githubService.getUsersAssignable().subscribe((x) => console.log(x));
+  }
 
   applyFilter(filterValue: string) {
     this.table.issues.filter = filterValue;
