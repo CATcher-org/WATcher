@@ -35,7 +35,7 @@ export default class RestGithubIssueFilter implements RestGithubIssueFilterData 
   }
 
   convertToGraphqlFilter(): IssueFilters {
-    if (this.state == undefined || this.state === 'all') {
+    if (this.state === undefined || this.state === 'all') {
       return <IssueFilters>{
         assignee: this.assignee,
         createdBy: this.creator,
