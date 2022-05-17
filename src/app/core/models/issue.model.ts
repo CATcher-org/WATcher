@@ -321,7 +321,7 @@ export enum STATUS {
 
 export const IssuesFilter = {
   issuesViewer: {
-    Student: 'FILTER_BY_CREATOR',
+    Student: 'NO_FILTER',
     Tutor: 'NO_FILTER',
     Admin: 'NO_FILTER'
   },
