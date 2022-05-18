@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { finalize } from 'rxjs/operators';
+import { GithubUser } from '../../core/models/github-user.model';
 import { Issue, STATUS } from '../../core/models/issue.model';
 import { DialogService } from '../../core/services/dialog.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
@@ -30,6 +31,7 @@ export enum ACTION_BUTTONS {
 export class IssueTablesComponent implements OnInit, AfterViewInit {
   @Input() headers: string[];
   @Input() actions: ACTION_BUTTONS[];
+  @Input() author?: GithubUser = undefined;
   @Input() filters?: any = undefined;
 
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -58,7 +60,7 @@ export class IssueTablesComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.filters);
+    this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.author, this.filters);
     this.issuesPendingDeletion = {};
   }
 

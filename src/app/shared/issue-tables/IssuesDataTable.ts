@@ -2,6 +2,7 @@ import { DataSource } from '@angular/cdk/table';
 import { MatPaginator, MatSort } from '@angular/material';
 import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
 import { flatMap, map } from 'rxjs/operators';
+import { GithubUser } from '../../core/models/github-user.model';
 import { Issue } from '../../core/models/issue.model';
 import { IssueService } from '../../core/services/issue.service';
 import { paginateData } from './issue-paginator';
@@ -21,6 +22,7 @@ export class IssuesDataTable extends DataSource<Issue> {
     private sort: MatSort,
     private paginator: MatPaginator,
     private displayedColumn: string[],
+    private author?: GithubUser,
     private defaultFilter?: (issue: Issue) => boolean
   ) {
     super();
@@ -47,7 +49,11 @@ export class IssuesDataTable extends DataSource<Issue> {
       this.teamFilterChange
     ];
 
-    this.issueService.startPollIssues();
+    if (this.author !== undefined) {
+      this.issueService.startPollIssuesByUser(this.author);
+    } else {
+      this.issueService.startPollIssues();
+    }
     this.issueSubscription = this.issueService.issues$
       .pipe(
         flatMap(() => {

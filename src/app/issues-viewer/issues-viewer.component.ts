@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { GithubUser } from '../core/models/github-user.model';
 import { GithubService } from '../core/services/github.service';
 import { PermissionService } from '../core/services/permission.service';
 import { UserService } from '../core/services/user.service';
@@ -13,13 +14,14 @@ import { ACTION_BUTTONS, IssueTablesComponent } from '../shared/issue-tables/iss
 export class IssuesViewerComponent implements OnInit {
   readonly displayedColumns = [TABLE_COLUMNS.ID, TABLE_COLUMNS.TITLE, TABLE_COLUMNS.ACTIONS];
   readonly actionButtons: ACTION_BUTTONS[] = [ACTION_BUTTONS.DELETE_ISSUE, ACTION_BUTTONS.FIX_ISSUE];
+  assignees: GithubUser[];
 
   @ViewChild(IssueTablesComponent, { static: true }) table: IssueTablesComponent;
 
   constructor(public permissions: PermissionService, public userService: UserService, public githubService: GithubService) {}
 
   ngOnInit() {
-    this.githubService.getUsersAssignable().subscribe((x) => console.log(x));
+    this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
   }
 
   applyFilter(filterValue: string) {

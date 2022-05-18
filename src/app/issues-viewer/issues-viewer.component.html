@@ -29,8 +29,14 @@
     </mat-grid-tile>
   </mat-grid-list>
   <div style="display: flex">
-    <app-issue-tables class="issue-table" [headers]="this.displayedColumns" [actions]="this.actionButtons"></app-issue-tables>
-    <app-issue-tables class="issue-table" [headers]="this.displayedColumns" [actions]="this.actionButtons"></app-issue-tables>
-    <app-issue-tables class="issue-table" [headers]="this.displayedColumns" [actions]="this.actionButtons"></app-issue-tables>
+    <app-issue-tables
+      *ngFor="let assignee of assignees"
+      class="issue-table"
+      [author]="assignee"
+      [headers]="this.displayedColumns"
+      [actions]="this.actionButtons"
+    >
+      <h1>{{ assignee.login }}</h1>
+    </app-issue-tables>
   </div>
 </div>

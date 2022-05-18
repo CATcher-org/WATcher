@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, EMPTY, forkJoin, Observable, of, Subscription, throwError, timer } from 'rxjs';
 import { catchError, exhaustMap, finalize, flatMap, map } from 'rxjs/operators';
 import { IssueComment } from '../models/comment.model';
+import { GithubUser } from '../models/github-user.model';
 import { GithubComment } from '../models/github/github-comment.model';
 import RestGithubIssueFilter from '../models/github/github-issue-filter.model';
 import { GithubIssue } from '../models/github/github-issue.model';
@@ -45,6 +46,27 @@ export class IssueService {
     private dataService: DataService
   ) {
     this.issues$ = new BehaviorSubject(new Array<Issue>());
+  }
+
+  startPollIssuesByUser(user: GithubUser) {
+    if (this.issuesPollSubscription === undefined) {
+      if (this.issues$.getValue().length === 0) {
+        this.isLoading.next(true);
+      }
+
+      this.issuesPollSubscription = timer(0, IssueService.POLL_INTERVAL)
+        .pipe(
+          exhaustMap(() => {
+            return this.initializeDatasForUser(user).pipe(
+              catchError(() => {
+                return EMPTY;
+              }),
+              finalize(() => this.isLoading.next(false))
+            );
+          })
+        )
+        .subscribe();
+    }
   }
 
   startPollIssues() {
@@ -300,6 +322,30 @@ export class IssueService {
     this.stopPollIssues();
     this.isLoading.complete();
     this.isLoading = new BehaviorSubject<boolean>(false);
+  }
+
+  private initializeDatasForUser(user: GithubUser): Observable<Issue[]> {
+    const issuesAPICallsByFilter: Array<Observable<Array<GithubIssue>>> = [];
+
+    issuesAPICallsByFilter.push(this.githubService.fetchIssuesGraphql(new RestGithubIssueFilter({ assignee: user.login })));
+
+    return forkJoin(issuesAPICallsByFilter).pipe(
+      map((issuesByFilter: [][]) => {
+        const fetchedIssueIds: Array<Number> = [];
+
+        for (const issues of issuesByFilter) {
+          for (const issue of issues) {
+            fetchedIssueIds.push(this.createIssueModel(issue).id);
+            this.createAndSaveIssueModel(issue);
+          }
+        }
+
+        const outdatedIssueIds: Array<Number> = this.getOutdatedIssueIds(fetchedIssueIds);
+        this.deleteIssuesFromLocalStore(outdatedIssueIds);
+
+        return Object.values(this.issues);
+      })
+    );
   }
 
   private initializeData(): Observable<Issue[]> {
