@@ -49,11 +49,7 @@ export class IssuesDataTable extends DataSource<Issue> {
       this.teamFilterChange
     ];
 
-    if (this.author !== undefined) {
-      this.issueService.startPollIssuesByUser(this.author);
-    } else {
-      this.issueService.startPollIssues();
-    }
+    this.issueService.startPollIssues();
     this.issueSubscription = this.issueService.issues$
       .pipe(
         flatMap(() => {
@@ -62,6 +58,18 @@ export class IssuesDataTable extends DataSource<Issue> {
               let data = <Issue[]>Object.values(this.issueService.issues$.getValue()).reverse();
               if (this.defaultFilter) {
                 data = data.filter(this.defaultFilter);
+              }
+              if (this.author) {
+                data = data.filter((issue) => {
+                  const githubissue = issue.githubIssue;
+                  if (!githubissue.assignees) {
+                    return false;
+                  } else {
+                    return githubissue.assignees.some((x) => {
+                      return x.login === this.author.login;
+                    });
+                  }
+                });
               }
               data = getSortedData(this.sort, data);
               data = this.getFilteredTeamData(data);

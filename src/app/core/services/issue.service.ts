@@ -327,7 +327,7 @@ export class IssueService {
   private initializeDatasForUser(user: GithubUser): Observable<Issue[]> {
     const issuesAPICallsByFilter: Array<Observable<Array<GithubIssue>>> = [];
 
-    issuesAPICallsByFilter.push(this.githubService.fetchIssuesGraphql(new RestGithubIssueFilter({ assignee: user.login })));
+    issuesAPICallsByFilter.push(this.githubService.fetchIssuesGraphql(new RestGithubIssueFilter({ creator: user.login })));
 
     return forkJoin(issuesAPICallsByFilter).pipe(
       map((issuesByFilter: [][]) => {
@@ -336,10 +336,11 @@ export class IssueService {
         for (const issues of issuesByFilter) {
           for (const issue of issues) {
             fetchedIssueIds.push(this.createIssueModel(issue).id);
-            this.createAndSaveIssueModel(issue);
+            this.createAndSaveIssueModel(issue); // caching?
           }
         }
 
+        // caching?
         const outdatedIssueIds: Array<Number> = this.getOutdatedIssueIds(fetchedIssueIds);
         this.deleteIssuesFromLocalStore(outdatedIssueIds);
 
