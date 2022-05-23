@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -29,12 +29,11 @@ export enum ACTION_BUTTONS {
   templateUrl: './card-view.component.html',
   styleUrls: ['./card-view.component.css']
 })
-export class CardViewComponent implements OnInit {
+export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() headers: string[];
   @Input() actions: ACTION_BUTTONS[];
   @Input() author?: GithubUser = undefined;
   @Input() filters?: any = undefined;
-  @Input() tableview?: boolean = false;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   sort: MatSort;

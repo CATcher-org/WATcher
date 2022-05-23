@@ -31,9 +31,8 @@ export enum ACTION_BUTTONS {
 export class IssueTablesComponent implements OnInit, AfterViewInit {
   @Input() headers: string[];
   @Input() actions: ACTION_BUTTONS[];
-  @Input() author?: GithubUser = undefined;
+  @Input() assignee?: GithubUser = undefined;
   @Input() filters?: any = undefined;
-  @Input() tableview?: boolean = false;
 
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -61,7 +60,7 @@ export class IssueTablesComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.author, this.filters);
+    this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.assignee, this.filters);
     this.issuesPendingDeletion = {};
   }
 

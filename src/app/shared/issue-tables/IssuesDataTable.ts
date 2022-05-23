@@ -42,7 +42,7 @@ export class IssuesDataTable extends DataSource<Issue> {
 
   loadIssues() {
     // For card view has not mat-sort
-    var sortChange = this.sort.sortChange;
+    let sortChange = this.sort.sortChange;
     if (this.sort === undefined) {
       sortChange = undefined;
     }
