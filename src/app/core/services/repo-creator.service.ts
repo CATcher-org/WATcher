@@ -19,7 +19,7 @@ export class RepoCreatorService {
   constructor(private githubService: GithubService, private userService: UserService, private repoCreationConfirmationDialog: MatDialog) {}
 
   /**
-   * Prompts user to allow CATcher to create a repo, if repo does not
+   * Prompts user to allow WATcher to create a repo, if repo does not
    * exist and current phase is the bug reporting phase.
    * @param currentPhase the current phase of the session.
    * @param phaseRepo the name of the specified repository.
@@ -30,7 +30,7 @@ export class RepoCreatorService {
   ): UnaryFunction<Observable<boolean>, Observable<boolean | null>> {
     return pipe(
       flatMap((isRepoPresent: boolean) => {
-        if (!isRepoPresent && currentPhase === Phase.phaseBugReporting) {
+        if (!isRepoPresent && currentPhase === Phase.issuesViewer) {
           return this.openRepoCreationConfirmation(phaseRepo);
         } else {
           return of(null);
@@ -68,7 +68,7 @@ export class RepoCreatorService {
 
         if (repoCreationPermission === false) {
           throw new Error(MISSING_REQUIRED_REPO);
-        } else if (currentPhase !== Phase.phaseBugReporting) {
+        } else if (currentPhase !== Phase.issuesViewer) {
           throw new Error(CURRENT_PHASE_REPO_CLOSED);
         } else if (this.userService.currentUser.role !== UserRole.Student) {
           throw new Error(BUG_REPORTING_INVALID_ROLE);

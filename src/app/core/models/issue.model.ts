@@ -191,7 +191,7 @@ export class Issue {
    */
   clone(phase: Phase): Issue {
     switch (phase) {
-      case Phase.phaseBugReporting:
+      case Phase.issuesViewer:
         return Issue.createPhaseBugReportingIssue(this.githubIssue);
       case Phase.phaseTeamResponse:
         return Issue.createPhaseTeamResponseIssue(this.githubIssue, this.teamAssigned);
@@ -215,7 +215,7 @@ export class Issue {
     this.issueComment = issue.issueComment;
     this.githubComments = issue.githubComments;
     switch (phase) {
-      case Phase.phaseBugReporting:
+      case Phase.issuesViewer:
         this.description = issue.description;
         break;
       case Phase.phaseTeamResponse:
@@ -320,8 +320,8 @@ export enum STATUS {
 }
 
 export const IssuesFilter = {
-  phaseBugReporting: {
-    Student: 'FILTER_BY_CREATOR',
+  issuesViewer: {
+    Student: 'NO_FILTER',
     Tutor: 'NO_FILTER',
     Admin: 'NO_FILTER'
   },

@@ -13,9 +13,10 @@ import { PhaseService } from '../../core/services/phase.service';
   styleUrls: ['./session-selection.component.css', '../auth.component.css']
 })
 export class SessionSelectionComponent implements OnInit {
-  // isSettingUpSession is used to indicate whether CATcher is in the midst of setting up the session.
+  // isSettingUpSession is used to indicate whether WATcher is in the midst of setting up the session.
   isSettingUpSession: boolean;
   profileForm: FormGroup;
+  repoForm: FormGroup;
 
   @Input() urlEncodedSessionName: string;
 
@@ -33,6 +34,7 @@ export class SessionSelectionComponent implements OnInit {
   ngOnInit() {
     this.isSettingUpSession = false;
     this.initProfileForm();
+    this.initRepoForm();
   }
 
   /**
@@ -76,6 +78,31 @@ export class SessionSelectionComponent implements OnInit {
     );
   }
 
+  setupRepo() {
+    if (this.repoForm.invalid) {
+      return;
+    }
+    this.isSettingUpSession = true;
+    const repoInformation: string = this.repoForm.get('repo').value;
+    const repoOrg: string = this.getOrgDetails(repoInformation);
+    const repoName: string = this.getDataRepoDetails(repoInformation);
+    // Persist repo information in local storage
+    window.localStorage.setItem('org', repoOrg);
+    window.localStorage.setItem('dataRepo', repoName);
+    this.githubService.storeOrganizationDetails(repoOrg, repoName);
+    this.githubService.storePhaseDetails(repoOrg, repoName); // in WATcher, these are the same
+
+    this.logger.info(`Selected Repo: ${repoInformation}`);
+
+    try {
+      this.authService.startOAuthProcess();
+    } catch (error) {
+      this.errorHandlingService.handleError(error);
+      this.authService.changeAuthState(AuthState.NotAuthenticated);
+      this.isSettingUpSession = false;
+    }
+  }
+
   /**
    * Extracts the Organization Details from the input sessionInformation.
    * @param sessionInformation - string in the format of 'orgName/dataRepo'
@@ -95,6 +122,12 @@ export class SessionSelectionComponent implements OnInit {
   private initProfileForm() {
     this.profileForm = this.formBuilder.group({
       session: ['', Validators.required]
+    });
+  }
+
+  private initRepoForm() {
+    this.repoForm = this.formBuilder.group({
+      repo: ['', Validators.required]
     });
   }
 }

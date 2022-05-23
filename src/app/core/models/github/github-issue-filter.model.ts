@@ -1,6 +1,6 @@
 import { IssueFilters, IssueState } from '../../../../../graphql/graphql-types';
 
-export type RestGithubIssueState = 'open' | 'close';
+export type RestGithubIssueState = 'open' | 'close' | 'all';
 export type RestGithubSortBy = 'created' | 'updated' | 'comments';
 export type RestGithubSortDir = 'asc' | 'desc';
 
@@ -35,6 +35,17 @@ export default class RestGithubIssueFilter implements RestGithubIssueFilterData 
   }
 
   convertToGraphqlFilter(): IssueFilters {
+    if (this.state === undefined || this.state === 'all') {
+      return <IssueFilters>{
+        assignee: this.assignee,
+        createdBy: this.creator,
+        labels: this.labels,
+        mentioned: this.mentioned,
+        milestone: this.milestone,
+        since: this.since
+      };
+    }
+
     return <IssueFilters>{
       assignee: this.assignee,
       createdBy: this.creator,

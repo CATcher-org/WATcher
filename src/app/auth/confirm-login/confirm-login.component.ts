@@ -1,9 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { flatMap } from 'rxjs/operators';
+import { Phase } from '../../core/models/phase.model';
+import { Repo } from '../../core/models/repo.model';
+import { SessionData } from '../../core/models/session.model';
 import { AuthService, AuthState } from '../../core/services/auth.service';
 import { ElectronService } from '../../core/services/electron.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
+import { GithubService } from '../../core/services/github.service';
 import { GithubEventService } from '../../core/services/githubevent.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { PhaseService } from '../../core/services/phase.service';
@@ -24,6 +28,7 @@ export class ConfirmLoginComponent implements OnInit {
     private phaseService: PhaseService,
     private userService: UserService,
     private errorHandlingService: ErrorHandlingService,
+    private githubService: GithubService,
     private githubEventService: GithubEventService,
     private logger: LoggingService,
     private router: Router
@@ -47,7 +52,7 @@ export class ConfirmLoginComponent implements OnInit {
    */
   handleAuthSuccess() {
     this.authService.setTitleWithPhaseDetail();
-    this.router.navigateByUrl(this.phaseService.currentPhase);
+    this.router.navigateByUrl(Phase.issuesViewer);
     this.authService.changeAuthState(AuthState.Authenticated);
   }
 
@@ -56,13 +61,18 @@ export class ConfirmLoginComponent implements OnInit {
    */
   completeLoginProcess(): void {
     this.authService.changeAuthState(AuthState.AwaitingAuthentication);
-    this.phaseService.setPhaseOwners(this.currentSessionOrg, this.username);
+    const currentRepo: Repo = { owner: window.localStorage.getItem('org'), name: window.localStorage.getItem('dataRepo') };
+    const sessionData: SessionData = {
+      sessionRepo: [{ phase: Phase.issuesViewer, repos: [currentRepo] }]
+    };
+    window.localStorage.setItem('sessionData', JSON.stringify(sessionData));
+    this.phaseService.currentPhase = Phase.issuesViewer;
+    this.phaseService.setSessionData(); // must set current phase first
+    this.phaseService.setRepository(currentRepo);
+    this.githubService.storePhaseDetails(currentRepo.owner, currentRepo.name);
     this.userService
       .createUserModel(this.username)
-      .pipe(
-        flatMap(() => this.phaseService.sessionSetup()),
-        flatMap(() => this.githubEventService.setLatestChangeEvent())
-      )
+      .pipe(flatMap(() => this.githubEventService.setLatestChangeEvent()))
       .subscribe(
         () => {
           this.handleAuthSuccess();
@@ -73,5 +83,6 @@ export class ConfirmLoginComponent implements OnInit {
           this.logger.info(`Completion of login process failed with an error: ${error}`);
         }
       );
+    this.handleAuthSuccess();
   }
 }

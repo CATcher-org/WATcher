@@ -122,7 +122,8 @@ export class AuthService {
    */
   startOAuthProcess() {
     this.logger.info('Starting authentication');
-    const githubRepoPermission = this.phaseService.githubRepoPermissionLevel();
+    // Available OAuth scopes https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps#available-scopes
+    const githubRepoPermission = 'public_repo';
     this.changeAuthState(AuthState.AwaitingAuthentication);
 
     if (this.electronService.isElectron()) {

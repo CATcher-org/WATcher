@@ -2,6 +2,7 @@ import { DataSource } from '@angular/cdk/table';
 import { MatPaginator, MatSort } from '@angular/material';
 import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
 import { flatMap, map } from 'rxjs/operators';
+import { GithubUser } from '../../core/models/github-user.model';
 import { Issue } from '../../core/models/issue.model';
 import { IssueService } from '../../core/services/issue.service';
 import { paginateData } from './issue-paginator';
@@ -21,6 +22,7 @@ export class IssuesDataTable extends DataSource<Issue> {
     private sort: MatSort,
     private paginator: MatPaginator,
     private displayedColumn: string[],
+    private assignee?: GithubUser,
     private defaultFilter?: (issue: Issue) => boolean
   ) {
     super();
@@ -39,13 +41,13 @@ export class IssuesDataTable extends DataSource<Issue> {
   }
 
   loadIssues() {
-    const displayDataChanges = [
-      this.issueService.issues$,
-      this.paginator.page,
-      this.sort.sortChange,
-      this.filterChange,
-      this.teamFilterChange
-    ];
+    // For card view has not mat-sort
+    let sortChange = this.sort.sortChange;
+    if (this.sort === undefined) {
+      sortChange = undefined;
+    }
+
+    const displayDataChanges = [this.issueService.issues$, this.paginator.page, sortChange, this.filterChange, this.teamFilterChange];
 
     this.issueService.startPollIssues();
     this.issueSubscription = this.issueService.issues$
@@ -57,7 +59,22 @@ export class IssuesDataTable extends DataSource<Issue> {
               if (this.defaultFilter) {
                 data = data.filter(this.defaultFilter);
               }
-              data = getSortedData(this.sort, data);
+              // Filter by assignee of issue
+              if (this.assignee) {
+                data = data.filter((issue) => {
+                  const githubissue = issue.githubIssue;
+                  if (!githubissue.assignees) {
+                    return false;
+                  } else {
+                    return githubissue.assignees.some((x) => {
+                      return x.login === this.assignee.login;
+                    });
+                  }
+                });
+              }
+              if (this.sort !== undefined) {
+                data = getSortedData(this.sort, data);
+              }
               data = this.getFilteredTeamData(data);
               data = applySearchFilter(this.filter, this.displayedColumn, this.issueService, data);
               data = paginateData(this.paginator, data);

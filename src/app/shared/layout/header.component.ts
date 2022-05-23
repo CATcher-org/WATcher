@@ -49,6 +49,7 @@ export class HeaderComponent implements OnInit {
     private electronService: ElectronService,
     private dialogService: DialogService
   ) {
+    console.log(this.phaseService.sessionData);
     router.events
       .pipe(
         filter((e: any) => e instanceof RoutesRecognized),
@@ -73,10 +74,7 @@ export class HeaderComponent implements OnInit {
     }
     // Replace Current Phase Data.
     this.phaseService.currentPhase = Phase[openPhase];
-    this.githubService.storePhaseDetails(
-      this.phaseService.getPhaseOwner(this.phaseService.currentPhase),
-      this.phaseService.sessionData[openPhase]
-    );
+    this.githubService.storePhaseDetails(this.phaseService.getRepository()[0].owner, this.phaseService.getRepository()[0].name);
 
     // Remove current phase issues and load selected phase issues.
     this.githubService.reset();
@@ -97,7 +95,7 @@ export class HeaderComponent implements OnInit {
 
   isOpenUrlButtonShown(): boolean {
     return (
-      this.phaseService.currentPhase === Phase.phaseBugReporting ||
+      this.phaseService.currentPhase === Phase.issuesViewer ||
       this.userService.currentUser.role === UserRole.Student ||
       this.issueService.getIssueTeamFilter() !== 'All Teams' ||
       this.router.url.includes('/issues')
@@ -114,7 +112,7 @@ export class HeaderComponent implements OnInit {
 
   goBack() {
     if (this.prevUrl === `/${this.phaseService.currentPhase}/issues/new`) {
-      this.router.navigate(['/phaseBugReporting']);
+      this.router.navigateByUrl(this.phaseService.currentPhase);
     } else {
       this.location.back();
     }
@@ -143,7 +141,7 @@ export class HeaderComponent implements OnInit {
 
   private getTeamFilterString() {
     // First Phase does not need team filtering
-    if (this.phaseService.currentPhase === Phase.phaseBugReporting || this.phaseService.currentPhase === Phase.phaseTesterResponse) {
+    if (this.phaseService.currentPhase === Phase.issuesViewer || this.phaseService.currentPhase === Phase.phaseTesterResponse) {
       return '';
     }
 

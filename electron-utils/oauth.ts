@@ -14,8 +14,8 @@ let authWindow;
 
 /**
  * Will retrieve the access token from a proxy server which acts as a intermediary to retrieve the tokens from Github.
- * @param window - The main window of CATcher.
- * @param repoPermissionLevel - The level of permission required to be granted by the user to use CATcher.
+ * @param window - The main window of WATcher.
+ * @param repoPermissionLevel - The level of permission required to be granted by the user to use WATcher.
  */
 export function getAccessToken(window: BrowserWindow, repoPermissionLevel: string): Promise<any> {
   return getAuthorizationCode(window, repoPermissionLevel)
@@ -38,8 +38,8 @@ export function getAccessToken(window: BrowserWindow, repoPermissionLevel: strin
 
 /**
  * Get the authorization code from Github after success login.
- * @param parentWindow - The main window of CATcher
- * @param repoPermissionLevel - The level of permission required to be granted by the user to use CATcher.
+ * @param parentWindow - The main window of WATcher
+ * @param repoPermissionLevel - The level of permission required to be granted by the user to use WATcher.
  */
 function getAuthorizationCode(parentWindow: BrowserWindow, repoPermissionLevel: string) {
   let state: string;

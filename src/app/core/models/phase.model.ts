@@ -1,5 +1,5 @@
 export enum Phase {
-  phaseBugReporting = 'phaseBugReporting',
+  issuesViewer = 'issuesViewer',
   phaseTeamResponse = 'phaseTeamResponse',
   phaseTesterResponse = 'phaseTesterResponse',
   phaseModeration = 'phaseModeration'

@@ -10,7 +10,7 @@ const enum PermissionLevel {
 }
 
 const PERMISSIONS = {
-  [Phase.phaseBugReporting]: {
+  [Phase.issuesViewer]: {
     [UserRole.Student]: {
       isIssueCreatable: true,
       isIssueDeletable: true,
@@ -20,126 +20,6 @@ const PERMISSIONS = {
       isTeamResponseEditable: false,
       isTesterResponseEditable: false,
       isTutorResponseEditable: false
-    },
-    [UserRole.Tutor]: {
-      isIssueCreatable: false,
-      isIssueDeletable: false,
-      isIssueTitleEditable: false,
-      isIssueDescriptionEditable: false,
-      isIssueLabelsEditable: false,
-      isTeamResponseEditable: false,
-      isTesterResponseEditable: false,
-      isTutorResponseEditable: false
-    },
-    [UserRole.Admin]: {
-      isIssueCreatable: true,
-      isIssueDeletable: true,
-      isIssueTitleEditable: true,
-      isIssueDescriptionEditable: true,
-      isIssueLabelsEditable: true,
-      isTeamResponseEditable: false,
-      isTesterResponseEditable: false,
-      isTutorResponseEditable: false
-    }
-  },
-
-  [Phase.phaseTeamResponse]: {
-    [UserRole.Student]: {
-      isIssueCreatable: false,
-      isIssueDeletable: false,
-      isIssueTitleEditable: false,
-      isIssueDescriptionEditable: false,
-      isIssueLabelsEditable: true,
-      isTeamResponseEditable: true,
-      isTesterResponseEditable: false,
-      isTutorResponseEditable: false
-    },
-    [UserRole.Tutor]: {
-      isIssueCreatable: false,
-      isIssueDeletable: false,
-      isIssueTitleEditable: false,
-      isIssueDescriptionEditable: false,
-      isIssueLabelsEditable: false,
-      isTeamResponseEditable: false,
-      isTesterResponseEditable: false,
-      isTutorResponseEditable: false
-    },
-    [UserRole.Admin]: {
-      isIssueCreatable: false,
-      isIssueDeletable: false,
-      isIssueTitleEditable: false,
-      isIssueDescriptionEditable: true,
-      isIssueLabelsEditable: true,
-      isTeamResponseEditable: true,
-      isTesterResponseEditable: false,
-      isTutorResponseEditable: false
-    }
-  },
-
-  [Phase.phaseTesterResponse]: {
-    [UserRole.Student]: {
-      isIssueCreatable: false,
-      isIssueDeletable: false,
-      isIssueTitleEditable: false,
-      isIssueDescriptionEditable: false,
-      isIssueLabelsEditable: false,
-      isTeamResponseEditable: false,
-      isTesterResponseEditable: true,
-      isTutorResponseEditable: false
-    },
-    [UserRole.Tutor]: {
-      isIssueCreatable: false,
-      isIssueDeletable: false,
-      isIssueTitleEditable: false,
-      isIssueDescriptionEditable: false,
-      isIssueLabelsEditable: false,
-      isTeamResponseEditable: false,
-      isTesterResponseEditable: false,
-      isTutorResponseEditable: false
-    },
-    [UserRole.Admin]: {
-      isIssueCreatable: false,
-      isIssueDeletable: false,
-      isIssueTitleEditable: false,
-      isIssueDescriptionEditable: true,
-      isIssueLabelsEditable: true,
-      isTeamResponseEditable: true,
-      isTesterResponseEditable: true,
-      isTutorResponseEditable: false
-    }
-  },
-
-  /** Phase 3 Permissions **/
-  [Phase.phaseModeration]: {
-    [UserRole.Student]: {
-      isIssueCreatable: false,
-      isIssueDeletable: false,
-      isIssueTitleEditable: false,
-      isIssueDescriptionEditable: false,
-      isIssueLabelsEditable: false,
-      isTeamResponseEditable: false,
-      isTesterResponseEditable: false,
-      isTutorResponseEditable: false
-    },
-    [UserRole.Tutor]: {
-      isIssueCreatable: false,
-      isIssueDeletable: false,
-      isIssueTitleEditable: false,
-      isIssueDescriptionEditable: true,
-      isIssueLabelsEditable: true,
-      isTeamResponseEditable: false,
-      isTesterResponseEditable: false,
-      isTutorResponseEditable: true
-    },
-    [UserRole.Admin]: {
-      isIssueCreatable: false,
-      isIssueDeletable: false,
-      isIssueTitleEditable: false,
-      isIssueDescriptionEditable: true,
-      isIssueLabelsEditable: true,
-      isTeamResponseEditable: false,
-      isTesterResponseEditable: false,
-      isTutorResponseEditable: true
     }
   }
 };

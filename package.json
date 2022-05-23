@@ -1,6 +1,6 @@
 {
-  "name": "CATcher",
-  "version": "3.4.1",
+  "name": "WATcher",
+  "version": "0.0.1",
   "main": "main.js",
   "scripts": {
     "postinstall": "npm run postinstall:electron && electron-builder install-app-deps",
@@ -14,9 +14,9 @@
     "build:prod:web": "npm run codegen:gql && ng build --prod --base-href=https://CATcher-org.github.io/CATcher/",
     "ng:serve": "npm run codegen:gql && ng serve",
     "ng:serve:web": "npm run postinstall:web && npm run ng:serve -- -o",
-    "deploy:staging": "npm run build:staging && ngh --dir=dist --name=CATcher --email=se-edu@comp.nus.edu.sg --no-silent",
+    "deploy:staging": "npm run build:staging && ngh --dir=dist --name=WATcher --email=se-edu@comp.nus.edu.sg --no-silent",
     "ng:serve:test": "npm run postinstall:web && npm run ng:serve -- --configuration=test -o",
-    "deploy:web": "npm run build:prod:web && ngh --dir=dist --name=CATcher --email=se-edu@comp.nus.edu.sg --no-silent",
+    "deploy:web": "npm run build:prod:web && ngh --dir=dist --name=WATcher --email=se-edu@comp.nus.edu.sg --no-silent",
     "electron:serve-tsc": "tsc -p tsconfig-serve.json",
     "electron:serve": "wait-on http-get://localhost:4200/ && npm run electron:serve-tsc && electron . --serve",
     "electron:local": "npm run build:prod && electron .",
@@ -36,7 +36,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "pretty-quick --staged",
-      "pre-push": "npm run lint && npm run test"
+      "pre-push": "npm run lint"
     }
   },
   "dependencies": {
