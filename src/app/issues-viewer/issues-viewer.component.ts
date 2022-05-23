@@ -1,5 +1,4 @@
-import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { MatButtonToggleGroup } from '@angular/material';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { GithubUser } from '../core/models/github-user.model';
 import { GithubService } from '../core/services/github.service';
 import { PermissionService } from '../core/services/permission.service';
