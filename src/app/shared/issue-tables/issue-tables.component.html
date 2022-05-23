@@ -16,7 +16,7 @@
     <mat-header-cell *matHeaderCellDef mat-sort-header> Title </mat-header-cell>
     <mat-cell *matCellDef="let issue">
       <a class="no-underline link-grey-dark" [routerLink]="'issues/' + issue.id">
-        <mat-card>{{ this.fitTitleText(issue.title) }}</mat-card>
+        {{ this.fitTitleText(issue.title) }}
       </a>
     </mat-cell>
   </ng-container>
