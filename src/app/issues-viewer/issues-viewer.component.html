@@ -28,15 +28,22 @@
       </div>
     </mat-grid-tile>
   </mat-grid-list>
-  <div style="display: flex">
+  <div *ngIf="this.tableMode" style="display: flex">
+    <app-issue-tables
+      *ngFor="let assignee of assignees"
+      class="issue-table"
+      [assignee]="assignee"
+      [headers]="this.displayedColumns"
+      [actions]="this.actionButtons"
+    ></app-issue-tables>
+  </div>
+  <div *ngIf="!this.tableMode" style="display: flex">
     <app-card-view
       *ngFor="let assignee of assignees"
       class="issue-table"
-      [author]="assignee"
+      [assignee]="assignee"
       [headers]="this.displayedColumns"
       [actions]="this.actionButtons"
-    >
-      <h1>{{ assignee.login }}</h1>
-    </app-card-view>
+    ></app-card-view>
   </div>
 </div>

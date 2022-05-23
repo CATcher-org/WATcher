@@ -32,7 +32,7 @@ export enum ACTION_BUTTONS {
 export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() headers: string[];
   @Input() actions: ACTION_BUTTONS[];
-  @Input() author?: GithubUser = undefined;
+  @Input() assignee?: GithubUser = undefined;
   @Input() filters?: any = undefined;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -66,7 +66,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.author, this.filters);
+    this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.assignee, this.filters);
     this.issuesPendingDeletion = {};
   }
 
