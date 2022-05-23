@@ -22,7 +22,7 @@ export class IssuesDataTable extends DataSource<Issue> {
     private sort: MatSort,
     private paginator: MatPaginator,
     private displayedColumn: string[],
-    private author?: GithubUser,
+    private assignee?: GithubUser,
     private defaultFilter?: (issue: Issue) => boolean
   ) {
     super();
@@ -41,13 +41,13 @@ export class IssuesDataTable extends DataSource<Issue> {
   }
 
   loadIssues() {
-    const displayDataChanges = [
-      this.issueService.issues$,
-      this.paginator.page,
-      this.sort.sortChange,
-      this.filterChange,
-      this.teamFilterChange
-    ];
+    // For card view has not mat-sort
+    var sortChange = this.sort.sortChange;
+    if (this.sort === undefined) {
+      sortChange = undefined;
+    }
+
+    const displayDataChanges = [this.issueService.issues$, this.paginator.page, sortChange, this.filterChange, this.teamFilterChange];
 
     this.issueService.startPollIssues();
     this.issueSubscription = this.issueService.issues$
@@ -59,19 +59,22 @@ export class IssuesDataTable extends DataSource<Issue> {
               if (this.defaultFilter) {
                 data = data.filter(this.defaultFilter);
               }
-              if (this.author) {
+              // Filter by assignee of issue
+              if (this.assignee) {
                 data = data.filter((issue) => {
                   const githubissue = issue.githubIssue;
                   if (!githubissue.assignees) {
                     return false;
                   } else {
                     return githubissue.assignees.some((x) => {
-                      return x.login === this.author.login;
+                      return x.login === this.assignee.login;
                     });
                   }
                 });
               }
-              data = getSortedData(this.sort, data);
+              if (this.sort !== undefined) {
+                data = getSortedData(this.sort, data);
+              }
               data = this.getFilteredTeamData(data);
               data = applySearchFilter(this.filter, this.displayedColumn, this.issueService, data);
               data = paginateData(this.paginator, data);

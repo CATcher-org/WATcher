@@ -6,6 +6,7 @@ import { IssueComponentsModule } from '../shared/issue/issue-components.module';
 import { LabelDropdownModule } from '../shared/label-dropdown/label-dropdown.module';
 import { SharedModule } from '../shared/shared.module';
 import { ViewIssueModule } from '../shared/view-issue/view-issue.module';
+import { CardViewComponent } from './card-view/card-view.component';
 import { IssueComponent } from './issue/issue.component';
 import { IssuesViewerRoutingModule } from './issues-viewer-routing.module';
 import { IssuesViewerComponent } from './issues-viewer.component';
@@ -22,6 +23,6 @@ import { NewIssueComponent } from './new-issue/new-issue.component';
     IssueTablesModule,
     LabelDropdownModule
   ],
-  declarations: [IssuesViewerComponent, NewIssueComponent, IssueComponent]
+  declarations: [IssuesViewerComponent, NewIssueComponent, IssueComponent, CardViewComponent]
 })
 export class IssuesViewerModule {}

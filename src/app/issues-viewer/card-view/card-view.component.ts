@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
+import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { GithubUser } from '../../core/models/github-user.model';
 import { Issue, STATUS } from '../../core/models/issue.model';
@@ -12,7 +13,7 @@ import { LoggingService } from '../../core/services/logging.service';
 import { PermissionService } from '../../core/services/permission.service';
 import { PhaseService } from '../../core/services/phase.service';
 import { UserService } from '../../core/services/user.service';
-import { IssuesDataTable } from './IssuesDataTable';
+import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
 
 export enum ACTION_BUTTONS {
   VIEW_IN_WEB,
@@ -24,21 +25,22 @@ export enum ACTION_BUTTONS {
 }
 
 @Component({
-  selector: 'app-issue-tables',
-  templateUrl: './issue-tables.component.html',
-  styleUrls: ['./issue-tables.component.css']
+  selector: 'app-card-view',
+  templateUrl: './card-view.component.html',
+  styleUrls: ['./card-view.component.css']
 })
-export class IssueTablesComponent implements OnInit, AfterViewInit {
+export class CardViewComponent implements OnInit {
   @Input() headers: string[];
   @Input() actions: ACTION_BUTTONS[];
   @Input() author?: GithubUser = undefined;
   @Input() filters?: any = undefined;
   @Input() tableview?: boolean = false;
 
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  sort: MatSort;
 
   issues: IssuesDataTable;
+  issues$: Observable<Issue[]>;
   issuesPendingDeletion: { [id: number]: boolean };
 
   public readonly action_buttons = ACTION_BUTTONS;
@@ -58,7 +60,11 @@ export class IssueTablesComponent implements OnInit, AfterViewInit {
     private errorHandlingService: ErrorHandlingService,
     private loggingService: LoggingService,
     private dialogService: DialogService
-  ) {}
+  ) {
+    this.sort = new MatSort();
+    this.sort.direction = 'asc';
+    this.sort.active = 'id';
+  }
 
   ngOnInit() {
     this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.author, this.filters);
@@ -68,6 +74,13 @@ export class IssueTablesComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.issues.loadIssues();
+      this.issues$ = this.issues.connect();
+    });
+  }
+
+  ngOnDestroy(): void {
+    setTimeout(() => {
+      this.issues.disconnect();
     });
   }
 

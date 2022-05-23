@@ -15,7 +15,9 @@
   <ng-container matColumnDef="title">
     <mat-header-cell *matHeaderCellDef mat-sort-header> Title </mat-header-cell>
     <mat-cell *matCellDef="let issue">
-      <a class="no-underline link-grey-dark" [routerLink]="'issues/' + issue.id"> {{ this.fitTitleText(issue.title) }} </a>
+      <a class="no-underline link-grey-dark" [routerLink]="'issues/' + issue.id">
+        <mat-card>{{ this.fitTitleText(issue.title) }}</mat-card>
+      </a>
     </mat-cell>
   </ng-container>
 
@@ -260,6 +262,7 @@
     style="cursor: pointer"
   ></mat-row>
 </mat-table>
+
 <mat-card *ngIf="this.issues.isLoading$ | async" style="display: flex; justify-content: center; align-items: center">
   <mat-progress-spinner color="primary" mode="indeterminate" diameter="50" strokeWidth="5"></mat-progress-spinner>
 </mat-card>

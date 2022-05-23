@@ -12,7 +12,7 @@ import { ACTION_BUTTONS, IssueTablesComponent } from '../shared/issue-tables/iss
   styleUrls: ['./issues-viewer.component.css']
 })
 export class IssuesViewerComponent implements OnInit {
-  readonly displayedColumns = [TABLE_COLUMNS.ID, TABLE_COLUMNS.TITLE, TABLE_COLUMNS.ACTIONS];
+  readonly displayedColumns = [TABLE_COLUMNS.TITLE];
   readonly actionButtons: ACTION_BUTTONS[] = [ACTION_BUTTONS.DELETE_ISSUE, ACTION_BUTTONS.FIX_ISSUE];
   assignees: GithubUser[];
 

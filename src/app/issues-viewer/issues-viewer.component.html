@@ -29,7 +29,7 @@
     </mat-grid-tile>
   </mat-grid-list>
   <div style="display: flex">
-    <app-issue-tables
+    <app-card-view
       *ngFor="let assignee of assignees"
       class="issue-table"
       [author]="assignee"
@@ -37,6 +37,6 @@
       [actions]="this.actionButtons"
     >
       <h1>{{ assignee.login }}</h1>
-    </app-issue-tables>
+    </app-card-view>
   </div>
 </div>
