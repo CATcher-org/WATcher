@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
+import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { GithubUser } from '../../core/models/github-user.model';
@@ -201,5 +202,25 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
         this.deleteIssue(id, event);
       }
     });
+  }
+
+  isIssueOpen(issue: Issue) {
+    return issue.githubIssue.state === 'OPEN';
+  }
+
+  /**
+   * Truncates description to fit in card content.
+   * @param description - Description of Issue that is to be displayed.
+   */
+  fitDescriptionText(description: string): string {
+    // Arbitrary Length of Characters beyond which an overflow occurs.
+    const MAX_CHARACTER_LENGTH = 72;
+    const ELLIPSES = '...';
+
+    return description.slice(0, MAX_CHARACTER_LENGTH) + ELLIPSES;
+  }
+
+  readableDateFormat(date: string) {
+    return moment(date).format('lll');
   }
 }
