@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, Sort, SortDirection } from '@angular/material';
+import { MatPaginator, MatSort } from '@angular/material';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { GithubUser } from '../../core/models/github-user.model';
