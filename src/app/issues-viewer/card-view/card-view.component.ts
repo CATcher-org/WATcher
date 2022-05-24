@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator, MatSort, Sort, SortDirection } from '@angular/material';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { GithubUser } from '../../core/models/github-user.model';
@@ -36,7 +36,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() filters?: any = undefined;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  sort: MatSort;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
 
   issues: IssuesDataTable;
   issues$: Observable<Issue[]>;
@@ -59,11 +59,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
     private errorHandlingService: ErrorHandlingService,
     private loggingService: LoggingService,
     private dialogService: DialogService
-  ) {
-    this.sort = new MatSort();
-    this.sort.direction = 'asc';
-    this.sort.active = 'id';
-  }
+  ) {}
 
   ngOnInit() {
     this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.assignee, this.filters);
@@ -205,5 +201,10 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
         this.deleteIssue(id, event);
       }
     });
+  }
+
+  sortIssues(sort: Sort) {
+    this.sort.direction = sort.direction;
+    this.sort.active = sort.active;
   }
 }

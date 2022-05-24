@@ -2,6 +2,22 @@
   {{ this.assignee.login }}
 </h1>
 
+<button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Menu">
+  <mat-icon>more_vert</mat-icon>
+</button>
+<mat-menu #menu="matMenu" matSort (matSortChange)="sortIssues($event)">
+  <span mat-sort-header="id">
+    <button mat-menu-item>
+      <span>Sort by ID</span>
+    </button>
+  </span>
+  <span mat-sort-header="title">
+    <button mat-menu-item>
+      <span>Sort by Title</span>
+    </button>
+  </span>
+</mat-menu>
+
 <div *ngFor="let issue of this.issues$ | async; index as i">
   <a class="no-underline link-grey-dark" [routerLink]="'issues/' + issue.id">
     <mat-card>
