@@ -202,9 +202,4 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
   }
-
-  sortIssues(sort: Sort) {
-    this.sort.direction = sort.direction;
-    this.sort.active = sort.active;
-  }
 }

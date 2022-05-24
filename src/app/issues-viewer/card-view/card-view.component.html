@@ -3,19 +3,15 @@
 </h1>
 
 <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Menu">
-  <mat-icon>more_vert</mat-icon>
+  <mat-icon>more_horiz</mat-icon>
 </button>
-<mat-menu #menu="matMenu" matSort (matSortChange)="sortIssues($event)">
-  <span mat-sort-header="id">
-    <button mat-menu-item>
-      <span>Sort by ID</span>
-    </button>
-  </span>
-  <span mat-sort-header="title">
-    <button mat-menu-item>
-      <span>Sort by Title</span>
-    </button>
-  </span>
+<mat-menu #menu="matMenu" matSort [matSortDisableClear]="true">
+  <button mat-menu-item>
+    <span mat-sort-header="id">Sort by ID</span>
+  </button>
+  <button mat-menu-item>
+    <span mat-sort-header="title">Sort by Title</span>
+  </button>
 </mat-menu>
 
 <div *ngFor="let issue of this.issues$ | async; index as i">
