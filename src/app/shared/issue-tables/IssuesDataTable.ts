@@ -42,12 +42,12 @@ export class IssuesDataTable extends DataSource<Issue> {
 
   loadIssues() {
     // If no pagination and sorting
-    let sortChange = undefined;
+    let sortChange;
     if (this.sort !== undefined) {
       sortChange = this.sort.sortChange;
     }
 
-    let page = undefined;
+    let page;
     if (this.paginator !== undefined) {
       page = this.paginator.page;
     }

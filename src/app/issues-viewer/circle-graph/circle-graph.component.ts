@@ -1,9 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { GithubUser } from '../../core/models/github-user.model';
 import { Issue } from '../../core/models/issue.model';
 import { IssueService } from '../../core/services/issue.service';
-import { TABLE_COLUMNS } from '../../shared/issue-tables/issue-tables-columns';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
 
 @Component({
@@ -11,7 +10,7 @@ import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
   templateUrl: './circle-graph.component.html',
   styleUrls: ['./circle-graph.component.css']
 })
-export class CircleGraphComponent implements OnInit {
+export class CircleGraphComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() assignee?: GithubUser = undefined;
   @Input() headers: string[];
   @Input() filters?: any = undefined;
