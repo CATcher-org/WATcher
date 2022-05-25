@@ -11,6 +11,8 @@ import { IssueComponent } from './issue/issue.component';
 import { IssuesViewerRoutingModule } from './issues-viewer-routing.module';
 import { IssuesViewerComponent } from './issues-viewer.component';
 import { NewIssueComponent } from './new-issue/new-issue.component';
+import { CircleGraphComponent } from './circle-graph/circle-graph.component';
+import { CircleComponent } from './circle/circle.component';
 
 @NgModule({
   imports: [
@@ -23,6 +25,6 @@ import { NewIssueComponent } from './new-issue/new-issue.component';
     IssueTablesModule,
     LabelDropdownModule
   ],
-  declarations: [IssuesViewerComponent, NewIssueComponent, IssueComponent, CardViewComponent]
+  declarations: [IssuesViewerComponent, NewIssueComponent, IssueComponent, CardViewComponent, CircleGraphComponent, CircleComponent]
 })
 export class IssuesViewerModule {}

@@ -41,19 +41,28 @@ export class IssuesDataTable extends DataSource<Issue> {
   }
 
   loadIssues() {
-    // For card view has not mat-sort
-    let sortChange = this.sort.sortChange;
-    if (this.sort === undefined) {
-      sortChange = undefined;
+    // If no pagination and sorting
+    let sortChange = undefined;
+    if (this.sort !== undefined) {
+      sortChange = this.sort.sortChange;
     }
 
-    const displayDataChanges = [this.issueService.issues$, this.paginator.page, sortChange, this.filterChange, this.teamFilterChange];
+    let page = undefined;
+    if (this.paginator !== undefined) {
+      page = this.paginator.page;
+    }
+
+    const displayDataChanges = [this.issueService.issues$, page, sortChange, this.filterChange, this.teamFilterChange].filter(
+      (x) => x !== undefined
+    );
 
     this.issueService.startPollIssues();
     this.issueSubscription = this.issueService.issues$
       .pipe(
         flatMap(() => {
+          // merge creates an observable from values that changes display
           return merge(...displayDataChanges).pipe(
+            // maps each change in display value to new issue ordering or filtering
             map(() => {
               let data = <Issue[]>Object.values(this.issueService.issues$.getValue()).reverse();
               if (this.defaultFilter) {
@@ -77,7 +86,9 @@ export class IssuesDataTable extends DataSource<Issue> {
               }
               data = this.getFilteredTeamData(data);
               data = applySearchFilter(this.filter, this.displayedColumn, this.issueService, data);
-              data = paginateData(this.paginator, data);
+              if (this.paginator !== undefined) {
+                data = paginateData(this.paginator, data);
+              }
 
               return data;
             })
