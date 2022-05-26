@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Node } from '../../d3';
 
 @Component({
-  selector: '[nodeVisual]',
+  selector: 'app-d3-node-visual',
   template: `
     <svg:g [attr.transform]="'translate(' + node.x + ',' + node.y + ')'">
       <svg:circle cx="0" cy="0" r="50"></svg:circle>
@@ -13,5 +13,5 @@ import { Node } from '../../d3';
   `
 })
 export class NodeVisualComponent {
-  @Input('nodeVisual') node: Node;
+  @Input() node: Node;
 }

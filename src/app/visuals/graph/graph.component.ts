@@ -1,8 +1,8 @@
-import { Component, Input } from '@angular/core';
-import { D3Service, ForceDirectedGraph, Node } from '../../d3';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { D3Service, ForceDirectedGraph } from '../../d3';
 
 @Component({
-  selector: 'graph',
+  selector: 'app-d3-graph',
   template: `
     <svg #svg [attr.width]="_options.width" [attr.height]="_options.height">
       <g>
@@ -13,11 +13,13 @@ import { D3Service, ForceDirectedGraph, Node } from '../../d3';
   `,
   styleUrls: ['./graph.component.css']
 })
-export class GraphComponent {
-  @Input('nodes') nodes;
-  @Input('links') links;
+export class GraphComponent implements OnInit, AfterViewInit {
+  @Input() nodes;
+  @Input() links;
 
   graph: ForceDirectedGraph;
+
+  private _options: { width; height } = { width: 800, height: 600 };
 
   constructor(private d3Service: D3Service) {}
 
@@ -29,8 +31,6 @@ export class GraphComponent {
   ngAfterViewInit() {
     this.graph.initSimulation(this.options);
   }
-
-  private _options: { width; height } = { width: 800, height: 600 };
 
   get options() {
     return (this._options = {

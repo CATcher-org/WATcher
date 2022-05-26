@@ -1,3 +1,19 @@
+const CONFIG = {
+  N: 100,
+  SPECTRUM: [
+    // "rgb(222,237,250)"
+    'rgb(176,212,243)',
+    'rgb(128,186,236)',
+    'rgb(77,158,228)',
+    'rgb(38,137,223)',
+    'rgb(0,116,217)',
+    'rgb(0,106,197)'
+    // "rgb(0,94,176)"
+    // "rgb(0,82,154)"
+    // "rgb(0,60,113)"
+  ]
+};
+
 export class Node implements d3.SimulationNodeDatum {
   // optional - defining optional implementation properties - required for relevant typing assistance
   index?: number;
@@ -9,15 +25,15 @@ export class Node implements d3.SimulationNodeDatum {
   fy?: number | null;
 
   id: string;
-  linkCount: number = 0;
+  linkCount = 0;
+
+  normal() {
+    return Math.sqrt(this.linkCount / CONFIG.N);
+  }
 
   constructor(id) {
     this.id = id;
   }
-
-  normal = () => {
-    return Math.sqrt(this.linkCount / APP_CONFIG.N);
-  };
 
   get r() {
     return 50 * this.normal() + 10;
@@ -28,7 +44,7 @@ export class Node implements d3.SimulationNodeDatum {
   }
 
   get color() {
-    let index = Math.floor(APP_CONFIG.SPECTRUM.length * this.normal());
-    return APP_CONFIG.SPECTRUM[index];
+    const index = Math.floor(CONFIG.SPECTRUM.length * this.normal());
+    return CONFIG.SPECTRUM[index];
   }
 }
