@@ -20,7 +20,7 @@ export enum ViewMode {
 })
 export class IssuesViewerComponent implements OnInit {
   readonly Views = ViewMode; // for use in html
-  readonly displayedColumns = [TABLE_COLUMNS.TITLE];
+  readonly displayedColumns = [TABLE_COLUMNS.TITLE, TABLE_COLUMNS.ASSIGNEE, TABLE_COLUMNS.LABELS];
   readonly actionButtons: ACTION_BUTTONS[] = [ACTION_BUTTONS.DELETE_ISSUE, ACTION_BUTTONS.FIX_ISSUE];
 
   // For circles

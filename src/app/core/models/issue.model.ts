@@ -37,6 +37,7 @@ export class Issue {
 
   /** Depending on the phase, assignees attribute can be derived from Github's assignee feature OR from the Github's issue description */
   assignees?: string[];
+  labels?: string[];
 
   /** Fields derived from parsing of Github's issue description */
   duplicateOf?: number;
@@ -113,6 +114,9 @@ export class Issue {
     this.hiddenDataInDescription = new HiddenData(githubIssue.body);
     this.description = Issue.updateDescription(this.hiddenDataInDescription.originalStringWithoutHiddenData);
     this.githubIssue = githubIssue;
+
+    this.assignees = githubIssue.assignees.map((assignee) => assignee.login);
+    this.labels = githubIssue.labels.map((label) => label.name);
 
     /** Fields derived from Labels */
     this.severity = githubIssue.findLabel(GithubLabel.LABELS.severity);
