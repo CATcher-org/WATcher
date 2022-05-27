@@ -12,7 +12,7 @@ export function applySearchFilter(filter: string, displayedColumn: string[], iss
   const result = data.slice().filter((issue: Issue) => {
     for (const column of displayedColumn) {
       switch (column) {
-        case TABLE_COLUMNS.LABELS:
+        case TABLE_COLUMNS.LABEL:
           if (matchesLabel(issue.labels, searchKey)) {
             return true;
           }
