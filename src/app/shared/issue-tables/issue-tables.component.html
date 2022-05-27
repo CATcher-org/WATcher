@@ -95,6 +95,19 @@
     </mat-cell>
   </ng-container>
 
+  <!--Label Column-->
+  <ng-container matColumnDef="labels">
+    <mat-header-cell mat-header-cell *matHeaderCellDef mat-sort-header> Labels </mat-header-cell>
+    <mat-cell *matCellDef="let issue">
+      <span (click)="$event.stopPropagation()" style="cursor: default" *ngIf="issue.labels.length !== 0">
+        {{ issue.labels.join(', ') }}
+      </span>
+      <span *ngIf="issue.labels.length === 0" style="margin-left: 5%">
+        <mat-icon matTooltip="No labels" matTooltipPosition="above" style="color: #ffab40"> warning </mat-icon>
+      </span>
+    </mat-cell>
+  </ng-container>
+
   <!--Assignee Column-->
   <ng-container matColumnDef="assignees">
     <mat-header-cell mat-header-cell *matHeaderCellDef mat-sort-header> Assignees </mat-header-cell>
@@ -103,9 +116,7 @@
         {{ issue.assignees.join(', ') }}
       </span>
       <span *ngIf="issue.assignees.length === 0" style="margin-left: 5%">
-        <mat-icon matTooltip="We strongly recommend assigning all issues to someone" matTooltipPosition="above" style="color: #ffab40">
-          warning
-        </mat-icon>
+        <mat-icon matTooltip="No assignees" matTooltipPosition="above" style="color: #ffab40"> warning </mat-icon>
       </span>
     </mat-cell>
   </ng-container>
