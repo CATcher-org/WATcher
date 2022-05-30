@@ -13,6 +13,7 @@ import { IssueComponent } from './issue/issue.component';
 import { IssuesViewerRoutingModule } from './issues-viewer-routing.module';
 import { IssuesViewerComponent } from './issues-viewer.component';
 import { NewIssueComponent } from './new-issue/new-issue.component';
+import { TimelineComponent } from './timeline/timeline.component';
 
 @NgModule({
   imports: [
@@ -25,6 +26,14 @@ import { NewIssueComponent } from './new-issue/new-issue.component';
     IssueTablesModule,
     LabelDropdownModule
   ],
-  declarations: [IssuesViewerComponent, NewIssueComponent, IssueComponent, CardViewComponent, CircleGraphComponent, CircleComponent]
+  declarations: [
+    IssuesViewerComponent,
+    NewIssueComponent,
+    IssueComponent,
+    CardViewComponent,
+    CircleGraphComponent,
+    CircleComponent,
+    TimelineComponent
+  ]
 })
 export class IssuesViewerModule {}

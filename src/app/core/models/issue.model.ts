@@ -24,6 +24,8 @@ export class Issue {
   title: string;
   description: string;
   hiddenDataInDescription: HiddenData;
+  updated_at: string;
+  closed_at: string;
 
   /** Fields derived from Labels */
   severity: string;
@@ -110,6 +112,8 @@ export class Issue {
     this.globalId = githubIssue.id;
     this.id = +githubIssue.number;
     this.created_at = moment(githubIssue.created_at).format('lll');
+    this.updated_at = moment(githubIssue.updated_at).format('lll');
+    this.closed_at = moment(githubIssue.closed_at).format('lll');
     this.title = githubIssue.title;
     this.hiddenDataInDescription = new HiddenData(githubIssue.body);
     this.description = Issue.updateDescription(this.hiddenDataInDescription.originalStringWithoutHiddenData);

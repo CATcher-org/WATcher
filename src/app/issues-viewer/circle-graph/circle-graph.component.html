@@ -1,1 +1,2 @@
-<app-circle *ngFor="let issue of this.issues$ | async" [issue]="issue" [color]="color !== undefined ? color : undefined"></app-circle>
+<!-- <app-circle *ngFor="let issue of this.issues$ | async" [issue]="issue" [color]="color !== undefined ? color : undefined"></app-circle> -->
+<app-timeline [data]="timelineData"></app-timeline>

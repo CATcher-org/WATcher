@@ -1,7 +1,10 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import * as moment from 'moment';
+import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { GithubUser } from '../../core/models/github-user.model';
 import { Issue } from '../../core/models/issue.model';
+import { TimelineItem } from '../../core/models/timeline-item.model';
 import { IssueService } from '../../core/services/issue.service';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
 
@@ -19,6 +22,9 @@ export class CircleGraphComponent implements OnInit, AfterViewInit, OnDestroy {
   issues: IssuesDataTable;
   issues$: Observable<Issue[]>;
 
+  timelineData: TimelineItem[];
+  timelineSubscription: Subscription;
+
   constructor(public issueService: IssueService) {}
 
   ngOnInit() {
@@ -29,6 +35,7 @@ export class CircleGraphComponent implements OnInit, AfterViewInit, OnDestroy {
     setTimeout(() => {
       this.issues.loadIssues();
       this.issues$ = this.issues.connect();
+      this.updateTimeline();
     });
   }
 
@@ -36,5 +43,28 @@ export class CircleGraphComponent implements OnInit, AfterViewInit, OnDestroy {
     setTimeout(() => {
       this.issues.disconnect();
     });
+  }
+
+  updateTimeline() {
+    // Create new observable of timeline data from issue observable
+    this.timelineSubscription = this.issues$
+      .pipe(
+        map((issues) => {
+          return issues.map(
+            (issue) =>
+              <TimelineItem>{
+                times: [
+                  { starting_time: Number(moment(issue.created_at).format('x')), ending_time: Number(moment(issue.updated_at).format('x')) }
+                ]
+              }
+          );
+        })
+      )
+      // Subscribe to changes of new observable
+      .subscribe((data) => (this.timelineData = data));
+  }
+
+  disconnectTimeline() {
+    this.timelineSubscription.unsubscribe();
   }
 }
