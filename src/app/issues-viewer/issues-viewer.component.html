@@ -36,15 +36,7 @@
       </div>
     </mat-grid-tile>
   </mat-grid-list>
-  <div *ngIf="this.currentView === Views.Cards" style="display: flex">
-    <app-circle-graph
-      *ngFor="let assignee of assignees; index as i"
-      class="issue-table"
-      [assignee]="assignee"
-      [headers]="this.displayedColumns"
-      [color]="colors[i]"
-    ></app-circle-graph>
-  </div>
+
   <div *ngIf="this.currentView === Views.Table" style="display: flex">
     <app-issue-tables
       *ngFor="let assignee of assignees"
