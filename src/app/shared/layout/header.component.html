@@ -20,14 +20,14 @@
     <mat-menu #menu="matMenu">
       <button
         mat-menu-item
-        *ngFor="let openPhase of this.phaseService.sessionData.sessionRepo.phase"
-        (click)="this.routeToSelectedPhase(openPhase)"
+        *ngFor="let sessionRepo of this.phaseService.sessionData.sessionRepo"
+        (click)="this.routeToSelectedPhase(sessionRepo.phase)"
       >
         <span>
-          <mat-icon [ngStyle]="{ color: 'green', visibility: this.phaseService.currentPhase === openPhase ? 'visible' : 'hidden' }"
+          <mat-icon [ngStyle]="{ color: 'green', visibility: this.phaseService.currentPhase === sessionRepo.phase ? 'visible' : 'hidden' }"
             >done</mat-icon
           >
-          {{ this.getPhaseDescription(openPhase) }}
+          {{ this.getPhaseDescription(sessionRepo.phase) }}
         </span>
       </button>
     </mat-menu>

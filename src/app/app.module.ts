@@ -12,6 +12,7 @@ import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import 'reflect-metadata';
 import graphqlTypes from '../../graphql/graphql-types';
 import '../polyfills';
+import { ActivityDashboardComponent } from './activity-dashboard/activity-dashboard.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthModule } from './auth/auth.module';
@@ -41,7 +42,14 @@ import { markedOptionsFactory } from './shared/lib/marked';
 import { SharedModule } from './shared/shared.module';
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, UserConfirmationComponent, LabelDefinitionPopupComponent, SessionFixConfirmationComponent],
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    UserConfirmationComponent,
+    LabelDefinitionPopupComponent,
+    SessionFixConfirmationComponent,
+    ActivityDashboardComponent
+  ],
   imports: [
     BrowserModule,
     PhaseTesterResponseModule,
