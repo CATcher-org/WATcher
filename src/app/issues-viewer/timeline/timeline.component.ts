@@ -1,8 +1,8 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import * as d3 from 'd3';
-import * as d3Timelines from 'd3-timelines';
 import * as d3Time from 'd3-time';
 import * as d3TimeFormat from 'd3-time-format';
+import * as d3Timelines from 'd3-timelines';
 import { TimelineItem } from '../../core/models/timeline-item.model';
 
 @Component({
