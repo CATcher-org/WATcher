@@ -21,6 +21,18 @@ const PERMISSIONS = {
       isTesterResponseEditable: false,
       isTutorResponseEditable: false
     }
+  },
+  [Phase.activityDashboard]: {
+    [UserRole.Student]: {
+      isIssueCreatable: true,
+      isIssueDeletable: true,
+      isIssueTitleEditable: true,
+      isIssueDescriptionEditable: true,
+      isIssueLabelsEditable: true,
+      isTeamResponseEditable: false,
+      isTesterResponseEditable: false,
+      isTutorResponseEditable: false
+    }
   }
 };
 
