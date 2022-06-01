@@ -55,7 +55,8 @@ export class CircleGraphComponent implements OnInit, AfterViewInit, OnDestroy {
               <TimelineItem>{
                 times: [
                   { starting_time: Number(moment(issue.created_at).format('x')), ending_time: Number(moment(issue.updated_at).format('x')) }
-                ]
+                ],
+                label: issue.title
               }
           );
         })
