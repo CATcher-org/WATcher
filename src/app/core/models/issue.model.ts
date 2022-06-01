@@ -24,6 +24,8 @@ export class Issue {
   title: string;
   description: string;
   hiddenDataInDescription: HiddenData;
+  updated_at: string;
+  closed_at: string;
 
   /** Fields derived from Labels */
   severity: string;
@@ -37,6 +39,7 @@ export class Issue {
 
   /** Depending on the phase, assignees attribute can be derived from Github's assignee feature OR from the Github's issue description */
   assignees?: string[];
+  labels?: string[];
 
   /** Fields derived from parsing of Github's issue description */
   duplicateOf?: number;
@@ -109,10 +112,15 @@ export class Issue {
     this.globalId = githubIssue.id;
     this.id = +githubIssue.number;
     this.created_at = moment(githubIssue.created_at).format('lll');
+    this.updated_at = moment(githubIssue.updated_at).format('lll');
+    this.closed_at = moment(githubIssue.closed_at).format('lll');
     this.title = githubIssue.title;
     this.hiddenDataInDescription = new HiddenData(githubIssue.body);
     this.description = Issue.updateDescription(this.hiddenDataInDescription.originalStringWithoutHiddenData);
     this.githubIssue = githubIssue;
+
+    this.assignees = githubIssue.assignees.map((assignee) => assignee.login);
+    this.labels = githubIssue.labels.map((label) => label.name);
 
     /** Fields derived from Labels */
     this.severity = githubIssue.findLabel(GithubLabel.LABELS.severity);

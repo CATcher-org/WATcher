@@ -6,6 +6,7 @@ export enum TABLE_COLUMNS {
   SEVERITY = 'severity',
   RESPONSE = 'responseTag',
   TESTER_DISAGREE = 'testerDisagree',
+  LABEL = 'labels',
   ASSIGNEE = 'assignees',
   DUPLICATED_ISSUES = 'duplicatedIssues',
   TODO = 'Todo Remaining',

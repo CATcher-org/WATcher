@@ -16,6 +16,7 @@ export class GithubIssue {
   state: IssueState;
   title: string;
   updated_at: string;
+  closed_at: string;
   url: string;
   user: {
     // Author of the issue

@@ -12,6 +12,11 @@ export function applySearchFilter(filter: string, displayedColumn: string[], iss
   const result = data.slice().filter((issue: Issue) => {
     for (const column of displayedColumn) {
       switch (column) {
+        case TABLE_COLUMNS.LABEL:
+          if (matchesLabel(issue.labels, searchKey)) {
+            return true;
+          }
+          break;
         case TABLE_COLUMNS.ASSIGNEE:
           if (matchesAssignee(issue.assignees, searchKey)) {
             return true;
@@ -45,7 +50,18 @@ function duplicatedIssuesContainsSearchKey(duplicatedIssues: Issue[], searchKey:
 function matchesAssignee(assignees: string[], searchKey: string): boolean {
   for (const assignee of assignees) {
     const lowerCaseAssignee = assignee.toLowerCase();
-    return containsSearchKey(lowerCaseAssignee, searchKey);
+    if (containsSearchKey(lowerCaseAssignee, searchKey)) {
+      return true;
+    }
+  }
+}
+
+function matchesLabel(labels: string[], searchKey: string): boolean {
+  for (const label of labels) {
+    const lowerCaseLabel = label.toLowerCase();
+    if (containsSearchKey(lowerCaseLabel, searchKey)) {
+      return true;
+    }
   }
 }
 
