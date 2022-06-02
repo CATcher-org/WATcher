@@ -6,13 +6,10 @@ import { GithubUser } from '../models/github-user.model';
 import { GithubComment } from '../models/github/github-comment.model';
 import RestGithubIssueFilter from '../models/github/github-issue-filter.model';
 import { GithubIssue } from '../models/github/github-issue.model';
-import { GithubLabel } from '../models/github/github-label.model';
 import { HiddenData } from '../models/hidden-data.model';
-import { IssueDispute } from '../models/issue-dispute.model';
 import { Issue, Issues, IssuesFilter, STATUS } from '../models/issue.model';
 import { Phase } from '../models/phase.model';
 import { appVersion } from './application.service';
-import { DataService } from './data.service';
 import { ElectronService } from './electron.service';
 import { GithubService } from './github.service';
 import { PhaseService } from './phase.service';
@@ -42,8 +39,7 @@ export class IssueService {
     private githubService: GithubService,
     private userService: UserService,
     private phaseService: PhaseService,
-    private electronService: ElectronService,
-    private dataService: DataService
+    private electronService: ElectronService
   ) {
     this.issues$ = new BehaviorSubject(new Array<Issue>());
   }
@@ -242,14 +238,6 @@ export class IssueService {
    */
   private createGithubIssueDescription(issue: Issue): string {
     return issue.createGithubIssueDescription();
-  }
-
-  private getIssueDisputeString(issueDisputes: IssueDispute[]): string {
-    let issueDisputeString = '';
-    for (const issueDispute of issueDisputes) {
-      issueDisputeString += issueDispute.toString();
-    }
-    return issueDisputeString;
   }
 
   deleteIssue(id: number): Observable<Issue> {
@@ -481,10 +469,6 @@ export class IssueService {
 
   private createLabel(prepend: string, value: string) {
     return `${prepend}.${value}`;
-  }
-
-  private extractTeamIdFromGithubIssue(githubIssue: GithubIssue): string {
-    return githubIssue.findLabel(GithubLabel.LABELS.tutorial).concat('-').concat(githubIssue.findLabel(GithubLabel.LABELS.team));
   }
 
   private createIssueModel(githubIssue: GithubIssue): Issue {
