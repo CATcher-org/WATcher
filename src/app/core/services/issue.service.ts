@@ -157,12 +157,12 @@ export class IssueService {
   }
 
   updateIssueWithAssigneeCheck(issue: Issue): Observable<Issue> {
-    const assignees = this.phaseService.currentPhase === Phase.phaseModeration ? [] : issue.assignees;
+    const assignees = issue.assignees;
     return this.githubService.areUsersAssignable(assignees).pipe(flatMap(() => this.updateIssue(issue)));
   }
 
   updateIssue(issue: Issue): Observable<Issue> {
-    const assignees = this.phaseService.currentPhase === Phase.phaseModeration ? [] : issue.assignees;
+    const assignees = issue.assignees;
     return this.githubService
       .updateIssue(issue.id, issue.title, this.createGithubIssueDescription(issue), this.createLabelsForIssue(issue), assignees)
       .pipe(
@@ -241,16 +241,7 @@ export class IssueService {
    *
    */
   private createGithubIssueDescription(issue: Issue): string {
-    switch (this.phaseService.currentPhase) {
-      case Phase.phaseModeration:
-        return (
-          `# Issue Description\n${issue.createGithubIssueDescription()}\n# Team\'s Response\n${issue.teamResponse}\n ` +
-          // `## State the duplicated issue here, if any\n${issue.duplicateOf ? `Duplicate of #${issue.duplicateOf}` : `--`}\n` +
-          `# Disputes\n\n${this.getIssueDisputeString(issue.issueDisputes)}\n`
-        );
-      default:
-        return issue.createGithubIssueDescription();
-    }
+    return issue.createGithubIssueDescription();
   }
 
   private getIssueDisputeString(issueDisputes: IssueDispute[]): string {
@@ -450,7 +441,7 @@ export class IssueService {
   private createLabelsForIssue(issue: Issue): string[] {
     const result = [];
 
-    if (this.phaseService.currentPhase !== Phase.issuesViewer && this.phaseService.currentPhase !== Phase.phaseTesterResponse) {
+    if (this.phaseService.currentPhase !== Phase.issuesViewer) {
       const studentTeam = issue.teamAssigned.id.split('-');
       result.push(this.createLabel('tutorial', `${studentTeam[0]}-${studentTeam[1]}`), this.createLabel('team', studentTeam[2]));
     }
@@ -500,12 +491,6 @@ export class IssueService {
     switch (this.phaseService.currentPhase) {
       case Phase.issuesViewer:
         return Issue.createPhaseBugReportingIssue(githubIssue);
-      case Phase.phaseTeamResponse:
-        return Issue.createPhaseTeamResponseIssue(githubIssue, this.dataService.getTeam(this.extractTeamIdFromGithubIssue(githubIssue)));
-      case Phase.phaseTesterResponse:
-        return Issue.createPhaseTesterResponseIssue(githubIssue);
-      case Phase.phaseModeration:
-        return Issue.createPhaseModerationIssue(githubIssue, this.dataService.getTeam(this.extractTeamIdFromGithubIssue(githubIssue)));
       default:
         return;
     }
