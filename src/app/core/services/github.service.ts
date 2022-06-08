@@ -376,6 +376,22 @@ export class GithubService {
     );
   }
 
+  fetchAllEventsForRepo(): Observable<any[]> {
+    console.log(ORG_NAME + '/' + REPO);
+
+    return from(
+      octokit.activity.listRepoEvents({
+        owner: ORG_NAME,
+        repo: REPO
+      })
+    ).pipe(
+      map((response) => {
+        return response['data'];
+      }),
+      catchError((err) => throwError('Failed to fetch events for repo.'))
+    );
+  }
+
   fetchDataFile(): Observable<{}> {
     return from(
       octokit.repos.getContents({ owner: MOD_ORG, repo: DATA_REPO, path: 'data.csv', headers: GithubService.IF_NONE_MATCH_EMPTY })
