@@ -376,19 +376,36 @@ export class GithubService {
     );
   }
 
-  fetchAllEventsForRepo(): Observable<any[]> {
+  fetchEventsForRepoCall(pageNumber: number): Observable<GithubResponse<any[]>> {
     console.log(ORG_NAME + '/' + REPO);
 
-    return from(
+    return <Observable<GithubResponse<any[]>>>from(
       octokit.activity.listRepoEvents({
         owner: ORG_NAME,
-        repo: REPO
+        repo: REPO,
+        page: pageNumber
       })
-    ).pipe(
-      map((response) => {
-        return response['data'];
+    ).pipe(catchError((err) => throwError('Failed to fetch events for repo.')));
+  }
+
+  /**
+   * Will make multiple request to Github as per necessary and determine whether a graphql fetch is required.
+   */
+  fetchAllEventsForRepo(): Observable<any[]> {
+    let responseInFirstPage: GithubResponse<any[]>;
+    return this.fetchEventsForRepoCall(1).pipe(
+      map((response: GithubResponse<any[]>) => {
+        responseInFirstPage = response;
+        return getNumberOfPages(response);
       }),
-      catchError((err) => throwError('Failed to fetch events for repo.'))
+      flatMap((numOfPages: number) => {
+        const apiCalls: Observable<GithubResponse<any[]>>[] = [];
+        for (let i = 1; i <= numOfPages; i++) {
+          apiCalls.push(this.fetchEventsForRepoCall(i));
+        }
+        return apiCalls.length === 0 ? of([]) : forkJoin(apiCalls);
+      }),
+      map((responseArray) => responseArray.map((x) => x['data']))
     );
   }
 
