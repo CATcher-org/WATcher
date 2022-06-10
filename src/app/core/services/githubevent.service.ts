@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { flatMap, map } from 'rxjs/operators';
+import { GithubEvent } from '../models/github/github-event.model';
 import { GithubService } from './github.service';
 import { IssueService } from './issue.service';
 
@@ -8,7 +9,7 @@ import { IssueService } from './issue.service';
   providedIn: 'root'
 })
 export class GithubEventService {
-  public events: any;
+  public events: Observable<GithubEvent[]>;
 
   private lastModified: string; // The timestamp when the title or label of an issue is changed
   private lastModifiedComment: string; // The timestamp when the comment of an issue is changed
@@ -69,27 +70,9 @@ export class GithubEventService {
     this.setLastModifiedCommentTime(undefined);
   }
 
-  getEvents() {
-    return this.githubService.fetchAllEventsForRepo();
-    // let count = 0;
-    // this.githubService.fetchAllEventsForRepo().pipe(
-    //   map(x =>        // GithubResponse[] layer
-    //     {
-    //       console.log(x);
-    //       x.forEach(
-
-    //     y => {      // GithubResponse
-    //       y['data'].forEach(
-    //         z => {
-    //           count = 100;
-    //           if (z['actor'] == 'gycgabriel') {
-    //             count++;
-    //           }
-    //           console.log(z['event']);
-    //         });
-    //     });
-    //   }
-    // ));
-    // return count;
+  getEvents(): void {
+    this.events = this.githubService
+      .fetchAllEventsForRepo()
+      .pipe(map((eventArray) => eventArray.reduce((accumulator, value) => accumulator.concat(value), [])));
   }
 }

@@ -1,5 +1,9 @@
 <p>activity-dashboard works!</p>
 <p>{{ this.count }}</p>
+<p>Issue {{ this.issueCount }}</p>
+<p>PR {{ this.prCount }}</p>
+<p>Comment {{ this.commentCount }}</p>
+
 <button (click)="print()">Fetch Issue Events</button>
 <button (click)="printE()">Fetch Github Events</button>
 <pre>{{ this.log | json }}</pre>

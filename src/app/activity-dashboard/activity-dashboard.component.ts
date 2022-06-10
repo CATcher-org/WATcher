@@ -11,7 +11,11 @@ import { GithubEventService } from '../core/services/githubevent.service';
 })
 export class ActivityDashboardComponent implements OnInit {
   log: any;
-  count: any;
+  count: any = 0;
+  actor: string = 'gycgabriel'; // TODO get from assignees
+  issueCount: number = 0;
+  prCount: number = 0;
+  commentCount: number = 0;
 
   constructor(private githubService: GithubService, private githubEventService: GithubEventService) {}
 
@@ -36,11 +40,31 @@ export class ActivityDashboardComponent implements OnInit {
 
   counter() {
     this.count = 0;
-    console.log('count triggered');
-    this.githubService.fetchAllEventsForRepo().subscribe((x) => {
-      const y = x.reduce((accumulator, value) => accumulator.concat(value), []);
-      y.forEach((_) => this.count++);
-      this.log = y[0];
+    console.log('counter triggered');
+    this.githubEventService.getEvents();
+    this.githubEventService.events.subscribe((y) => {
+      this.log = y;
+      y.forEach((event) => {
+        if (event.actor.login === this.actor) {
+          switch (event.type) {
+            case 'IssuesEvent': {
+              // TODO enum
+              this.issueCount++;
+              break;
+            }
+            case 'PullRequestEvent': {
+              this.prCount++;
+              break;
+            }
+            case 'IssueCommentEvent':
+            case 'PullRequestReviewEvent':
+            case 'PullRequestReviewCommentEvent': {
+              this.commentCount++;
+              break;
+            }
+          }
+        }
+      });
     });
   }
 }
