@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { flatMap, map } from 'rxjs/operators';
 import { GithubEvent } from '../models/github/github-event.model';
 import { GithubService } from './github.service';
@@ -9,12 +9,15 @@ import { IssueService } from './issue.service';
   providedIn: 'root'
 })
 export class GithubEventService {
-  public events: Observable<GithubEvent[]>;
+  public events: Observable<GithubEvent[]>; // observable for events
+  public events$: BehaviorSubject<GithubEvent[]>; // exposable for pipe/subscribe for other classes
 
   private lastModified: string; // The timestamp when the title or label of an issue is changed
   private lastModifiedComment: string; // The timestamp when the comment of an issue is changed
 
-  constructor(private githubService: GithubService, private issueService: IssueService) {}
+  constructor(private githubService: GithubService, private issueService: IssueService) {
+    this.events$ = new BehaviorSubject(new Array<GithubEvent>());
+  }
 
   /**
    * Calls the Github service api to return the latest github event (e.g renaming an issue's title)
@@ -74,5 +77,8 @@ export class GithubEventService {
     this.events = this.githubService
       .fetchAllEventsForRepo()
       .pipe(map((eventArray) => eventArray.reduce((accumulator, value) => accumulator.concat(value), [])));
+    this.events.subscribe((x) => {
+      this.events$.next(x);
+    });
   }
 }

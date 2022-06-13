@@ -371,6 +371,7 @@ export class IssueService {
       map((issuesByFilter: [][]) => {
         const fetchedIssueIds: Array<Number> = [];
 
+        // Take each issue and put it in next in issues$
         for (const issues of issuesByFilter) {
           for (const issue of issues) {
             fetchedIssueIds.push(this.createIssueModel(issue).id);

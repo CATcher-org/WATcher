@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GithubService } from '../core/services/github.service';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map, share } from 'rxjs/operators';
 import { GithubEventService } from '../core/services/githubevent.service';
 
 @Component({
@@ -39,10 +39,12 @@ export class ActivityDashboardComponent implements OnInit {
   }
 
   counter() {
-    this.count = 0;
+    this.issueCount = 0;
+    this.prCount = 0;
+    this.commentCount = 0;
     console.log('counter triggered');
     this.githubEventService.getEvents();
-    this.githubEventService.events.subscribe((y) => {
+    this.githubEventService.events$.subscribe((y) => {
       this.log = y;
       y.forEach((event) => {
         if (event.actor.login === this.actor) {
