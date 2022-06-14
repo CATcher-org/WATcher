@@ -2,13 +2,16 @@ import { DataSource } from '@angular/cdk/table';
 import { MatPaginator, MatSort } from '@angular/material';
 import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
 import { flatMap, map } from 'rxjs/operators';
-import { GithubUser } from '../core/models/github-user.model';
-import { GithubEvent } from '../core/models/github/github-event.model';
-import { GithubEventService } from '../core/services/githubevent.service';
+import { GithubUser } from '../../core/models/github-user.model';
+import { GithubEvent } from '../../core/models/github/github-event.model';
+import { GithubEventService } from '../../core/services/githubevent.service';
+import { paginateData } from './event-paginator';
 
 export class GithubEventDataTable extends DataSource<GithubEvent> {
   private eventsSubject = new BehaviorSubject<GithubEvent[]>([]);
   private eventSubscription: Subscription;
+
+  public isLoading$ = this.githubEventService.isLoading.asObservable();
 
   constructor(
     private githubEventService: GithubEventService,
@@ -44,6 +47,9 @@ export class GithubEventDataTable extends DataSource<GithubEvent> {
 
     const displayDataChanges = [page, sortChange].filter((x) => x !== undefined);
 
+    this.githubEventService.pollEvents();
+    console.log('log');
+    this.githubEventService.events$.subscribe((x) => console.log(x));
     this.eventSubscription = this.githubEventService.events$
       .pipe(
         flatMap(() => {
@@ -65,12 +71,19 @@ export class GithubEventDataTable extends DataSource<GithubEvent> {
                   }
                 });
               }
+
+              if (this.paginator !== undefined) {
+                data = paginateData(this.paginator, data);
+              }
+
+              console.log('DATA' + data);
               return data;
             })
           );
         })
       )
       .subscribe((githubEvents) => {
+        console.log('GITHUBEVENTS' + githubEvents);
         this.eventsSubject.next(githubEvents);
       });
   }

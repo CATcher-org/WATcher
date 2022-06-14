@@ -1,4 +1,13 @@
-<p>activity-dashboard works!</p>
+<div style="display: flex">
+  <app-event-tables
+    *ngFor="let assignee of assignees"
+    class="issue-table"
+    [actor]="assignee"
+    [headers]="this.displayedColumns"
+    [actions]="this.actionButtons"
+  ></app-event-tables>
+</div>
+
 <p>{{ this.count }}</p>
 <p>Issue {{ this.issueCount }}</p>
 <p>PR {{ this.prCount }}</p>

@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import { IssueState } from '../../../../../graphql/graphql-types';
 import { GithubUser } from '../github-user.model';
 
@@ -17,9 +18,39 @@ export class GithubEvent {
   };
   payload: any; // depends on type of GithubEvent
   public: boolean;
-  created_at: string;
+  created_at: string; // non-formatted
+
+  // Table display
+  title: string;
+  date: string; // after formatting
 
   constructor(githubEvent: {}) {
     Object.assign(this, githubEvent);
+    this.title = GithubEvent.generateTitle(githubEvent);
+    this.date = moment(githubEvent['created_at']).format('lll');
+  }
+
+  static generateTitle(githubEvent: {}): string {
+    const actor = githubEvent['actor']['login'];
+    switch (githubEvent['type']) {
+      case 'IssuesEvent': {
+        // TODO enum
+        const action = githubEvent['payload']['action'];
+        return actor + ' ' + action + ' issue';
+      }
+      case 'PullRequestEvent': {
+        const action = githubEvent['payload']['action'];
+        return actor + ' ' + action + ' pull request';
+      }
+      case 'IssueCommentEvent':
+      case 'PullRequestReviewEvent':
+      case 'PullRequestReviewCommentEvent': {
+        const action = githubEvent['payload']['action'];
+        return actor + ' ' + action + ' comment';
+      }
+      default: {
+        return actor + ' did ' + githubEvent['type'];
+      }
+    }
   }
 }
