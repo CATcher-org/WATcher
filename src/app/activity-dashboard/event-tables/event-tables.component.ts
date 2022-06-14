@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
-import { GithubEventService } from '../../core/services/githubevent.service';
 import { GithubUser } from '../../core/models/github-user.model';
+import { GithubEventService } from '../../core/services/githubevent.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { GithubEventDataTable } from './GithubEventDataTable';
 
@@ -31,14 +31,7 @@ export class EventTablesComponent implements OnInit, AfterViewInit {
   constructor(public githubEventService: GithubEventService, private loggingService: LoggingService) {}
 
   ngOnInit() {
-    this.githubEvents = new GithubEventDataTable(
-      this.githubEventService,
-      this.sort,
-      this.paginator,
-      this.headers,
-      this.actor,
-      this.filters
-    );
+    this.githubEvents = new GithubEventDataTable(this.githubEventService, this.sort, this.paginator, this.actor, this.filters);
   }
 
   ngAfterViewInit(): void {

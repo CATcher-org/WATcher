@@ -19,11 +19,11 @@ export class ActivityDashboardComponent implements OnInit {
 
   log: any;
   log2: any;
-  count: any = 0;
-  actor: string = 'gycgabriel'; // TODO get from assignees
-  issueCount: number = 0;
-  prCount: number = 0;
-  commentCount: number = 0;
+  count = 0;
+  actor = 'gycgabriel'; // TODO get from assignees
+  issueCount = 0;
+  prCount = 0;
+  commentCount = 0;
 
   constructor(private githubService: GithubService, private githubEventService: GithubEventService) {}
 
@@ -81,7 +81,7 @@ export class ActivityDashboardComponent implements OnInit {
   }
 
   testTable() {
-    let e = new GithubEventDataTable(this.githubEventService, undefined, undefined, this.displayedColumns);
+    const e = new GithubEventDataTable(this.githubEventService, undefined, undefined);
     e.loadEvents();
     e.connect().subscribe((y) => {
       this.log = y;

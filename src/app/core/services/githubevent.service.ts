@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable, of, Subscription, timer } from 'rxjs';
-import { catchError, exhaustMap, flatMap, finalize, map } from 'rxjs/operators';
+import { catchError, exhaustMap, finalize, flatMap, map } from 'rxjs/operators';
 import { GithubEvent } from '../models/github/github-event.model';
 import { GithubService } from './github.service';
 import { IssueService } from './issue.service';
@@ -91,8 +91,10 @@ export class GithubEventService {
   }
 
   pollEvents() {
-    if (this.events$.getValue().length === 0) {
-      this.isLoading.next(true);
+    if (this.eventsPollSubscription === undefined) {
+      if (this.events$.getValue().length === 0) {
+        this.isLoading.next(true);
+      }
     }
 
     this.eventsPollSubscription = timer(0, IssueService.POLL_INTERVAL)

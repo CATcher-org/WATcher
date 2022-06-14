@@ -17,7 +17,6 @@ export class GithubEventDataTable extends DataSource<GithubEvent> {
     private githubEventService: GithubEventService,
     private sort: MatSort,
     private paginator: MatPaginator,
-    private displayedColumn: string[],
     private actor?: GithubUser,
     private defaultFilter?: (event: GithubEvent) => boolean
   ) {

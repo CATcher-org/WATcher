@@ -1,6 +1,4 @@
 import * as moment from 'moment';
-import { IssueState } from '../../../../../graphql/graphql-types';
-import { GithubUser } from '../github-user.model';
 
 export class GithubEvent {
   id: string; // Github's backend's id
