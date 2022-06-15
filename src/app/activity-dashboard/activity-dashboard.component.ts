@@ -34,10 +34,9 @@ export class ActivityDashboardComponent implements OnInit {
 
   print() {
     console.log('Print triggered');
-    // this.githubService.fetchEventsForRepo().subscribe((x) => {
-    //   this.log = x;
-    // });
-    this.testTable();
+    this.githubService.fetchEventsForRepo().subscribe((x) => {
+      this.log = x;
+    });
   }
 
   printE() {
@@ -55,35 +54,6 @@ export class ActivityDashboardComponent implements OnInit {
     console.log('counter triggered');
     this.githubEventService.getEvents();
     this.githubEventService.events$.subscribe((y) => {
-      this.log = y;
-      y.forEach((event) => {
-        if (event.actor.login === this.actor) {
-          switch (event.type) {
-            case 'IssuesEvent': {
-              // TODO enum
-              this.issueCount++;
-              break;
-            }
-            case 'PullRequestEvent': {
-              this.prCount++;
-              break;
-            }
-            case 'IssueCommentEvent':
-            case 'PullRequestReviewEvent':
-            case 'PullRequestReviewCommentEvent': {
-              this.commentCount++;
-              break;
-            }
-          }
-        }
-      });
-    });
-  }
-
-  testTable() {
-    const e = new GithubEventDataTable(this.githubEventService, undefined, undefined);
-    e.loadEvents();
-    e.connect().subscribe((y) => {
       this.log = y;
       y.forEach((event) => {
         if (event.actor.login === this.actor) {
