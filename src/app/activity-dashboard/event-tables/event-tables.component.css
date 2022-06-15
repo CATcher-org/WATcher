@@ -31,3 +31,17 @@
   display: flex;
   width: 100%;
 }
+
+/* Colour cells */
+
+.white {
+  background-color: white;
+}
+
+.pale-green {
+  background-color: palegreen;
+}
+
+.green {
+  background-color: green;
+}

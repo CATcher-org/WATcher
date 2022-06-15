@@ -4,11 +4,47 @@
   </h1>
 
   <mat-table [dataSource]="this.githubEvents" matSort multiTemplateDataRows class="mat-elevation-z8">
-    <ng-container matColumnDef="{{ column }}" *ngFor="let column of columnsToDisplay">
+    <!-- <ng-container matColumnDef="{{ column }}" *ngFor="let column of columnsToDisplay">
       <mat-header-cell *matHeaderCellDef mat-sort-header> {{ column }} </mat-header-cell>
       <mat-cell *matCellDef="let element">
         <span (click)="$event.stopPropagation()" style="cursor: default">
           {{ element[column] }}
+        </span>
+      </mat-cell>
+    </ng-container> -->
+
+    <ng-container matColumnDef="date_start">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Date </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <span (click)="$event.stopPropagation()" style="cursor: default">
+          {{ element.date_start }}
+        </span>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="issue_count">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Issue # </mat-header-cell>
+      <mat-cell *matCellDef="let element" [ngClass]="colorCell(element.issue_count)">
+        <span (click)="$event.stopPropagation()" style="cursor: default">
+          {{ element.issue_count }}
+        </span>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="pr_count">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> PR # </mat-header-cell>
+      <mat-cell *matCellDef="let element" [ngClass]="colorCell(element.pr_count)">
+        <span (click)="$event.stopPropagation()" style="cursor: default">
+          {{ element.pr_count }}
+        </span>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="comment_count">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Comment # </mat-header-cell>
+      <mat-cell *matCellDef="let element" [ngClass]="colorCell(element.comment_count)">
+        <span (click)="$event.stopPropagation()" style="cursor: default">
+          {{ element.comment_count }}
         </span>
       </mat-cell>
     </ng-container>
