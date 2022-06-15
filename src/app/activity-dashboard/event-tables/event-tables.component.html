@@ -40,7 +40,7 @@
       *matRowDef="let element; columns: this.columnsToDisplay"
       class="example-element-row"
       [class.example-expanded-row]="expandedElement === element"
-      (click)="expandedElement = expandedElement === element ? null : element"
+      (click)="showExpandedDetails(element)"
     ></mat-row>
 
     <mat-row *matRowDef="let row; columns: ['expandedDetail']" style="cursor: pointer" class="example-detail-row"></mat-row>

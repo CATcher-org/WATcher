@@ -90,4 +90,10 @@ export class EventTablesComponent implements OnInit, AfterViewInit {
     this.loggingService.info(`EventTablesComponent: Opening Event ${id} on Github`);
     // window.open('https://github.com/', '_blank');
   }
+
+  showExpandedDetails(element: EventWeek) {
+    if (element.events.length > 0) {
+      this.expandedElement = this.expandedElement === element ? null : element;
+    }
+  }
 }
