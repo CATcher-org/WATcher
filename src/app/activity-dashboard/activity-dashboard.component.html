@@ -1,0 +1,10 @@
+<div style="display: flex">
+  <app-event-tables
+    *ngFor="let assignee of assignees"
+    class="issue-table"
+    [actor]="assignee"
+    [columnsToDisplay]="this.displayedColumns"
+    [expandedColumnsToDisplay]="this.expandedColumns"
+    [actions]="this.actionButtons"
+  ></app-event-tables>
+</div>

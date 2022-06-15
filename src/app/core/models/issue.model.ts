@@ -201,12 +201,6 @@ export class Issue {
     switch (phase) {
       case Phase.issuesViewer:
         return Issue.createPhaseBugReportingIssue(this.githubIssue);
-      case Phase.phaseTeamResponse:
-        return Issue.createPhaseTeamResponseIssue(this.githubIssue, this.teamAssigned);
-      case Phase.phaseTesterResponse:
-        return Issue.createPhaseTesterResponseIssue(this.githubIssue);
-      case Phase.phaseModeration:
-        return Issue.createPhaseModerationIssue(this.githubIssue, this.teamAssigned);
       default:
         return Issue.createPhaseBugReportingIssue(this.githubIssue);
     }
@@ -225,16 +219,6 @@ export class Issue {
     switch (phase) {
       case Phase.issuesViewer:
         this.description = issue.description;
-        break;
-      case Phase.phaseTeamResponse:
-        this.teamResponse = issue.teamResponse;
-        break;
-      case Phase.phaseTesterResponse:
-        this.testerResponses = issue.testerResponses;
-        this.teamResponse = issue.teamResponse;
-        break;
-      case Phase.phaseModeration:
-        this.issueDisputes = issue.issueDisputes;
         break;
       default:
         break;
@@ -331,21 +315,6 @@ export const IssuesFilter = {
   issuesViewer: {
     Student: 'NO_FILTER',
     Tutor: 'NO_FILTER',
-    Admin: 'NO_FILTER'
-  },
-  phaseTeamResponse: {
-    Student: 'FILTER_BY_TEAM',
-    Tutor: 'FILTER_BY_TEAM_ASSIGNED',
-    Admin: 'NO_FILTER'
-  },
-  phaseTesterResponse: {
-    Student: 'NO_FILTER',
-    Tutor: 'NO_ACCESS',
-    Admin: 'NO_FILTER'
-  },
-  phaseModeration: {
-    Student: 'NO_ACCESS',
-    Tutor: 'FILTER_BY_TEAM_ASSIGNED',
     Admin: 'NO_FILTER'
   }
 };

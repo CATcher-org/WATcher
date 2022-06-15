@@ -20,6 +20,7 @@ import { GithubUser } from '../models/github-user.model';
 import { IssueLastModifiedManagerModel } from '../models/github/cache-manager/issue-last-modified-manager.model';
 import { IssuesCacheManager } from '../models/github/cache-manager/issues-cache-manager.model';
 import { GithubComment } from '../models/github/github-comment.model';
+import { GithubEvent } from '../models/github/github-event.model';
 import { GithubGraphqlIssue } from '../models/github/github-graphql.issue';
 import RestGithubIssueFilter from '../models/github/github-issue-filter.model';
 import { GithubIssue } from '../models/github/github-issue.model';
@@ -373,6 +374,39 @@ export class GithubService {
         return response['data'];
       }),
       catchError((err) => throwError('Failed to fetch events for repo.'))
+    );
+  }
+
+  fetchEventsForRepoCall(pageNumber: number): Observable<GithubResponse<any[]>> {
+    console.log(ORG_NAME + '/' + REPO);
+
+    return <Observable<GithubResponse<any[]>>>from(
+      octokit.activity.listRepoEvents({
+        owner: ORG_NAME,
+        repo: REPO,
+        page: pageNumber
+      })
+    ).pipe(catchError((err) => throwError('Failed to fetch events for repo.')));
+  }
+
+  /**
+   * Will make multiple request to Github as per necessary and determine whether a graphql fetch is required.
+   */
+  fetchAllEventsForRepo(): Observable<GithubEvent[]> {
+    let responseInFirstPage: GithubResponse<GithubEvent[]>;
+    return this.fetchEventsForRepoCall(1).pipe(
+      map((response: GithubResponse<GithubEvent[]>) => {
+        responseInFirstPage = response;
+        return getNumberOfPages(response);
+      }),
+      flatMap((numOfPages: number) => {
+        const apiCalls: Observable<GithubResponse<GithubEvent[]>>[] = [];
+        for (let i = 1; i <= numOfPages; i++) {
+          apiCalls.push(this.fetchEventsForRepoCall(i));
+        }
+        return apiCalls.length === 0 ? of([]) : forkJoin(apiCalls);
+      }),
+      map((responseArray) => responseArray.map((x) => x['data']))
     );
   }
 

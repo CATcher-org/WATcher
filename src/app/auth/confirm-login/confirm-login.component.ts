@@ -52,7 +52,7 @@ export class ConfirmLoginComponent implements OnInit {
    */
   handleAuthSuccess() {
     this.authService.setTitleWithPhaseDetail();
-    this.router.navigateByUrl(Phase.issuesViewer);
+    this.router.navigateByUrl(Phase.activityDashboard);
     this.authService.changeAuthState(AuthState.Authenticated);
   }
 
@@ -63,7 +63,10 @@ export class ConfirmLoginComponent implements OnInit {
     this.authService.changeAuthState(AuthState.AwaitingAuthentication);
     const currentRepo: Repo = { owner: window.localStorage.getItem('org'), name: window.localStorage.getItem('dataRepo') };
     const sessionData: SessionData = {
-      sessionRepo: [{ phase: Phase.issuesViewer, repos: [currentRepo] }]
+      sessionRepo: [
+        { phase: Phase.issuesViewer, repos: [currentRepo] },
+        { phase: Phase.activityDashboard, repos: [currentRepo] }
+      ]
     };
     window.localStorage.setItem('sessionData', JSON.stringify(sessionData));
     this.phaseService.currentPhase = Phase.issuesViewer;

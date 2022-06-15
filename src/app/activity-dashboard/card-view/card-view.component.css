@@ -1,0 +1,27 @@
+.card-column {
+  min-width: 348x;
+  margin: 20px;
+}
+
+.card {
+  min-width: 348px;
+  margin: 8px 0px 8px 0px;
+}
+
+.mat-paginator {
+  min-width: 348px;
+}
+
+.mat-card-footer {
+  height: 1px;
+}
+
+.mat-card-actions {
+  min-height: 36px;
+}
+
+.action-buttons {
+  position: absolute;
+  right: 0;
+  bottom: 4px;
+}

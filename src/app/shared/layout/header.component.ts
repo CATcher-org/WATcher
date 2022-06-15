@@ -141,7 +141,7 @@ export class HeaderComponent implements OnInit {
 
   private getTeamFilterString() {
     // First Phase does not need team filtering
-    if (this.phaseService.currentPhase === Phase.issuesViewer || this.phaseService.currentPhase === Phase.phaseTesterResponse) {
+    if (this.phaseService.currentPhase === Phase.issuesViewer) {
       return '';
     }
 
@@ -154,7 +154,7 @@ export class HeaderComponent implements OnInit {
     // The team filter string E.g "+label:tutorial.W12+label:team.3"
     const teamFilterString = this.TUTORIAL_LABEL.concat(`${teamFilter[0]}-${teamFilter[1]}`).concat(this.TEAM_LABEL).concat(teamFilter[2]);
     // Only include duplicate Issues in last Phase
-    return this.phaseService.currentPhase === Phase.phaseModeration ? teamFilterString : this.EXCLUDE_DUPLICATE.concat(teamFilterString);
+    return this.EXCLUDE_DUPLICATE.concat(teamFilterString);
   }
 
   reload() {

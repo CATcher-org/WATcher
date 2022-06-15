@@ -1,0 +1,33 @@
+.table-container {
+  min-width: 348px;
+  display: block;
+  width: 100%;
+}
+
+.mat-table {
+  /* flex-wrap: wrap; */
+  width: 100%;
+}
+
+/* ref: https://material.angular.io/components/table/examples#table-expandable-rows */
+.example-detail-row {
+  min-height: 0;
+}
+
+.example-element-row:not(.example-expanded-row):hover {
+  background: whitesmoke;
+}
+
+.example-element-row:not(.example-expanded-row):active {
+  background: #efefef;
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
+}
+
+.example-element-detail {
+  overflow: hidden;
+  display: flex;
+  width: 100%;
+}

@@ -6,13 +6,10 @@ import { GithubUser } from '../models/github-user.model';
 import { GithubComment } from '../models/github/github-comment.model';
 import RestGithubIssueFilter from '../models/github/github-issue-filter.model';
 import { GithubIssue } from '../models/github/github-issue.model';
-import { GithubLabel } from '../models/github/github-label.model';
 import { HiddenData } from '../models/hidden-data.model';
-import { IssueDispute } from '../models/issue-dispute.model';
 import { Issue, Issues, IssuesFilter, STATUS } from '../models/issue.model';
 import { Phase } from '../models/phase.model';
 import { appVersion } from './application.service';
-import { DataService } from './data.service';
 import { ElectronService } from './electron.service';
 import { GithubService } from './github.service';
 import { PhaseService } from './phase.service';
@@ -42,8 +39,7 @@ export class IssueService {
     private githubService: GithubService,
     private userService: UserService,
     private phaseService: PhaseService,
-    private electronService: ElectronService,
-    private dataService: DataService
+    private electronService: ElectronService
   ) {
     this.issues$ = new BehaviorSubject(new Array<Issue>());
   }
@@ -157,12 +153,12 @@ export class IssueService {
   }
 
   updateIssueWithAssigneeCheck(issue: Issue): Observable<Issue> {
-    const assignees = this.phaseService.currentPhase === Phase.phaseModeration ? [] : issue.assignees;
+    const assignees = issue.assignees;
     return this.githubService.areUsersAssignable(assignees).pipe(flatMap(() => this.updateIssue(issue)));
   }
 
   updateIssue(issue: Issue): Observable<Issue> {
-    const assignees = this.phaseService.currentPhase === Phase.phaseModeration ? [] : issue.assignees;
+    const assignees = issue.assignees;
     return this.githubService
       .updateIssue(issue.id, issue.title, this.createGithubIssueDescription(issue), this.createLabelsForIssue(issue), assignees)
       .pipe(
@@ -241,24 +237,7 @@ export class IssueService {
    *
    */
   private createGithubIssueDescription(issue: Issue): string {
-    switch (this.phaseService.currentPhase) {
-      case Phase.phaseModeration:
-        return (
-          `# Issue Description\n${issue.createGithubIssueDescription()}\n# Team\'s Response\n${issue.teamResponse}\n ` +
-          // `## State the duplicated issue here, if any\n${issue.duplicateOf ? `Duplicate of #${issue.duplicateOf}` : `--`}\n` +
-          `# Disputes\n\n${this.getIssueDisputeString(issue.issueDisputes)}\n`
-        );
-      default:
-        return issue.createGithubIssueDescription();
-    }
-  }
-
-  private getIssueDisputeString(issueDisputes: IssueDispute[]): string {
-    let issueDisputeString = '';
-    for (const issueDispute of issueDisputes) {
-      issueDisputeString += issueDispute.toString();
-    }
-    return issueDisputeString;
+    return issue.createGithubIssueDescription();
   }
 
   deleteIssue(id: number): Observable<Issue> {
@@ -392,6 +371,7 @@ export class IssueService {
       map((issuesByFilter: [][]) => {
         const fetchedIssueIds: Array<Number> = [];
 
+        // Take each issue and put it in next in issues$
         for (const issues of issuesByFilter) {
           for (const issue of issues) {
             fetchedIssueIds.push(this.createIssueModel(issue).id);
@@ -450,7 +430,7 @@ export class IssueService {
   private createLabelsForIssue(issue: Issue): string[] {
     const result = [];
 
-    if (this.phaseService.currentPhase !== Phase.issuesViewer && this.phaseService.currentPhase !== Phase.phaseTesterResponse) {
+    if (this.phaseService.currentPhase !== Phase.issuesViewer) {
       const studentTeam = issue.teamAssigned.id.split('-');
       result.push(this.createLabel('tutorial', `${studentTeam[0]}-${studentTeam[1]}`), this.createLabel('team', studentTeam[2]));
     }
@@ -492,20 +472,10 @@ export class IssueService {
     return `${prepend}.${value}`;
   }
 
-  private extractTeamIdFromGithubIssue(githubIssue: GithubIssue): string {
-    return githubIssue.findLabel(GithubLabel.LABELS.tutorial).concat('-').concat(githubIssue.findLabel(GithubLabel.LABELS.team));
-  }
-
   private createIssueModel(githubIssue: GithubIssue): Issue {
     switch (this.phaseService.currentPhase) {
       case Phase.issuesViewer:
         return Issue.createPhaseBugReportingIssue(githubIssue);
-      case Phase.phaseTeamResponse:
-        return Issue.createPhaseTeamResponseIssue(githubIssue, this.dataService.getTeam(this.extractTeamIdFromGithubIssue(githubIssue)));
-      case Phase.phaseTesterResponse:
-        return Issue.createPhaseTesterResponseIssue(githubIssue);
-      case Phase.phaseModeration:
-        return Issue.createPhaseModerationIssue(githubIssue, this.dataService.getTeam(this.extractTeamIdFromGithubIssue(githubIssue)));
       default:
         return;
     }
