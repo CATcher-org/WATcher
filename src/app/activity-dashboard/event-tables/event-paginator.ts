@@ -1,5 +1,4 @@
 import { MatPaginator } from '@angular/material';
-import { GithubEvent } from '../../core/models/github/github-event.model';
 import { EventWeek } from '../event-week.model';
 
 export function paginateData(paginator: MatPaginator, data: EventWeek[]): EventWeek[] {

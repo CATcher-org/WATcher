@@ -3,8 +3,6 @@
     {{ this.actor.login }}
   </h1>
 
-  <button (click)="reload()">Reload table</button>
-
   <mat-table [dataSource]="this.githubEvents" matSort multiTemplateDataRows class="mat-elevation-z8">
     <ng-container matColumnDef="{{ column }}" *ngFor="let column of columnsToDisplay">
       <mat-header-cell *matHeaderCellDef mat-sort-header> {{ column }} </mat-header-cell>
