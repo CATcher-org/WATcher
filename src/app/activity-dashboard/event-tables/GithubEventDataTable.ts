@@ -37,31 +37,41 @@ export class GithubEventDataTable extends DataSource<EventWeek> {
   /** Group GithubEvents[] week by week */
   groupByWeeks(githubEvents: GithubEvent[]): EventWeek[] {
     // const endDate = moment();  // now
-    const startDate = moment().subtract(3, 'months'); // to pass in as argument?
+    const startDate = moment().subtract(1, 'month').startOf('day'); // to pass in as argument?
     let loopDate = moment(startDate).day('Sunday');
     const eventWeeks = [];
     let eventsInAWeek = [];
+    let weekNum = 1;
 
     githubEvents.forEach((githubEvent) => {
+      console.log(weekNum);
+      weekNum++;
+      console.log(loopDate.format('ll'));
       const eventDate = moment(githubEvent.created_at);
-      if (eventDate.isBefore(loopDate)) {
+      console.log(eventDate.format('ll'));
+      if (loopDate.isAfter(eventDate)) {
         // event in earlier week
-      } else if (eventDate.isAfter(loopDate) && eventDate.isBefore(loopDate.add(7, 'days'))) {
+      } else if (loopDate.clone().add(7, 'days').isAfter(eventDate) && loopDate.isBefore(eventDate)) {
         // event in this week
         eventsInAWeek.push(githubEvent);
       } else {
-        // event after this week
-        eventWeeks.push(EventWeek.of(loopDate.format('ll'), eventsInAWeek));
+        // event in later week
+        eventWeeks.push(EventWeek.of(loopDate.format('ll'), eventsInAWeek)); // push previous week
         eventsInAWeek = [];
         loopDate = loopDate.add(7, 'days');
 
         // Empty weeks if any
-        while (eventDate.isAfter(loopDate.add(7, 'days'))) {
+        while (loopDate.clone().add(7, 'days').isBefore(eventDate)) {
           eventWeeks.push(EventWeek.of(loopDate.format('ll'), []));
           loopDate = loopDate.add(7, 'days');
         }
+
+        console.assert(loopDate.clone().add(7, 'days').isAfter(eventDate) && loopDate.isBefore(eventDate));
+        eventsInAWeek.push(githubEvent);
       }
     });
+
+    eventWeeks.push(EventWeek.of(loopDate.format('ll'), eventsInAWeek)); // push final week
 
     return eventWeeks;
   }
