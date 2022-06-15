@@ -43,7 +43,7 @@ export class GithubEventDataTable extends DataSource<EventWeek> {
     const endDate = this.startDate.getValue() === '' ? moment() : moment(this.endDate.getValue());
     const startDate =
       this.startDate.getValue() === '' ? endDate.clone().subtract(1, 'month').startOf('day') : moment(this.startDate.getValue());
-    let loopDate = moment(startDate).day('Sunday');
+    const loopDate = moment(startDate).day('Sunday');
     const eventWeeks = [];
     let eventsInAWeek = [];
     let weekNum = 1;

@@ -98,7 +98,7 @@ export class EventTablesComponent implements OnInit, AfterViewInit {
   }
 
   colorCell(count: number) {
-    if (count == 0) {
+    if (count === 0) {
       return 'white';
     } else if (count > 0 && count <= 5) {
       return 'pale-green';
