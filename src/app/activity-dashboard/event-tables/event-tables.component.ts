@@ -1,8 +1,10 @@
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { GithubUser } from '../../core/models/github-user.model';
 import { GithubEventService } from '../../core/services/githubevent.service';
 import { LoggingService } from '../../core/services/logging.service';
+import { EventWeek } from '../event-week.model';
 import { GithubEventDataTable } from './GithubEventDataTable';
 
 export enum ACTION_BUTTONS {
@@ -13,10 +15,22 @@ export enum ACTION_BUTTONS {
 @Component({
   selector: 'app-event-tables',
   templateUrl: './event-tables.component.html',
-  styleUrls: ['./event-tables.component.css']
+  styleUrls: ['./event-tables.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
+    ])
+  ]
 })
+
+/**
+ * ref https://material.angular.io/components/table/examples#table-expandable-rows
+ */
 export class EventTablesComponent implements OnInit, AfterViewInit {
-  @Input() headers: string[];
+  @Input() columnsToDisplay: string[];
+  @Input() expandedColumnsToDisplay: string[];
   @Input() actions: ACTION_BUTTONS[];
   @Input() actor?: GithubUser = undefined;
   @Input() filters?: any = undefined;
@@ -27,6 +41,9 @@ export class EventTablesComponent implements OnInit, AfterViewInit {
   githubEvents: GithubEventDataTable;
 
   public readonly action_buttons = ACTION_BUTTONS;
+
+  /** The expanded row */
+  expandedElement: EventWeek | null;
 
   constructor(public githubEventService: GithubEventService, private loggingService: LoggingService) {}
 

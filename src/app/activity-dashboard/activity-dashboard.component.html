@@ -3,7 +3,8 @@
     *ngFor="let assignee of assignees"
     class="issue-table"
     [actor]="assignee"
-    [headers]="this.displayedColumns"
+    [columnsToDisplay]="this.displayedColumns"
+    [expandedColumnsToDisplay]="this.expandedColumns"
     [actions]="this.actionButtons"
   ></app-event-tables>
 </div>

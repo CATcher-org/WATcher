@@ -1,56 +1,33 @@
+.table-container {
+  min-width: 348px;
+  display: block;
+  width: 100%;
+}
+
 .mat-table {
+  /* flex-wrap: wrap; */
+  width: 100%;
+}
+
+/* ref: https://material.angular.io/components/table/examples#table-expandable-rows */
+.example-detail-row {
+  min-height: 0;
+}
+
+.example-element-row:not(.example-expanded-row):hover {
+  background: whitesmoke;
+}
+
+.example-element-row:not(.example-expanded-row):active {
+  background: #efefef;
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
+}
+
+.example-element-detail {
+  overflow: hidden;
   display: flex;
-  flex-wrap: wrap;
-  min-width: 348px;
-}
-
-.mat-paginator {
-  min-width: 348px;
-}
-
-.mat-column {
-}
-
-.mat-column-id {
-  flex: 0 1 5%;
-}
-
-.mat-column-title {
-}
-
-.mat-column-type {
-  overflow-x: auto;
-}
-
-.mat-column-responseTag {
-  overflow-x: auto;
-}
-
-.mat-column-severity {
-}
-
-.mat-column-duplicatedIssues {
-  overflow-x: auto;
-}
-
-.mat-column-assignees {
-  word-wrap: normal;
-}
-
-.mat-column-Todo-Remaining {
-}
-
-.mat-column-actions {
-  overflow-x: auto;
-  text-align: center !important;
-}
-
-.mat-header-row {
-  column-gap: 10px;
-  min-width: 100%;
-}
-
-.mat-row {
-  column-gap: 10px;
-  min-width: 100%;
+  width: 100%;
 }

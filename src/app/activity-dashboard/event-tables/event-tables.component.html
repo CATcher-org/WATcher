@@ -1,79 +1,53 @@
-<h1 *ngIf="this.actor !== undefined">
-  {{ this.actor.login }}
-</h1>
+<div class="table-container">
+  <h1 *ngIf="this.actor !== undefined">
+    {{ this.actor.login }}
+  </h1>
 
-<button (click)="reload()">Reload table</button>
+  <button (click)="reload()">Reload table</button>
 
-<mat-table [dataSource]="this.githubEvents" matSort class="mat-elevation-z8">
-  <!-- ID Column -->
-  <ng-container matColumnDef="id">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
-    <mat-cell *matCellDef="let githubEvent">
-      <span (click)="$event.stopPropagation()" style="cursor: default">{{ githubEvent.id }}</span>
-    </mat-cell>
-  </ng-container>
+  <mat-table [dataSource]="this.githubEvents" matSort multiTemplateDataRows class="mat-elevation-z8">
+    <ng-container matColumnDef="{{ column }}" *ngFor="let column of columnsToDisplay">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> {{ column }} </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <span (click)="$event.stopPropagation()" style="cursor: default">
+          {{ element[column] }}
+        </span>
+      </mat-cell>
+    </ng-container>
 
-  <!-- Title Column -->
-  <ng-container matColumnDef="title">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> Title </mat-header-cell>
-    <mat-cell *matCellDef="let githubEvent">
-      {{ this.fitTitleText(githubEvent.title) }}
-    </mat-cell>
-  </ng-container>
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns 
+  ref: https://material.angular.io/components/table/examples#table-expandable-rows -->
 
-  <!-- Date Column -->
-  <ng-container matColumnDef="date">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> Date </mat-header-cell>
-    <mat-cell *matCellDef="let githubEvent">
-      <span (click)="$event.stopPropagation()" style="cursor: default">{{ githubEvent.date }}</span>
-    </mat-cell>
-  </ng-container>
+    <ng-container matColumnDef="expandedDetail">
+      <mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+        <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+          <mat-table [dataSource]="element.events">
+            <ng-container matColumnDef="{{ expandableColumn }}" *ngFor="let expandableColumn of expandedColumnsToDisplay">
+              <mat-header-cell *matHeaderCellDef>{{ expandableColumn }}</mat-header-cell>
+              <mat-cell *matCellDef="let property">
+                {{ property[expandableColumn] }}
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="expandedColumnsToDisplay"></mat-header-row>
+            <mat-row *matRowDef="let property; columns: expandedColumnsToDisplay"></mat-row>
+          </mat-table>
+        </div>
+      </mat-cell>
+    </ng-container>
 
-  <!-- Issue Count Column -->
-  <ng-container matColumnDef="issueCount">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> Issues # </mat-header-cell>
-    <mat-cell *matCellDef="let githubEvent">
-      <span (click)="$event.stopPropagation()" style="cursor: default">Insert issueCount</span>
-    </mat-cell>
-  </ng-container>
+    <mat-header-row *matHeaderRowDef="this.columnsToDisplay"></mat-header-row>>
+    <mat-row
+      *matRowDef="let element; columns: this.columnsToDisplay"
+      class="example-element-row"
+      [class.example-expanded-row]="expandedElement === element"
+      (click)="expandedElement = expandedElement === element ? null : element"
+    ></mat-row>
 
-  <!-- PR Count Column -->
-  <ng-container matColumnDef="prCount">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> PR # </mat-header-cell>
-    <mat-cell *matCellDef="let githubEvent">
-      <span (click)="$event.stopPropagation()" style="cursor: default">Insert prCount</span>
-    </mat-cell>
-  </ng-container>
+    <mat-row *matRowDef="let row; columns: ['expandedDetail']" style="cursor: pointer" class="example-detail-row"></mat-row>
+  </mat-table>
 
-  <!-- Comment Count Column -->
-  <ng-container matColumnDef="commentCount">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> Comments # </mat-header-cell>
-    <mat-cell *matCellDef="let githubEvent">
-      <span (click)="$event.stopPropagation()" style="cursor: default">Insert commentCount</span>
-    </mat-cell>
-  </ng-container>
-
-  <!-- Action Buttons Column -->
-  <ng-container matColumnDef="actions">
-    <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
-    <mat-cell *matCellDef="let githubEvent">
-      <button
-        mat-button
-        matTooltip="View this githubEvent on GitHub"
-        *ngIf="this.isActionVisible(action_buttons.VIEW_IN_WEB)"
-        (click)="this.viewgithubEventInBrowser(githubEvent.id, $event)"
-        style="transform: scale(0.8)"
-      >
-        <mat-icon>open_in_new</mat-icon>
-      </button>
-    </mat-cell>
-  </ng-container>
-
-  <mat-header-row *matHeaderRowDef="this.headers"></mat-header-row>>
-  <mat-row *matRowDef="let githubEvent; columns: this.headers" style="cursor: pointer"></mat-row>
-</mat-table>
-
-<mat-card *ngIf="this.githubEvents.isLoading$ | async" style="display: flex; justify-content: center; align-items: center">
-  <mat-progress-spinner color="primary" mode="indeterminate" diameter="50" strokeWidth="5"></mat-progress-spinner>
-</mat-card>
-<mat-paginator [pageSize]="20" [pageSizeOptions]="[10, 20, 50]"></mat-paginator>
+  <mat-card *ngIf="this.githubEvents.isLoading$ | async" style="display: flex; justify-content: center; align-items: center">
+    <mat-progress-spinner color="primary" mode="indeterminate" diameter="50" strokeWidth="5"></mat-progress-spinner>
+  </mat-card>
+  <mat-paginator [pageSize]="20" [pageSizeOptions]="[10, 20, 50]"></mat-paginator>
+</div>
