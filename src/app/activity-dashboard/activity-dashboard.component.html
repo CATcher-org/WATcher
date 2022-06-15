@@ -1,3 +1,33 @@
+<div>
+  <mat-grid-list cols="4" rowHeight="80px">
+    <mat-grid-tile>
+      <div class="grid-flush-left">
+        <h1 class="mat-headline" style="margin: 0px">Activity</h1>
+      </div>
+    </mat-grid-tile>
+
+    <mat-grid-tile>
+      <mat-form-field appearance="fill">
+        <mat-label>Start Date</mat-label>
+        <input matInput [min]="startMinDate" [max]="startMaxDate" [matDatepicker]="startPicker" (dateChange)="pickStartDate($event)" />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker startView="year" #startPicker></mat-datepicker>
+      </mat-form-field>
+    </mat-grid-tile>
+
+    <mat-grid-tile>
+      <mat-form-field appearance="fill">
+        <mat-label>End Date</mat-label>
+        <input matInput [min]="endMinDate" [max]="endMaxDate" [matDatepicker]="endPicker" (dateChange)="pickEndDate($event)" />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+        <mat-datepicker startView="year" #endPicker></mat-datepicker>
+      </mat-form-field>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>
+
 <div style="display: flex">
   <app-event-tables
     *ngFor="let assignee of assignees"
