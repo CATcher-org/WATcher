@@ -30,5 +30,35 @@ query FetchIssues($owner: String!, $name: String!, $filter: IssueFilters, $curso
         }
       }
     }
+    pullRequests(first: 100, filterBy: $filter, after: $cursor) {
+      edges {
+        cursor
+        node {
+          ...issue
+          labels(first: 100) {
+            edges {
+              node {
+                ...issueLabel
+              }
+            }
+          }
+          assignees(first: 100) {
+            edges {
+              node {
+                ...issueAssignee
+              }
+            }
+          }
+          comments(first: 100, after: $commentCursor) {
+            edges {
+              cursor
+              node {
+                ...issueComment
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
