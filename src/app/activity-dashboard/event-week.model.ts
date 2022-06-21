@@ -17,7 +17,7 @@ export class EventWeek {
 
   constructor(eventWeek: {}) {
     Object.assign(this, eventWeek);
-    this.date_start = moment(eventWeek['date_start']).format('ll');
+    this.date_start = moment(eventWeek['date_start']).format('D/M');
   }
 
   public static of(dateStart: string, githubEvents: GithubEvent[]): EventWeek {

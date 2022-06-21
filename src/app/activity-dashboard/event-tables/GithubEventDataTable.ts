@@ -10,6 +10,8 @@ import { EventWeek } from '../event-week.model';
 import { paginateData } from './event-paginator';
 
 export class GithubEventDataTable extends DataSource<EventWeek> {
+  private startDate = new BehaviorSubject('');
+  private endDate = new BehaviorSubject('');
   private eventsSubject = new BehaviorSubject<EventWeek[]>([]);
   private eventSubscription: Subscription;
 
@@ -30,15 +32,18 @@ export class GithubEventDataTable extends DataSource<EventWeek> {
   }
 
   disconnect() {
+    this.startDate.complete();
+    this.endDate.complete();
     this.eventsSubject.complete();
     this.eventSubscription.unsubscribe();
   }
 
   /** Group GithubEvents[] week by week */
   groupByWeeks(githubEvents: GithubEvent[]): EventWeek[] {
-    // const endDate = moment();  // now
-    const startDate = moment().subtract(1, 'month').startOf('day'); // to pass in as argument?
-    let loopDate = moment(startDate).day('Sunday');
+    const endDate = this.startDate.getValue() === '' ? moment() : moment(this.endDate.getValue());
+    const startDate =
+      this.startDate.getValue() === '' ? endDate.clone().subtract(1, 'month').startOf('day') : moment(this.startDate.getValue());
+    const loopDate = moment(startDate).day('Sunday');
     const eventWeeks = [];
     let eventsInAWeek = [];
     let weekNum = 1;
@@ -58,16 +63,19 @@ export class GithubEventDataTable extends DataSource<EventWeek> {
         // event in later week
         eventWeeks.push(EventWeek.of(loopDate.format('ll'), eventsInAWeek)); // push previous week
         eventsInAWeek = [];
-        loopDate = loopDate.add(7, 'days');
+        loopDate.add(7, 'days');
 
         // Empty weeks if any
-        while (loopDate.clone().add(7, 'days').isBefore(eventDate)) {
+        while (loopDate.clone().add(7, 'days').isBefore(eventDate) && loopDate.clone().add(7, 'days').isBefore(endDate)) {
           eventWeeks.push(EventWeek.of(loopDate.format('ll'), []));
-          loopDate = loopDate.add(7, 'days');
+          loopDate.add(7, 'days');
         }
 
         console.assert(loopDate.clone().add(7, 'days').isAfter(eventDate) && loopDate.isBefore(eventDate));
-        eventsInAWeek.push(githubEvent);
+
+        if (eventDate.isBefore(endDate)) {
+          eventsInAWeek.push(githubEvent);
+        }
       }
     });
 
@@ -88,7 +96,7 @@ export class GithubEventDataTable extends DataSource<EventWeek> {
       page = this.paginator.page;
     }
 
-    const displayDataChanges = [page, sortChange].filter((x) => x !== undefined);
+    const displayDataChanges = [page, sortChange, this.startDate, this.endDate].filter((x) => x !== undefined);
 
     this.githubEventService.pollEvents();
     console.log('log');
@@ -133,5 +141,21 @@ export class GithubEventDataTable extends DataSource<EventWeek> {
         console.log(data);
         this.eventsSubject.next(data);
       });
+  }
+
+  get start(): string {
+    return this.startDate.value;
+  }
+
+  set start(date: string) {
+    this.startDate.next(date);
+  }
+
+  get end(): string {
+    return this.endDate.value;
+  }
+
+  set end(date: string) {
+    this.endDate.next(date);
   }
 }
