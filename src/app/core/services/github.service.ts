@@ -8,12 +8,10 @@ import { catchError, filter, flatMap, map, throwIfEmpty } from 'rxjs/operators';
 import {
   FetchIssue,
   FetchIssueQuery,
-  FetchIssues,
-  FetchIssuesByTeam,
-  FetchIssuesByTeamQuery,
-  FetchIssuesQuery,
   FetchIssuesAndPr,
-  FetchIssuesAndPrQuery
+  FetchIssuesAndPrQuery,
+  FetchIssuesByTeam,
+  FetchIssuesByTeamQuery
 } from '../../../../graphql/graphql-types';
 import { AppConfig } from '../../../environments/environment';
 import { getNumberOfPages } from '../../shared/lib/github-paginator-parser';
