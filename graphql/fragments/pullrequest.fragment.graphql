@@ -1,0 +1,13 @@
+fragment pullrequest on PullRequest {
+  id
+  number
+  title
+  body
+  state
+  createdAt
+  updatedAt
+  url
+  author {
+    ...issueAuthor
+  }
+}

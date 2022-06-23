@@ -11,7 +11,9 @@ import {
   FetchIssues,
   FetchIssuesByTeam,
   FetchIssuesByTeamQuery,
-  FetchIssuesQuery
+  FetchIssuesQuery,
+  FetchIssuesAndPr,
+  FetchIssuesAndPrQuery
 } from '../../../../graphql/graphql-types';
 import { AppConfig } from '../../../environments/environment';
 import { getNumberOfPages } from '../../shared/lib/github-paginator-parser';
@@ -121,10 +123,10 @@ export class GithubService {
     return this.toFetchIssues(issuesFilter).pipe(
       filter((toFetch) => toFetch),
       flatMap(() => {
-        return this.fetchGraphqlList<FetchIssuesQuery, GithubGraphqlIssue>(
-          FetchIssues,
+        return this.fetchGraphqlList<FetchIssuesAndPrQuery, GithubGraphqlIssue>(
+          FetchIssuesAndPr,
           { owner: ORG_NAME, name: REPO, filter: graphqlFilter },
-          (result) => result.data.repository.issues.edges,
+          (result) => result.data.repository.pullRequests.edges,
           GithubGraphqlIssue
         );
       })
