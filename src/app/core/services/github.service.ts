@@ -126,7 +126,7 @@ export class GithubService {
         return this.fetchGraphqlList<FetchIssuesAndPrQuery, GithubGraphqlIssue>(
           FetchIssuesAndPr,
           { owner: ORG_NAME, name: REPO, filter: graphqlFilter },
-          (result) => result.data.repository.pullRequests.edges,
+          (result) => result.data.repository.issues.edges.concat(result.data.repository.pullRequests.edges),
           GithubGraphqlIssue
         );
       })
