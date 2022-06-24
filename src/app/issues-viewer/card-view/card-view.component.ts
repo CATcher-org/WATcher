@@ -204,8 +204,31 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  isIssueOpen(issue: Issue) {
-    return issue.githubIssue.state === 'OPEN';
+  getIssueOpenOrCloseColor(issue: Issue) {
+    return issue.githubIssue.state === 'OPEN' ? 'green' : 'purple';
+  }
+
+  getOcticon(issue: Issue) {
+    const type = issue.githubIssue.issueOrPr;
+    const state = issue.githubIssue.state;
+
+    switch (true) {
+      case type === 'Issue' && state === 'OPEN': {
+        return 'issue-opened';
+      }
+      case type === 'Issue' && state === 'CLOSED': {
+        return 'issue-closed';
+      }
+      case type === 'PullRequest' && state === 'OPEN': {
+        return 'git-pull-request';
+      }
+      case type === 'PullRequest' && state === 'CLOSED': {
+        return 'git-merge';
+      }
+      default: {
+        return 'circle'; // unknown type and state
+      }
+    }
   }
 
   /**

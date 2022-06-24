@@ -27,7 +27,7 @@
 
   <div *ngFor="let issue of this.issues$ | async; index as i">
     <mat-card class="card">
-      ISSUE OR PR {{ issue.githubIssue.issueOrPr }}
+      <span [octicon]="this.getOcticon(issue)" [color]="this.getIssueOpenOrCloseColor(issue)"></span>
       <a class="no-underline link-grey-dark" (click)="viewIssueInBrowser(issue.id, $event)">
         <mat-card-header>
           <mat-card-title>{{ this.fitTitleText(issue.title) }}</mat-card-title>
@@ -52,7 +52,7 @@
           <mat-icon>close</mat-icon>
         </button>
       </mat-card-actions>
-      <mat-card-footer [style.background-color]="this.isIssueOpen(issue) ? 'green' : 'red'"> </mat-card-footer>
+      <mat-card-footer [style.background-color]="this.getIssueOpenOrCloseColor(issue)"> </mat-card-footer>
     </mat-card>
   </div>
 

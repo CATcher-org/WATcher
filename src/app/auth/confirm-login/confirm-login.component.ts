@@ -52,7 +52,7 @@ export class ConfirmLoginComponent implements OnInit {
    */
   handleAuthSuccess() {
     this.authService.setTitleWithPhaseDetail();
-    this.router.navigateByUrl(Phase.activityDashboard);
+    this.router.navigateByUrl(Phase.issuesViewer);
     this.authService.changeAuthState(AuthState.Authenticated);
   }
 
