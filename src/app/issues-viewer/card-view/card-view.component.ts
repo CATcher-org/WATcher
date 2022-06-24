@@ -222,7 +222,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
       case type === 'PullRequest' && state === 'OPEN': {
         return 'git-pull-request';
       }
-      case type === 'PullRequest' && state === 'CLOSED': {
+      case type === 'PullRequest': {
         return 'git-merge';
       }
       default: {
