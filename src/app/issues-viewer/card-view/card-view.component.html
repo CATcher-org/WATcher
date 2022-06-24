@@ -27,6 +27,7 @@
 
   <div *ngFor="let issue of this.issues$ | async; index as i">
     <mat-card class="card">
+      ISSUE OR PR {{ issue.githubIssue.issueOrPr }}
       <a class="no-underline link-grey-dark" (click)="viewIssueInBrowser(issue.id, $event)">
         <mat-card-header>
           <mat-card-title>{{ this.fitTitleText(issue.title) }}</mat-card-title>

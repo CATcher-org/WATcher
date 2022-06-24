@@ -25,6 +25,7 @@ export class GithubIssue {
     url: string;
   };
   comments: Array<GithubComment>;
+  issueOrPr?: string;
 
   constructor(githubIssue: {}) {
     Object.assign(this, githubIssue);
