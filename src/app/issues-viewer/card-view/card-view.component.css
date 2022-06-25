@@ -79,3 +79,11 @@ div.column-header .mat-card-header {
 .mat-chip-list-wrapper input.mat-input-element {
   margin: 2px;
 }
+
+.border-green {
+  border-left: 2.4px solid green;
+}
+
+.border-purple {
+  border-left: 2.4px solid purple;
+}

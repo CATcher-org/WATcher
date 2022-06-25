@@ -208,6 +208,10 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
     return issue.githubIssue.state === 'OPEN' ? 'green' : 'purple';
   }
 
+  getIssueOpenOrCloseColorCSSClass(issue: Issue) {
+    return issue.githubIssue.state === 'OPEN' ? 'border-green' : 'border-purple';
+  }
+
   getOcticon(issue: Issue) {
     const type = issue.githubIssue.issueOrPr;
     const state = issue.githubIssue.state;
