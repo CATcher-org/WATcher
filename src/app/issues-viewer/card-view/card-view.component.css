@@ -45,6 +45,7 @@
 .mat-card-subtitle {
   font-size: 10px;
   text-align: left;
+  margin-bottom: 6px;
 }
 
 span.octicon {
@@ -86,4 +87,8 @@ div.column-header .mat-card-header {
 
 .border-purple {
   border-left: 2.4px solid purple;
+}
+
+.mat-card-content {
+  margin-bottom: 2px;
 }
