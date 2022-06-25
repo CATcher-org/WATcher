@@ -24,15 +24,6 @@
             <mat-icon>view_carousel</mat-icon>
           </mat-button-toggle>
         </mat-button-toggle-group>
-        <button
-          *ngIf="permissions.isIssueCreatable()"
-          mat-stroked-button
-          class="create-new-bug-report-button"
-          color="primary"
-          routerLink="issues/new"
-        >
-          New Issue
-        </button>
       </div>
     </mat-grid-tile>
   </mat-grid-list>
