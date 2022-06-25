@@ -31,7 +31,7 @@
   <mat-grid-list cols="3" rowHeight="80px">
     <mat-form-field appearance="fill">
       <mat-label>Status</mat-label>
-      <mat-select [(value)]="statusFilter">
+      <mat-select [(value)]="this.dropdownFilter.status" (selectionChange)="applyDropdownFilter()">
         <mat-option value="all">All</mat-option>
         <mat-option value="open">Open</mat-option>
         <mat-option value="closed">Closed</mat-option>
@@ -39,22 +39,21 @@
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>Type</mat-label>
-      <mat-select [(value)]="typeFilter">
+      <mat-select [(value)]="this.dropdownFilter.type" (selectionChange)="applyDropdownFilter()">
         <mat-option value="all">All</mat-option>
         <mat-option value="issue">Issue</mat-option>
-        <mat-option value="pr">Pull Request</mat-option>
+        <mat-option value="pullrequest">Pull Request</mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>Sort</mat-label>
-      <mat-select [(value)]="sortBy">
+      <mat-select [(value)]="this.dropdownFilter.sort" (selectionChange)="applyDropdownFilter()">
         <mat-option value="id">ID</mat-option>
         <mat-option value="title">Title</mat-option>
         <mat-option value="date">Date</mat-option>
       </mat-select>
     </mat-form-field>
   </mat-grid-list>
-  <p>{{ statusFilter }}, {{ typeFilter }}, {{ sortBy }}</p>
 
   <div *ngIf="this.currentView === Views.Table" style="display: flex">
     <app-issue-tables
