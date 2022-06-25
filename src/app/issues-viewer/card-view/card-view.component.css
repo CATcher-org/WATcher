@@ -31,6 +31,7 @@
   font-size: 12px;
   padding: 11px 7px;
   min-height: 16px;
+  margin: 2px;
 }
 
 .mat-card-title {
@@ -72,4 +73,9 @@ div.column-header .mat-card-header {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+:host ::ng-deep .mat-chip-list-wrapper .mat-standard-chip,
+.mat-chip-list-wrapper input.mat-input-element {
+  margin: 2px;
 }
