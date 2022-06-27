@@ -9,7 +9,9 @@
             'background-size': '40px'
           }"
         ></div>
-        <mat-card-title>{{ this.assignee !== undefined ? this.assignee.login : '' }}</mat-card-title>
+        <mat-card-title>
+          {{ this.assignee !== undefined ? this.assignee.login : '' }}
+        </mat-card-title>
       </mat-card-header>
     </mat-card>
   </div>
@@ -18,11 +20,13 @@
     <mat-card class="card" [ngClass]="this.getIssueOpenOrCloseColorCSSClass(issue)">
       <a class="no-underline link-grey-dark" (click)="viewIssueInBrowser(issue.id, $event)">
         <mat-card-header>
-          <mat-card-title
-            ><span class="octicon" [octicon]="this.getOcticon(issue)" [color]="this.getIssueOpenOrCloseColor(issue)"></span>
-            {{ this.fitTitleText(issue.title) }}</mat-card-title
-          >
-          <mat-card-subtitle>{{ this.readableDateFormat(this.issue.githubIssue.updated_at) }}</mat-card-subtitle>
+          <mat-card-title>
+            <span class="octicon" [octicon]="this.getOcticon(issue)" [color]="this.getIssueOpenOrCloseColor(issue)"></span>
+            {{ this.fitTitleText(issue.title) }}
+          </mat-card-title>
+          <mat-card-subtitle>
+            {{ this.readableDateFormat(this.issue.githubIssue.updated_at) }}
+          </mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
           <mat-chip-list aria-label="Labels">
