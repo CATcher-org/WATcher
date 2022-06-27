@@ -91,7 +91,9 @@ export class IssuesDataTable extends DataSource<Issue> {
               if (this.assignee) {
                 data = data.filter((issue) => {
                   const githubissue = issue.githubIssue;
-                  if (!githubissue.assignees) {
+                  if (githubissue.issueOrPr === 'PullRequest') {
+                    return githubissue.user.login === this.assignee.login;
+                  } else if (!githubissue.assignees) {
                     return false;
                   } else {
                     return githubissue.assignees.some((x) => {
