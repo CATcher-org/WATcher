@@ -24,25 +24,20 @@
             <mat-option value="pullrequest">Pull Request</mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field appearance="standard">
+        <mat-form-field appearance="standard" matSort [matSortDisableClear]="true">
           <mat-label>Sort</mat-label>
           <mat-select [(value)]="this.dropdownFilter.sort" (selectionChange)="applyDropdownFilter()">
-            <mat-option value="id">ID</mat-option>
-            <mat-option value="title">Title</mat-option>
-            <mat-option value="date">Date</mat-option>
+            <mat-option value="id">
+              <span mat-sort-header="id">ID</span>
+            </mat-option>
+            <mat-option value="title">
+              <span mat-sort-header="title">Title</span>
+            </mat-option>
+            <mat-option value="date">
+              <span mat-sort-header="date">Date</span>
+            </mat-option>
           </mat-select>
         </mat-form-field>
-        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Menu">
-          <mat-icon>more_horiz</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu" matSort [matSortDisableClear]="true">
-          <button mat-menu-item>
-            <span mat-sort-header="id">Sort by ID</span>
-          </button>
-          <button mat-menu-item>
-            <span mat-sort-header="title">Sort by Title</span>
-          </button>
-        </mat-menu>
       </div>
     </mat-grid-tile>
 
