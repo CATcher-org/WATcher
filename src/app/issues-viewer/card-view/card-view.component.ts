@@ -35,9 +35,9 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() actions: ACTION_BUTTONS[];
   @Input() assignee?: GithubUser = undefined;
   @Input() filters?: any = undefined;
+  @Input() sort?: MatSort = undefined;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
 
   issues: IssuesDataTable;
   issues$: Observable<Issue[]>;

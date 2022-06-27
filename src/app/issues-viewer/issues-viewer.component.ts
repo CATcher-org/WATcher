@@ -1,4 +1,5 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { MatSort } from '@angular/material';
 import { GithubUser } from '../core/models/github-user.model';
 import { GithubService } from '../core/services/github.service';
 import { PermissionService } from '../core/services/permission.service';
@@ -34,6 +35,7 @@ export class IssuesViewerComponent implements OnInit {
   @ViewChildren(IssueTablesComponent) tables: QueryList<IssueTablesComponent>;
   @ViewChildren(CircleGraphComponent) circleGraph: QueryList<CircleGraphComponent>;
   @ViewChildren(CardViewComponent) cardViews: QueryList<CardViewComponent>;
+  @ViewChild(MatSort, { static: true }) matSort: MatSort;
 
   constructor(public permissions: PermissionService, public userService: UserService, public githubService: GithubService) {}
 
