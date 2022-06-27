@@ -1,5 +1,5 @@
 .card-column {
-  margin: 20px;
+  margin: 8px;
 }
 
 .card {
@@ -28,7 +28,7 @@
 
 .mat-chip {
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 10px;
   padding: 11px 7px;
   min-height: 16px;
   margin: 2px;
@@ -37,9 +37,13 @@
 .mat-card-title {
   display: flex;
   align-items: center;
-  font-size: 16px;
+  font-size: 12px;
   text-align: left;
   overflow: auto;
+}
+
+.column-header .mat-card-title {
+  font-size: 14px;
 }
 
 .mat-card-subtitle {

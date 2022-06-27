@@ -1,20 +1,41 @@
 <div>
-  <mat-grid-list cols="3" rowHeight="80px">
-    <mat-grid-tile>
-      <div class="grid-flush-left">
-        <h1 class="mat-headline" style="margin: 0px">
-          {{ userService.currentUser.role === 'Student' ? 'Issues' : 'All Issues' }}
-        </h1>
-      </div>
-    </mat-grid-tile>
-
-    <mat-grid-tile>
-      <mat-form-field class="full-grid-width">
+  <mat-grid-list cols="7" rowHeight="80px">
+    <mat-grid-tile colspan="2">
+      <mat-form-field class="search-bar">
         <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search" />
       </mat-form-field>
     </mat-grid-tile>
 
-    <mat-grid-tile>
+    <mat-grid-tile colspan="5">
+      <div class="dropdown-filters">
+        <mat-form-field appearance="standard">
+          <mat-label>Status</mat-label>
+          <mat-select [(value)]="this.dropdownFilter.status" (selectionChange)="applyDropdownFilter()">
+            <mat-option value="all">All</mat-option>
+            <mat-option value="open">Open</mat-option>
+            <mat-option value="closed">Closed</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="standard">
+          <mat-label>Type</mat-label>
+          <mat-select [(value)]="this.dropdownFilter.type" (selectionChange)="applyDropdownFilter()">
+            <mat-option value="all">All</mat-option>
+            <mat-option value="issue">Issue</mat-option>
+            <mat-option value="pullrequest">Pull Request</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="standard">
+          <mat-label>Sort</mat-label>
+          <mat-select [(value)]="this.dropdownFilter.sort" (selectionChange)="applyDropdownFilter()">
+            <mat-option value="id">ID</mat-option>
+            <mat-option value="title">Title</mat-option>
+            <mat-option value="date">Date</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-grid-tile>
+
+    <!-- <mat-grid-tile>
       <div class="grid-flush-right">
         <mat-button-toggle-group [(ngModel)]="currentView" aria-label="View Mode">
           <mat-button-toggle [value]="Views.Cards">
@@ -25,34 +46,7 @@
           </mat-button-toggle>
         </mat-button-toggle-group>
       </div>
-    </mat-grid-tile>
-  </mat-grid-list>
-
-  <mat-grid-list cols="3" rowHeight="80px">
-    <mat-form-field appearance="fill">
-      <mat-label>Status</mat-label>
-      <mat-select [(value)]="this.dropdownFilter.status" (selectionChange)="applyDropdownFilter()">
-        <mat-option value="all">All</mat-option>
-        <mat-option value="open">Open</mat-option>
-        <mat-option value="closed">Closed</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Type</mat-label>
-      <mat-select [(value)]="this.dropdownFilter.type" (selectionChange)="applyDropdownFilter()">
-        <mat-option value="all">All</mat-option>
-        <mat-option value="issue">Issue</mat-option>
-        <mat-option value="pullrequest">Pull Request</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Sort</mat-label>
-      <mat-select [(value)]="this.dropdownFilter.sort" (selectionChange)="applyDropdownFilter()">
-        <mat-option value="id">ID</mat-option>
-        <mat-option value="title">Title</mat-option>
-        <mat-option value="date">Date</mat-option>
-      </mat-select>
-    </mat-form-field>
+    </mat-grid-tile> -->
   </mat-grid-list>
 
   <div *ngIf="this.currentView === Views.Table" style="display: flex">
