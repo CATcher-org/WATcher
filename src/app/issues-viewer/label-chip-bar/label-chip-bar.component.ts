@@ -5,8 +5,8 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { LabelService } from '../../core/services/label.service';
 import { Label } from '../../core/models/label.model';
+import { LabelService } from '../../core/services/label.service';
 
 @Component({
   selector: 'app-label-chip-bar',

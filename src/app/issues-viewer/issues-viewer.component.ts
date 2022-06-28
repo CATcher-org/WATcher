@@ -1,9 +1,7 @@
 import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatSort } from '@angular/material';
 import { GithubUser } from '../core/models/github-user.model';
-import { Label } from '../core/models/label.model';
 import { GithubService } from '../core/services/github.service';
-import { LabelService } from '../core/services/label.service';
 import { PermissionService } from '../core/services/permission.service';
 import { UserService } from '../core/services/user.service';
 import { TABLE_COLUMNS } from '../shared/issue-tables/issue-tables-columns';
