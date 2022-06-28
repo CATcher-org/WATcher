@@ -1,12 +1,12 @@
 <div>
-  <mat-grid-list cols="7" rowHeight="80px">
+  <mat-grid-list cols="8" rowHeight="80px">
     <mat-grid-tile colspan="2">
       <mat-form-field class="search-bar">
         <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search" />
       </mat-form-field>
     </mat-grid-tile>
 
-    <mat-grid-tile colspan="5">
+    <mat-grid-tile colspan="3">
       <div class="dropdown-filters">
         <mat-form-field appearance="standard">
           <mat-label>Status</mat-label>
@@ -39,6 +39,10 @@
           </mat-select>
         </mat-form-field>
       </div>
+    </mat-grid-tile>
+
+    <mat-grid-tile class="label-filter-grid-tile" colspan="3">
+      <app-label-chip-bar></app-label-chip-bar>
     </mat-grid-tile>
 
     <!-- <mat-grid-tile>

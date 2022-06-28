@@ -14,6 +14,7 @@ import { IssuesViewerRoutingModule } from './issues-viewer-routing.module';
 import { IssuesViewerComponent } from './issues-viewer.component';
 import { NewIssueComponent } from './new-issue/new-issue.component';
 import { TimelineComponent } from './timeline/timeline.component';
+import { LabelChipBarModule } from './label-chip-bar/label-chip-bar.module';
 
 @NgModule({
   imports: [
@@ -24,7 +25,8 @@ import { TimelineComponent } from './timeline/timeline.component';
     ViewIssueModule,
     MarkdownModule.forChild(),
     IssueTablesModule,
-    LabelDropdownModule
+    LabelDropdownModule,
+    LabelChipBarModule
   ],
   declarations: [
     IssuesViewerComponent,
