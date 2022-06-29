@@ -3,8 +3,8 @@ import { Component, ElementRef, OnInit, Output, ViewChild } from '@angular/core'
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { concatMap, exhaustMap, map, startWith } from 'rxjs/operators';
 import { Label } from '../../core/models/label.model';
 import { LabelService } from '../../core/services/label.service';
 
@@ -30,10 +30,22 @@ export class LabelChipBarComponent implements OnInit {
 
   @ViewChild('labelInput', { static: true }) labelInput: ElementRef<HTMLInputElement>;
 
-  constructor() {}
+  constructor(private labelService: LabelService) {}
 
   ngOnInit(): void {
-    this.labels = LabelService.getRequiredLabelsAsArray(true);
+    this.labelService.fetchLabels().subscribe(
+      (response) => {
+        console.log(response);
+      },
+      (err) => {},
+      () => {
+        this.initialize();
+      }
+    );
+  }
+
+  initialize() {
+    this.labels = this.labelService.labels;
     this.allLabelNames = this.labels.map((label) => label.getFormattedName());
 
     this.filteredLabels = this.labelCtrl.valueChanges.pipe(
