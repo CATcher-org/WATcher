@@ -1,4 +1,14 @@
-import { AfterContentChecked, AfterContentInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import {
+  AfterContentChecked,
+  AfterContentInit,
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
 import { MatSort } from '@angular/material';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
@@ -21,7 +31,7 @@ export enum ViewMode {
   templateUrl: './issues-viewer.component.html',
   styleUrls: ['./issues-viewer.component.css']
 })
-export class IssuesViewerComponent implements OnInit, AfterContentInit, AfterContentChecked, OnDestroy {
+export class IssuesViewerComponent implements AfterViewInit, OnDestroy {
   readonly Views = ViewMode; // for use in html
   readonly displayedColumns = [TABLE_COLUMNS.ID, TABLE_COLUMNS.TITLE, TABLE_COLUMNS.ASSIGNEE, TABLE_COLUMNS.LABEL];
   readonly actionButtons: ACTION_BUTTONS[] = [ACTION_BUTTONS.DELETE_ISSUE, ACTION_BUTTONS.FIX_ISSUE];
@@ -46,20 +56,12 @@ export class IssuesViewerComponent implements OnInit, AfterContentInit, AfterCon
     this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
   }
 
-  ngAfterContentInit(): void {
+  ngAfterViewInit(): void {
     console.log(this.labelFilter$);
-    this.labelFilter$.subscribe((labels) => {
-      console.log('this doesnt work');
+    this.labelFilterSubscription = this.labelFilter$.subscribe((labels) => {
       this.dropdownFilter.labels = labels;
       this.applyDropdownFilter();
     });
-    this.labelFilter$.subscribe((labels) => {
-      console.log('this works');
-    });
-  }
-
-  ngAfterContentChecked(): void {
-    console.log(this.labelFilter$);
   }
 
   ngOnDestroy(): void {
