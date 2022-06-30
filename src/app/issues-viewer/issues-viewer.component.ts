@@ -53,7 +53,7 @@ export class IssuesViewerComponent implements OnInit, AfterContentInit, AfterCon
       this.dropdownFilter.labels = labels;
       this.applyDropdownFilter();
     });
-    this.labelFilterSubscription = this.labelFilter$.subscribe((labels) => {
+    this.labelFilter$.subscribe((labels) => {
       console.log('this works');
     });
   }
