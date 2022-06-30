@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, ElementRef, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -20,7 +20,7 @@ import { LabelService } from '../../core/services/label.service';
  */
 export class LabelChipBarComponent implements OnInit {
   labels: Label[];
-  @Output() selectedLabels: Label[];
+  @Input() selectedLabels: BehaviorSubject<string[]>; // array of label strings
 
   separatorKeysCodes: number[] = [ENTER, COMMA];
   labelCtrl = new FormControl('');
@@ -49,7 +49,6 @@ export class LabelChipBarComponent implements OnInit {
     this.allLabelNames = this.labels.map((label) => label.getFormattedName());
 
     this.filteredLabels = this.labelCtrl.valueChanges.pipe(
-      startWith(null),
       map((label: string | null) => (label ? this._filter(label) : this.allLabelNames.slice()))
     );
   }
@@ -62,6 +61,10 @@ export class LabelChipBarComponent implements OnInit {
     }
 
     this.selectedLabelNames.push(value);
+    this.selectedLabels.next(this.selectedLabelNames);
+    console.log('lcb');
+    console.log(this.selectedLabels);
+
     if (event.input) {
       event.input.value = ''; // Clear the input value
     }
@@ -75,10 +78,13 @@ export class LabelChipBarComponent implements OnInit {
     if (index >= 0) {
       this.selectedLabelNames.splice(index, 1);
     }
+
+    this.selectedLabels.next(this.selectedLabelNames);
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
     this.selectedLabelNames.push(event.option.viewValue); // selected from dropdown
+    this.selectedLabels.next(this.selectedLabelNames);
     this.labelInput.nativeElement.value = '';
     this.labelCtrl.setValue(null);
   }

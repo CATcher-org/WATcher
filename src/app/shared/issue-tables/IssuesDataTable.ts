@@ -13,12 +13,14 @@ export type DropdownFilter = {
   status: string;
   type: string;
   sort: string;
+  labels: string[];
 };
 
 export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
   status: 'all',
   type: 'all',
-  sort: 'id'
+  sort: 'id',
+  labels: []
 };
 
 export class IssuesDataTable extends DataSource<Issue> {
@@ -121,6 +123,9 @@ export class IssuesDataTable extends DataSource<Issue> {
                   } else {
                     return true;
                   }
+                })
+                .filter((issue) => {
+                  return this.dropdownFilter.labels.every((label) => issue.labels.includes(label));
                 });
               if (this.sort !== undefined) {
                 data = getSortedData(this.sort, data);

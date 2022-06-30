@@ -1,5 +1,16 @@
-import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import {
+  AfterContentChecked,
+  AfterContentInit,
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
 import { MatSort } from '@angular/material';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
 import { GithubService } from '../core/services/github.service';
 import { PermissionService } from '../core/services/permission.service';
@@ -20,7 +31,7 @@ export enum ViewMode {
   templateUrl: './issues-viewer.component.html',
   styleUrls: ['./issues-viewer.component.css']
 })
-export class IssuesViewerComponent implements OnInit {
+export class IssuesViewerComponent implements OnInit, AfterContentInit, AfterContentChecked, OnDestroy {
   readonly Views = ViewMode; // for use in html
   readonly displayedColumns = [TABLE_COLUMNS.ID, TABLE_COLUMNS.TITLE, TABLE_COLUMNS.ASSIGNEE, TABLE_COLUMNS.LABEL];
   readonly actionButtons: ACTION_BUTTONS[] = [ACTION_BUTTONS.DELETE_ISSUE, ACTION_BUTTONS.FIX_ISSUE];
@@ -31,6 +42,8 @@ export class IssuesViewerComponent implements OnInit {
   assignees: GithubUser[];
   currentView: ViewMode = ViewMode.Cards;
   dropdownFilter: DropdownFilter = DEFAULT_DROPDOWN_FILTER;
+  labelFilter$ = new BehaviorSubject<string[]>([]);
+  labelFilterSubscription: Subscription;
 
   @ViewChildren(IssueTablesComponent) tables: QueryList<IssueTablesComponent>;
   @ViewChildren(CircleGraphComponent) circleGraph: QueryList<CircleGraphComponent>;
@@ -41,6 +54,26 @@ export class IssuesViewerComponent implements OnInit {
 
   ngOnInit() {
     this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
+  }
+
+  ngAfterContentInit(): void {
+    console.log(this.labelFilter$);
+    this.labelFilter$.subscribe((labels) => {
+      console.log('this doesnt work');
+      this.dropdownFilter.labels = labels;
+      this.applyDropdownFilter();
+    });
+    this.labelFilterSubscription = this.labelFilter$.subscribe((labels) => {
+      console.log('this works');
+    });
+  }
+
+  ngAfterContentChecked(): void {
+    console.log(this.labelFilter$);
+  }
+
+  ngOnDestroy(): void {
+    this.labelFilterSubscription.unsubscribe();
   }
 
   applyFilter(filterValue: string) {
