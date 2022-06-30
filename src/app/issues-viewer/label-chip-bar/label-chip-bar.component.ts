@@ -83,7 +83,13 @@ export class LabelChipBarComponent implements OnInit {
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.selectedLabelNames.push(event.option.viewValue); // selected from dropdown
+    const value = event.option.viewValue;
+    if (this.selectedLabelNames.includes(value)) {
+      // no duplicates
+      return;
+    }
+
+    this.selectedLabelNames.push(value); // selected from dropdown
     this.selectedLabels.next(this.selectedLabelNames);
     this.labelInput.nativeElement.value = '';
     this.labelCtrl.setValue(null);
@@ -92,6 +98,6 @@ export class LabelChipBarComponent implements OnInit {
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.allLabelNames.filter((label) => label.toLowerCase().includes(filterValue));
+    return this.allLabelNames.filter((label) => label.toLowerCase().includes(filterValue) && !this.selectedLabelNames.includes(label));
   }
 }

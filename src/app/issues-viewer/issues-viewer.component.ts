@@ -1,14 +1,4 @@
-import {
-  AfterContentChecked,
-  AfterContentInit,
-  AfterViewInit,
-  Component,
-  OnDestroy,
-  OnInit,
-  QueryList,
-  ViewChild,
-  ViewChildren
-} from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatSort } from '@angular/material';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
@@ -31,7 +21,7 @@ export enum ViewMode {
   templateUrl: './issues-viewer.component.html',
   styleUrls: ['./issues-viewer.component.css']
 })
-export class IssuesViewerComponent implements AfterViewInit, OnDestroy {
+export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly Views = ViewMode; // for use in html
   readonly displayedColumns = [TABLE_COLUMNS.ID, TABLE_COLUMNS.TITLE, TABLE_COLUMNS.ASSIGNEE, TABLE_COLUMNS.LABEL];
   readonly actionButtons: ACTION_BUTTONS[] = [ACTION_BUTTONS.DELETE_ISSUE, ACTION_BUTTONS.FIX_ISSUE];
