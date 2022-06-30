@@ -126,8 +126,6 @@ const REQUIRED_LABELS = {
  * from the GitHub repository for the WATcher application.
  */
 export class LabelService {
-  labels: Label[];
-
   private static severityLabels: Label[] = Object.values(REQUIRED_LABELS.severity);
   private static typeLabels: Label[] = Object.values(REQUIRED_LABELS.type);
   private static responseLabels: Label[] = Object.values(REQUIRED_LABELS.response);
@@ -144,6 +142,8 @@ export class LabelService {
     severity: LabelService.severityLabels,
     type: LabelService.typeLabels
   };
+
+  labels: Label[];
 
   constructor(private githubService: GithubService) {}
 
