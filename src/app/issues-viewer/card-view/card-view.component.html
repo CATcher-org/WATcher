@@ -19,33 +19,22 @@
   <div *ngFor="let issue of this.issues$ | async; index as i">
     <mat-card class="card" [ngClass]="this.getIssueOpenOrCloseColorCSSClass(issue)">
       <a class="no-underline link-grey-dark" (click)="viewIssueInBrowser(issue.id, $event)">
-        <mat-card-header>
-          <mat-card-title>
-            <span class="octicon" [octicon]="this.getOcticon(issue)" [color]="this.getIssueOpenOrCloseColor(issue)"></span>
-            {{ this.fitTitleText(issue.title) }}
-          </mat-card-title>
-          <mat-card-subtitle>
-            {{ this.readableDateFormat(this.issue.githubIssue.updated_at) }}
-          </mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <mat-chip-list aria-label="Labels">
-            <mat-chip *ngFor="let label of issue.githubIssue.labels" [ngStyle]="{ 'background-color': '#' + label.color }" selected>
-              {{ label.name }}
-            </mat-chip>
-          </mat-chip-list>
-        </mat-card-content>
+        <span [matTooltip]="this.readableDateFormat(this.issue.githubIssue.updated_at)">
+          <mat-card-header>
+            <mat-card-title>
+              <span class="octicon" [octicon]="this.getOcticon(issue)" [color]="this.getIssueOpenOrCloseColor(issue)"></span>
+              #{{ issue.id }}: {{ this.fitTitleText(issue.title) }}
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-chip-list aria-label="Labels">
+              <mat-chip *ngFor="let label of issue.githubIssue.labels" [ngStyle]="{ 'background-color': '#' + label.color }" selected>
+                {{ label.name }}
+              </mat-chip>
+            </mat-chip-list>
+          </mat-card-content>
+        </span>
       </a>
-      <!-- <mat-card-actions>
-        <mat-chip-list aria-label="Assignees">
-          <mat-chip *ngFor="let assignee of issue.githubIssue.assignees">
-            {{ assignee.login }}
-          </mat-chip>
-        </mat-chip-list>
-        <button mat-button class="action-buttons" (click)="openDeleteDialog(issue.id, $event)">
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-card-actions> -->
     </mat-card>
   </div>
 
