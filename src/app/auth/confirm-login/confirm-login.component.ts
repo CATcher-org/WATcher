@@ -64,8 +64,8 @@ export class ConfirmLoginComponent implements OnInit {
     const currentRepo: Repo = { owner: window.localStorage.getItem('org'), name: window.localStorage.getItem('dataRepo') };
     const sessionData: SessionData = {
       sessionRepo: [
-        { phase: Phase.issuesViewer, repos: [currentRepo] },
-        { phase: Phase.activityDashboard, repos: [currentRepo] }
+        { phase: Phase.issuesViewer, repos: [currentRepo] }
+        // TODO (under development) // { phase: Phase.activityDashboard, repos: [currentRepo] }
       ]
     };
     window.localStorage.setItem('sessionData', JSON.stringify(sessionData));
