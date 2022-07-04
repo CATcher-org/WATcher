@@ -9,7 +9,6 @@ import { TABLE_COLUMNS } from '../shared/issue-tables/issue-tables-columns';
 import { ACTION_BUTTONS, IssueTablesComponent } from '../shared/issue-tables/issue-tables.component';
 import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../shared/issue-tables/IssuesDataTable';
 import { CardViewComponent } from './card-view/card-view.component';
-import { CircleGraphComponent } from './circle-graph/circle-graph.component';
 
 export enum ViewMode {
   Table,
@@ -36,7 +35,6 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   labelFilterSubscription: Subscription;
 
   @ViewChildren(IssueTablesComponent) tables: QueryList<IssueTablesComponent>;
-  @ViewChildren(CircleGraphComponent) circleGraph: QueryList<CircleGraphComponent>;
   @ViewChildren(CardViewComponent) cardViews: QueryList<CardViewComponent>;
   @ViewChild(MatSort, { static: true }) matSort: MatSort;
 
@@ -60,13 +58,11 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   applyFilter(filterValue: string) {
     this.tables.forEach((t) => (t.issues.filter = filterValue));
-    this.circleGraph.forEach((g) => (g.issues.filter = filterValue));
     this.cardViews.forEach((v) => (v.issues.filter = filterValue));
   }
 
   applyDropdownFilter() {
     this.tables.forEach((t) => (t.issues.dropdownFilter = this.dropdownFilter));
-    this.circleGraph.forEach((g) => (g.issues.dropdownFilter = this.dropdownFilter));
     this.cardViews.forEach((v) => (v.issues.dropdownFilter = this.dropdownFilter));
   }
 }

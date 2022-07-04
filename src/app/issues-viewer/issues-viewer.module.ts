@@ -7,14 +7,9 @@ import { LabelDropdownModule } from '../shared/label-dropdown/label-dropdown.mod
 import { SharedModule } from '../shared/shared.module';
 import { ViewIssueModule } from '../shared/view-issue/view-issue.module';
 import { CardViewComponent } from './card-view/card-view.component';
-import { CircleGraphComponent } from './circle-graph/circle-graph.component';
-import { CircleComponent } from './circle/circle.component';
-import { IssueComponent } from './issue/issue.component';
 import { IssuesViewerRoutingModule } from './issues-viewer-routing.module';
 import { IssuesViewerComponent } from './issues-viewer.component';
 import { LabelChipBarModule } from './label-chip-bar/label-chip-bar.module';
-import { NewIssueComponent } from './new-issue/new-issue.component';
-import { TimelineComponent } from './timeline/timeline.component';
 
 @NgModule({
   imports: [
@@ -28,14 +23,6 @@ import { TimelineComponent } from './timeline/timeline.component';
     LabelChipBarModule,
     LabelDropdownModule
   ],
-  declarations: [
-    IssuesViewerComponent,
-    NewIssueComponent,
-    IssueComponent,
-    CardViewComponent,
-    CircleGraphComponent,
-    CircleComponent,
-    TimelineComponent
-  ]
+  declarations: [IssuesViewerComponent, CardViewComponent]
 })
 export class IssuesViewerModule {}
