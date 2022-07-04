@@ -12,6 +12,7 @@ import { CircleComponent } from './circle/circle.component';
 import { IssueComponent } from './issue/issue.component';
 import { IssuesViewerRoutingModule } from './issues-viewer-routing.module';
 import { IssuesViewerComponent } from './issues-viewer.component';
+import { LabelChipBarModule } from './label-chip-bar/label-chip-bar.module';
 import { NewIssueComponent } from './new-issue/new-issue.component';
 import { TimelineComponent } from './timeline/timeline.component';
 
@@ -24,6 +25,7 @@ import { TimelineComponent } from './timeline/timeline.component';
     ViewIssueModule,
     MarkdownModule.forChild(),
     IssueTablesModule,
+    LabelChipBarModule,
     LabelDropdownModule
   ],
   declarations: [

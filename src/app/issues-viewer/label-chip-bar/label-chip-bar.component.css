@@ -1,0 +1,17 @@
+.label-filter-bar {
+  width: 100%;
+}
+
+.label-filter-bar .mat-form-field {
+  margin: 8px;
+  font-size: 14px;
+  width: 90%;
+}
+
+.remove-label-icon {
+  position: absolute;
+  right: 5px;
+  bottom: 0;
+  top: 0;
+  margin: auto;
+}

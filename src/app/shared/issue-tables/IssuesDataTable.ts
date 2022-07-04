@@ -9,8 +9,23 @@ import { paginateData } from './issue-paginator';
 import { getSortedData } from './issue-sorter';
 import { applySearchFilter } from './search-filter';
 
+export type DropdownFilter = {
+  status: string;
+  type: string;
+  sort: string;
+  labels: string[];
+};
+
+export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
+  status: 'all',
+  type: 'all',
+  sort: 'id',
+  labels: []
+};
+
 export class IssuesDataTable extends DataSource<Issue> {
   private filterChange = new BehaviorSubject('');
+  private dropdownFilterChange = new BehaviorSubject(DEFAULT_DROPDOWN_FILTER);
   private teamFilterChange = new BehaviorSubject('');
   private issuesSubject = new BehaviorSubject<Issue[]>([]);
   private issueSubscription: Subscription;
@@ -33,6 +48,7 @@ export class IssuesDataTable extends DataSource<Issue> {
   }
 
   disconnect() {
+    this.dropdownFilterChange.complete();
     this.filterChange.complete();
     this.teamFilterChange.complete();
     this.issuesSubject.complete();
@@ -52,9 +68,14 @@ export class IssuesDataTable extends DataSource<Issue> {
       page = this.paginator.page;
     }
 
-    const displayDataChanges = [this.issueService.issues$, page, sortChange, this.filterChange, this.teamFilterChange].filter(
-      (x) => x !== undefined
-    );
+    const displayDataChanges = [
+      this.issueService.issues$,
+      page,
+      sortChange,
+      this.filterChange,
+      this.teamFilterChange,
+      this.dropdownFilterChange
+    ].filter((x) => x !== undefined);
 
     this.issueService.startPollIssues();
     this.issueSubscription = this.issueService.issues$
@@ -72,7 +93,9 @@ export class IssuesDataTable extends DataSource<Issue> {
               if (this.assignee) {
                 data = data.filter((issue) => {
                   const githubissue = issue.githubIssue;
-                  if (!githubissue.assignees) {
+                  if (githubissue.issueOrPr === 'PullRequest') {
+                    return githubissue.user.login === this.assignee.login;
+                  } else if (!githubissue.assignees) {
                     return false;
                   } else {
                     return githubissue.assignees.some((x) => {
@@ -81,6 +104,29 @@ export class IssuesDataTable extends DataSource<Issue> {
                   }
                 });
               }
+              // Dropdown Filters
+              data = data
+                .filter((issue) => {
+                  if (this.dropdownFilter.status === 'open') {
+                    return issue.githubIssue.state === 'OPEN';
+                  } else if (this.dropdownFilter.status === 'closed') {
+                    return issue.githubIssue.state !== 'OPEN';
+                  } else {
+                    return true;
+                  }
+                })
+                .filter((issue) => {
+                  if (this.dropdownFilter.type === 'issue') {
+                    return issue.githubIssue.issueOrPr === 'Issue';
+                  } else if (this.dropdownFilter.type === 'pullrequest') {
+                    return issue.githubIssue.issueOrPr === 'PullRequest';
+                  } else {
+                    return true;
+                  }
+                })
+                .filter((issue) => {
+                  return this.dropdownFilter.labels.every((label) => issue.labels.includes(label));
+                });
               if (this.sort !== undefined) {
                 data = getSortedData(this.sort, data);
               }
@@ -124,5 +170,13 @@ export class IssuesDataTable extends DataSource<Issue> {
       }
       return issue.teamAssigned.id === this.teamFilter;
     });
+  }
+
+  get dropdownFilter(): DropdownFilter {
+    return this.dropdownFilterChange.value;
+  }
+
+  set dropdownFilter(filter: DropdownFilter) {
+    this.dropdownFilterChange.next(filter);
   }
 }

@@ -35,9 +35,9 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() actions: ACTION_BUTTONS[];
   @Input() assignee?: GithubUser = undefined;
   @Input() filters?: any = undefined;
+  @Input() sort?: MatSort = undefined;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
 
   issues: IssuesDataTable;
   issues$: Observable<Issue[]>;
@@ -204,8 +204,35 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  isIssueOpen(issue: Issue) {
-    return issue.githubIssue.state === 'OPEN';
+  getIssueOpenOrCloseColor(issue: Issue) {
+    return issue.githubIssue.state === 'OPEN' ? 'green' : 'purple';
+  }
+
+  getIssueOpenOrCloseColorCSSClass(issue: Issue) {
+    return issue.githubIssue.state === 'OPEN' ? 'border-green' : 'border-purple';
+  }
+
+  getOcticon(issue: Issue) {
+    const type = issue.githubIssue.issueOrPr;
+    const state = issue.githubIssue.state;
+
+    switch (true) {
+      case type === 'Issue' && state === 'OPEN': {
+        return 'issue-opened';
+      }
+      case type === 'Issue' && state === 'CLOSED': {
+        return 'issue-closed';
+      }
+      case type === 'PullRequest' && state === 'OPEN': {
+        return 'git-pull-request';
+      }
+      case type === 'PullRequest': {
+        return 'git-merge';
+      }
+      default: {
+        return 'circle'; // unknown type and state
+      }
+    }
   }
 
   /**

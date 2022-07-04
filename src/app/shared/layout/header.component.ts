@@ -25,7 +25,7 @@ const ISSUE_TRACKER_URL = 'https://github.com/CATcher-org/CATcher/issues';
 export class HeaderComponent implements OnInit {
   private prevUrl;
   isReloadButtonDisabled = false;
-  ISSUE_FILTER = '/issues?q=is:issue+is:open'; // the filtered list must be an issue and must be open
+  ISSUE_FILTER = '/issues?q=is:issue+is:all'; // the filtered list must be an issue and must be open
   TUTORIAL_LABEL = '+label:tutorial.';
   TEAM_LABEL = '+label:team.';
   EXCLUDE_DUPLICATE = '+-label:duplicate'; // exclude duplicate issues
@@ -119,6 +119,11 @@ export class HeaderComponent implements OnInit {
   }
 
   viewBrowser() {
+    if (this.phaseService.currentPhase === Phase.activityDashboard) {
+      this.electronService.openLink('https://github.com/gycgabriel/WATcher-test/pulse');
+      return;
+    }
+
     const routerUrl = this.router.url.substring(1); // remove the first '/' from string
     const issueUrlIndex = routerUrl.indexOf('/'); // find the index of second '/'
     let issueUrl: string;
@@ -126,7 +131,7 @@ export class HeaderComponent implements OnInit {
     // If can't find the index of second '/', then router is at the /issues (table list) page
     if (issueUrlIndex < 0) {
       // Apply filters to the issueUrl
-      issueUrl = this.ISSUE_FILTER.concat(this.getTeamFilterString());
+      issueUrl = this.ISSUE_FILTER;
     } else {
       // issueUrl will be from the second '/'
       issueUrl = routerUrl.substring(issueUrlIndex);
@@ -137,24 +142,6 @@ export class HeaderComponent implements OnInit {
 
   openIssueTracker() {
     this.electronService.openLink(ISSUE_TRACKER_URL);
-  }
-
-  private getTeamFilterString() {
-    // First Phase does not need team filtering
-    if (this.phaseService.currentPhase === Phase.issuesViewer) {
-      return '';
-    }
-
-    // Initialise the team filter for Students in other Phases, as they do not have team filter assigned by default
-    if (this.userService.currentUser.team) {
-      this.issueService.setIssueTeamFilter(this.userService.currentUser.team.id); // e.g W12-3
-    }
-
-    const teamFilter = this.issueService.getIssueTeamFilter().split('-'); // e.g CS2103T-W12-3 -> CS2103T, W12 and 3
-    // The team filter string E.g "+label:tutorial.W12+label:team.3"
-    const teamFilterString = this.TUTORIAL_LABEL.concat(`${teamFilter[0]}-${teamFilter[1]}`).concat(this.TEAM_LABEL).concat(teamFilter[2]);
-    // Only include duplicate Issues in last Phase
-    return this.EXCLUDE_DUPLICATE.concat(teamFilterString);
   }
 
   reload() {

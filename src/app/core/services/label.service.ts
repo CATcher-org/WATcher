@@ -143,6 +143,8 @@ export class LabelService {
     type: LabelService.typeLabels
   };
 
+  labels: Label[];
+
   constructor(private githubService: GithubService) {}
 
   public static getRequiredLabelsAsArray(needAllLabels: boolean): Label[] {
@@ -151,6 +153,18 @@ export class LabelService {
     const labels = needAllLabels ? Object.values(this.allLabelArrays) : Object.values(this.testerLabelArrays);
     labels.map((label) => (requiredLabels = requiredLabels.concat(label)));
     return requiredLabels;
+  }
+
+  /**
+   * Fetch the labels in github.
+   */
+  public fetchLabels(): Observable<any> {
+    return this.githubService.fetchAllLabels().pipe(
+      map((response) => {
+        this.labels = this.parseLabelData(response);
+        return response;
+      })
+    );
   }
 
   /**

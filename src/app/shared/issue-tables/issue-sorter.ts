@@ -1,4 +1,5 @@
 import { MatSort } from '@angular/material';
+import * as moment from 'moment';
 import { Issue, ISSUE_TYPE_ORDER, SEVERITY_ORDER } from '../../core/models/issue.model';
 
 export function getSortedData(sort: MatSort, data: Issue[]): Issue[] {
@@ -22,6 +23,8 @@ export function getSortedData(sort: MatSort, data: Issue[]): Issue[] {
         return -direction * compareByIntegerValue(a.numOfUnresolvedDisputes(), b.numOfUnresolvedDisputes());
       case 'id':
         return direction * compareByIntegerValue(a.id, b.id);
+      case 'date':
+        return direction * compareByDateValue(a.created_at, b.created_at);
       default:
         // title, responseTag are string values
         return direction * compareByStringValue(a[sort.active], b[sort.active]);
@@ -51,4 +54,8 @@ function compareByStringValue(valueA: string, valueB: string): number {
 
 function compareByIntegerValue(valueA: number, valueB: number): number {
   return valueA < valueB ? -1 : 1;
+}
+
+function compareByDateValue(valueA: string, valueB: string): number {
+  return moment(valueA).isBefore(valueB) ? -1 : 1;
 }

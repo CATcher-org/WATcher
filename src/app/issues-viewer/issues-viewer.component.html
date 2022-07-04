@@ -1,20 +1,51 @@
 <div>
-  <mat-grid-list cols="3" rowHeight="80px">
-    <mat-grid-tile>
-      <div class="grid-flush-left">
-        <h1 class="mat-headline" style="margin: 0px">
-          {{ userService.currentUser.role === 'Student' ? 'Issues' : 'All Issues' }}
-        </h1>
-      </div>
-    </mat-grid-tile>
-
-    <mat-grid-tile>
-      <mat-form-field class="full-grid-width">
+  <mat-grid-list cols="8" rowHeight="80px">
+    <mat-grid-tile colspan="2">
+      <mat-form-field class="search-bar">
         <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search" />
       </mat-form-field>
     </mat-grid-tile>
 
-    <mat-grid-tile>
+    <mat-grid-tile colspan="3">
+      <div class="dropdown-filters">
+        <mat-form-field appearance="standard">
+          <mat-label>Status</mat-label>
+          <mat-select [(value)]="this.dropdownFilter.status" (selectionChange)="applyDropdownFilter()">
+            <mat-option value="all">All</mat-option>
+            <mat-option value="open">Open</mat-option>
+            <mat-option value="closed">Closed</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="standard">
+          <mat-label>Type</mat-label>
+          <mat-select [(value)]="this.dropdownFilter.type" (selectionChange)="applyDropdownFilter()">
+            <mat-option value="all">All</mat-option>
+            <mat-option value="issue">Issue</mat-option>
+            <mat-option value="pullrequest">Pull Request</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="standard" matSort [matSortDisableClear]="true">
+          <mat-label>Sort</mat-label>
+          <mat-select [(value)]="this.dropdownFilter.sort" (selectionChange)="applyDropdownFilter()">
+            <mat-option value="id">
+              <span mat-sort-header="id">ID</span>
+            </mat-option>
+            <mat-option value="title">
+              <span mat-sort-header="title">Title</span>
+            </mat-option>
+            <mat-option value="date">
+              <span mat-sort-header="date">Date Updated</span>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-grid-tile>
+
+    <mat-grid-tile class="label-filter-grid-tile" colspan="3">
+      <app-label-chip-bar [selectedLabels]="this.labelFilter$"></app-label-chip-bar>
+    </mat-grid-tile>
+
+    <!-- <mat-grid-tile>
       <div class="grid-flush-right">
         <mat-button-toggle-group [(ngModel)]="currentView" aria-label="View Mode">
           <mat-button-toggle [value]="Views.Cards">
@@ -24,17 +55,8 @@
             <mat-icon>view_carousel</mat-icon>
           </mat-button-toggle>
         </mat-button-toggle-group>
-        <button
-          *ngIf="permissions.isIssueCreatable()"
-          mat-stroked-button
-          class="create-new-bug-report-button"
-          color="primary"
-          routerLink="issues/new"
-        >
-          New Issue
-        </button>
       </div>
-    </mat-grid-tile>
+    </mat-grid-tile> -->
   </mat-grid-list>
 
   <div *ngIf="this.currentView === Views.Table" style="display: flex">
@@ -53,6 +75,7 @@
       [assignee]="assignee"
       [headers]="this.displayedColumns"
       [actions]="this.actionButtons"
+      [sort]="this.matSort"
     ></app-card-view>
   </div>
 </div>

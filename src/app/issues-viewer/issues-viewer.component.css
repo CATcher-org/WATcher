@@ -33,4 +33,30 @@
 }
 
 .issue-table {
+  width: 25%;
+  min-width: 200px;
+  max-width: 400px;
+}
+
+.dropdown-filters .mat-form-field {
+  margin: 8px;
+  font-size: 14px;
+  max-width: 20%;
+  width: 10%; /* depends on number of filters*/
+}
+
+.search-bar {
+  width: 90%;
+}
+
+.dropdown-filters {
+  width: 100%;
+}
+
+app-label-chip-bar {
+  width: 100%;
+}
+
+.label-filter-grid-tile {
+  overflow: auto;
 }

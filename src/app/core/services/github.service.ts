@@ -8,10 +8,10 @@ import { catchError, filter, flatMap, map, throwIfEmpty } from 'rxjs/operators';
 import {
   FetchIssue,
   FetchIssueQuery,
-  FetchIssues,
+  FetchIssuesAndPr,
+  FetchIssuesAndPrQuery,
   FetchIssuesByTeam,
-  FetchIssuesByTeamQuery,
-  FetchIssuesQuery
+  FetchIssuesByTeamQuery
 } from '../../../../graphql/graphql-types';
 import { AppConfig } from '../../../environments/environment';
 import { getNumberOfPages } from '../../shared/lib/github-paginator-parser';
@@ -22,6 +22,7 @@ import { IssuesCacheManager } from '../models/github/cache-manager/issues-cache-
 import { GithubComment } from '../models/github/github-comment.model';
 import { GithubEvent } from '../models/github/github-event.model';
 import { GithubGraphqlIssue } from '../models/github/github-graphql.issue';
+import { GithubGraphqlIssueOrPr } from '../models/github/github-graphql.issue-or-pr';
 import RestGithubIssueFilter from '../models/github/github-issue-filter.model';
 import { GithubIssue } from '../models/github/github-issue.model';
 import { GithubResponse } from '../models/github/github-response.model';
@@ -121,11 +122,11 @@ export class GithubService {
     return this.toFetchIssues(issuesFilter).pipe(
       filter((toFetch) => toFetch),
       flatMap(() => {
-        return this.fetchGraphqlList<FetchIssuesQuery, GithubGraphqlIssue>(
-          FetchIssues,
+        return this.fetchGraphqlList<FetchIssuesAndPrQuery, GithubGraphqlIssueOrPr>(
+          FetchIssuesAndPr,
           { owner: ORG_NAME, name: REPO, filter: graphqlFilter },
-          (result) => result.data.repository.issues.edges,
-          GithubGraphqlIssue
+          (result) => [].concat(result.data.repository.issues.edges, result.data.repository.pullRequests.edges),
+          GithubGraphqlIssueOrPr
         );
       })
     );
