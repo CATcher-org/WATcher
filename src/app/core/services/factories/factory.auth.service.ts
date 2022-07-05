@@ -3,7 +3,6 @@ import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 // import { AppConfig } from '../../../../environments/environment';
 import { AuthService } from '../auth.service';
-import { DataService } from '../data.service';
 import { ElectronService } from '../electron.service';
 import { GithubService } from '../github.service';
 import { GithubEventService } from '../githubevent.service';
@@ -21,7 +20,6 @@ export function AuthServiceFactory(
   userService: UserService,
   issueService: IssueService,
   phaseService: PhaseService,
-  dataService: DataService,
   githubEventService: GithubEventService,
   titleService: Title,
   logger: LoggingService
@@ -35,7 +33,6 @@ export function AuthServiceFactory(
   //     userService,
   //     issueService,
   //     phaseService,
-  //     dataService,
   //     githubEventService,
   //     titleService,
   //     logger
@@ -50,7 +47,6 @@ export function AuthServiceFactory(
     userService,
     issueService,
     phaseService,
-    dataService,
     githubEventService,
     titleService,
     logger

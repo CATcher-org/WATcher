@@ -18,7 +18,6 @@ import { AppComponent } from './app.component';
 import { AuthModule } from './auth/auth.module';
 import { UserConfirmationComponent } from './core/guards/user-confirmation/user-confirmation.component';
 import { AuthService } from './core/services/auth.service';
-import { DataService } from './core/services/data.service';
 import { ElectronService } from './core/services/electron.service';
 import { ErrorHandlingService } from './core/services/error-handling.service';
 import { AuthServiceFactory } from './core/services/factories/factory.auth.service';
@@ -74,7 +73,6 @@ import { SharedModule } from './shared/shared.module';
         UserService,
         IssueService,
         PhaseService,
-        DataService,
         GithubEventService,
         Title,
         LoggingService
@@ -83,7 +81,7 @@ import { SharedModule } from './shared/shared.module';
     {
       provide: IssueService,
       useFactory: IssueServiceFactory,
-      deps: [GithubService, UserService, PhaseService, ElectronService, DataService]
+      deps: [GithubService, UserService, PhaseService, ElectronService]
     },
     {
       provide: ErrorHandler,
