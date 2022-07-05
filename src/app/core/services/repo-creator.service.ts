@@ -3,6 +3,7 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import { Observable, of, pipe, UnaryFunction } from 'rxjs';
 import { flatMap, tap } from 'rxjs/operators';
 import { Phase } from '../models/phase.model';
+import { UserRole } from '../models/user.model';
 import { GithubService } from './github.service';
 import { SessionFixConfirmationComponent } from './session-fix-confirmation/session-fix-confirmation.component';
 import { UserService } from './user.service';
@@ -69,6 +70,8 @@ export class RepoCreatorService {
           throw new Error(MISSING_REQUIRED_REPO);
         } else if (currentPhase !== Phase.issuesViewer) {
           throw new Error(CURRENT_PHASE_REPO_CLOSED);
+        } else if (this.userService.currentUser.role !== UserRole.Student) {
+          throw new Error(BUG_REPORTING_INVALID_ROLE);
         }
       })
     );
