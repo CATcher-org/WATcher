@@ -48,7 +48,14 @@ export class EventTablesComponent implements OnInit, AfterViewInit {
   constructor(public githubEventService: GithubEventService, private loggingService: LoggingService) {}
 
   ngOnInit() {
-    this.githubEvents = new GithubEventDataTable(this.githubEventService, this.sort, this.paginator, this.actor, this.filters);
+    this.githubEvents = new GithubEventDataTable(
+      this.githubEventService,
+      this.loggingService,
+      this.sort,
+      this.paginator,
+      this.actor,
+      this.filters
+    );
   }
 
   ngAfterViewInit(): void {
