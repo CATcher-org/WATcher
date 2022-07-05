@@ -6,10 +6,7 @@ import { GithubUser } from '../../core/models/github-user.model';
 import { Issue } from '../../core/models/issue.model';
 import { GithubService } from '../../core/services/github.service';
 import { IssueService } from '../../core/services/issue.service';
-import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
-import { PermissionService } from '../../core/services/permission.service';
-import { UserService } from '../../core/services/user.service';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
 
 @Component({
@@ -28,14 +25,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   issues: IssuesDataTable;
   issues$: Observable<Issue[]>;
 
-  constructor(
-    public userService: UserService,
-    public permissions: PermissionService,
-    public labelService: LabelService,
-    private githubService: GithubService,
-    public issueService: IssueService,
-    private loggingService: LoggingService
-  ) {}
+  constructor(private githubService: GithubService, public issueService: IssueService, private loggingService: LoggingService) {}
 
   ngOnInit() {
     this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.assignee, this.filters);
@@ -76,7 +66,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   viewIssueInBrowser(id: number, event: Event) {
-    this.loggingService.info(`IssueTablesComponent: Opening Issue ${id} on Github`);
+    this.loggingService.info(`CardViewComponent: Opening Issue ${id} on Github`);
     this.githubService.viewIssueInBrowser(id, event);
   }
 

@@ -3,8 +3,6 @@ import { MatSort } from '@angular/material';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
 import { GithubService } from '../core/services/github.service';
-import { PermissionService } from '../core/services/permission.service';
-import { UserService } from '../core/services/user.service';
 import { TABLE_COLUMNS } from '../shared/issue-tables/issue-tables-columns';
 import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../shared/issue-tables/IssuesDataTable';
 import { CardViewComponent } from './card-view/card-view.component';
@@ -25,7 +23,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(CardViewComponent) cardViews: QueryList<CardViewComponent>;
   @ViewChild(MatSort, { static: true }) matSort: MatSort;
 
-  constructor(public permissions: PermissionService, public userService: UserService, public githubService: GithubService) {}
+  constructor(public githubService: GithubService) {}
 
   ngOnInit() {
     this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
