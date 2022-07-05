@@ -8,7 +8,6 @@ import { ApplicationService } from '../core/services/application.service';
 import { AuthService, AuthState } from '../core/services/auth.service';
 import { ElectronService } from '../core/services/electron.service';
 import { ErrorHandlingService } from '../core/services/error-handling.service';
-// import { GithubService } from '../core/services/github.service';
 import { LoggingService } from '../core/services/logging.service';
 import { PhaseService } from '../core/services/phase.service';
 import { UserService } from '../core/services/user.service';
@@ -31,7 +30,6 @@ export class AuthComponent implements OnInit, OnDestroy {
   constructor(
     public appService: ApplicationService,
     public electronService: ElectronService,
-    // private githubService: GithubService,
     private authService: AuthService,
     private userService: UserService,
     private errorHandlingService: ErrorHandlingService,
@@ -157,18 +155,6 @@ export class AuthComponent implements OnInit, OnDestroy {
     }
     return this.getOrgDetails(this.sessionInformation);
   }
-
-  /**
-   * Extracts organization and data repository details from local storage
-   * and restores them to WATcher.
-   */
-  /*
-  private restoreOrgDetailsFromLocalStorage() {
-    const org = window.localStorage.getItem('org');
-    const dataRepo = window.localStorage.getItem('dataRepo');
-    this.githubService.storeOrganizationDetails(org, dataRepo);
-    this.phaseService.setSessionData();
-  }*/
 
   /**
    * Extracts the Organization Details from the input sessionInformation.

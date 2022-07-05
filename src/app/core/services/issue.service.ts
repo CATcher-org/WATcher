@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, EMPTY, forkJoin, Observable, of, Subscription, throwError, timer } from 'rxjs';
 import { catchError, exhaustMap, finalize, flatMap, map } from 'rxjs/operators';
 import { IssueComment } from '../models/comment.model';
-import { GithubUser } from '../models/github-user.model';
 import { GithubComment } from '../models/github/github-comment.model';
 import RestGithubIssueFilter from '../models/github/github-issue-filter.model';
 import { GithubIssue } from '../models/github/github-issue.model';
