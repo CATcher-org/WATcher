@@ -368,8 +368,6 @@ export class GithubService {
   }
 
   fetchEventsForRepo(): Observable<any[]> {
-    console.log(ORG_NAME + '/' + REPO);
-
     return from(octokit.issues.listEventsForRepo({ owner: ORG_NAME, repo: REPO, headers: GithubService.IF_NONE_MATCH_EMPTY })).pipe(
       map((response) => {
         return response['data'];
@@ -379,8 +377,6 @@ export class GithubService {
   }
 
   fetchEventsForRepoCall(pageNumber: number): Observable<GithubResponse<any[]>> {
-    console.log(ORG_NAME + '/' + REPO);
-
     return <Observable<GithubResponse<any[]>>>from(
       octokit.activity.listRepoEvents({
         owner: ORG_NAME,

@@ -3,6 +3,7 @@ import { MatPaginator, MatSort } from '@angular/material';
 import * as moment from 'moment';
 import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
 import { flatMap, map } from 'rxjs/operators';
+import { LoggingService } from '../../core/services/logging.service';
 import { GithubUser } from '../../core/models/github-user.model';
 import { GithubEvent } from '../../core/models/github/github-event.model';
 import { GithubEventService } from '../../core/services/githubevent.service';
@@ -19,6 +20,7 @@ export class GithubEventDataTable extends DataSource<EventWeek> {
 
   constructor(
     private githubEventService: GithubEventService,
+    private logger: LoggingService,
     private sort: MatSort,
     private paginator: MatPaginator,
     private actor?: GithubUser,
@@ -96,7 +98,7 @@ export class GithubEventDataTable extends DataSource<EventWeek> {
     const displayDataChanges = [page, sortChange, this.startDate, this.endDate].filter((x) => x !== undefined);
 
     this.githubEventService.pollEvents();
-    this.githubEventService.events$.subscribe((x) => console.log(x));
+    this.githubEventService.events$.subscribe((x) => this.logger.debug(x));
     this.eventSubscription = this.githubEventService.events$
       .pipe(
         flatMap(() => {

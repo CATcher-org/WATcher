@@ -49,7 +49,6 @@ export class HeaderComponent implements OnInit {
     private electronService: ElectronService,
     private dialogService: DialogService
   ) {
-    console.log(this.phaseService.sessionData);
     router.events
       .pipe(
         filter((e: any) => e instanceof RoutesRecognized),
