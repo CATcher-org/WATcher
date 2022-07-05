@@ -44,27 +44,6 @@ export class IssueService {
     this.issues$ = new BehaviorSubject(new Array<Issue>());
   }
 
-  startPollIssuesByUser(user: GithubUser) {
-    if (this.issuesPollSubscription === undefined) {
-      if (this.issues$.getValue().length === 0) {
-        this.isLoading.next(true);
-      }
-
-      this.issuesPollSubscription = timer(0, IssueService.POLL_INTERVAL)
-        .pipe(
-          exhaustMap(() => {
-            return this.initializeDatasForUser(user).pipe(
-              catchError(() => {
-                return EMPTY;
-              }),
-              finalize(() => this.isLoading.next(false))
-            );
-          })
-        )
-        .subscribe();
-    }
-  }
-
   startPollIssues() {
     if (this.issuesPollSubscription === undefined) {
       if (this.issues$.getValue().length === 0) {
@@ -301,31 +280,6 @@ export class IssueService {
     this.stopPollIssues();
     this.isLoading.complete();
     this.isLoading = new BehaviorSubject<boolean>(false);
-  }
-
-  private initializeDatasForUser(user: GithubUser): Observable<Issue[]> {
-    const issuesAPICallsByFilter: Array<Observable<Array<GithubIssue>>> = [];
-
-    issuesAPICallsByFilter.push(this.githubService.fetchIssuesGraphql(new RestGithubIssueFilter({ creator: user.login })));
-
-    return forkJoin(issuesAPICallsByFilter).pipe(
-      map((issuesByFilter: [][]) => {
-        const fetchedIssueIds: Array<Number> = [];
-
-        for (const issues of issuesByFilter) {
-          for (const issue of issues) {
-            fetchedIssueIds.push(this.createIssueModel(issue).id);
-            this.createAndSaveIssueModel(issue); // caching?
-          }
-        }
-
-        // caching?
-        const outdatedIssueIds: Array<Number> = this.getOutdatedIssueIds(fetchedIssueIds);
-        this.deleteIssuesFromLocalStore(outdatedIssueIds);
-
-        return Object.values(this.issues);
-      })
-    );
   }
 
   private initializeData(): Observable<Issue[]> {
