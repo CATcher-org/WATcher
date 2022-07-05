@@ -82,10 +82,6 @@ export class EventTablesComponent implements OnInit, AfterViewInit {
       .join(SPLITTER_TEXT);
   }
 
-  isActionVisible(action: ACTION_BUTTONS): boolean {
-    return this.actions.includes(action);
-  }
-
   viewEventInBrowser(id: number, event: Event) {
     this.loggingService.info(`EventTablesComponent: Opening Event ${id} on Github`);
     // window.open('https://github.com/', '_blank');
