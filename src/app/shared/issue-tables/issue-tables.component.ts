@@ -9,7 +9,6 @@ import { GithubService } from '../../core/services/github.service';
 import { IssueService } from '../../core/services/issue.service';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
-import { PermissionService } from '../../core/services/permission.service';
 import { PhaseService } from '../../core/services/phase.service';
 import { UserService } from '../../core/services/user.service';
 import { IssuesDataTable } from './IssuesDataTable';
@@ -49,7 +48,6 @@ export class IssueTablesComponent implements OnInit, AfterViewInit {
 
   constructor(
     public userService: UserService,
-    public permissions: PermissionService,
     public labelService: LabelService,
     private githubService: GithubService,
     public issueService: IssueService,
@@ -108,10 +106,6 @@ export class IssueTablesComponent implements OnInit, AfterViewInit {
       }
     );
     event.stopPropagation();
-  }
-
-  isResponseEditable() {
-    return this.permissions.isTeamResponseEditable() || this.permissions.isTesterResponseEditable();
   }
 
   markAsPending(issue: Issue, event: Event) {
