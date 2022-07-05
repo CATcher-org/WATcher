@@ -3,10 +3,10 @@ import { MatPaginator, MatSort } from '@angular/material';
 import * as moment from 'moment';
 import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
 import { flatMap, map } from 'rxjs/operators';
-import { LoggingService } from '../../core/services/logging.service';
 import { GithubUser } from '../../core/models/github-user.model';
 import { GithubEvent } from '../../core/models/github/github-event.model';
 import { GithubEventService } from '../../core/services/githubevent.service';
+import { LoggingService } from '../../core/services/logging.service';
 import { EventWeek } from '../event-week.model';
 import { paginateData } from './event-paginator';
 

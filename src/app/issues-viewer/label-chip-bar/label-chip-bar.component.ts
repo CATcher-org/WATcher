@@ -5,9 +5,9 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { LoggingService } from '../../core/services/logging.service';
 import { Label } from '../../core/models/label.model';
 import { LabelService } from '../../core/services/label.service';
+import { LoggingService } from '../../core/services/logging.service';
 
 @Component({
   selector: 'app-label-chip-bar',
