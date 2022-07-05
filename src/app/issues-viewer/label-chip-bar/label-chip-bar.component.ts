@@ -44,7 +44,7 @@ export class LabelChipBarComponent implements OnInit {
     );
   }
 
-  initialize() {
+  private initialize() {
     this.labels = this.labelService.labels;
     this.allLabelNames = this.labels.map((label) => label.getFormattedName());
 

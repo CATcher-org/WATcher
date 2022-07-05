@@ -6,22 +6,6 @@
   margin: 8px 0px 8px 0px;
 }
 
-.mat-card-footer {
-  height: 2.4px;
-  border-radius: 0 0 4px 4px;
-  margin: 0 -10px -10px -10px;
-}
-
-.mat-card-actions {
-  min-height: 36px;
-}
-
-.action-buttons {
-  position: absolute;
-  right: 0;
-  bottom: 4px;
-}
-
 .mat-chip-list {
   margin: 0;
 }
@@ -44,12 +28,6 @@
 
 .column-header .mat-card-title {
   font-size: 14px;
-}
-
-.mat-card-subtitle {
-  font-size: 10px;
-  text-align: left;
-  margin-bottom: 6px;
 }
 
 span.octicon {
