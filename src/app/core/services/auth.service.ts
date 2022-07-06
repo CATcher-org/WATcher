@@ -6,7 +6,6 @@ import { BehaviorSubject } from 'rxjs';
 import { AppConfig } from '../../../environments/environment';
 import { generateSessionId } from '../../shared/lib/session';
 import { uuid } from '../../shared/lib/uuid';
-import { DataService } from './data.service';
 import { ElectronService } from './electron.service';
 import { GithubService } from './github.service';
 import { GithubEventService } from './githubevent.service';
@@ -46,7 +45,6 @@ export class AuthService {
     private userService: UserService,
     private issueService: IssueService,
     private phaseService: PhaseService,
-    private dataService: DataService,
     private githubEventService: GithubEventService,
     private titleService: Title,
     private logger: LoggingService
@@ -71,7 +69,6 @@ export class AuthService {
     this.userService.reset();
     this.issueService.reset(true);
     this.phaseService.reset();
-    this.dataService.reset();
     this.githubEventService.reset();
     this.logger.reset();
     this.setLandingPageTitle();

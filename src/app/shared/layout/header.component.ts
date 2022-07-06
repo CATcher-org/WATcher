@@ -4,7 +4,6 @@ import { Router, RoutesRecognized } from '@angular/router';
 import { filter, pairwise } from 'rxjs/operators';
 import { AppConfig } from '../../../environments/environment';
 import { Phase } from '../../core/models/phase.model';
-import { UserRole } from '../../core/models/user.model';
 import { AuthService } from '../../core/services/auth.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { ElectronService } from '../../core/services/electron.service';
@@ -49,7 +48,6 @@ export class HeaderComponent implements OnInit {
     private electronService: ElectronService,
     private dialogService: DialogService
   ) {
-    console.log(this.phaseService.sessionData);
     router.events
       .pipe(
         filter((e: any) => e instanceof RoutesRecognized),
@@ -94,12 +92,7 @@ export class HeaderComponent implements OnInit {
   }
 
   isOpenUrlButtonShown(): boolean {
-    return (
-      this.phaseService.currentPhase === Phase.issuesViewer ||
-      this.userService.currentUser.role === UserRole.Student ||
-      this.issueService.getIssueTeamFilter() !== 'All Teams' ||
-      this.router.url.includes('/issues')
-    );
+    return this.phaseService.currentPhase === Phase.issuesViewer || this.phaseService.currentPhase === Phase.activityDashboard;
   }
 
   getVersion(): string {

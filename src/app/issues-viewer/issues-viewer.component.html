@@ -44,37 +44,14 @@
     <mat-grid-tile class="label-filter-grid-tile" colspan="3">
       <app-label-chip-bar [selectedLabels]="this.labelFilter$"></app-label-chip-bar>
     </mat-grid-tile>
-
-    <!-- <mat-grid-tile>
-      <div class="grid-flush-right">
-        <mat-button-toggle-group [(ngModel)]="currentView" aria-label="View Mode">
-          <mat-button-toggle [value]="Views.Cards">
-            <mat-icon>space_dashboard</mat-icon>
-          </mat-button-toggle>
-          <mat-button-toggle [value]="Views.Table">
-            <mat-icon>view_carousel</mat-icon>
-          </mat-button-toggle>
-        </mat-button-toggle-group>
-      </div>
-    </mat-grid-tile> -->
   </mat-grid-list>
 
-  <div *ngIf="this.currentView === Views.Table" style="display: flex">
-    <app-issue-tables
-      *ngFor="let assignee of assignees"
-      class="issue-table"
-      [assignee]="assignee"
-      [headers]="this.displayedColumns"
-      [actions]="this.actionButtons"
-    ></app-issue-tables>
-  </div>
-  <div *ngIf="this.currentView === Views.Cards" style="display: flex">
+  <div style="display: flex">
     <app-card-view
       *ngFor="let assignee of assignees"
       class="issue-table"
       [assignee]="assignee"
       [headers]="this.displayedColumns"
-      [actions]="this.actionButtons"
       [sort]="this.matSort"
     ></app-card-view>
   </div>

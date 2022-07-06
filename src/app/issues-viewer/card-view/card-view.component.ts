@@ -2,28 +2,12 @@ import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@
 import { MatPaginator, MatSort } from '@angular/material';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
 import { GithubUser } from '../../core/models/github-user.model';
-import { Issue, STATUS } from '../../core/models/issue.model';
-import { DialogService } from '../../core/services/dialog.service';
-import { ErrorHandlingService } from '../../core/services/error-handling.service';
+import { Issue } from '../../core/models/issue.model';
 import { GithubService } from '../../core/services/github.service';
 import { IssueService } from '../../core/services/issue.service';
-import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
-import { PermissionService } from '../../core/services/permission.service';
-import { PhaseService } from '../../core/services/phase.service';
-import { UserService } from '../../core/services/user.service';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
-
-export enum ACTION_BUTTONS {
-  VIEW_IN_WEB,
-  MARK_AS_RESPONDED,
-  MARK_AS_PENDING,
-  RESPOND_TO_ISSUE,
-  FIX_ISSUE,
-  DELETE_ISSUE
-}
 
 @Component({
   selector: 'app-card-view',
@@ -32,7 +16,6 @@ export enum ACTION_BUTTONS {
 })
 export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() headers: string[];
-  @Input() actions: ACTION_BUTTONS[];
   @Input() assignee?: GithubUser = undefined;
   @Input() filters?: any = undefined;
   @Input() sort?: MatSort = undefined;
@@ -41,30 +24,11 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   issues: IssuesDataTable;
   issues$: Observable<Issue[]>;
-  issuesPendingDeletion: { [id: number]: boolean };
 
-  public readonly action_buttons = ACTION_BUTTONS;
-
-  // Messages for the modal popup window upon deleting an issue
-  private readonly deleteIssueModalMessages = ['Do you wish to delete this issue?', 'This action is irreversible!'];
-  private readonly yesButtonModalMessage = 'Yes, I wish to delete this issue';
-  private readonly noButtonModalMessage = "No, I don't wish to delete this issue";
-
-  constructor(
-    public userService: UserService,
-    public permissions: PermissionService,
-    public labelService: LabelService,
-    private githubService: GithubService,
-    public issueService: IssueService,
-    private phaseService: PhaseService,
-    private errorHandlingService: ErrorHandlingService,
-    private loggingService: LoggingService,
-    private dialogService: DialogService
-  ) {}
+  constructor(private githubService: GithubService, public issueService: IssueService, private loggingService: LoggingService) {}
 
   ngOnInit() {
     this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.assignee, this.filters);
-    this.issuesPendingDeletion = {};
   }
 
   ngAfterViewInit(): void {
@@ -101,107 +65,9 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
       .join(SPLITTER_TEXT);
   }
 
-  isActionVisible(action: ACTION_BUTTONS): boolean {
-    return this.actions.includes(action);
-  }
-
-  markAsResponded(issue: Issue, event: Event) {
-    this.loggingService.info(`IssueTablesComponent: Marking Issue ${issue.id} as Responded`);
-    const newIssue = issue.clone(this.phaseService.currentPhase);
-    newIssue.status = STATUS.Done;
-    this.issueService.updateIssue(newIssue).subscribe(
-      (updatedIssue) => {
-        this.issueService.updateLocalStore(updatedIssue);
-      },
-      (error) => {
-        this.errorHandlingService.handleError(error);
-      }
-    );
-    event.stopPropagation();
-  }
-
-  isResponseEditable() {
-    return this.permissions.isTeamResponseEditable() || this.permissions.isTesterResponseEditable();
-  }
-
-  markAsPending(issue: Issue, event: Event) {
-    this.loggingService.info(`IssueTablesComponent: Marking Issue ${issue.id} as Pending`);
-    const newIssue = issue.clone(this.phaseService.currentPhase);
-    newIssue.status = STATUS.Incomplete;
-    this.issueService.updateIssue(newIssue).subscribe(
-      (updatedIssue) => {
-        this.issueService.updateLocalStore(updatedIssue);
-      },
-      (error) => {
-        this.errorHandlingService.handleError(error);
-      }
-    );
-    event.stopPropagation();
-  }
-
-  logIssueRespondRouting(id: number) {
-    this.loggingService.info(`IssueTablesComponent: Proceeding to Respond to Issue ${id}`);
-  }
-
-  logIssueEditRouting(id: number) {
-    this.loggingService.info(`IssueTablesComponent: Proceeding to Edit Issue ${id}`);
-  }
-
-  /**
-   * Gets the number of resolved disputes.
-   */
-  todoFinished(issue: Issue): number {
-    return issue.issueDisputes.length - issue.numOfUnresolvedDisputes();
-  }
-
-  /**
-   * Checks if all the disputes are resolved.
-   */
-  isTodoListChecked(issue: Issue): boolean {
-    return issue.issueDisputes && issue.numOfUnresolvedDisputes() === 0;
-  }
-
   viewIssueInBrowser(id: number, event: Event) {
-    this.loggingService.info(`IssueTablesComponent: Opening Issue ${id} on Github`);
+    this.loggingService.info(`CardViewComponent: Opening Issue ${id} on Github`);
     this.githubService.viewIssueInBrowser(id, event);
-  }
-
-  deleteIssue(id: number, event: Event) {
-    this.loggingService.info(`IssueTablesComponent: Deleting Issue ${id}`);
-    this.issuesPendingDeletion = {
-      ...this.issuesPendingDeletion,
-      [id]: true
-    };
-    this.issueService
-      .deleteIssue(id)
-      .pipe(
-        finalize(() => {
-          const { [id]: issueRemoved, ...theRest } = this.issuesPendingDeletion;
-          this.issuesPendingDeletion = theRest;
-        })
-      )
-      .subscribe(
-        (removedIssue) => {},
-        (error) => {
-          this.errorHandlingService.handleError(error);
-        }
-      );
-    event.stopPropagation();
-  }
-
-  openDeleteDialog(id: number, event: Event) {
-    const dialogRef = this.dialogService.openUserConfirmationModal(
-      this.deleteIssueModalMessages,
-      this.yesButtonModalMessage,
-      this.noButtonModalMessage
-    );
-
-    dialogRef.afterClosed().subscribe((res) => {
-      if (res) {
-        this.loggingService.info(`Deleting issue ${id}`);
-        this.deleteIssue(id, event);
-      }
-    });
   }
 
   getIssueOpenOrCloseColor(issue: Issue) {

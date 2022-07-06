@@ -6,6 +6,7 @@ import { flatMap, map } from 'rxjs/operators';
 import { GithubUser } from '../../core/models/github-user.model';
 import { GithubEvent } from '../../core/models/github/github-event.model';
 import { GithubEventService } from '../../core/services/githubevent.service';
+import { LoggingService } from '../../core/services/logging.service';
 import { EventWeek } from '../event-week.model';
 import { paginateData } from './event-paginator';
 
@@ -19,6 +20,7 @@ export class GithubEventDataTable extends DataSource<EventWeek> {
 
   constructor(
     private githubEventService: GithubEventService,
+    private logger: LoggingService,
     private sort: MatSort,
     private paginator: MatPaginator,
     private actor?: GithubUser,
@@ -49,11 +51,8 @@ export class GithubEventDataTable extends DataSource<EventWeek> {
     let weekNum = 1;
 
     githubEvents.forEach((githubEvent) => {
-      console.log(weekNum);
       weekNum++;
-      console.log(loopDate.format('ll'));
       const eventDate = moment(githubEvent.created_at);
-      console.log(eventDate.format('ll'));
       if (loopDate.isAfter(eventDate)) {
         // event in earlier week
       } else if (loopDate.clone().add(7, 'days').isAfter(eventDate) && loopDate.isBefore(eventDate)) {
@@ -99,8 +98,7 @@ export class GithubEventDataTable extends DataSource<EventWeek> {
     const displayDataChanges = [page, sortChange, this.startDate, this.endDate].filter((x) => x !== undefined);
 
     this.githubEventService.pollEvents();
-    console.log('log');
-    this.githubEventService.events$.subscribe((x) => console.log(x));
+    this.githubEventService.events$.subscribe((x) => this.logger.debug(x));
     this.eventSubscription = this.githubEventService.events$
       .pipe(
         flatMap(() => {
@@ -128,17 +126,12 @@ export class GithubEventDataTable extends DataSource<EventWeek> {
               if (this.paginator !== undefined) {
                 weekData = paginateData(this.paginator, weekData);
               }
-
-              console.log('Pipe Data:');
-              console.log(weekData);
               return weekData;
             })
           );
         })
       )
       .subscribe((data) => {
-        console.log('Subscribe Data:');
-        console.log(data);
         this.eventsSubject.next(data);
       });
   }

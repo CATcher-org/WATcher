@@ -48,7 +48,14 @@ export class EventTablesComponent implements OnInit, AfterViewInit {
   constructor(public githubEventService: GithubEventService, private loggingService: LoggingService) {}
 
   ngOnInit() {
-    this.githubEvents = new GithubEventDataTable(this.githubEventService, this.sort, this.paginator, this.actor, this.filters);
+    this.githubEvents = new GithubEventDataTable(
+      this.githubEventService,
+      this.loggingService,
+      this.sort,
+      this.paginator,
+      this.actor,
+      this.filters
+    );
   }
 
   ngAfterViewInit(): void {
@@ -80,10 +87,6 @@ export class EventTablesComponent implements OnInit, AfterViewInit {
         return word;
       })
       .join(SPLITTER_TEXT);
-  }
-
-  isActionVisible(action: ACTION_BUTTONS): boolean {
-    return this.actions.includes(action);
   }
 
   viewEventInBrowser(id: number, event: Event) {

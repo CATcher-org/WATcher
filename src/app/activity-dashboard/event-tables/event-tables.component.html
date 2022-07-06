@@ -4,15 +4,6 @@
   </h1>
 
   <mat-table [dataSource]="this.githubEvents" matSort multiTemplateDataRows class="mat-elevation-z8">
-    <!-- <ng-container matColumnDef="{{ column }}" *ngFor="let column of columnsToDisplay">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> {{ column }} </mat-header-cell>
-      <mat-cell *matCellDef="let element">
-        <span (click)="$event.stopPropagation()" style="cursor: default">
-          {{ element[column] }}
-        </span>
-      </mat-cell>
-    </ng-container> -->
-
     <ng-container matColumnDef="date_start">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Date </mat-header-cell>
       <mat-cell *matCellDef="let element">

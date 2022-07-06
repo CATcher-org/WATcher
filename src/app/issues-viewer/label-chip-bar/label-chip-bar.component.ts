@@ -7,6 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Label } from '../../core/models/label.model';
 import { LabelService } from '../../core/services/label.service';
+import { LoggingService } from '../../core/services/logging.service';
 
 @Component({
   selector: 'app-label-chip-bar',
@@ -30,12 +31,12 @@ export class LabelChipBarComponent implements OnInit {
 
   @ViewChild('labelInput', { static: true }) labelInput: ElementRef<HTMLInputElement>;
 
-  constructor(private labelService: LabelService) {}
+  constructor(private labelService: LabelService, private logger: LoggingService) {}
 
   ngOnInit(): void {
     this.labelService.fetchLabels().subscribe(
       (response) => {
-        console.log(response);
+        this.logger.debug('Fetched labels from Github');
       },
       (err) => {},
       () => {
@@ -44,7 +45,7 @@ export class LabelChipBarComponent implements OnInit {
     );
   }
 
-  initialize() {
+  private initialize() {
     this.labels = this.labelService.labels;
     this.allLabelNames = this.labels.map((label) => label.getFormattedName());
 
@@ -62,8 +63,6 @@ export class LabelChipBarComponent implements OnInit {
 
     this.selectedLabelNames.push(value);
     this.selectedLabels.next(this.selectedLabelNames);
-    console.log('lcb');
-    console.log(this.selectedLabels);
 
     if (event.input) {
       event.input.value = ''; // Clear the input value
