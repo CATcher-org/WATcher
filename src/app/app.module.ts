@@ -92,14 +92,14 @@ import { SharedModule } from './shared/shared.module';
   entryComponents: [UserConfirmationComponent, SessionFixConfirmationComponent, LabelDefinitionPopupComponent]
 })
 export class AppModule {
-  constructor(private apollo: Apollo, private httpLink: HttpLink, private authService: AuthService) {
+  constructor(private apollo: Apollo, private httpLink: HttpLink, private authService: AuthService, private logger: LoggingService) {
     const URI = 'https://api.github.com/graphql';
     const log = new ApolloLink((operation, forward) => {
       operation.setContext({ start: performance.now() });
-      console.info('request', operation.getContext());
+      this.logger.info('request', operation.getContext());
       return forward(operation).map((result) => {
         const time = performance.now() - operation.getContext().start;
-        console.info('response', operation.getContext(), `in ${Math.round(time)}ms`);
+        this.logger.info('response', operation.getContext(), `in ${Math.round(time)}ms`);
         return result;
       });
     });
