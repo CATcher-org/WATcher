@@ -94,13 +94,22 @@ import { SharedModule } from './shared/shared.module';
 export class AppModule {
   constructor(private apollo: Apollo, private httpLink: HttpLink, private authService: AuthService) {
     const URI = 'https://api.github.com/graphql';
+    const log = new ApolloLink((operation, forward) => {
+      operation.setContext({ start: performance.now() });
+      console.info('request', operation.getContext());
+      return forward(operation).map((result) => {
+        const time = performance.now() - operation.getContext().start;
+        console.info('response', operation.getContext(), `in ${Math.round(time)}ms`);
+        return result;
+      });
+    });
     const basic = setContext(() => {
       return { headers: { Accept: 'charset=utf-8' } };
     });
     const auth = setContext(() => {
       return { headers: { Authorization: `Token ${this.authService.accessToken.getValue()}` } };
     });
-    const link = ApolloLink.from([basic, auth, this.httpLink.create({ uri: URI })]);
+    const link = ApolloLink.from([log, basic, auth, this.httpLink.create({ uri: URI })]);
     const fragmentMatcher = new IntrospectionFragmentMatcher({
       introspectionQueryResultData: graphqlTypes
     });
