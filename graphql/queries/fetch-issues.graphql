@@ -1,4 +1,4 @@
-query FetchIssues($owner: String!, $name: String!, $filter: IssueFilters, $cursor: String, $commentCursor: String) {
+query FetchIssues($owner: String!, $name: String!, $filter: IssueFilters, $cursor: String) {
   repository(owner: $owner, name: $name) {
     issues(first: 100, filterBy: $filter, after: $cursor) {
       edges {
@@ -16,14 +16,6 @@ query FetchIssues($owner: String!, $name: String!, $filter: IssueFilters, $curso
             edges {
               node {
                 ...issueAssignee
-              }
-            }
-          }
-          comments(first: 100, after: $commentCursor) {
-            edges {
-              cursor
-              node {
-                ...issueComment
               }
             }
           }

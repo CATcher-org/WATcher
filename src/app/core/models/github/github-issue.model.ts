@@ -24,7 +24,7 @@ export class GithubIssue {
     avatar_url: string;
     url: string;
   };
-  comments: Array<GithubComment>;
+  comments?: Array<GithubComment>;
   issueOrPr?: string;
 
   constructor(githubIssue: {}) {
