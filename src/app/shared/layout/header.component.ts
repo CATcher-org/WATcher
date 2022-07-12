@@ -15,6 +15,8 @@ import { LoggingService } from '../../core/services/logging.service';
 import { PhaseDescription, PhaseService } from '../../core/services/phase.service';
 import { UserService } from '../../core/services/user.service';
 
+const ISSUE_TRACKER_URL = 'https://github.com/CATcher-org/WATcher/issues';
+
 @Component({
   selector: 'app-layout-header',
   templateUrl: './header.component.html'
