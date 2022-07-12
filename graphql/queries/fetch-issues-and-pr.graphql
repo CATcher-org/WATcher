@@ -1,6 +1,13 @@
-query FetchIssuesAndPr($owner: String!, $name: String!, $filter: IssueFilters, $cursor: String, $commentCursor: String) {
+query FetchIssuesAndPr(
+  $owner: String!
+  $name: String!
+  $filter: IssueFilters
+  $issueCursor: String
+  $prCursor: String
+  $commentCursor: String
+) {
   repository(owner: $owner, name: $name) {
-    issues(first: 100, filterBy: $filter, after: $cursor) {
+    issues(first: 100, filterBy: $filter, after: $issueCursor) {
       edges {
         cursor
         node {
@@ -30,7 +37,7 @@ query FetchIssuesAndPr($owner: String!, $name: String!, $filter: IssueFilters, $
         }
       }
     }
-    pullRequests(first: 100, after: $cursor) {
+    pullRequests(first: 100, after: $prCursor) {
       edges {
         cursor
         node {

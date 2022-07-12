@@ -20,11 +20,7 @@ export class GithubGraphqlIssueOrPr extends GithubIssue {
         avatar_url: issue.author.avatarUrl
       },
       assignees: flattenEdges(issue.assignees.edges),
-      labels: flattenEdges(issue.labels.edges),
-      comments: flattenEdges(issue.comments.edges, (node) => ({
-        ...node,
-        id: node.databaseId
-      }))
+      labels: flattenEdges(issue.labels.edges)
     });
   }
 }

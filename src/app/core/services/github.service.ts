@@ -3,15 +3,17 @@ import { Injectable } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { ApolloQueryResult } from 'apollo-client';
 import { DocumentNode } from 'graphql';
-import { forkJoin, from, Observable, of, throwError } from 'rxjs';
+import { forkJoin, from, merge, Observable, of, throwError } from 'rxjs';
 import { catchError, filter, flatMap, map, throwIfEmpty } from 'rxjs/operators';
 import {
   FetchIssue,
   FetchIssueQuery,
-  FetchIssuesAndPr,
-  FetchIssuesAndPrQuery,
+  FetchIssues,
   FetchIssuesByTeam,
-  FetchIssuesByTeamQuery
+  FetchIssuesByTeamQuery,
+  FetchIssuesQuery,
+  FetchPullRequests,
+  FetchPullRequestsQuery
 } from '../../../../graphql/graphql-types';
 import { AppConfig } from '../../../environments/environment';
 import { getNumberOfPages } from '../../shared/lib/github-paginator-parser';
@@ -119,17 +121,30 @@ export class GithubService {
 
   fetchIssuesGraphql(issuesFilter: RestGithubIssueFilter): Observable<Array<GithubIssue>> {
     const graphqlFilter = issuesFilter.convertToGraphqlFilter();
-    return this.toFetchIssues(issuesFilter).pipe(
+    const issueObs = this.toFetchIssues(issuesFilter).pipe(
       filter((toFetch) => toFetch),
       flatMap(() => {
-        return this.fetchGraphqlList<FetchIssuesAndPrQuery, GithubGraphqlIssueOrPr>(
-          FetchIssuesAndPr,
+        return this.fetchGraphqlList<FetchIssuesQuery, GithubGraphqlIssueOrPr>(
+          FetchIssues,
           { owner: ORG_NAME, name: REPO, filter: graphqlFilter },
-          (result) => [].concat(result.data.repository.issues.edges, result.data.repository.pullRequests.edges),
+          (result) => result.data.repository.issues.edges,
           GithubGraphqlIssueOrPr
         );
       })
     );
+    const prObs = this.toFetchIssues(issuesFilter).pipe(
+      filter((toFetch) => toFetch),
+      flatMap(() => {
+        return this.fetchGraphqlList<FetchPullRequestsQuery, GithubGraphqlIssueOrPr>(
+          FetchPullRequests,
+          { owner: ORG_NAME, name: REPO },
+          (result) => result.data.repository.pullRequests.edges,
+          GithubGraphqlIssueOrPr
+        );
+      })
+    );
+
+    return merge(issueObs, prObs);
   }
 
   /**
