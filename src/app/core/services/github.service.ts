@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { ApolloQueryResult } from 'apollo-client';
 import { DocumentNode } from 'graphql';
-import { forkJoin, from, merge, Observable, of, throwError } from 'rxjs';
+import { forkJoin, from, Observable, of, throwError, zip } from 'rxjs';
 import { catchError, filter, flatMap, map, throwIfEmpty } from 'rxjs/operators';
 import {
   FetchIssue,
@@ -144,7 +144,7 @@ export class GithubService {
       })
     );
 
-    return merge(issueObs, prObs);
+    return zip(issueObs, prObs).pipe(map((x) => x[0].concat(x[1])));
   }
 
   /**
