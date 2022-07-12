@@ -1,6 +1,6 @@
-# The purpose of this workflow file is to 
+# The purpose of this workflow file is to
 # deploy the app and upload the
-# release assets for the four platforms 
+# release assets for the four platforms
 # (browser, Linux, Windows, MacOS) automatically
 
 name: Version Deployment
@@ -27,7 +27,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm install
-          npm run deploy:web -- --repo=https://x-access-token:$GITHUB_TOKEN@github.com/CATcher-org/CATcher.git
+          npm run deploy:web -- --repo=https://x-access-token:$GITHUB_TOKEN@github.com/CATcher-org/WATcher.git
 
   draft_release:
     runs-on: ubuntu-latest
@@ -62,7 +62,7 @@ jobs:
     needs: draft_release
     strategy:
       matrix:
-        node-version: [ 12.x ]
+        node-version: [12.x]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -80,8 +80,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.draft_release.outputs.upload_url }}
-          asset_path: ./release/CATcher-${{ needs.draft_release.outputs.version_num }}.AppImage
-          asset_name: CATcher-${{ needs.draft_release.outputs.version_num }}.AppImage
+          asset_path: ./release/WATcher-${{ needs.draft_release.outputs.version_num }}.AppImage
+          asset_name: WATcher-${{ needs.draft_release.outputs.version_num }}.AppImage
           asset_content_type: application/octet-stream
 
   deploy_windows:
@@ -89,7 +89,7 @@ jobs:
     needs: draft_release
     strategy:
       matrix:
-        node-version: [ 12.x ]
+        node-version: [12.x]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -107,8 +107,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.draft_release.outputs.upload_url }}
-          asset_path: ./release/CATcher ${{ needs.draft_release.outputs.version_num }}.exe
-          asset_name: CATcher-${{ needs.draft_release.outputs.version_num }}.exe
+          asset_path: ./release/WATcher ${{ needs.draft_release.outputs.version_num }}.exe
+          asset_name: WATcher-${{ needs.draft_release.outputs.version_num }}.exe
           asset_content_type: application/octet-stream
 
   deploy_macos:
@@ -116,7 +116,7 @@ jobs:
     needs: draft_release
     strategy:
       matrix:
-        node-version: [ 12.x ]
+        node-version: [12.x]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -134,6 +134,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.draft_release.outputs.upload_url }}
-          asset_path: ./release/CATcher-${{ needs.draft_release.outputs.version_num }}.dmg
-          asset_name: CATcher-${{ needs.draft_release.outputs.version_num }}.dmg
+          asset_path: ./release/WATcher-${{ needs.draft_release.outputs.version_num }}.dmg
+          asset_name: WATcher-${{ needs.draft_release.outputs.version_num }}.dmg
           asset_content_type: application/octet-stream
