@@ -24,6 +24,13 @@ export class GithubIssue {
     avatar_url: string;
     url: string;
   };
+  milestone?: {
+    number: string; // id for milestone
+    title: string;
+    state: string;
+    dueOn: string; // null if no due date
+    url: string;
+  };
   comments?: Array<GithubComment>;
   issueOrPr?: string;
 

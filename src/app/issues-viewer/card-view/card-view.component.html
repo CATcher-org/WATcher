@@ -25,6 +25,10 @@
               <span class="octicon" [octicon]="this.getOcticon(issue)" [color]="this.getIssueOpenOrCloseColor(issue)"></span>
               #{{ issue.id }}: {{ this.fitTitleText(issue.title) }}
             </mat-card-title>
+            <mat-card-subtitle>
+              <span *ngIf="issue.githubIssue.milestone" class="octicon-milestone" octicon="milestone" color="grey" size="8"></span>
+              {{ issue.githubIssue.milestone?.title }}
+            </mat-card-subtitle>
           </mat-card-header>
           <mat-card-content>
             <mat-chip-list aria-label="Labels">
