@@ -20,7 +20,8 @@ export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
   status: 'all',
   type: 'all',
   sort: 'id',
-  labels: []
+  labels: [],
+  milestone: []
 };
 
 export class IssuesDataTable extends DataSource<Issue> {

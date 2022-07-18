@@ -243,6 +243,22 @@ export class GithubService {
     );
   }
 
+  fetchAllMilestones(): Observable<Array<{}>> {
+    return from(
+      octokit.issues.listMilestonesForRepo({
+        owner: ORG_NAME,
+        repo: REPO,
+        per_page: MAX_ITEMS_PER_PAGE,
+        headers: GithubService.IF_NONE_MATCH_EMPTY
+      })
+    ).pipe(
+      map((response) => {
+        return response['data'];
+      }),
+      catchError((err) => throwError('Failed to fetch milestones.'))
+    );
+  }
+
   fetchAllLabels(): Observable<Array<{}>> {
     return from(
       octokit.issues.listLabelsForRepo({

@@ -3,6 +3,8 @@ import { MatSort } from '@angular/material';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
 import { GithubService } from '../core/services/github.service';
+import { LoggingService } from '../core/services/logging.service';
+import { MilestoneService } from '../core/services/milestone.service';
 import { TABLE_COLUMNS } from '../shared/issue-tables/issue-tables-columns';
 import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../shared/issue-tables/IssuesDataTable';
 import { CardViewComponent } from './card-view/card-view.component';
@@ -23,10 +25,17 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(CardViewComponent) cardViews: QueryList<CardViewComponent>;
   @ViewChild(MatSort, { static: true }) matSort: MatSort;
 
-  constructor(public githubService: GithubService) {}
+  constructor(public githubService: GithubService, private milestoneService: MilestoneService, private logger: LoggingService) {}
 
   ngOnInit() {
     this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
+    this.milestoneService.fetchMilestones().subscribe(
+      (response) => {
+        this.logger.debug('Fetched milestones from Github');
+      },
+      (err) => {},
+      () => {}
+    );
   }
 
   ngAfterViewInit(): void {
