@@ -113,7 +113,9 @@ export class HeaderComponent implements OnInit {
 
   viewBrowser() {
     if (this.phaseService.currentPhase === Phase.activityDashboard) {
-      this.electronService.openLink('https://github.com/gycgabriel/WATcher-test/pulse');
+      this.electronService.openLink(
+        `https://github.com/${this.phaseService.currentRepo.owner}/${this.phaseService.currentRepo.name}/pulse`
+      );
       return;
     }
 
