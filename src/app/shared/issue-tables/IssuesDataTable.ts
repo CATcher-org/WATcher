@@ -14,6 +14,7 @@ export type DropdownFilter = {
   type: string;
   sort: string;
   labels: string[];
+  milestones: string[];
 };
 
 export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
@@ -21,7 +22,7 @@ export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
   type: 'all',
   sort: 'id',
   labels: [],
-  milestone: []
+  milestones: []
 };
 
 export class IssuesDataTable extends DataSource<Issue> {
@@ -128,6 +129,17 @@ export class IssuesDataTable extends DataSource<Issue> {
                 .filter((issue) => {
                   return this.dropdownFilter.labels.every((label) => issue.labels.includes(label));
                 });
+
+              if (Array.isArray(this.dropdownFilter.milestones) && this.dropdownFilter.milestones.length > 0) {
+                console.log('huh');
+                data = data.filter((issue) => {
+                  return (
+                    issue.githubIssue.milestone &&
+                    this.dropdownFilter.milestones.some((milestone) => issue.githubIssue.milestone.number === milestone)
+                  );
+                });
+              }
+
               if (this.sort !== undefined) {
                 data = getSortedData(this.sort, data);
               }
