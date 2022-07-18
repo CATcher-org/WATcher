@@ -25,6 +25,7 @@ export class AuthComponent implements OnInit, OnDestroy {
   authStateSubscription: Subscription;
   currentUserName: string;
   urlEncodedSessionName: string;
+  urlEncodedRepo: string;
   sessionInformation: string;
 
   constructor(
@@ -66,6 +67,7 @@ export class AuthComponent implements OnInit, OnDestroy {
     this.initAccessTokenSubscription();
     this.initAuthStateSubscription();
     this.createProfileFromUrlQueryParams();
+    this.getRepoFromUrlQueryParams();
     if (oauthCode) {
       // runs upon receiving oauthCode from the redirect
       this.authService.changeAuthState(AuthState.AwaitingAuthentication);
@@ -190,6 +192,13 @@ export class AuthComponent implements OnInit, OnDestroy {
     const urlParams = this.activatedRoute.snapshot.queryParamMap;
     if (urlParams.has('session')) {
       this.urlEncodedSessionName = urlParams.get('session');
+    }
+  }
+
+  private getRepoFromUrlQueryParams() {
+    const urlParams = this.activatedRoute.snapshot.queryParamMap;
+    if (urlParams.has('repo')) {
+      this.urlEncodedRepo = urlParams.get('repo');
     }
   }
 }
