@@ -1,5 +1,6 @@
 <div *ngIf="isUserNotAuthenticated()" class="login-page">
-  <app-session-selection [urlEncodedSessionName]="this.urlEncodedSessionName"></app-session-selection>
+  <app-session-selection [urlEncodedSessionName]="this.urlEncodedSessionName" [urlEncodedRepo]="this.urlEncodedRepo">
+  </app-session-selection>
 </div>
 
 <div *ngIf="isUserAuthenticating() || isAwaitingOAuthUserConfirm()" class="login-page">

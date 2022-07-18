@@ -19,6 +19,7 @@ export class SessionSelectionComponent implements OnInit {
   repoForm: FormGroup;
 
   @Input() urlEncodedSessionName: string;
+  @Input() urlEncodedRepo: string;
 
   @Output() sessionEmitter: EventEmitter<string> = new EventEmitter<string>();
 
@@ -35,6 +36,7 @@ export class SessionSelectionComponent implements OnInit {
     this.isSettingUpSession = false;
     this.initProfileForm();
     this.initRepoForm();
+    this.autofillRepo();
   }
 
   /**
@@ -129,5 +131,9 @@ export class SessionSelectionComponent implements OnInit {
     this.repoForm = this.formBuilder.group({
       repo: ['', Validators.required]
     });
+  }
+
+  private autofillRepo() {
+    this.repoForm.get('repo').setValue(this.urlEncodedRepo);
   }
 }
