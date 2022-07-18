@@ -5,7 +5,7 @@ const nodeUrl = require('url');
 const fetch = require('node-fetch');
 const Logger = require('electron-log');
 
-const CLIENT_ID = '6750652c0c9001314434';
+const CLIENT_ID = 'dda4282bac3cac95148b'; // Client ID sent to github oauth
 const BASE_URL = 'https://github.com';
 const ACCESS_TOKEN_URL = 'https://catcher-auth.herokuapp.com/authenticate';
 const CALLBACK_URL = 'http://localhost:4200';
