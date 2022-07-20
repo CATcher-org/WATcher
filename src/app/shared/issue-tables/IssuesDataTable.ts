@@ -131,7 +131,6 @@ export class IssuesDataTable extends DataSource<Issue> {
                 });
 
               if (Array.isArray(this.dropdownFilter.milestones) && this.dropdownFilter.milestones.length > 0) {
-                console.log('huh');
                 data = data.filter((issue) => {
                   return (
                     issue.githubIssue.milestone &&
