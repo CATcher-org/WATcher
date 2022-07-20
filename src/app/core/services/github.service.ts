@@ -248,6 +248,7 @@ export class GithubService {
       octokit.issues.listMilestonesForRepo({
         owner: ORG_NAME,
         repo: REPO,
+        state: 'all',
         per_page: MAX_ITEMS_PER_PAGE,
         headers: GithubService.IF_NONE_MATCH_EMPTY
       })
