@@ -35,6 +35,11 @@ span.octicon {
   display: inline-flex;
 }
 
+span.octicon-milestone {
+  margin-right: 4px;
+  display: inline-flex;
+}
+
 .mat-card {
   padding: 10px;
 }
@@ -73,4 +78,13 @@ div.column-header .mat-card-header {
 
 .mat-card-content {
   margin-bottom: 2px;
+}
+
+.mat-card-subtitle {
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  text-align: left;
+  overflow: auto;
+  margin: 6px 0;
 }

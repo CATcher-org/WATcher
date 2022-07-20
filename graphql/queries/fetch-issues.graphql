@@ -19,6 +19,9 @@ query FetchIssues($owner: String!, $name: String!, $filter: IssueFilters, $curso
               }
             }
           }
+          milestone {
+            ...issueMilestone
+          }
         }
       }
     }

@@ -8,7 +8,7 @@
   margin: 8px;
   font-size: 14px;
   max-width: 20%;
-  width: 10%; /* depends on number of filters*/
+  width: 25%; /* depends on number of filters*/
 }
 
 .search-bar {

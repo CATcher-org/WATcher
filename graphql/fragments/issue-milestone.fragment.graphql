@@ -1,0 +1,7 @@
+fragment issueMilestone on Milestone {
+  number
+  title
+  state
+  dueOn
+  url
+}

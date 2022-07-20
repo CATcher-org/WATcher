@@ -19,6 +19,9 @@ query FetchPullRequests($owner: String!, $name: String!, $cursor: String) {
               }
             }
           }
+          milestone {
+            ...issueMilestone
+          }
         }
       }
     }
