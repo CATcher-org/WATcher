@@ -24,8 +24,6 @@ export class GithubIssue {
     number: string; // id for milestone
     title: string;
     state: string;
-    dueOn: string; // null if no due date
-    url: string;
   };
   comments?: Array<GithubComment>;
   issueOrPr?: string;

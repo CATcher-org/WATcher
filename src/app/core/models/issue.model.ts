@@ -6,6 +6,7 @@ import { GithubIssue } from './github/github-issue.model';
 import { GithubLabel } from './github/github-label.model';
 import { HiddenData } from './hidden-data.model';
 import { IssueDispute } from './issue-dispute.model';
+import { Milestone } from './milestone.model';
 import { Team } from './team.model';
 import { TeamAcceptedTemplate } from './templates/team-accepted-template.model';
 import { TeamResponseTemplate } from './templates/team-response-template.model';
@@ -26,6 +27,10 @@ export class Issue {
   hiddenDataInDescription: HiddenData;
   updated_at: string;
   closed_at: string;
+  milestone?: Milestone;
+  state: string;
+  issueOrPr: string;
+  author: string;
 
   /** Fields derived from Labels */
   severity: string;
@@ -40,6 +45,7 @@ export class Issue {
   /** Depending on the phase, assignees attribute can be derived from Github's assignee feature OR from the Github's issue description */
   assignees?: string[];
   labels?: string[];
+  githubLabels?: GithubLabel[];
 
   /** Fields derived from parsing of Github's issue description */
   duplicateOf?: number;
@@ -117,9 +123,14 @@ export class Issue {
     this.title = githubIssue.title;
     this.hiddenDataInDescription = new HiddenData(githubIssue.body);
     this.description = Issue.updateDescription(this.hiddenDataInDescription.originalStringWithoutHiddenData);
-    this.githubIssue = githubIssue;
+    this.milestone = githubIssue.milestone ? new Milestone(githubIssue.milestone) : null;
+    this.state = githubIssue.state;
+    this.issueOrPr = githubIssue.issueOrPr;
+    this.author = githubIssue.user.login;
+    // this.githubIssue = githubIssue;
 
     this.assignees = githubIssue.assignees.map((assignee) => assignee.login);
+    this.githubLabels = githubIssue.labels;
     this.labels = githubIssue.labels.map((label) => label.name);
 
     /** Fields derived from Labels */
