@@ -25,7 +25,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(CardViewComponent) cardViews: QueryList<CardViewComponent>;
   @ViewChild(MatSort, { static: true }) matSort: MatSort;
 
-  constructor(public githubService: GithubService, private milestoneService: MilestoneService, private logger: LoggingService) {}
+  constructor(public githubService: GithubService, public milestoneService: MilestoneService, private logger: LoggingService) {}
 
   ngOnInit() {
     this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));

@@ -1,5 +1,3 @@
 fragment issueAssignee on User {
-  id
   login
-  url
 }

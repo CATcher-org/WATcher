@@ -33,11 +33,11 @@ export class MilestoneService {
    * Parses milestone information and returns an array of Milestone objects.
    * @param milestones - Milestone Information from API.
    */
-  parseMilestoneData(milestones: Array<{}>): Milestone[] {
+  parseMilestoneData(milestones: Array<any>): Milestone[] {
     const milestoneData: Milestone[] = [];
 
     for (const milestone of milestones) {
-      milestoneData.push(new Milestone(milestone['number'], milestone['title'], milestone['state'], milestone['dueOn'], milestone['url']));
+      milestoneData.push(new Milestone(milestone));
     }
     return milestoneData;
   }

@@ -14,9 +14,7 @@ export class GithubGraphqlIssue extends GithubIssue {
       title: issue.title,
       state: issue.state,
       user: {
-        login: issue.author.login,
-        url: issue.author.url,
-        avatar_url: issue.author.avatarUrl
+        login: issue.author.login
       },
       assignees: flattenEdges(issue.assignees.edges),
       labels: flattenEdges(issue.labels.edges),
