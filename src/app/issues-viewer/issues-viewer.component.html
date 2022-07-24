@@ -1,3 +1,18 @@
+<mat-card>
+  <form [formGroup]="repoForm" (ngSubmit)="switchRepo()">
+    <mat-card-content>
+      <mat-form-field class="login-field">
+        <input matInput placeholder="Repository Location (Org/Repo)" formControlName="repoInput" required />
+      </mat-form-field>
+      <mat-card-actions>
+        <button type="submit" mat-stroked-button color="primary">
+          <div>Submit</div>
+        </button>
+      </mat-card-actions>
+    </mat-card-content>
+  </form>
+</mat-card>
+
 <div>
   <mat-grid-list cols="8" rowHeight="80px">
     <mat-grid-tile colspan="2">

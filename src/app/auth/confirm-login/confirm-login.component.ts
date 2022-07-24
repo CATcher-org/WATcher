@@ -61,7 +61,7 @@ export class ConfirmLoginComponent implements OnInit {
    */
   completeLoginProcess(): void {
     this.authService.changeAuthState(AuthState.AwaitingAuthentication);
-    const currentRepo: Repo = { owner: window.localStorage.getItem('org'), name: window.localStorage.getItem('dataRepo') };
+    const currentRepo = new Repo(window.localStorage.getItem('org'), window.localStorage.getItem('dataRepo'));
     const sessionData: SessionData = {
       sessionRepo: [
         { phase: Phase.issuesViewer, repos: [currentRepo] }
