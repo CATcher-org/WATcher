@@ -88,3 +88,14 @@ div.column-header .mat-card-header {
   overflow: auto;
   margin: 6px 0;
 }
+
+.row-count {
+  background-color: rgb(222, 222, 222);
+  border-radius: 3px;
+  cursor: default;
+  padding: 6px;
+  color: rgb(0, 0, 0);
+  font-weight: 410;
+  display: inline-flex;
+  font-size: 14px;
+}
