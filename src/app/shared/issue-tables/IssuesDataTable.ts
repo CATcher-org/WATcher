@@ -26,6 +26,7 @@ export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
 };
 
 export class IssuesDataTable extends DataSource<Issue> {
+  public count = 0;
   private filterChange = new BehaviorSubject('');
   private dropdownFilterChange = new BehaviorSubject(DEFAULT_DROPDOWN_FILTER);
   private teamFilterChange = new BehaviorSubject('');
@@ -141,6 +142,8 @@ export class IssuesDataTable extends DataSource<Issue> {
               if (this.paginator !== undefined) {
                 data = paginateData(this.paginator, data);
               }
+
+              this.count = data.length;
 
               return data;
             })

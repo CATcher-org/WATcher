@@ -12,6 +12,7 @@
         <mat-card-title>
           {{ this.assignee !== undefined ? this.assignee.login : '' }}
         </mat-card-title>
+        <div class="row-count">{{ this.issues.count }}</div>
       </mat-card-header>
     </mat-card>
   </div>
