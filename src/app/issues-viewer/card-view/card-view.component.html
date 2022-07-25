@@ -19,20 +19,20 @@
   <div *ngFor="let issue of this.issues$ | async; index as i">
     <mat-card class="card" [ngClass]="this.getIssueOpenOrCloseColorCSSClass(issue)">
       <a class="no-underline link-grey-dark" (click)="viewIssueInBrowser(issue.id, $event)">
-        <span [matTooltip]="this.readableDateFormat(this.issue.githubIssue.updated_at)">
+        <span [matTooltip]="this.issue.updated_at">
           <mat-card-header>
             <mat-card-title>
               <span class="octicon" [octicon]="this.getOcticon(issue)" [color]="this.getIssueOpenOrCloseColor(issue)"></span>
               #{{ issue.id }}: {{ this.fitTitleText(issue.title) }}
             </mat-card-title>
             <mat-card-subtitle>
-              <span *ngIf="issue.githubIssue.milestone" class="octicon-milestone" octicon="milestone" color="grey" size="8"></span>
-              {{ issue.githubIssue.milestone?.title }}
+              <span *ngIf="issue.milestone" class="octicon-milestone" octicon="milestone" color="grey" size="8"></span>
+              {{ issue.milestone?.title }}
             </mat-card-subtitle>
           </mat-card-header>
           <mat-card-content>
             <mat-chip-list aria-label="Labels">
-              <mat-chip *ngFor="let label of issue.githubIssue.labels" [ngStyle]="{ 'background-color': '#' + label.color }" selected>
+              <mat-chip *ngFor="let label of issue.githubLabels" [ngStyle]="{ 'background-color': '#' + label.color }" selected>
                 {{ label.name }}
               </mat-chip>
             </mat-chip-list>

@@ -2,15 +2,11 @@ export class Milestone {
   readonly number: string;
   title: string;
   state: string;
-  dueOn: string;
-  readonly url: string;
 
-  constructor(number: string, title: string, state: string, dueOn: string, url: string) {
-    this.number = number;
-    this.title = title;
-    this.state = state;
-    this.dueOn = dueOn;
-    this.url = url;
+  constructor(milestone: { number: string; title: string; state: string }) {
+    this.number = milestone.number;
+    this.title = milestone.title;
+    this.state = milestone.state;
   }
 
   public equals(milestone: Milestone) {

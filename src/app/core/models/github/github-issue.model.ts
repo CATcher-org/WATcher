@@ -6,9 +6,7 @@ export class GithubIssue {
   id: string; // Github's backend's id
   number: number; // Issue's display id
   assignees: Array<{
-    id: number;
     login: string;
-    url: string;
   }>;
   body: string;
   created_at: string;
@@ -19,17 +17,13 @@ export class GithubIssue {
   closed_at: string;
   url: string;
   user: {
-    // Author of the issue
+    // author
     login: string;
-    avatar_url: string;
-    url: string;
   };
   milestone?: {
     number: string; // id for milestone
     title: string;
     state: string;
-    dueOn: string; // null if no due date
-    url: string;
   };
   comments?: Array<GithubComment>;
   issueOrPr?: string;

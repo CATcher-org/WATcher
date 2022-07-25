@@ -4,17 +4,6 @@ import { GithubIssue } from './github-issue.model';
 
 export class GithubGraphqlIssueOrPr extends GithubIssue {
   constructor(issue: IssueModelFragment) {
-    let issueMilestone = null;
-    if (issue.milestone) {
-      issueMilestone = {
-        number: issue.milestone.number,
-        title: issue.milestone.title,
-        state: issue.milestone.state,
-        dueOn: issue.milestone.dueOn,
-        url: issue.milestone.url
-      };
-    }
-
     super({
       issueOrPr: issue.__typename,
       id: issue.id,
@@ -26,13 +15,11 @@ export class GithubGraphqlIssueOrPr extends GithubIssue {
       title: issue.title,
       state: issue.state,
       user: {
-        login: issue.author.login,
-        url: issue.author.url,
-        avatar_url: issue.author.avatarUrl
+        login: issue.author.login
       },
       assignees: flattenEdges(issue.assignees.edges),
       labels: flattenEdges(issue.labels.edges),
-      milestone: issueMilestone
+      milestone: issue.milestone ? issue.milestone : null
     });
   }
 }
