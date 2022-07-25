@@ -16,11 +16,11 @@ export class GithubLabel {
   };
 
   color: string;
-  id: number;
+  // id: number;
   name: string;
   category: string;
   label: string;
-  url: string;
+  // url: string;
 
   constructor(githubLabels: {}) {
     Object.assign(this, githubLabels);

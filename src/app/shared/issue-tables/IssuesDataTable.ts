@@ -94,15 +94,12 @@ export class IssuesDataTable extends DataSource<Issue> {
               // Filter by assignee of issue
               if (this.assignee) {
                 data = data.filter((issue) => {
-                  const githubissue = issue.githubIssue;
-                  if (githubissue.issueOrPr === 'PullRequest') {
-                    return githubissue.user.login === this.assignee.login;
-                  } else if (!githubissue.assignees) {
+                  if (issue.issueOrPr === 'PullRequest') {
+                    return issue.author === this.assignee.login;
+                  } else if (!issue.assignees) {
                     return false;
                   } else {
-                    return githubissue.assignees.some((x) => {
-                      return x.login === this.assignee.login;
-                    });
+                    return issue.assignees.includes(this.assignee.login);
                   }
                 });
               }
@@ -110,18 +107,18 @@ export class IssuesDataTable extends DataSource<Issue> {
               data = data
                 .filter((issue) => {
                   if (this.dropdownFilter.status === 'open') {
-                    return issue.githubIssue.state === 'OPEN';
+                    return issue.state === 'OPEN';
                   } else if (this.dropdownFilter.status === 'closed') {
-                    return issue.githubIssue.state !== 'OPEN';
+                    return issue.state !== 'OPEN';
                   } else {
                     return true;
                   }
                 })
                 .filter((issue) => {
                   if (this.dropdownFilter.type === 'issue') {
-                    return issue.githubIssue.issueOrPr === 'Issue';
+                    return issue.issueOrPr === 'Issue';
                   } else if (this.dropdownFilter.type === 'pullrequest') {
-                    return issue.githubIssue.issueOrPr === 'PullRequest';
+                    return issue.issueOrPr === 'PullRequest';
                   } else {
                     return true;
                   }
@@ -132,10 +129,7 @@ export class IssuesDataTable extends DataSource<Issue> {
 
               if (Array.isArray(this.dropdownFilter.milestones) && this.dropdownFilter.milestones.length > 0) {
                 data = data.filter((issue) => {
-                  return (
-                    issue.githubIssue.milestone &&
-                    this.dropdownFilter.milestones.some((milestone) => issue.githubIssue.milestone.number === milestone)
-                  );
+                  return issue.milestone && this.dropdownFilter.milestones.some((milestone) => issue.milestone.number === milestone);
                 });
               }
 
