@@ -34,6 +34,10 @@ export class LabelChipBarComponent implements OnInit {
   constructor(private labelService: LabelService, private logger: LoggingService) {}
 
   ngOnInit(): void {
+    this.load();
+  }
+
+  public load() {
     this.labelService.fetchLabels().subscribe(
       (response) => {
         this.logger.debug('Fetched labels from Github');
