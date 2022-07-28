@@ -26,3 +26,11 @@ app-label-chip-bar {
 .label-filter-grid-tile {
   overflow: auto;
 }
+
+.submit-button {
+  margin-left: 8px;
+}
+
+.switch-repo-tile {
+  background-color: lightblue;
+}
