@@ -60,7 +60,7 @@ export class PhaseService {
   setRepository(repo: Repo, ...repos: Repo[]): void {
     this.currentRepo = repo;
     this.otherRepos = repos ? repos : [];
-    this.sessionData.sessionRepo.find((sr) => sr.phase == this.currentPhase).repos = this.getRepository();
+    this.sessionData.sessionRepo.find((sr) => sr.phase === this.currentPhase).repos = this.getRepository();
     this.storeSessionDataToLocalStorage();
   }
 

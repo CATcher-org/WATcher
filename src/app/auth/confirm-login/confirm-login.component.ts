@@ -3,11 +3,9 @@ import { Router } from '@angular/router';
 import { flatMap } from 'rxjs/operators';
 import { Phase } from '../../core/models/phase.model';
 import { Repo } from '../../core/models/repo.model';
-import { SessionData } from '../../core/models/session.model';
 import { AuthService, AuthState } from '../../core/services/auth.service';
 import { ElectronService } from '../../core/services/electron.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
-import { GithubService } from '../../core/services/github.service';
 import { GithubEventService } from '../../core/services/githubevent.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { PhaseService } from '../../core/services/phase.service';
@@ -28,7 +26,6 @@ export class ConfirmLoginComponent implements OnInit {
     private phaseService: PhaseService,
     private userService: UserService,
     private errorHandlingService: ErrorHandlingService,
-    private githubService: GithubService,
     private githubEventService: GithubEventService,
     private logger: LoggingService,
     private router: Router
