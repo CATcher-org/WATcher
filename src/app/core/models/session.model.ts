@@ -3,11 +3,17 @@ import { throwIfFalse } from '../../shared/lib/custom-ops';
 import { Phase } from './phase.model';
 import { Repo } from './repo.model';
 
+/**
+ * Session repository comprises the phase and its corresponding repository array.
+ */
 export interface SessionRepo {
   phase: Phase;
   repos: Repo[];
 }
 
+/**
+ * Session data comprises an array of session repositories.
+ */
 export interface SessionData {
   sessionRepo: SessionRepo[];
 }
