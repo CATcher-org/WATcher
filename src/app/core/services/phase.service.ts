@@ -67,6 +67,17 @@ export class PhaseService {
   }
 
   /**
+   * Sets new current repository
+   */
+  setCurrentRepository(repo: Repo): void {
+    this.otherRepos.push(this.currentRepo); // Future TODO: history of previous repos
+    this.currentRepo = repo;
+    this.sessionData.sessionRepo.filter((x) => x.phase === this.currentPhase)[0].repos = this.getRepository();
+    localStorage.setItem('sessionData', JSON.stringify(this.sessionData));
+    this.updateSessionParameters(this.sessionData);
+  }
+
+  /**
    * Retrieves session data from local storage and update phase service with it.
    */
   setSessionData() {
