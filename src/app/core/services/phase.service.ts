@@ -11,10 +11,26 @@ import { RepoCreatorService } from './repo-creator.service';
 
 export const SESSION_AVALIABILITY_FIX_FAILED = 'Session Availability Fix failed.';
 
+/**
+ * The title of each phase that appears in the header bar.
+ */
 export const PhaseDescription = {
   [Phase.issuesViewer]: 'Issues Dashboard',
   [Phase.activityDashboard]: 'Activity Dashboard'
 };
+
+/**
+ * All data of the session.
+ * Add accessible phases here.
+ */
+export const STARTING_SESSION_DATA: SessionData = {
+  sessionRepo: [
+    { phase: Phase.issuesViewer, repos: [] }
+    // { phase: Phase.activityDashboard, repos: [] }
+  ]
+};
+
+export const STARTING_PHASE = Phase.issuesViewer;
 
 @Injectable({
   providedIn: 'root'
@@ -23,23 +39,29 @@ export const PhaseDescription = {
 /**
  * Responsible for managing the current selected feature of WATcher as well as the
  * current session data and repository details related to the session.
+ *
+ * A phase is terminology from CATcher, in WATcher it refers to a feature of WATcher.
  */
 export class PhaseService {
-  public currentPhase: Phase;
-  public currentRepo: Repo; // main repo of feature, may be data repo or current view
-  public otherRepos: Repo[]; // more repositories relevant to this feature
+  public currentPhase: Phase = STARTING_PHASE;
+  public currentRepo: Repo; // current or main repository of current phase
+  public otherRepos: Repo[]; // more repositories relevant to this phase
 
-  public sessionData: SessionData; // stores current repo + otherrepo for the session
+  public sessionData = STARTING_SESSION_DATA; // stores session data for the session
 
   constructor(private githubService: GithubService, private labelService: LabelService, private repoCreatorService: RepoCreatorService) {}
+
   /**
    * Sets the current main repository and additional repos if any.
+   * Updates session data.
    * @param repo Main repository
    * @param repos Additional Repos
    */
   setRepository(repo: Repo, ...repos: Repo[]): void {
     this.currentRepo = repo;
-    this.otherRepos = repos;
+    this.otherRepos = repos ? repos : [];
+    this.sessionData.sessionRepo.find((sr) => sr.phase == this.currentPhase).repos = this.getRepository();
+    this.storeSessionDataToLocalStorage();
   }
 
   /**
@@ -49,15 +71,18 @@ export class PhaseService {
     return [this.currentRepo].concat(this.otherRepos);
   }
 
-  fetchSessionData(): Observable<SessionData> {
+  /**
+   * Fetches session data from settings file.
+   */
+  private fetchSessionDataFromSettings(): Observable<SessionData> {
     return this.githubService.fetchSettingsFile().pipe(map((data) => data as SessionData));
   }
 
   /**
-   * Will fetch session data and update phase service with it.
+   * Fetches session data from settings file and updates phase service.
    */
-  storeSessionData(): Observable<void> {
-    return this.fetchSessionData().pipe(
+  fetchSessionData(): Observable<void> {
+    return this.fetchSessionDataFromSettings().pipe(
       assertSessionDataIntegrity(),
       map((sessionData: SessionData) => {
         localStorage.setItem('sessionData', JSON.stringify(sessionData));
@@ -67,7 +92,15 @@ export class PhaseService {
   }
 
   /**
-   * Retrieves session data from local storage and update phase service with it.
+   * Stores session data to local storage and updates phase service.
+   */
+  storeSessionDataToLocalStorage(): void {
+    localStorage.setItem('sessionData', JSON.stringify(this.sessionData));
+    this.updateSessionParameters(this.sessionData);
+  }
+
+  /**
+   * Retrieves session data from local storage and updates phase service with it.
    */
   setSessionData() {
     const sessionData = JSON.parse(localStorage.getItem('sessionData'));
@@ -117,7 +150,7 @@ export class PhaseService {
       );
     };
 
-    return this.fetchSessionData().pipe(
+    return this.fetchSessionDataFromSettings().pipe(
       assertSessionDataIntegrity(),
       flatMap((sessionData: SessionData) => {
         this.updateSessionParameters(sessionData);

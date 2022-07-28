@@ -62,17 +62,7 @@ export class ConfirmLoginComponent implements OnInit {
   completeLoginProcess(): void {
     this.authService.changeAuthState(AuthState.AwaitingAuthentication);
     const currentRepo: Repo = { owner: window.localStorage.getItem('org'), name: window.localStorage.getItem('dataRepo') };
-    const sessionData: SessionData = {
-      sessionRepo: [
-        { phase: Phase.issuesViewer, repos: [currentRepo] }
-        // TODO (under development) // { phase: Phase.activityDashboard, repos: [currentRepo] }
-      ]
-    };
-    window.localStorage.setItem('sessionData', JSON.stringify(sessionData));
-    this.phaseService.currentPhase = Phase.issuesViewer;
-    this.phaseService.setSessionData(); // must set current phase first
     this.phaseService.setRepository(currentRepo);
-    this.githubService.storePhaseDetails(currentRepo.owner, currentRepo.name);
     this.userService
       .createUserModel(this.username)
       .pipe(flatMap(() => this.githubEventService.setLatestChangeEvent()))
