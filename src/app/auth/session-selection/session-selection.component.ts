@@ -63,7 +63,7 @@ export class SessionSelectionComponent implements OnInit {
 
     this.logger.info(`Selected Settings Repo: ${sessionInformation}`);
 
-    this.phaseService.storeSessionData().subscribe(
+    this.phaseService.fetchSessionData().subscribe(
       () => {
         try {
           this.authService.startOAuthProcess();
