@@ -59,10 +59,8 @@ export class SessionSelectionComponent implements OnInit {
     // To retrieve after authentication redirects back to WATcher
     window.localStorage.setItem('org', repoOrg);
     window.localStorage.setItem('dataRepo', repoName);
-    this.githubService.storeOrganizationDetails(repoOrg, repoName);
-    this.githubService.storePhaseDetails(repoOrg, repoName); // in WATcher, these are the same
 
-    this.logger.info(`Selected Repo: ${repoInformation}`);
+    this.logger.info(`Selected Repository: ${repoInformation}`);
 
     try {
       this.authService.startOAuthProcess();
