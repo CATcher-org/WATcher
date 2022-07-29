@@ -5,7 +5,6 @@ import { AuthService, AuthState } from '../../core/services/auth.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { GithubService } from '../../core/services/github.service';
 import { LoggingService } from '../../core/services/logging.service';
-import { PhaseService } from '../../core/services/phase.service';
 
 @Component({
   selector: 'app-session-selection',
@@ -27,7 +26,6 @@ export class SessionSelectionComponent implements OnInit {
     private formBuilder: FormBuilder,
     private logger: LoggingService,
     private githubService: GithubService,
-    private phaseService: PhaseService,
     private authService: AuthService,
     private errorHandlingService: ErrorHandlingService
   ) {}
