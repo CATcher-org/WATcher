@@ -33,7 +33,8 @@ import { SessionData } from '../models/session.model';
 import { ElectronService } from './electron.service';
 import { ERRORCODE_NOT_FOUND, ErrorHandlingService } from './error-handling.service';
 import { LoggingService } from './logging.service';
-import { Octokit } from '@octokit/rest';
+
+const { Octokit } = require('@octokit/rest');
 
 const WATCHER_ORG = 'WATcher-org';
 const WATCHER_REPO = 'WATcher';
