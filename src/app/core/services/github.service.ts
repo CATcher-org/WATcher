@@ -144,11 +144,16 @@ export class GithubService {
 
   /**
    * Fetches an array of filtered GitHubIssues using GraphQL query.
+   * In WATcher, this includes pull requests.
+   *
    * @param issuesFilter - The issue filter.
    * @returns An observable array of filtered GithubIssues
    */
   fetchIssuesGraphql(issuesFilter: RestGithubIssueFilter): Observable<Array<GithubIssue>> {
     const graphqlFilter = issuesFilter.convertToGraphqlFilter();
+    /*
+     * Github Issues consists of issues and pull requests in WATcher.
+     */
     const issueObs = this.toFetchIssues(issuesFilter).pipe(
       filter((toFetch) => toFetch),
       flatMap(() => {
@@ -172,6 +177,7 @@ export class GithubService {
       })
     );
 
+    // Concatenate both streams together.
     return zip(issueObs, prObs).pipe(map((x) => x[0].concat(x[1])));
   }
 
@@ -465,7 +471,10 @@ export class GithubService {
   }
 
   /**
-   * Will make multiple request to Github as per necessary and determine whether a graphql fetch is required.
+   * Fetches all events of current repository for Activity Dashboard.
+   * Adapted from getIssueApiCalls().
+   *
+   * @returns GithubEvents observable
    */
   fetchAllEventsForRepo(): Observable<GithubEvent[]> {
     let responseInFirstPage: GithubResponse<GithubEvent[]>;
@@ -485,6 +494,9 @@ export class GithubService {
     );
   }
 
+  /**
+   * Not in use. Fetches data csv file from Organization repository.
+   */
   fetchDataFile(): Observable<{}> {
     return from(
       octokit.repos.getContents({ owner: MOD_ORG, repo: DATA_REPO, path: 'data.csv', headers: GithubService.IF_NONE_MATCH_EMPTY })
@@ -496,6 +508,10 @@ export class GithubService {
     );
   }
 
+  /**
+   * Gets information of latest release of WATcher.
+   * @returns GithubRelease observable
+   */
   fetchLatestRelease(): Observable<GithubRelease> {
     return from(
       octokit.repos.getLatestRelease({ owner: WATCHER_ORG, repo: WATCHER_REPO, headers: GithubService.IF_NONE_MATCH_EMPTY })
