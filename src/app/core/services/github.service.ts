@@ -33,15 +33,20 @@ import { SessionData } from '../models/session.model';
 import { ElectronService } from './electron.service';
 import { ERRORCODE_NOT_FOUND, ErrorHandlingService } from './error-handling.service';
 import { LoggingService } from './logging.service';
+import { Octokit } from '@octokit/rest';
 
-const Octokit = require('@octokit/rest');
-const CATCHER_ORG = 'CATcher-org';
-const CATCHER_REPO = 'CATcher';
+const WATCHER_ORG = 'WATcher-org';
+const WATCHER_REPO = 'WATcher';
 const UNABLE_TO_OPEN_IN_BROWSER = 'Unable to open this issue in Browser';
 
+/** Owner of Repository to watch */
 let ORG_NAME = ''; // repoOrg
-let MOD_ORG = '';
+/** Name of Repository to watch */
 let REPO = ''; // repoName
+
+/** Owner of Settings repository, currently not used */
+let MOD_ORG = '';
+/** Name of Settings repository, currently not used */
 let DATA_REPO = '';
 const MAX_ITEMS_PER_PAGE = 100;
 
@@ -85,12 +90,21 @@ export class GithubService {
     });
   }
 
+  /**
+   * Sets settings repository. Not used.
+   * @param orgName WATcher organisation
+   * @param dataRepo WATcher repository
+   */
   storeOrganizationDetails(orgName: string, dataRepo: string) {
     MOD_ORG = orgName;
     DATA_REPO = dataRepo;
   }
 
-  // Set feature's repoOrg and repoName
+  /**
+   * Sets repository to watch. This repository is used for fetching from Github.
+   * @param phaseRepoOwner Repository owner
+   * @param repoName Repository name
+   */
   storePhaseDetails(phaseRepoOwner: string, repoName: string) {
     REPO = repoName;
     ORG_NAME = phaseRepoOwner;
@@ -452,7 +466,7 @@ export class GithubService {
 
   fetchLatestRelease(): Observable<GithubRelease> {
     return from(
-      octokit.repos.getLatestRelease({ owner: CATCHER_ORG, repo: CATCHER_REPO, headers: GithubService.IF_NONE_MATCH_EMPTY })
+      octokit.repos.getLatestRelease({ owner: WATCHER_ORG, repo: WATCHER_REPO, headers: GithubService.IF_NONE_MATCH_EMPTY })
     ).pipe(
       map((res) => res['data']),
       catchError((err) => throwError('Failed to fetch latest release.'))
