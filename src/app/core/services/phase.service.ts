@@ -69,6 +69,42 @@ export class PhaseService {
     return [this.currentRepo].concat(this.otherRepos);
   }
 
+  fetchSessionData(): Observable<SessionData> {
+    return this.githubService.fetchSettingsFile().pipe(map((data) => data as SessionData));
+  }
+
+  /**
+   * Will fetch session data and update phase service with it.
+   */
+  storeSessionData(): Observable<void> {
+    return this.fetchSessionData().pipe(
+      assertSessionDataIntegrity(),
+      map((sessionData: SessionData) => {
+        localStorage.setItem('sessionData', JSON.stringify(sessionData));
+        this.updateSessionParameters(sessionData);
+      })
+    );
+  }
+
+  /**
+   * Sets new current repository
+   */
+  setCurrentRepository(repo: Repo): void {
+    this.otherRepos.push(this.currentRepo); // Future TODO: history of previous repos
+    this.currentRepo = repo;
+    this.sessionData.sessionRepo.filter((x) => x.phase === this.currentPhase)[0].repos = this.getRepository();
+    localStorage.setItem('sessionData', JSON.stringify(this.sessionData));
+    this.updateSessionParameters(this.sessionData);
+  }
+
+  /**
+   * Retrieves session data from local storage and update phase service with it.
+   */
+  setSessionData() {
+    const sessionData = JSON.parse(localStorage.getItem('sessionData'));
+    this.updateSessionParameters(sessionData);
+  }
+
   /**
    * Retrieves the repository url from local storage and sets to current repository.
    */
