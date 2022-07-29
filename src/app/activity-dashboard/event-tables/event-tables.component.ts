@@ -26,7 +26,8 @@ export enum ACTION_BUTTONS {
 })
 
 /**
- * ref https://material.angular.io/components/table/examples#table-expandable-rows
+ * Angular Table Expandable Rows
+ * ref: https://material.angular.io/components/table/examples#table-expandable-rows
  */
 export class EventTablesComponent implements OnInit, AfterViewInit {
   @Input() columnsToDisplay: string[];
@@ -89,17 +90,20 @@ export class EventTablesComponent implements OnInit, AfterViewInit {
       .join(SPLITTER_TEXT);
   }
 
+  /** Not implemented yet. */
   viewEventInBrowser(id: number, event: Event) {
     this.loggingService.info(`EventTablesComponent: Opening Event ${id} on Github`);
     // window.open('https://github.com/', '_blank');
   }
 
+  /** Show individual GithubEvents of EventWeek. */
   showExpandedDetails(element: EventWeek) {
     if (element.events.length > 0) {
       this.expandedElement = this.expandedElement === element ? null : element;
     }
   }
 
+  /** Returns color string of cell. Shade darkens with magnitude of number. */
   colorCell(count: number) {
     if (count === 0) {
       return 'white';
