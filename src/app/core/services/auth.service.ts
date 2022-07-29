@@ -78,7 +78,7 @@ export class AuthService {
 
   setTitleWithPhaseDetail(): void {
     const appSetting = require('../../../../package.json');
-    const title = `${appSetting.name} ${appSetting.version} - ${this.phaseService.getPhaseDetail()}`;
+    const title = `${appSetting.name} ${appSetting.version} - ${this.phaseService.getCurrentRepositoryURL()}`;
     this.titleService.setTitle(title);
   }
 

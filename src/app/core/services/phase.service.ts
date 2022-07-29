@@ -1,13 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, pipe } from 'rxjs';
-import { flatMap, map, retry, tap } from 'rxjs/operators';
-import { throwIfFalse } from '../../shared/lib/custom-ops';
+import { Observable } from 'rxjs';
 import { Phase } from '../models/phase.model';
 import { Repo } from '../models/repo.model';
-import { assertSessionDataIntegrity, SessionData } from '../models/session.model';
+import { SessionData } from '../models/session.model';
 import { GithubService } from './github.service';
-import { LabelService } from './label.service';
-import { RepoCreatorService } from './repo-creator.service';
 
 export const SESSION_AVALIABILITY_FIX_FAILED = 'Session Availability Fix failed.';
 
@@ -49,132 +45,61 @@ export class PhaseService {
 
   public sessionData = STARTING_SESSION_DATA; // stores session data for the session
 
-  constructor(private githubService: GithubService, private labelService: LabelService, private repoCreatorService: RepoCreatorService) {}
+  constructor(private githubService: GithubService) {}
 
   /**
    * Sets the current main repository and additional repos if any.
-   * Updates session data.
+   * Updates session data in Phase Service and local storage.
+   * Updates Github Service with current repository.
    * @param repo Main repository
    * @param repos Additional Repos
    */
   setRepository(repo: Repo, ...repos: Repo[]): void {
     this.currentRepo = repo;
     this.otherRepos = repos ? repos : [];
-    this.sessionData.sessionRepo.find((sr) => sr.phase === this.currentPhase).repos = this.getRepository();
-    this.storeSessionDataToLocalStorage();
+    this.sessionData.sessionRepo.find((x) => x.phase === this.currentPhase).repos = this.getRepository();
+    this.githubService.storePhaseDetails(this.currentRepo.owner, this.currentRepo.name);
+    localStorage.setItem('sessionData', JSON.stringify(this.sessionData));
   }
 
   /**
-   * Returns the full repository array of current feature.
+   * Returns the full repository array of the current feature.
    */
   getRepository(): Repo[] {
     return [this.currentRepo].concat(this.otherRepos);
   }
 
   /**
-   * Fetches session data from settings file.
+   * Retrieves the repository url from local storage and sets to current repository.
    */
-  private fetchSessionDataFromSettings(): Observable<SessionData> {
-    return this.githubService.fetchSettingsFile().pipe(map((data) => data as SessionData));
+  initializeCurrentRepository() {
+    const repo = { owner: window.localStorage.getItem('org'), name: window.localStorage.getItem('dataRepo') };
+    this.setRepository(repo);
   }
 
   /**
-   * Fetches session data from settings file and updates phase service.
+   * Checks if the necessary repository is available. TODO: Future to use to verify setRepository.
    */
-  fetchSessionData(): Observable<void> {
-    return this.fetchSessionDataFromSettings().pipe(
-      assertSessionDataIntegrity(),
-      map((sessionData: SessionData) => {
-        localStorage.setItem('sessionData', JSON.stringify(sessionData));
-        this.updateSessionParameters(sessionData);
-      })
-    );
-  }
-
-  /**
-   * Stores session data to local storage and updates phase service.
-   */
-  storeSessionDataToLocalStorage(): void {
-    localStorage.setItem('sessionData', JSON.stringify(this.sessionData));
-    this.updateSessionParameters(this.sessionData);
-  }
-
-  /**
-   * Retrieves session data from local storage and updates phase service with it.
-   */
-  setSessionData() {
-    const sessionData = JSON.parse(localStorage.getItem('sessionData'));
-    this.updateSessionParameters(sessionData);
-  }
-
-  /**
-   * Determines the github's level of repo permission required for the phase.
-   * Ref: https://developer.github.com/apps/building-oauth-apps/understanding-scopes-for-oauth-apps/#available-scopes
-   */
-  githubRepoPermissionLevel(): string {
-    return 'public_repo';
-  }
-
-  /**
-   * Checks if the necessary repository is available and creates it if the permissions are available.
-   * @param sessionData
-   */
-  verifySessionAvailability(sessionData: SessionData): Observable<boolean> {
+  verifySessionAvailability(): Observable<boolean> {
     return this.githubService.isRepositoryPresent(this.currentRepo.owner, this.currentRepo.name);
   }
 
   /**
-   * Stores session data and sets current session's phase.
-   * @param sessionData
+   * Changes phase and updates Phase Service's properties.
+   * @param phase New phase
    */
-  updateSessionParameters(sessionData: SessionData) {
-    this.sessionData = sessionData;
-    const repos = sessionData.sessionRepo.filter((x) => x.phase === this.currentPhase)[0].repos;
-    this.currentRepo = repos[0];
-    this.otherRepos = repos.slice(1);
+  changePhase(phase: Phase) {
+    this.currentPhase = phase;
+
+    // For now, assumes repository stays the same
     this.githubService.storePhaseDetails(this.currentRepo.owner, this.currentRepo.name);
   }
 
-  /**
-   * Ensures that the necessary data for the current session is available
-   * and synchronized with the remote server. If there is settings.json.
-   */
-  sessionSetup(): Observable<any> {
-    // Permission Caching Mechanism to prevent repeating permission request.
-    let isSessionFixPermissionGranted = false;
-    const cacheSessionFixPermission = () => {
-      return pipe(
-        tap((sessionFixPermission: boolean | null) => {
-          isSessionFixPermissionGranted = sessionFixPermission ? sessionFixPermission : false;
-        })
-      );
-    };
-
-    return this.fetchSessionDataFromSettings().pipe(
-      assertSessionDataIntegrity(),
-      flatMap((sessionData: SessionData) => {
-        this.updateSessionParameters(sessionData);
-        return this.verifySessionAvailability(sessionData);
-      }),
-      this.repoCreatorService.requestRepoCreationPermissions(this.currentPhase, this.currentRepo.name),
-      cacheSessionFixPermission(),
-      this.repoCreatorService.verifyRepoCreationPermissions(this.currentPhase),
-      this.repoCreatorService.attemptRepoCreation(this.currentRepo.name),
-      this.repoCreatorService.verifyRepoCreation(this.currentRepo.owner, this.currentRepo.name),
-      throwIfFalse(
-        (isSessionCreated: boolean) => isSessionCreated,
-        () => new Error(SESSION_AVALIABILITY_FIX_FAILED)
-      ),
-      this.labelService.syncLabels(true),
-      retry(1) // Retry once, to handle edge case where GitHub API cannot immediately confirm existence of the newly created repo.
-    );
-  }
-
-  public getPhaseDetail() {
+  public getCurrentRepositoryURL() {
     return this.currentRepo.owner.concat('/').concat(this.currentRepo.name);
   }
 
   reset() {
-    this.currentPhase = null;
+    this.currentPhase = STARTING_PHASE;
   }
 }

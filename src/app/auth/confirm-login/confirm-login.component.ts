@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { flatMap } from 'rxjs/operators';
 import { Phase } from '../../core/models/phase.model';
-import { Repo } from '../../core/models/repo.model';
 import { AuthService, AuthState } from '../../core/services/auth.service';
 import { ElectronService } from '../../core/services/electron.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
@@ -58,8 +57,7 @@ export class ConfirmLoginComponent implements OnInit {
    */
   completeLoginProcess(): void {
     this.authService.changeAuthState(AuthState.AwaitingAuthentication);
-    const currentRepo: Repo = { owner: window.localStorage.getItem('org'), name: window.localStorage.getItem('dataRepo') };
-    this.phaseService.setRepository(currentRepo);
+    this.phaseService.initializeCurrentRepository();
     this.userService
       .createUserModel(this.username)
       .pipe(flatMap(() => this.githubEventService.setLatestChangeEvent()))

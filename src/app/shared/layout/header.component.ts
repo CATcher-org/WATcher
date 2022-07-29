@@ -70,9 +70,9 @@ export class HeaderComponent implements OnInit {
     if (this.phaseService.currentPhase === Phase[openPhase]) {
       return;
     }
+
     // Replace Current Phase Data.
-    this.phaseService.currentPhase = Phase[openPhase];
-    this.githubService.storePhaseDetails(this.phaseService.getRepository()[0].owner, this.phaseService.getRepository()[0].name);
+    this.phaseService.changePhase(Phase[openPhase]);
 
     // Remove current phase issues and load selected phase issues.
     this.githubService.reset();
