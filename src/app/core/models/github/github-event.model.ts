@@ -1,5 +1,18 @@
 import * as moment from 'moment';
 
+/** Types of GithubEvent */
+export enum EventType {
+  IssuesEvent = 'IssuesEvent',
+  PullRequestEvent = 'PullRequestEvent',
+  IssueCommentEvent = 'IssueCommentEvent',
+  PullRequestReviewEvent = 'PullRequestReviewEvent',
+  PullRequestReviewCommentEvent = 'PullRequestReviewCommentEvent'
+}
+
+/**
+ * Represents a Github Event fetched from Github.
+ * Also known as an activity on Activity Dashboard.
+ */
 export class GithubEvent {
   id: string; // Github's backend's id
   type: string; // type of event TODO change to enum
@@ -22,27 +35,28 @@ export class GithubEvent {
   title: string;
   date: string; // after formatting
 
-  constructor(githubEvent: {}) {
+  public constructor(githubEvent: {}) {
     Object.assign(this, githubEvent);
     this.title = GithubEvent.generateTitle(githubEvent);
     this.date = moment(githubEvent['created_at']).format('lll');
   }
 
-  static generateTitle(githubEvent: {}): string {
+  /** Generate simple string representation of Github Event. */
+  public static generateTitle(githubEvent: {}): string {
     const actor = githubEvent['actor']['login'];
     switch (githubEvent['type']) {
-      case 'IssuesEvent': {
+      case EventType.IssuesEvent: {
         // TODO enum
         const action = githubEvent['payload']['action'];
         return actor + ' ' + action + ' issue';
       }
-      case 'PullRequestEvent': {
+      case EventType.PullRequestEvent: {
         const action = githubEvent['payload']['action'];
         return actor + ' ' + action + ' pull request';
       }
-      case 'IssueCommentEvent':
-      case 'PullRequestReviewEvent':
-      case 'PullRequestReviewCommentEvent': {
+      case EventType.IssueCommentEvent:
+      case EventType.PullRequestReviewEvent:
+      case EventType.PullRequestReviewCommentEvent: {
         const action = githubEvent['payload']['action'];
         return actor + ' ' + action + ' comment';
       }

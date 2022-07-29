@@ -3,9 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Profile } from '../../core/models/profile.model';
 import { AuthService, AuthState } from '../../core/services/auth.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
-import { GithubService } from '../../core/services/github.service';
 import { LoggingService } from '../../core/services/logging.service';
-import { PhaseService } from '../../core/services/phase.service';
 
 @Component({
   selector: 'app-session-selection',
@@ -26,8 +24,6 @@ export class SessionSelectionComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private logger: LoggingService,
-    private githubService: GithubService,
-    private phaseService: PhaseService,
     private authService: AuthService,
     private errorHandlingService: ErrorHandlingService
   ) {}
@@ -49,38 +45,6 @@ export class SessionSelectionComponent implements OnInit {
   }
 
   setupSession() {
-    if (this.profileForm.invalid) {
-      return;
-    }
-    this.isSettingUpSession = true;
-    const sessionInformation: string = this.profileForm.get('session').value;
-    const org: string = this.getOrgDetails(sessionInformation);
-    const dataRepo: string = this.getDataRepoDetails(sessionInformation);
-    // Persist session information in local storage
-    window.localStorage.setItem('org', org);
-    window.localStorage.setItem('dataRepo', dataRepo);
-    this.githubService.storeOrganizationDetails(org, dataRepo);
-
-    this.logger.info(`Selected Settings Repo: ${sessionInformation}`);
-
-    this.phaseService.storeSessionData().subscribe(
-      () => {
-        try {
-          this.authService.startOAuthProcess();
-        } catch (error) {
-          this.errorHandlingService.handleError(error);
-          this.authService.changeAuthState(AuthState.NotAuthenticated);
-        }
-      },
-      (error) => {
-        this.errorHandlingService.handleError(error);
-        this.isSettingUpSession = false;
-      },
-      () => (this.isSettingUpSession = false)
-    );
-  }
-
-  setupRepo() {
     if (this.repoForm.invalid) {
       return;
     }
@@ -88,13 +52,15 @@ export class SessionSelectionComponent implements OnInit {
     const repoInformation: string = this.repoForm.get('repo').value;
     const repoOrg: string = this.getOrgDetails(repoInformation);
     const repoName: string = this.getDataRepoDetails(repoInformation);
-    // Persist repo information in local storage
+
+    /**
+     * Persist repo information in local browser storage
+     * To retrieve after authentication redirects back to WATcher
+     */
     window.localStorage.setItem('org', repoOrg);
     window.localStorage.setItem('dataRepo', repoName);
-    this.githubService.storeOrganizationDetails(repoOrg, repoName);
-    this.githubService.storePhaseDetails(repoOrg, repoName); // in WATcher, these are the same
 
-    this.logger.info(`Selected Repo: ${repoInformation}`);
+    this.logger.info(`Selected Repository: ${repoInformation}`);
 
     try {
       this.authService.startOAuthProcess();

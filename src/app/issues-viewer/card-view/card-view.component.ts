@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
-import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { GithubUser } from '../../core/models/github-user.model';
 import { Issue } from '../../core/models/issue.model';
@@ -14,6 +13,10 @@ import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
   templateUrl: './card-view.component.html',
   styleUrls: ['./card-view.component.css']
 })
+
+/**
+ * Displays issues as Cards.
+ */
 export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() headers: string[];
   @Input() assignee?: GithubUser = undefined;
@@ -65,19 +68,27 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
       .join(SPLITTER_TEXT);
   }
 
+  /** Opens issue in new window */
   viewIssueInBrowser(id: number, event: Event) {
     this.loggingService.info(`CardViewComponent: Opening Issue ${id} on Github`);
     this.githubService.viewIssueInBrowser(id, event);
   }
 
+  /** Returns status color for issue */
   getIssueOpenOrCloseColor(issue: Issue) {
     return issue.state === 'OPEN' ? 'green' : 'purple';
   }
 
+  /** Returns CSS class for border color */
   getIssueOpenOrCloseColorCSSClass(issue: Issue) {
     return issue.state === 'OPEN' ? 'border-green' : 'border-purple';
   }
 
+  /**
+   * Returns corresponding Github icon identifier for issue to display.
+   * @param issue Issue to display
+   * @returns string to create icon
+   */
   getOcticon(issue: Issue) {
     const type = issue.issueOrPr;
     const state = issue.state;
@@ -111,9 +122,5 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
     const ELLIPSES = '...';
 
     return description.slice(0, MAX_CHARACTER_LENGTH) + ELLIPSES;
-  }
-
-  readableDateFormat(date: string) {
-    return moment(date).format('lll');
   }
 }

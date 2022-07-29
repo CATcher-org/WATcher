@@ -1,28 +1,29 @@
+/**
+ * Represents a label and its attributes.
+ */
 export class Label {
-  labelCategory: string;
-  labelValue: string;
-  labelColor: string;
-  labelDefinition?: string;
+  readonly category: string;
+  readonly name: string;
+  color: string;
+  definition?: string;
 
-  constructor(labelCategory: string, labelValue: string, labelColor: string, labelDefinition?: string) {
-    this.labelValue = labelValue;
-    this.labelColor = labelColor;
-    this.labelCategory = labelCategory;
-    this.labelDefinition = labelDefinition;
+  constructor(label: { name: string; color: string; definition?: string }) {
+    const containsDotRegex = /\.\b/g; // contains dot in middle of name
+    [this.category, this.name] = containsDotRegex.test(label.name) ? label.name.split('.') : [undefined, label.name];
+    this.color = label.color;
+    this.definition = label.definition;
   }
 
   /**
    * Returns the name of the label with the format of
-   * 'category'.'value' (e.g. severity.Low) if a category exists or
-   * 'value' if the category does not exist.
+   * 'category'.'name' (e.g. severity.Low) if a category exists or
+   * 'name' if the category does not exist.
    */
   public getFormattedName(): string {
-    return this.labelCategory === undefined || this.labelCategory === ''
-      ? this.labelValue
-      : this.labelCategory.concat('.', this.labelValue);
+    return this.category === undefined || this.category === '' ? this.name : this.category.concat('.', this.name);
   }
 
   public equals(label: Label) {
-    return this.labelValue === label.labelValue && this.labelColor === label.labelColor && this.labelCategory === label.labelCategory;
+    return this.name === label.name && this.category === label.category;
   }
 }

@@ -34,14 +34,20 @@ import { ElectronService } from './electron.service';
 import { ERRORCODE_NOT_FOUND, ErrorHandlingService } from './error-handling.service';
 import { LoggingService } from './logging.service';
 
-const Octokit = require('@octokit/rest');
-const CATCHER_ORG = 'CATcher-org';
-const CATCHER_REPO = 'CATcher';
+const { Octokit } = require('@octokit/rest');
+
+const WATCHER_ORG = 'WATcher-org';
+const WATCHER_REPO = 'WATcher';
 const UNABLE_TO_OPEN_IN_BROWSER = 'Unable to open this issue in Browser';
 
+/** Owner of Repository to watch */
 let ORG_NAME = ''; // repoOrg
-let MOD_ORG = '';
+/** Name of Repository to watch */
 let REPO = ''; // repoName
+
+/** Owner of Settings repository, currently not used */
+let MOD_ORG = '';
+/** Name of Settings repository, currently not used */
 let DATA_REPO = '';
 const MAX_ITEMS_PER_PAGE = 100;
 
@@ -85,17 +91,34 @@ export class GithubService {
     });
   }
 
+  /**
+   * Sets settings repository. Not used.
+   * @param orgName WATcher organisation
+   * @param dataRepo WATcher repository
+   */
   storeOrganizationDetails(orgName: string, dataRepo: string) {
     MOD_ORG = orgName;
     DATA_REPO = dataRepo;
   }
 
-  // Set feature's repoOrg and repoName
+  /**
+   * Sets repository to watch. This repository is used for fetching from Github.
+   * @param phaseRepoOwner Repository owner
+   * @param repoName Repository name
+   */
   storePhaseDetails(phaseRepoOwner: string, repoName: string) {
     REPO = repoName;
     ORG_NAME = phaseRepoOwner;
   }
 
+  /**
+   * Fetches an array of filtered GitHubIssues using GraphQL query for a given team.
+   *
+   * @param tutorial - The tutorial that the team belongs to.
+   * @param team - The team's designated name.
+   * @param issuesFilter - The issue filter.
+   * @returns An observable array of filtered GithubIssues
+   */
   fetchIssuesGraphqlByTeam(tutorial: string, team: string, issuesFilter: RestGithubIssueFilter): Observable<Array<GithubIssue>> {
     const graphqlFilter = issuesFilter.convertToGraphqlFilter();
     return this.toFetchIssues(issuesFilter).pipe(
@@ -119,8 +142,18 @@ export class GithubService {
     );
   }
 
+  /**
+   * Fetches an array of filtered GitHubIssues using GraphQL query.
+   * In WATcher, this includes pull requests.
+   *
+   * @param issuesFilter - The issue filter.
+   * @returns An observable array of filtered GithubIssues
+   */
   fetchIssuesGraphql(issuesFilter: RestGithubIssueFilter): Observable<Array<GithubIssue>> {
     const graphqlFilter = issuesFilter.convertToGraphqlFilter();
+    /*
+     * Github Issues consists of issues and pull requests in WATcher.
+     */
     const issueObs = this.toFetchIssues(issuesFilter).pipe(
       filter((toFetch) => toFetch),
       flatMap(() => {
@@ -144,11 +177,15 @@ export class GithubService {
       })
     );
 
+    // Concatenate both streams together.
     return zip(issueObs, prObs).pipe(map((x) => x[0].concat(x[1])));
   }
 
   /**
-   * Will make multiple request to Github as per necessary and determine whether a graphql fetch is required.
+   * Checks if there are pages of filtered issues that are not cached in the cache model,
+   * and updates the model to cache these new pages.
+   * @param filter - The issue filter.
+   * @returns Observable<boolean> that returns true if there are pages that do not exist in the cache model.
    */
   private toFetchIssues(filter: RestGithubIssueFilter): Observable<boolean> {
     let responseInFirstPage: GithubResponse<GithubIssue[]>;
@@ -202,6 +239,14 @@ export class GithubService {
     octokit.repos.createForAuthenticatedUser({ name: name });
   }
 
+  /**
+   * Fetches information about an issue using GraphQL.
+   *
+   * If the issue is not modified, return a `304 - Not Modified` response.
+   *
+   * @param id - The issue id.
+   * @returns Observable<GithubGraphqlIssue> that represents the response object.
+   */
   fetchIssueGraphql(id: number): Observable<GithubGraphqlIssue> {
     if (this.issueQueryRefs.get(id) === undefined) {
       const newQueryRef = this.apollo.watchQuery<FetchIssueQuery>({
@@ -226,6 +271,13 @@ export class GithubService {
     );
   }
 
+  /**
+   * Checks if the issue has been modified since the last query, and
+   * updates the model to reflect the last modified time.
+   *
+   * @param id - The issue id.
+   * @returns Observable<boolean> that returns true if the issue has been modified.
+   */
   toFetchIssue(id: number): Observable<boolean> {
     return from(
       octokit.issues.get({
@@ -419,7 +471,10 @@ export class GithubService {
   }
 
   /**
-   * Will make multiple request to Github as per necessary and determine whether a graphql fetch is required.
+   * Fetches all events of current repository for Activity Dashboard.
+   * Adapted from getIssueApiCalls().
+   *
+   * @returns GithubEvents observable
    */
   fetchAllEventsForRepo(): Observable<GithubEvent[]> {
     let responseInFirstPage: GithubResponse<GithubEvent[]>;
@@ -439,6 +494,9 @@ export class GithubService {
     );
   }
 
+  /**
+   * Not in use. Fetches data csv file from Organization repository.
+   */
   fetchDataFile(): Observable<{}> {
     return from(
       octokit.repos.getContents({ owner: MOD_ORG, repo: DATA_REPO, path: 'data.csv', headers: GithubService.IF_NONE_MATCH_EMPTY })
@@ -450,9 +508,13 @@ export class GithubService {
     );
   }
 
+  /**
+   * Gets information of latest release of WATcher.
+   * @returns GithubRelease observable
+   */
   fetchLatestRelease(): Observable<GithubRelease> {
     return from(
-      octokit.repos.getLatestRelease({ owner: CATCHER_ORG, repo: CATCHER_REPO, headers: GithubService.IF_NONE_MATCH_EMPTY })
+      octokit.repos.getLatestRelease({ owner: WATCHER_ORG, repo: WATCHER_REPO, headers: GithubService.IF_NONE_MATCH_EMPTY })
     ).pipe(
       map((res) => res['data']),
       catchError((err) => throwError('Failed to fetch latest release.'))
@@ -504,6 +566,17 @@ export class GithubService {
     return fetch(AppConfig.clientDataUrl);
   }
 
+  /**
+   * Performs an API call to fetch a page of filtered issues with a given pageNumber.
+   *
+   * The request is sent with the ETag of the latest cached HTTP response.
+   * If page requested has the same ETag, or the request results in an error,
+   * then the cached page is returned instead.
+   *
+   * @param filter - The issue filter
+   * @param pageNumber - The page to be fetched
+   * @returns An observable representing the response containing a single page of filtered issues
+   */
   private getIssuesAPICall(filter: RestGithubIssueFilter, pageNumber: number): Observable<GithubResponse<GithubIssue[]>> {
     const apiCall: Promise<GithubResponse<GithubIssue[]>> = octokit.issues.listForRepo({
       ...filter,
@@ -524,6 +597,15 @@ export class GithubService {
     );
   }
 
+  /**
+   * Fetches a list of items using a GraphQL query that queries for paginated data.
+   *
+   * @param query - The GraphQL query that queries for paginated data.
+   * @param variables - Additional variables for the GraphQL query.
+   * @callback pluckEdges A function that returns a list of edges in a ApolloQueryResult.
+   * @callback Model Constructor for the item model.
+   * @returns A list of items from the query.
+   */
   private fetchGraphqlList<T, M>(
     query: DocumentNode,
     variables: {},
@@ -541,6 +623,14 @@ export class GithubService {
     );
   }
 
+  /**
+   * Returns an async function that will accept a GraphQL query that requests for paginated items.
+   * Said function will recursively query for all subsequent pages until a page that has less than 100 items is found,
+   * then return all queried pages in an array.
+   *
+   * @callback pluckEdges - A function that returns a list of edges in a ApolloQueryResult.
+   * @returns an async function that accepts a GraphQL query for paginated data and any additional variables to that query
+   */
   private withPagination<T>(pluckEdges: (results: ApolloQueryResult<T>) => Array<any>) {
     return async (query: DocumentNode, variables: { [key: string]: any } = {}): Promise<Array<ApolloQueryResult<T>>> => {
       const maxResultsCount = 100;

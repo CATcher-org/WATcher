@@ -10,6 +10,9 @@ import { LoggingService } from '../../core/services/logging.service';
 import { EventWeek } from '../event-week.model';
 import { paginateData } from './event-paginator';
 
+/**
+ * Adapted from IssuesDataTable for Events.
+ */
 export class GithubEventDataTable extends DataSource<EventWeek> {
   private startDate = new BehaviorSubject('');
   private endDate = new BehaviorSubject('');
@@ -40,7 +43,7 @@ export class GithubEventDataTable extends DataSource<EventWeek> {
     this.eventSubscription.unsubscribe();
   }
 
-  /** Group GithubEvents[] week by week */
+  /** Group GithubEvents[] week by week. Needs refactoring. */
   groupByWeeks(githubEvents: GithubEvent[]): EventWeek[] {
     const endDate = this.startDate.getValue() === '' ? moment() : moment(this.endDate.getValue());
     const startDate =
@@ -136,6 +139,9 @@ export class GithubEventDataTable extends DataSource<EventWeek> {
       });
   }
 
+  /*
+   * Start and end date getters and setters.
+   */
   get start(): string {
     return this.startDate.value;
   }
