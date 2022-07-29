@@ -1,5 +1,8 @@
+/**
+ * Represents a milestone and its attributes fetched from Github.
+ */
 export class Milestone {
-  readonly number: string;
+  readonly number: string; // equivalent to the id of an issue e.g. milestone #1
   title: string;
   state: string;
 

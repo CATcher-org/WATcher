@@ -1,3 +1,6 @@
+/**
+ * Represents a label and its attributes.
+ */
 export class Label {
   labelCategory: string;
   labelValue: string;
