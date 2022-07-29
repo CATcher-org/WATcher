@@ -17,12 +17,19 @@ import { CardViewComponent } from './card-view/card-view.component';
 export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly displayedColumns = [TABLE_COLUMNS.ID, TABLE_COLUMNS.TITLE, TABLE_COLUMNS.ASSIGNEE, TABLE_COLUMNS.LABEL];
 
+  /** Users to show as columns */
   assignees: GithubUser[];
+
+  /** Selected dropdown filter value */
   dropdownFilter: DropdownFilter = DEFAULT_DROPDOWN_FILTER;
+
+  /** Selected label filters, instance passed into LabelChipBar to populate */
   labelFilter$ = new BehaviorSubject<string[]>([]);
   labelFilterSubscription: Subscription;
 
   @ViewChildren(CardViewComponent) cardViews: QueryList<CardViewComponent>;
+
+  /** One MatSort controls all IssueDataTables */
   @ViewChild(MatSort, { static: true }) matSort: MatSort;
 
   constructor(public githubService: GithubService, public milestoneService: MilestoneService, private logger: LoggingService) {}
@@ -39,6 +46,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    /** Apply dropdown filter when LabelChipBar populates with label filters */
     this.labelFilterSubscription = this.labelFilter$.subscribe((labels) => {
       this.dropdownFilter.labels = labels;
       this.applyDropdownFilter();
@@ -49,10 +57,17 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.labelFilterSubscription.unsubscribe();
   }
 
+  /**
+   * Signals to IssuesDataTable that a change has occurred in filter.
+   * @param filterValue
+   */
   applyFilter(filterValue: string) {
     this.cardViews.forEach((v) => (v.issues.filter = filterValue));
   }
 
+  /**
+   * Signals to IssuesDataTable that a change has occurred in dropdown filter.
+   */
   applyDropdownFilter() {
     this.cardViews.forEach((v) => (v.issues.dropdownFilter = this.dropdownFilter));
   }
