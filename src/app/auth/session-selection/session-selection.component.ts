@@ -25,7 +25,6 @@ export class SessionSelectionComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private logger: LoggingService,
-    private githubService: GithubService,
     private authService: AuthService,
     private errorHandlingService: ErrorHandlingService
   ) {}
@@ -55,8 +54,10 @@ export class SessionSelectionComponent implements OnInit {
     const repoOrg: string = this.getOrgDetails(repoInformation);
     const repoName: string = this.getDataRepoDetails(repoInformation);
 
-    // Persist repo information in local browser storage
-    // To retrieve after authentication redirects back to WATcher
+    /**
+     * Persist repo information in local browser storage
+     * To retrieve after authentication redirects back to WATcher
+     */
     window.localStorage.setItem('org', repoOrg);
     window.localStorage.setItem('dataRepo', repoName);
 
