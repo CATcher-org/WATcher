@@ -51,10 +51,10 @@ export class PhaseService {
    * Sets the current main repository and additional repos if any.
    * Updates session data in Phase Service and local storage.
    * Updates Github Service with current repository.
-   * @param repo Main repository
-   * @param repos Additional Repos
+   * @param repo Main current repository
+   * @param repos Additional repositories
    */
-  setRepository(repo: Repo, ...repos: Repo[]): void {
+  setRepository(repo: Repo, repos?: Repo[]): void {
     this.currentRepo = repo;
     this.otherRepos = repos ? repos : [];
     this.sessionData.sessionRepo.find((x) => x.phase === this.currentPhase).repos = this.getRepository();
@@ -63,46 +63,23 @@ export class PhaseService {
   }
 
   /**
+   * Changes current respository to a new repository.
+   * If on Issue Dashboard, add previously visited repositories to otherRepos.
+   * @param repo New current repository
+   */
+  changeCurrentRepository(repo: Repo): void {
+    if (this.currentPhase === Phase.issuesViewer) {
+      /** Adds past repositories to phase */
+      this.otherRepos.push(this.currentRepo); // TODO feature: can be used to provide repo suggestions
+    }
+    this.setRepository(repo, this.otherRepos);
+  }
+
+  /**
    * Returns the full repository array of the current feature.
    */
   getRepository(): Repo[] {
     return [this.currentRepo].concat(this.otherRepos);
-  }
-
-  fetchSessionData(): Observable<SessionData> {
-    return this.githubService.fetchSettingsFile().pipe(map((data) => data as SessionData));
-  }
-
-  /**
-   * Will fetch session data and update phase service with it.
-   */
-  storeSessionData(): Observable<void> {
-    return this.fetchSessionData().pipe(
-      assertSessionDataIntegrity(),
-      map((sessionData: SessionData) => {
-        localStorage.setItem('sessionData', JSON.stringify(sessionData));
-        this.updateSessionParameters(sessionData);
-      })
-    );
-  }
-
-  /**
-   * Sets new current repository
-   */
-  setCurrentRepository(repo: Repo): void {
-    this.otherRepos.push(this.currentRepo); // Future TODO: history of previous repos
-    this.currentRepo = repo;
-    this.sessionData.sessionRepo.filter((x) => x.phase === this.currentPhase)[0].repos = this.getRepository();
-    localStorage.setItem('sessionData', JSON.stringify(this.sessionData));
-    this.updateSessionParameters(this.sessionData);
-  }
-
-  /**
-   * Retrieves session data from local storage and update phase service with it.
-   */
-  setSessionData() {
-    const sessionData = JSON.parse(localStorage.getItem('sessionData'));
-    this.updateSessionParameters(sessionData);
   }
 
   /**
