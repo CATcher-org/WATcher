@@ -48,7 +48,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     public phaseService: PhaseService,
     public githubService: GithubService,
     public issueService: IssueService,
-    private milestoneService: MilestoneService,
+    public milestoneService: MilestoneService,
     private logger: LoggingService
   ) {}
 
