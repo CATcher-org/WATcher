@@ -36,8 +36,10 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** One MatSort controls all IssueDataTables */
   @ViewChild(MatSort, { static: true }) matSort: MatSort;
+
   @ViewChild(LabelChipBarComponent, { static: true }) labelChipBar: LabelChipBarComponent;
 
+  /** Switch repository form */
   repoForm = new FormGroup({
     repoInput: new FormControl(['', Validators.required])
   });
@@ -81,17 +83,32 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.cardViews.forEach((v) => (v.issues.dropdownFilter = this.dropdownFilter));
   }
 
+  /**
+   * Change repository viewed on Issue Dashboard.
+   */
   switchRepo() {
-    this.phaseService.setCurrentRepository(Repo.of(this.repoForm.controls['repoInput'].value));
-    this.initialize();
+    this.phaseService.changeCurrentRepository(Repo.of(this.repoForm.controls['repoInput'].value));
+    this.initialize(); // reinitialize with new repository
   }
 
+  /**
+   * Fetch and initialize all information from repository to populate Issue Dashboard.
+   */
   private initialize() {
+    // Fill switch repo textbox with repository url
+    this.repoForm.controls.repoInput.setValue(this.phaseService.currentRepo.toString());
+
+    // Fetch assignees
     this.assignees = [];
-    this.repoForm.setValue({ repoInput: this.phaseService.currentRepo.toString() });
     this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
+
+    // Fetch issues
     this.issueService.reloadAllIssues();
+
+    // Fetch labels
     this.labelChipBar.load();
+
+    // FEtch milestones
     this.milestoneService.fetchMilestones().subscribe(
       (response) => {
         this.logger.debug('Fetched milestones from Github');

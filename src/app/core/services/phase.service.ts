@@ -4,6 +4,7 @@ import { Phase } from '../models/phase.model';
 import { Repo } from '../models/repo.model';
 import { SessionData } from '../models/session.model';
 import { GithubService } from './github.service';
+import { LoggingService } from './logging.service';
 
 export const SESSION_AVALIABILITY_FIX_FAILED = 'Session Availability Fix failed.';
 
@@ -45,21 +46,36 @@ export class PhaseService {
 
   public sessionData = STARTING_SESSION_DATA; // stores session data for the session
 
-  constructor(private githubService: GithubService) {}
+  constructor(private githubService: GithubService, public logger: LoggingService) {}
 
   /**
    * Sets the current main repository and additional repos if any.
    * Updates session data in Phase Service and local storage.
    * Updates Github Service with current repository.
-   * @param repo Main repository
-   * @param repos Additional Repos
+   * @param repo Main current repository
+   * @param repos Additional repositories
    */
-  setRepository(repo: Repo, ...repos: Repo[]): void {
+  setRepository(repo: Repo, repos?: Repo[]): void {
     this.currentRepo = repo;
     this.otherRepos = repos ? repos : [];
     this.sessionData.sessionRepo.find((x) => x.phase === this.currentPhase).repos = this.getRepository();
     this.githubService.storePhaseDetails(this.currentRepo.owner, this.currentRepo.name);
     localStorage.setItem('sessionData', JSON.stringify(this.sessionData));
+  }
+
+  /**
+   * Changes current respository to a new repository.
+   * If on Issue Dashboard, add previously visited repositories to otherRepos.
+   * @param repo New current repository
+   */
+  changeCurrentRepository(repo: Repo): void {
+    this.logger.info(`PhaseService: Changing current repository to '${repo}'`);
+
+    if (this.currentPhase === Phase.issuesViewer) {
+      /** Adds past repositories to phase */
+      this.otherRepos.push(this.currentRepo); // TODO feature: can be used to provide repo suggestions
+    }
+    this.setRepository(repo, this.otherRepos);
   }
 
   /**
@@ -69,47 +85,11 @@ export class PhaseService {
     return [this.currentRepo].concat(this.otherRepos);
   }
 
-  fetchSessionData(): Observable<SessionData> {
-    return this.githubService.fetchSettingsFile().pipe(map((data) => data as SessionData));
-  }
-
-  /**
-   * Will fetch session data and update phase service with it.
-   */
-  storeSessionData(): Observable<void> {
-    return this.fetchSessionData().pipe(
-      assertSessionDataIntegrity(),
-      map((sessionData: SessionData) => {
-        localStorage.setItem('sessionData', JSON.stringify(sessionData));
-        this.updateSessionParameters(sessionData);
-      })
-    );
-  }
-
-  /**
-   * Sets new current repository
-   */
-  setCurrentRepository(repo: Repo): void {
-    this.otherRepos.push(this.currentRepo); // Future TODO: history of previous repos
-    this.currentRepo = repo;
-    this.sessionData.sessionRepo.filter((x) => x.phase === this.currentPhase)[0].repos = this.getRepository();
-    localStorage.setItem('sessionData', JSON.stringify(this.sessionData));
-    this.updateSessionParameters(this.sessionData);
-  }
-
-  /**
-   * Retrieves session data from local storage and update phase service with it.
-   */
-  setSessionData() {
-    const sessionData = JSON.parse(localStorage.getItem('sessionData'));
-    this.updateSessionParameters(sessionData);
-  }
-
   /**
    * Retrieves the repository url from local storage and sets to current repository.
    */
   initializeCurrentRepository() {
-    const repo = { owner: window.localStorage.getItem('org'), name: window.localStorage.getItem('dataRepo') };
+    const repo = new Repo(window.localStorage.getItem('org'), window.localStorage.getItem('dataRepo'));
     this.setRepository(repo);
   }
 
