@@ -95,11 +95,20 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
    * Fetch and initialize all information from repository to populate Issue Dashboard.
    */
   private initialize() {
+    // Fill switch repo textbox with repository url
+    this.repoForm.controls.repoInput.setValue(this.phaseService.currentRepo.toString());
+
+    // Fetch assignees
     this.assignees = [];
-    this.repoForm.setValue({ repoInput: this.phaseService.currentRepo.toString() });
     this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
+
+    // Fetch issues
     this.issueService.reloadAllIssues();
+
+    // Fetch labels
     this.labelChipBar.load();
+
+    // FEtch milestones
     this.milestoneService.fetchMilestones().subscribe(
       (response) => {
         this.logger.debug('Fetched milestones from Github');

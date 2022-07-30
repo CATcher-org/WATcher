@@ -4,6 +4,7 @@ import { Phase } from '../models/phase.model';
 import { Repo } from '../models/repo.model';
 import { SessionData } from '../models/session.model';
 import { GithubService } from './github.service';
+import { LoggingService } from './logging.service';
 
 export const SESSION_AVALIABILITY_FIX_FAILED = 'Session Availability Fix failed.';
 
@@ -45,7 +46,7 @@ export class PhaseService {
 
   public sessionData = STARTING_SESSION_DATA; // stores session data for the session
 
-  constructor(private githubService: GithubService) {}
+  constructor(private githubService: GithubService, public logger: LoggingService) {}
 
   /**
    * Sets the current main repository and additional repos if any.
@@ -68,6 +69,8 @@ export class PhaseService {
    * @param repo New current repository
    */
   changeCurrentRepository(repo: Repo): void {
+    this.logger.info(`PhaseService: Changing current repository to '${repo}'`);
+
     if (this.currentPhase === Phase.issuesViewer) {
       /** Adds past repositories to phase */
       this.otherRepos.push(this.currentRepo); // TODO feature: can be used to provide repo suggestions
@@ -86,7 +89,7 @@ export class PhaseService {
    * Retrieves the repository url from local storage and sets to current repository.
    */
   initializeCurrentRepository() {
-    const repo = { owner: window.localStorage.getItem('org'), name: window.localStorage.getItem('dataRepo') };
+    const repo = new Repo(window.localStorage.getItem('org'), window.localStorage.getItem('dataRepo'));
     this.setRepository(repo);
   }
 
