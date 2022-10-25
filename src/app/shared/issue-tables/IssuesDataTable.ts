@@ -139,12 +139,11 @@ export class IssuesDataTable extends DataSource<Issue> {
               }
               data = this.getFilteredTeamData(data);
               data = applySearchFilter(this.filter, this.displayedColumn, this.issueService, data);
+              this.count = data.length;
+
               if (this.paginator !== undefined) {
                 data = paginateData(this.paginator, data);
               }
-
-              this.count = data.length;
-
               return data;
             })
           );
