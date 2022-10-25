@@ -108,7 +108,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     // Fetch labels
     this.labelChipBar.load();
 
-    // FEtch milestones
+    // Fetch milestones
     this.milestoneService.fetchMilestones().subscribe(
       (response) => {
         this.logger.debug('Fetched milestones from Github');
