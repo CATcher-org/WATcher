@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSort } from '@angular/material';
+import { MatOption, MatSelect, MatSort } from '@angular/material';
+import { MatSelectSearchClearDirective } from 'ngx-mat-select-search/mat-select-search-clear.directive';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
 import { Repo } from '../core/models/repo.model';
@@ -38,6 +39,9 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatSort, { static: true }) matSort: MatSort;
 
   @ViewChild(LabelChipBarComponent, { static: true }) labelChipBar: LabelChipBarComponent;
+
+  @ViewChild('milestoneSelectorRef', {static: false}) milestoneSelectorRef: MatSelect;
+
 
   /** Switch repository form */
   repoForm = new FormGroup({
@@ -112,6 +116,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.milestoneService.fetchMilestones().subscribe(
       (response) => {
         this.logger.debug('Fetched milestones from Github');
+        this.milestoneSelectorRef.options.forEach((data: MatOption) => data.deselect());
       },
       (err) => {},
       () => {}
