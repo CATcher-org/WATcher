@@ -28,7 +28,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   issues: IssuesDataTable;
   issues$: Observable<Issue[]>;
 
-  constructor(private githubService: GithubService, public issueService: IssueService, private loggingService: LoggingService) {}
+  constructor(private githubService: GithubService, public issueService: IssueService, private logger: LoggingService) {}
 
   ngOnInit() {
     this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.assignee, this.filters);
@@ -70,7 +70,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** Opens issue in new window */
   viewIssueInBrowser(id: number, event: Event) {
-    this.loggingService.info(`CardViewComponent: Opening Issue ${id} on Github`);
+    this.logger.info(`CardViewComponent: Opening Issue ${id} on Github`);
     this.githubService.viewIssueInBrowser(id, event);
   }
 
