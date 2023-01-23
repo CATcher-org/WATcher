@@ -557,6 +557,7 @@ export class GithubService {
   }
 
   reset(): void {
+    this.logger.info(`GithubService: Resetting issues cache`);
     this.issuesCacheManager.clear();
     this.issuesLastModifiedManager.clear();
     this.issueQueryRefs.clear();
