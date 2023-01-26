@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatOption, MatSelect, MatSort } from '@angular/material';
-import { MatSelectSearchClearDirective } from 'ngx-mat-select-search/mat-select-search-clear.directive';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { GithubUser } from '../core/models/github-user.model';
 import { Repo } from '../core/models/repo.model';
 import { GithubService } from '../core/services/github.service';
@@ -40,8 +40,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(LabelChipBarComponent, { static: true }) labelChipBar: LabelChipBarComponent;
 
-  @ViewChild('milestoneSelectorRef', {static: false}) milestoneSelectorRef: MatSelect;
-
+  @ViewChild('milestoneSelectorRef', { static: false }) milestoneSelectorRef: MatSelect;
 
   /** Switch repository form */
   repoForm = new FormGroup({
@@ -107,7 +106,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
 
     // Fetch issues
-    this.issueService.reloadAllIssues();
+    this.issueService.reloadAllIssues().pipe(catchError((err) => 'Failed to fetch issues for repo. Check your repo name.'));
 
     // Fetch labels
     this.labelChipBar.load();
@@ -118,7 +117,9 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
         this.logger.debug('Fetched milestones from Github');
         this.milestoneSelectorRef.options.forEach((data: MatOption) => data.deselect());
       },
-      (err) => {},
+      (err) => {
+        throw new Error('Failed to fetch milestones from Github. Check your repo name.');
+      },
       () => {}
     );
   }

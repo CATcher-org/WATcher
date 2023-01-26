@@ -42,7 +42,9 @@ export class LabelChipBarComponent implements OnInit {
       (response) => {
         this.logger.debug('Fetched labels from Github');
       },
-      (err) => {},
+      (err) => {
+        throw new Error('Failed to fetch labels from Github.');
+      },
       () => {
         this.initialize();
       }
