@@ -1,7 +1,9 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router, RoutesRecognized } from '@angular/router';
 import { filter, pairwise } from 'rxjs/operators';
+import { Repo } from '../../core/models/repo.model';
 import { AppConfig } from '../../../environments/environment';
 import { Phase } from '../../core/models/phase.model';
 import { AuthService } from '../../core/services/auth.service';
@@ -33,6 +35,11 @@ export class HeaderComponent implements OnInit {
   private readonly logOutDialogMessages = ['Do you wish to log out?'];
   private readonly yesButtonDialogMessage = 'Yes, I wish to log out';
   private readonly noButtonDialogMessage = "No, I don't wish to log out";
+
+  /** Switch repository form */
+  repoForm = new FormGroup({
+    repoInput: new FormControl([''], Validators.required)
+  });
 
   constructor(
     private router: Router,
@@ -176,5 +183,17 @@ export class HeaderComponent implements OnInit {
 
   exportLogFile() {
     this.loggingService.exportLogFile();
+  }
+
+  initializeRepoForm() {
+    this.repoForm.controls.repoInput.setValue(this.phaseService.currentRepo.toString());
+    return true;
+  }
+
+  /**
+   * Change repository viewed on Issue Dashboard.
+   */
+  switchRepo() {
+    this.phaseService.changeCurrentRepository(Repo.of(this.repoForm.controls['repoInput'].value));
   }
 }

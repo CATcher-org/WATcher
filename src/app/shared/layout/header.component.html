@@ -33,7 +33,24 @@
     </mat-menu>
   </div>
 
+  <!-- everything else -->
+
   <span style="flex: 1 1 auto"></span>
+
+  <div *ngIf="auth.isAuthenticated()?this.initializeRepoForm():false">
+    <form [formGroup]="repoForm" (ngSubmit)="switchRepo()">
+      <mat-form-field class="login-field">
+        <input matInput placeholder="Repository Location (Org/Repo)" formControlName="repoInput" required /> 
+      </mat-form-field>
+      <button class="submit-button" type="submit" mat-stroked-button color="primary">
+        <div>Submit</div>
+      </button>
+    </form>
+  </div>
+  
+  <span style="flex: 1 1 auto"></span>
+
+
   <button mat-button matTooltip="Download WATcher Log" (click)="this.exportLogFile()">
     <mat-icon>receipt</mat-icon>
   </button>
