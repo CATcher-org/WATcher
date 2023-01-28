@@ -37,7 +37,7 @@
 
   <span style="flex: 1 1 auto"></span>
 
-  <div *ngIf="auth.isAuthenticated()?this.initializeRepoForm():false">
+  <div *ngIf="auth.isAuthenticated()">
     <form [formGroup]="repoForm" (ngSubmit)="switchRepo()">
       <mat-form-field class="login-field">
         <input matInput placeholder="Repository Location (Org/Repo)" formControlName="repoInput" required /> 

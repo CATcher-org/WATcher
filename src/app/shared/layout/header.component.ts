@@ -6,7 +6,7 @@ import { filter, pairwise } from 'rxjs/operators';
 import { Repo } from '../../core/models/repo.model';
 import { AppConfig } from '../../../environments/environment';
 import { Phase } from '../../core/models/phase.model';
-import { AuthService } from '../../core/services/auth.service';
+import { AuthService, AuthState } from '../../core/services/auth.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { ElectronService } from '../../core/services/electron.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
@@ -63,6 +63,11 @@ export class HeaderComponent implements OnInit {
       .subscribe((e) => {
         this.prevUrl = e[0].urlAfterRedirects;
       });
+      
+    this.auth.currentAuthState.subscribe(authState => {
+      if(authState === AuthState.Authenticated) {
+        this.initializeRepoForm();
+      }})
   }
 
   ngOnInit() {}
@@ -187,6 +192,7 @@ export class HeaderComponent implements OnInit {
 
   initializeRepoForm() {
     this.repoForm.controls.repoInput.setValue(this.phaseService.currentRepo.toString());
+    this.loggingService.info('HeaderComponent: initializing repo form')
     return true;
   }
 
