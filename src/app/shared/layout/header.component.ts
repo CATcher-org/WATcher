@@ -6,7 +6,7 @@ import { filter, pairwise } from 'rxjs/operators';
 import { Repo } from '../../core/models/repo.model';
 import { AppConfig } from '../../../environments/environment';
 import { Phase } from '../../core/models/phase.model';
-import { AuthService, AuthState } from '../../core/services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { ElectronService } from '../../core/services/electron.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
@@ -36,10 +36,8 @@ export class HeaderComponent implements OnInit {
   private readonly yesButtonDialogMessage = 'Yes, I wish to log out';
   private readonly noButtonDialogMessage = "No, I don't wish to log out";
 
-  /** Switch repository form */
-  repoForm = new FormGroup({
-    repoInput: new FormControl([''], Validators.required)
-  });
+  /** Model for the displayed repository name */
+  currentRepo : string = '';
 
   constructor(
     private router: Router,
@@ -65,8 +63,8 @@ export class HeaderComponent implements OnInit {
       });
       
     this.auth.currentAuthState.subscribe(authState => {
-      if(authState === AuthState.Authenticated) {
-        this.initializeRepoForm();
+      if(auth.isAuthenticated()) {
+        this.initializeRepoNameInTitle();
       }})
   }
 
@@ -190,16 +188,30 @@ export class HeaderComponent implements OnInit {
     this.loggingService.exportLogFile();
   }
 
-  initializeRepoForm() {
-    this.repoForm.controls.repoInput.setValue(this.phaseService.currentRepo.toString());
-    this.loggingService.info('HeaderComponent: initializing repo form')
-    return true;
+  initializeRepoNameInTitle() {
+    this.currentRepo = this.phaseService.currentRepo.toString();
+    this.loggingService.info('HeaderComponent: initializing current repo name')
   }
 
   /**
    * Change repository viewed on Issue Dashboard.
    */
   switchRepo() {
-    this.phaseService.changeCurrentRepository(Repo.of(this.repoForm.controls['repoInput'].value));
+    this.phaseService.changeCurrentRepository(Repo.of(this.currentRepo));
+  }
+
+  openChangeRepoDialog() {
+    const dialogRef = this.dialogService.openChangeRepoDialog(this.currentRepo);
+
+    dialogRef.afterClosed().subscribe(
+      (res) => {
+        if (!res) {
+          return;
+        }
+        
+        this.currentRepo = res;
+        this.switchRepo();
+      }
+    )
   }
 }
