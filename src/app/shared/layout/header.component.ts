@@ -168,7 +168,7 @@ export class HeaderComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((res) => {
       if (res) {
-        this.logger.info(`Logging out from ${this.userService.currentUser.loginId}`);
+        this.logger.info(`HeaderComponent: Logging out from ${this.userService.currentUser.loginId}`);
         this.logOut();
       }
     });

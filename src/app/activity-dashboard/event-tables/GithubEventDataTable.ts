@@ -101,7 +101,7 @@ export class GithubEventDataTable extends DataSource<EventWeek> {
     const displayDataChanges = [page, sortChange, this.startDate, this.endDate].filter((x) => x !== undefined);
 
     this.githubEventService.pollEvents();
-    this.githubEventService.events$.subscribe((x) => this.logger.debug(x));
+    this.githubEventService.events$.subscribe((x) => this.logger.debug('GithubEventDataTable: ', x));
     this.eventSubscription = this.githubEventService.events$
       .pipe(
         flatMap(() => {
