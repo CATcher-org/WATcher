@@ -75,6 +75,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.labelFilterSubscription.unsubscribe();
+    this.repoChangeSubscription.unsubscribe();
   }
 
   /**
