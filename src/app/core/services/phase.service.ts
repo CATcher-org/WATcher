@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { Phase } from '../models/phase.model';
 import { Repo } from '../models/repo.model';
 import { SessionData } from '../models/session.model';
