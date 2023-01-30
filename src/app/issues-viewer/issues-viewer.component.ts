@@ -5,9 +5,9 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { GithubUser } from '../core/models/github-user.model';
 import { Repo } from '../core/models/repo.model';
+import { ErrorHandlingService } from '../core/services/error-handling.service';
 import { GithubService } from '../core/services/github.service';
 import { IssueService } from '../core/services/issue.service';
-import { LoggingService } from '../core/services/logging.service';
 import { MilestoneService } from '../core/services/milestone.service';
 import { PhaseService } from '../core/services/phase.service';
 import { TABLE_COLUMNS } from '../shared/issue-tables/issue-tables-columns';
@@ -52,11 +52,16 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     public githubService: GithubService,
     public issueService: IssueService,
     public milestoneService: MilestoneService,
-    private logger: LoggingService
+    private errorHandlingService: ErrorHandlingService
   ) {}
 
-  ngOnInit() {
-    this.initialize();
+  async ngOnInit() {
+    // Divide it into three parts:
+    // First, we fill the appropriate textbox with the repo name
+    // Then, we try to switch to the new repo
+    // Finally, once we have switched, we initialize
+    this.fillRepoTextBox();
+    await this.switchRepo();
   }
 
   ngAfterViewInit(): void {
@@ -86,21 +91,41 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.cardViews.forEach((v) => (v.issues.dropdownFilter = this.dropdownFilter));
   }
 
+  async switchRepo() {
+    const successful = await this.switchRepoFromForm();
+    if (successful) {
+      this.initialize();
+    }
+  }
+
   /**
    * Change repository viewed on Issue Dashboard.
    */
-  switchRepo() {
-    this.phaseService.changeCurrentRepository(Repo.of(this.repoForm.controls['repoInput'].value));
-    this.initialize(); // reinitialize with new repository
+  private async switchRepoFromForm() {
+    const fromForm = Repo.of(this.repoForm.controls['repoInput'].value);
+    try {
+      if (fromForm === undefined) {
+        throw new Error('Invalid repo name. Please provide repo name in the format Org/Repo.');
+      }
+      await this.phaseService.changeCurrentRepository(fromForm);
+    } catch (error) {
+      this.errorHandlingService.handleError(error);
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Fill switch repo textbox with repository url
+   */
+  private fillRepoTextBox() {
+    this.repoForm.controls.repoInput.setValue(this.phaseService.currentRepo.toString());
   }
 
   /**
    * Fetch and initialize all information from repository to populate Issue Dashboard.
    */
   private initialize() {
-    // Fill switch repo textbox with repository url
-    this.repoForm.controls.repoInput.setValue(this.phaseService.currentRepo.toString());
-
     // Fetch assignees
     this.assignees = [];
     this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
@@ -114,7 +139,6 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     // Fetch milestones
     this.milestoneService.fetchMilestones().subscribe(
       (response) => {
-        this.logger.debug('Fetched milestones from Github');
         this.milestoneSelectorRef.options.forEach((data: MatOption) => data.deselect());
       },
       (err) => {

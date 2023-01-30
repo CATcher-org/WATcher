@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Phase } from '../models/phase.model';
 import { Repo } from '../models/repo.model';
 import { SessionData } from '../models/session.model';
@@ -68,8 +69,17 @@ export class PhaseService {
    * If on Issue Dashboard, add previously visited repositories to otherRepos.
    * @param repo New current repository
    */
-  changeCurrentRepository(repo: Repo): void {
+  async changeCurrentRepository(repo: Repo) {
     this.logger.info(`PhaseService: Changing current repository to '${repo}'`);
+
+    const isValidRepository = await this.githubService
+      .isRepositoryPresent(repo.owner, repo.name)
+      .toPromise()
+      .then((isValidRepository) => isValidRepository);
+
+    if (!isValidRepository) {
+      throw new Error('Invalid repo. Please check your organisation and repo name.');
+    }
 
     if (this.currentPhase === Phase.issuesViewer) {
       /** Adds past repositories to phase */
