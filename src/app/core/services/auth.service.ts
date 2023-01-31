@@ -59,6 +59,7 @@ export class AuthService {
   }
 
   reset(): void {
+    this.logger.info('AuthService: Clearing access token and setting AuthState to NotAuthenticated.')
     this.accessToken.next(undefined);
     this.changeAuthState(AuthState.NotAuthenticated);
     this.ngZone.run(() => this.router.navigate(['']));
@@ -79,12 +80,14 @@ export class AuthService {
   setTitleWithPhaseDetail(): void {
     const appSetting = require('../../../../package.json');
     const title = `${appSetting.name} ${appSetting.version} - ${this.phaseService.getCurrentRepositoryURL()}`;
+    this.logger.info(`AuthService: Setting Title as ${title}`);
     this.titleService.setTitle(title);
   }
 
   setLandingPageTitle(): void {
     const appSetting = require('../../../../package.json');
     const title = `${appSetting.name} ${appSetting.version}`;
+    this.logger.info(`AuthService: Setting Title as ${title}`);
     this.titleService.setTitle(title);
   }
 
@@ -96,7 +99,7 @@ export class AuthService {
     if (newAuthState === AuthState.Authenticated) {
       const sessionId = generateSessionId();
       this.issueService.setSessionId(sessionId);
-      this.logger.info(`Successfully authenticated with session: ${sessionId}`);
+      this.logger.info(`AuthService: Successfully authenticated with session: ${sessionId}`);
     }
     this.authStateSource.next(newAuthState);
   }
@@ -118,7 +121,7 @@ export class AuthService {
    * Will start the Github OAuth web flow process.
    */
   startOAuthProcess() {
-    this.logger.info('Starting authentication');
+    this.logger.info('AuthService: Starting authentication');
     // Available OAuth scopes https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps#available-scopes
     const githubRepoPermission = 'public_repo';
     this.changeAuthState(AuthState.AwaitingAuthentication);
@@ -132,7 +135,7 @@ export class AuthService {
           `${AppConfig.githubUrl}/login/oauth/authorize?client_id=${AppConfig.clientId}&scope=${githubRepoPermission},read:user&state=${this.state}`
         )
       );
-      this.logger.info('Redirecting for Github authentication');
+      this.logger.info(`AuthService: Redirecting for Github authentication`);
     }
   }
 
