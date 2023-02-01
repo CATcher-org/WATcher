@@ -4,7 +4,6 @@ import { Phase } from '../../core/models/phase.model';
 import { AuthService, AuthState } from '../../core/services/auth.service';
 import { ElectronService } from '../../core/services/electron.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
-import { GithubEventService } from '../../core/services/githubevent.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { PhaseService } from '../../core/services/phase.service';
 import { UserService } from '../../core/services/user.service';
@@ -24,7 +23,6 @@ export class ConfirmLoginComponent implements OnInit {
     private phaseService: PhaseService,
     private userService: UserService,
     private errorHandlingService: ErrorHandlingService,
-    private githubEventService: GithubEventService,
     private logger: LoggingService,
     private router: Router
   ) {}
