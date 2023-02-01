@@ -58,19 +58,16 @@ export class ConfirmLoginComponent implements OnInit {
   completeLoginProcess(): void {
     this.authService.changeAuthState(AuthState.AwaitingAuthentication);
     this.phaseService.initializeCurrentRepository();
-    this.userService
-      .createUserModel(this.username)
-      .pipe(flatMap(() => this.githubEventService.setLatestChangeEvent()))
-      .subscribe(
-        () => {
-          this.handleAuthSuccess();
-        },
-        (error) => {
-          this.authService.changeAuthState(AuthState.NotAuthenticated);
-          this.errorHandlingService.handleError(error);
-          this.logger.info(`Completion of login process failed with an error: ${error}`);
-        }
-      );
+    this.userService.createUserModel(this.username).subscribe(
+      () => {
+        this.handleAuthSuccess();
+      },
+      (error) => {
+        this.authService.changeAuthState(AuthState.NotAuthenticated);
+        this.errorHandlingService.handleError(error);
+        this.logger.info(`Completion of login process failed with an error: ${error}`);
+      }
+    );
     this.handleAuthSuccess();
   }
 }
