@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { flatMap } from 'rxjs/operators';
 import { Phase } from '../../core/models/phase.model';
 import { AuthService, AuthState } from '../../core/services/auth.service';
 import { ElectronService } from '../../core/services/electron.service';
