@@ -35,7 +35,7 @@ export class ConfirmLoginComponent implements OnInit {
   }
 
   logIntoAnotherAccount() {
-    this.logger.info('Logging into another account');
+    this.logger.info('ConfirmLoginComponent: Logging into another account');
     this.electronService.clearCookies();
     this.authService.startOAuthProcess();
   }

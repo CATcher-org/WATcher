@@ -7,6 +7,7 @@ import { GithubUser } from '../core/models/github-user.model';
 import { Repo } from '../core/models/repo.model';
 import { ErrorHandlingService } from '../core/services/error-handling.service';
 import { GithubService } from '../core/services/github.service';
+import { LoggingService } from '../core/services/logging.service';
 import { IssueService } from '../core/services/issue.service';
 import { MilestoneService } from '../core/services/milestone.service';
 import { PhaseService } from '../core/services/phase.service';
@@ -52,7 +53,8 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     public githubService: GithubService,
     public issueService: IssueService,
     public milestoneService: MilestoneService,
-    private errorHandlingService: ErrorHandlingService
+    private errorHandlingService: ErrorHandlingService,
+    private logger: LoggingService
   ) {}
 
   async ngOnInit() {
@@ -139,6 +141,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     // Fetch milestones
     this.milestoneService.fetchMilestones().subscribe(
       (response) => {
+        this.logger.debug('IssuesViewerComponent: Fetched milestones from Github');
         this.milestoneSelectorRef.options.forEach((data: MatOption) => data.deselect());
       },
       (err) => {

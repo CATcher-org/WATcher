@@ -40,7 +40,7 @@ export class LabelChipBarComponent implements OnInit {
   public load() {
     this.labelService.fetchLabels().subscribe(
       (response) => {
-        this.logger.debug('Fetched labels from Github');
+        this.logger.debug('LabelChipBarComponent: Fetched labels from Github');
       },
       (err) => {
         throw new Error('Failed to fetch labels from Github.');

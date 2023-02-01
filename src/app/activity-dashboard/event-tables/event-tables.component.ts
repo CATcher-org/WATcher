@@ -46,17 +46,10 @@ export class EventTablesComponent implements OnInit, AfterViewInit {
   /** The expanded row */
   expandedElement: EventWeek | null;
 
-  constructor(public githubEventService: GithubEventService, private loggingService: LoggingService) {}
+  constructor(public githubEventService: GithubEventService, private logger: LoggingService) {}
 
   ngOnInit() {
-    this.githubEvents = new GithubEventDataTable(
-      this.githubEventService,
-      this.loggingService,
-      this.sort,
-      this.paginator,
-      this.actor,
-      this.filters
-    );
+    this.githubEvents = new GithubEventDataTable(this.githubEventService, this.logger, this.sort, this.paginator, this.actor, this.filters);
   }
 
   ngAfterViewInit(): void {
@@ -92,7 +85,7 @@ export class EventTablesComponent implements OnInit, AfterViewInit {
 
   /** Not implemented yet. */
   viewEventInBrowser(id: number, event: Event) {
-    this.loggingService.info(`EventTablesComponent: Opening Event ${id} on Github`);
+    this.logger.info(`EventTablesComponent: Opening Event ${id} on Github`);
     // window.open('https://github.com/', '_blank');
   }
 
