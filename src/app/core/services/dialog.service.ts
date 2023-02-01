@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import { RepoChangeFormComponent } from '../../shared/repo-change-form/repo-change-form.component';
 import { LabelDefinitionPopupComponent } from '../../shared/label-definition-popup/label-definition-popup.component';
 import { UserConfirmationComponent } from '../guards/user-confirmation/user-confirmation.component';
 
@@ -25,6 +26,16 @@ export class DialogService {
         header: labelName,
         body: labelDefinition
       }
+    });
+  }
+
+  openChangeRepoDialog(repoName: String) {
+    return this.dialog.open(RepoChangeFormComponent, {
+      data: {
+        repoName: repoName
+      },
+      height: 'auto',
+      width: '40%'
     });
   }
 }

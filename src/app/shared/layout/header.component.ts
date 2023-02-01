@@ -1,7 +1,9 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router, RoutesRecognized } from '@angular/router';
 import { filter, pairwise } from 'rxjs/operators';
+import { Repo } from '../../core/models/repo.model';
 import { AppConfig } from '../../../environments/environment';
 import { Phase } from '../../core/models/phase.model';
 import { AuthService } from '../../core/services/auth.service';
@@ -34,6 +36,9 @@ export class HeaderComponent implements OnInit {
   private readonly yesButtonDialogMessage = 'Yes, I wish to log out';
   private readonly noButtonDialogMessage = "No, I don't wish to log out";
 
+  /** Model for the displayed repository name */
+  currentRepo : string = '';
+
   constructor(
     private router: Router,
     public auth: AuthService,
@@ -56,6 +61,11 @@ export class HeaderComponent implements OnInit {
       .subscribe((e) => {
         this.prevUrl = e[0].urlAfterRedirects;
       });
+      
+    this.auth.currentAuthState.subscribe(authState => {
+      if(auth.isAuthenticated()) {
+        this.initializeRepoNameInTitle();
+      }})
   }
 
   ngOnInit() {}
@@ -176,5 +186,32 @@ export class HeaderComponent implements OnInit {
 
   exportLogFile() {
     this.logger.exportLogFile();
+  }
+
+  initializeRepoNameInTitle() {
+    this.currentRepo = this.phaseService.currentRepo.toString();
+    this.loggingService.info('HeaderComponent: initializing current repo name')
+  }
+
+  /**
+   * Change repository viewed on Issue Dashboard.
+   */
+  switchRepo() {
+    this.phaseService.changeCurrentRepository(Repo.of(this.currentRepo));
+  }
+
+  openChangeRepoDialog() {
+    const dialogRef = this.dialogService.openChangeRepoDialog(this.currentRepo);
+
+    dialogRef.afterClosed().subscribe(
+      (res) => {
+        if (!res) {
+          return;
+        }
+        
+        this.currentRepo = res;
+        this.switchRepo();
+      }
+    )
   }
 }

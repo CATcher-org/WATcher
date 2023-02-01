@@ -1,0 +1,15 @@
+.change-repo-form-title {
+    width: 100%;
+}
+
+.mat-dialog-content {
+    width: 100%;
+}
+
+.mat-form-field {
+    width: 100%;
+}
+
+.mat-dialog-actions {
+    justify-content: flex-end;
+}

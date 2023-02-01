@@ -34,10 +34,11 @@ import { IssuesViewerModule } from './issues-viewer/issues-viewer.module';
 import { LabelDefinitionPopupComponent } from './shared/label-definition-popup/label-definition-popup.component';
 import { HeaderComponent } from './shared/layout';
 import { markedOptionsFactory } from './shared/lib/marked';
+import { RepoChangeFormComponent } from './shared/repo-change-form/repo-change-form.component';
 import { SharedModule } from './shared/shared.module';
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, UserConfirmationComponent, LabelDefinitionPopupComponent, SessionFixConfirmationComponent],
+  declarations: [AppComponent, HeaderComponent, UserConfirmationComponent, LabelDefinitionPopupComponent, RepoChangeFormComponent, SessionFixConfirmationComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -89,7 +90,7 @@ import { SharedModule } from './shared/shared.module';
     }
   ],
   bootstrap: [AppComponent],
-  entryComponents: [UserConfirmationComponent, SessionFixConfirmationComponent, LabelDefinitionPopupComponent]
+  entryComponents: [UserConfirmationComponent, SessionFixConfirmationComponent, LabelDefinitionPopupComponent, RepoChangeFormComponent]
 })
 export class AppModule {
   constructor(private apollo: Apollo, private httpLink: HttpLink, private authService: AuthService, private logger: LoggingService) {

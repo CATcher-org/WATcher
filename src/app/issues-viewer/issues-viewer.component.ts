@@ -23,6 +23,9 @@ import { LabelChipBarComponent } from './label-chip-bar/label-chip-bar.component
 export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly displayedColumns = [TABLE_COLUMNS.ID, TABLE_COLUMNS.TITLE, TABLE_COLUMNS.ASSIGNEE, TABLE_COLUMNS.LABEL];
 
+  /** Observes for any change in repo*/
+  repoChangeSubscription: Subscription;
+
   /** Users to show as columns */
   assignees: GithubUser[];
 
@@ -54,7 +57,9 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     public issueService: IssueService,
     public milestoneService: MilestoneService,
     private logger: LoggingService
-  ) {}
+  ) {
+    this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe(newRepo => this.initialize())
+  }
 
   ngOnInit() {
     this.initialize();
@@ -70,6 +75,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.labelFilterSubscription.unsubscribe();
+    this.repoChangeSubscription.unsubscribe();
   }
 
   /**
@@ -88,20 +94,9 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Change repository viewed on Issue Dashboard.
-   */
-  switchRepo() {
-    this.phaseService.changeCurrentRepository(Repo.of(this.repoForm.controls['repoInput'].value));
-    this.initialize(); // reinitialize with new repository
-  }
-
-  /**
    * Fetch and initialize all information from repository to populate Issue Dashboard.
    */
   private initialize() {
-    // Fill switch repo textbox with repository url
-    this.repoForm.controls.repoInput.setValue(this.phaseService.currentRepo.toString());
-
     // Fetch assignees
     this.assignees = [];
     this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
