@@ -33,7 +33,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
     private githubService: GithubService,
     public issueService: IssueService,
     public labelService: LabelService,
-    private loggingService: LoggingService
+    private logger: LoggingService
   ) {}
 
   ngOnInit() {
@@ -76,7 +76,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** Opens issue in new window */
   viewIssueInBrowser(id: number, event: Event) {
-    this.loggingService.info(`CardViewComponent: Opening Issue ${id} on Github`);
+    this.logger.info(`CardViewComponent: Opening Issue ${id} on Github`);
     this.githubService.viewIssueInBrowser(id, event);
   }
 

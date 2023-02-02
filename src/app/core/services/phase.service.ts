@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Phase } from '../models/phase.model';
 import { Repo } from '../models/repo.model';
 import { SessionData } from '../models/session.model';
@@ -44,6 +44,14 @@ export class PhaseService {
   public currentRepo: Repo; // current or main repository of current phase
   public otherRepos: Repo[]; // more repositories relevant to this phase
 
+  /**
+   * Expose an observable to track changes to currentRepo
+   *
+   * TODO - replace all references to currentRepo to have
+   * dependencies subscribe to this observable?
+   */
+  public repoChanged$: Subject<Repo | null> = new Subject();
+
   public sessionData = STARTING_SESSION_DATA; // stores session data for the session
 
   constructor(private githubService: GithubService, public logger: LoggingService) {}
@@ -76,6 +84,7 @@ export class PhaseService {
       this.otherRepos.push(this.currentRepo); // TODO feature: can be used to provide repo suggestions
     }
     this.setRepository(repo, this.otherRepos);
+    this.repoChanged$.next(repo);
   }
 
   /**
