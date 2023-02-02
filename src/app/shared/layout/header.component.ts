@@ -37,7 +37,7 @@ export class HeaderComponent implements OnInit {
   private readonly noButtonDialogMessage = "No, I don't wish to log out";
 
   /** Model for the displayed repository name */
-  currentRepo : string = '';
+  currentRepo: string = '';
 
   constructor(
     private router: Router,
@@ -61,11 +61,12 @@ export class HeaderComponent implements OnInit {
       .subscribe((e) => {
         this.prevUrl = e[0].urlAfterRedirects;
       });
-      
-    this.auth.currentAuthState.subscribe(authState => {
-      if(auth.isAuthenticated()) {
+
+    this.auth.currentAuthState.subscribe((authState) => {
+      if (auth.isAuthenticated()) {
         this.initializeRepoNameInTitle();
-      }})
+      }
+    });
   }
 
   ngOnInit() {}
@@ -190,7 +191,7 @@ export class HeaderComponent implements OnInit {
 
   initializeRepoNameInTitle() {
     this.currentRepo = this.phaseService.currentRepo.toString();
-    this.loggingService.info('HeaderComponent: initializing current repo name')
+    this.logger.info('HeaderComponent: initializing current repo name');
   }
 
   /**
@@ -203,15 +204,13 @@ export class HeaderComponent implements OnInit {
   openChangeRepoDialog() {
     const dialogRef = this.dialogService.openChangeRepoDialog(this.currentRepo);
 
-    dialogRef.afterClosed().subscribe(
-      (res) => {
-        if (!res) {
-          return;
-        }
-        
-        this.currentRepo = res;
-        this.switchRepo();
+    dialogRef.afterClosed().subscribe((res) => {
+      if (!res) {
+        return;
       }
-    )
+
+      this.currentRepo = res;
+      this.switchRepo();
+    });
   }
 }
