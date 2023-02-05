@@ -1,9 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { flatMap } from 'rxjs/operators';
 import { Phase } from '../../core/models/phase.model';
 import { AuthService, AuthState } from '../../core/services/auth.service';
 import { ElectronService } from '../../core/services/electron.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
+import { GithubEventService } from '../../core/services/githubevent.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { PhaseService } from '../../core/services/phase.service';
 import { UserService } from '../../core/services/user.service';
@@ -24,7 +26,8 @@ export class ConfirmLoginComponent implements OnInit {
     private userService: UserService,
     private errorHandlingService: ErrorHandlingService,
     private logger: LoggingService,
-    private router: Router
+    private router: Router,
+    private githubEventService: GithubEventService
   ) {}
 
   ngOnInit() {}
@@ -55,16 +58,19 @@ export class ConfirmLoginComponent implements OnInit {
   completeLoginProcess(): void {
     this.authService.changeAuthState(AuthState.AwaitingAuthentication);
     this.phaseService.initializeCurrentRepository();
-    this.userService.createUserModel(this.username).subscribe(
-      () => {
-        this.handleAuthSuccess();
-      },
-      (error) => {
-        this.authService.changeAuthState(AuthState.NotAuthenticated);
-        this.errorHandlingService.handleError(error);
-        this.logger.info(`Completion of login process failed with an error: ${error}`);
-      }
-    );
+    this.userService
+      .createUserModel(this.username)
+      .pipe(flatMap(() => this.githubEventService.setLatestChangeEvent()))
+      .subscribe(
+        () => {
+          this.handleAuthSuccess();
+        },
+        (error) => {
+          this.authService.changeAuthState(AuthState.NotAuthenticated);
+          this.errorHandlingService.handleError(error);
+          this.logger.info(`Completion of login process failed with an error: ${error}`);
+        }
+      );
     this.handleAuthSuccess();
   }
 }
