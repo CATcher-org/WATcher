@@ -33,7 +33,21 @@
     </mat-menu>
   </div>
 
+  <!-- everything else -->
+
   <span style="flex: 1 1 auto"></span>
+
+  <div *ngIf="auth.isAuthenticated()">
+    <span id="phase-descriptor" style="margin-left: 10px">
+      {{ this.currentRepo }}
+    </span>
+    <button mat-button matTooltip="Change Repository" (click)="this.openChangeRepoDialog()">
+      <mat-icon>edit</mat-icon>
+    </button>
+  </div>
+
+  <span style="flex: 1 1 auto"></span>
+
   <button mat-button matTooltip="Download WATcher Log" (click)="this.exportLogFile()">
     <mat-icon>receipt</mat-icon>
   </button>

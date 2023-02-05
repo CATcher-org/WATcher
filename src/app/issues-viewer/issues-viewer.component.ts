@@ -24,6 +24,9 @@ import { LabelChipBarComponent } from './label-chip-bar/label-chip-bar.component
 export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly displayedColumns = [TABLE_COLUMNS.ID, TABLE_COLUMNS.TITLE, TABLE_COLUMNS.ASSIGNEE, TABLE_COLUMNS.LABEL];
 
+  /** Observes for any change in repo*/
+  repoChangeSubscription: Subscription;
+
   /** Users to show as columns */
   assignees: GithubUser[];
 
@@ -55,7 +58,9 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     public milestoneService: MilestoneService,
     private errorHandlingService: ErrorHandlingService,
     private logger: LoggingService
-  ) {}
+  ) {
+    this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => this.initialize());
+  }
 
   async ngOnInit() {
     // Divide it into three parts:
@@ -76,6 +81,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.labelFilterSubscription.unsubscribe();
+    this.repoChangeSubscription.unsubscribe();
   }
 
   /**
