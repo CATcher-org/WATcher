@@ -60,7 +60,7 @@ export class SessionSelectionComponent implements OnInit {
     window.localStorage.setItem('org', repoOrg);
     window.localStorage.setItem('dataRepo', repoName);
 
-    this.logger.info(`Selected Repository: ${repoInformation}`);
+    this.logger.info(`SessionSelectionComponent: Selected Repository: ${repoInformation}`);
 
     try {
       this.authService.startOAuthProcess();

@@ -110,7 +110,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     // Fetch milestones
     this.milestoneService.fetchMilestones().subscribe(
       (response) => {
-        this.logger.debug('Fetched milestones from Github');
+        this.logger.debug('IssuesViewerComponent: Fetched milestones from Github');
         this.milestoneSelectorRef.options.forEach((data: MatOption) => data.deselect());
       },
       (err) => {},

@@ -97,13 +97,13 @@ export class AppModule {
     const URI = 'https://api.github.com/graphql';
     const log = new ApolloLink((operation, forward) => {
       operation.setContext({ start: performance.now() });
-      this.logger.info('request', operation.getContext());
+      this.logger.info('AppModule: GraphQL request', operation.getContext());
       return forward(operation).map((result) => {
         const time = performance.now() - operation.getContext().start;
-        this.logger.info('response', operation.getContext(), `in ${Math.round(time)}ms`);
+        this.logger.info('AppModule: GraphQL response', operation.getContext(), `in ${Math.round(time)}ms`);
         const repo = operation.getContext().response.body.data.repository;
         const item = Object.keys(repo)[0];
-        this.logger.debug('response body', item, repo[item].edges.length, repo[item].edges);
+        this.logger.debug('AppModule: GraphQL response body', item, repo[item].edges.length, repo[item].edges);
         return result;
       });
     });
