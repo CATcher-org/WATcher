@@ -1,10 +1,8 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatOption, MatSelect, MatSort } from '@angular/material';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { GithubUser } from '../core/models/github-user.model';
-import { Repo } from '../core/models/repo.model';
 import { ErrorHandlingService } from '../core/services/error-handling.service';
 import { GithubService } from '../core/services/github.service';
 import { IssueService } from '../core/services/issue.service';
@@ -46,11 +44,6 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('milestoneSelectorRef', { static: false }) milestoneSelectorRef: MatSelect;
 
-  /** Switch repository form */
-  repoForm = new FormGroup({
-    repoInput: new FormControl(['', Validators.required])
-  });
-
   constructor(
     public phaseService: PhaseService,
     public githubService: GithubService,
@@ -62,13 +55,8 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => this.initialize());
   }
 
-  async ngOnInit() {
-    // Divide it into three parts:
-    // First, we fill the appropriate textbox with the repo name
-    // Then, we try to switch to the new repo
-    // Finally, once we have switched, we initialize
-    this.fillRepoTextBox();
-    await this.switchRepo();
+  ngOnInit() {
+    this.initialize();
   }
 
   ngAfterViewInit(): void {
@@ -99,37 +87,6 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.cardViews.forEach((v) => (v.issues.dropdownFilter = this.dropdownFilter));
   }
 
-  async switchRepo() {
-    const successful = await this.switchRepoFromForm();
-    if (successful) {
-      this.initialize();
-    }
-  }
-
-  /**
-   * Change repository viewed on Issue Dashboard.
-   */
-  private async switchRepoFromForm() {
-    const fromForm = Repo.of(this.repoForm.controls['repoInput'].value);
-    try {
-      if (fromForm === undefined) {
-        throw new Error('Invalid repo name. Please provide repo name in the format Org/Repo.');
-      }
-      await this.phaseService.changeCurrentRepository(fromForm);
-    } catch (error) {
-      this.errorHandlingService.handleError(error);
-      return false;
-    }
-    return true;
-  }
-
-  /**
-   * Fill switch repo textbox with repository url
-   */
-  private fillRepoTextBox() {
-    this.repoForm.controls.repoInput.setValue(this.phaseService.currentRepo.toString());
-  }
-
   /**
    * Fetch and initialize all information from repository to populate Issue Dashboard.
    */
@@ -151,7 +108,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
         this.milestoneSelectorRef.options.forEach((data: MatOption) => data.deselect());
       },
       (err) => {
-        throw new Error('Failed to fetch milestones from Github. Check your repo name.');
+        this.errorHandlingService.handleError(new Error('Failed to fetch milestones from Github. Check your repo name.'));
       },
       () => {}
     );

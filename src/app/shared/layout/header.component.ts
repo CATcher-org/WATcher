@@ -196,8 +196,12 @@ export class HeaderComponent implements OnInit {
   /**
    * Change repository viewed on Issue Dashboard.
    */
-  switchRepo() {
-    this.phaseService.changeCurrentRepository(Repo.of(this.currentRepo));
+  async switchRepo() {
+    try {
+      await this.phaseService.changeCurrentRepository(Repo.of(this.currentRepo));
+    } catch (error) {
+      this.errorHandlingService.handleError(error);
+    }
   }
 
   openChangeRepoDialog() {

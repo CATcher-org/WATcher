@@ -77,6 +77,10 @@ export class PhaseService {
    * @param repo New current repository
    */
   async changeCurrentRepository(repo: Repo) {
+    if (!repo) {
+      throw new Error('Invalid repo name. Please provide repo name in the format Org/Repo.');
+    }
+
     this.logger.info(`PhaseService: Changing current repository to '${repo}'`);
 
     const isValidRepository = await this.githubService
