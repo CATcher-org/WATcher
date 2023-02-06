@@ -8,6 +8,7 @@ import { IssueService } from '../../core/services/issue.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
 import { LabelService } from '../../core/services/label.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-card-view',
@@ -33,7 +34,8 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
     private githubService: GithubService,
     public issueService: IssueService,
     public labelService: LabelService,
-    private logger: LoggingService
+    private logger: LoggingService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -78,6 +80,11 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   viewIssueInBrowser(id: number, event: Event) {
     this.logger.info(`CardViewComponent: Opening Issue ${id} on Github`);
     this.githubService.viewIssueInBrowser(id, event);
+  }
+
+  viewUserInBrowser() {
+    this.logger.info(`CardViewComponent: Open user ${this.assignee.name} in browser`);
+    this.router.navigate(['/detailedViewer']);
   }
 
   /** Returns status color for issue */
