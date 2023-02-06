@@ -83,8 +83,10 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   viewUserInBrowser() {
-    this.logger.info(`CardViewComponent: Open user ${this.assignee.name} in browser`);
-    this.router.navigate(['/detailedViewer']);
+    console.log(this.assignee);
+    this.logger.info(`CardViewComponent: Open user ${this.assignee.login} in browser`);
+
+    this.router.navigate(['/user', this.assignee.login]);
   }
 
   /** Returns status color for issue */

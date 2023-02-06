@@ -10,7 +10,7 @@ const routes: Routes = [
   { path: '', loadChildren: () => AuthModule },
   { path: 'issuesViewer', loadChildren: () => IssuesViewerModule, canLoad: [AuthGuard] },
   { path: 'activityDashboard', loadChildren: () => ActivityDashboardModule, canLoad: [AuthGuard] },
-  { path: 'detailedViewer', loadChildren: () => DetailedViewerModule, canLoad: [AuthGuard] }
+  { path: 'user', loadChildren: () => DetailedViewerModule, canLoad: [AuthGuard] }
 ];
 
 @NgModule({
