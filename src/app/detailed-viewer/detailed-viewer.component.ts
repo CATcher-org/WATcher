@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { GithubService } from '../core/services/github.service';
-import { LoggingService } from '../core/services/logging.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GithubUser } from '../core/models/github-user.model';
+import { GithubService } from '../core/services/github.service';
 import { IssueService } from '../core/services/issue.service';
+import { LoggingService } from '../core/services/logging.service';
 import { IssuesDataTable } from '../shared/issue-tables/IssuesDataTable';
 
 @Component({
@@ -27,13 +27,14 @@ export class DetailedViewerComponent implements OnInit {
   ngOnInit() {
     if (this.route.snapshot.paramMap.get('name') === undefined) {
       this.logger.info('detailed-viewer: Missing username');
-      this.router.navigate[''];
+      this.router.navigate(['']);
     }
     this.initialize();
   }
 
   private initialize() {
     this.username = this.route.snapshot.paramMap.get('name');
+    console.log(this.issueService.issues);
     // this.user = this.issueService
   }
 }

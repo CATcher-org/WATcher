@@ -30,13 +30,13 @@ import { LoggingService } from './core/services/logging.service';
 import { PhaseService } from './core/services/phase.service';
 import { SessionFixConfirmationComponent } from './core/services/session-fix-confirmation/session-fix-confirmation.component';
 import { UserService } from './core/services/user.service';
+import { DetailedViewerModule } from './detailed-viewer/detailed-viewer.module';
 import { IssuesViewerModule } from './issues-viewer/issues-viewer.module';
 import { LabelDefinitionPopupComponent } from './shared/label-definition-popup/label-definition-popup.component';
 import { HeaderComponent } from './shared/layout';
 import { markedOptionsFactory } from './shared/lib/marked';
 import { RepoChangeFormComponent } from './shared/repo-change-form/repo-change-form.component';
 import { SharedModule } from './shared/shared.module';
-import { DetailedViewerModule } from './detailed-viewer/detailed-viewer.module';
 
 @NgModule({
   declarations: [
