@@ -2,26 +2,22 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-    selector: 'app-repo-change-form',
-    templateUrl: './repo-change-form.component.html',
-    styleUrls: ['./repo-change-form.component.css']
+  selector: 'app-repo-change-form',
+  templateUrl: './repo-change-form.component.html',
+  styleUrls: ['./repo-change-form.component.css']
 })
 export class RepoChangeFormComponent {
+  private repoName: String;
 
-    private repoName : String;
+  constructor(public dialogRef: MatDialogRef<RepoChangeFormComponent>, @Inject(MAT_DIALOG_DATA) public data) {
+    this.repoName = data.repoName;
+  }
 
-    constructor(
-        public dialogRef: MatDialogRef<RepoChangeFormComponent>,
-        @Inject(MAT_DIALOG_DATA) public data,
-      ) {
-        this.repoName = data.repoName;
-      }
+  onYesClick(): void {
+    this.dialogRef.close(this.repoName);
+  }
 
-    onYesClick(): void {
-        this.dialogRef.close(this.repoName);
-    }
-
-    onNoClick(): void {
-        this.dialogRef.close(false);
-    }
+  onNoClick(): void {
+    this.dialogRef.close(false);
+  }
 }

@@ -75,24 +75,19 @@ export class LabelService {
   }
 
   /**
-   * Returns a css style for the label to use
+   * Returns a css style for the background and text color of the label
    * @param color: the color of the label
    * @return the style with background-color in rgb
    * @throws exception if input is an invalid color code
    */
-  setLabelStyle(color: string, display: string = 'inline-flex') {
+  setLabelStyle(color: string) {
     let textColor: string;
 
     textColor = this.isDarkColor(color) ? COLOR_WHITE : COLOR_BLACK;
 
     const styles = {
       'background-color': `#${color}`,
-      'border-radius': '3px',
-      cursor: 'default',
-      padding: '3px',
-      color: `#${textColor}`,
-      'font-weight': '410',
-      display: display
+      color: `#${textColor}`
     };
 
     return styles;

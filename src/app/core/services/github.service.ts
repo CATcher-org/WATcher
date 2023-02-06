@@ -84,7 +84,8 @@ export class GithubService {
       log: {
         debug: (message, ...otherInfo) => this.logger.debug('GithubService: ' + message, ...otherInfo),
         // Do not log info for HTTP response 304 due to repeated polling
-        info: (message, ...otherInfo) => (/304 in \d+ms$/.test(message) ? undefined : this.logger.info('GithubService: ' + message, ...otherInfo)),
+        info: (message, ...otherInfo) =>
+          /304 in \d+ms$/.test(message) ? undefined : this.logger.info('GithubService: ' + message, ...otherInfo),
         warn: (message, ...otherInfo) => this.logger.warn('GithubService: ' + message, ...otherInfo),
         error: (message, ...otherInfo) => this.logger.error('GithubService: ' + message, ...otherInfo)
       }

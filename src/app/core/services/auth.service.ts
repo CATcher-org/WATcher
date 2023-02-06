@@ -59,7 +59,7 @@ export class AuthService {
   }
 
   reset(): void {
-    this.logger.info('AuthService: Clearing access token and setting AuthState to NotAuthenticated.')
+    this.logger.info('AuthService: Clearing access token and setting AuthState to NotAuthenticated.');
     this.accessToken.next(undefined);
     this.changeAuthState(AuthState.NotAuthenticated);
     this.ngZone.run(() => this.router.navigate(['']));

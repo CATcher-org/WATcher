@@ -43,8 +43,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(LabelChipBarComponent, { static: true }) labelChipBar: LabelChipBarComponent;
 
-  @ViewChild('milestoneSelectorRef', {static: false}) milestoneSelectorRef: MatSelect;
-
+  @ViewChild('milestoneSelectorRef', { static: false }) milestoneSelectorRef: MatSelect;
 
   /** Switch repository form */
   repoForm = new FormGroup({
@@ -58,7 +57,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     public milestoneService: MilestoneService,
     private logger: LoggingService
   ) {
-    this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe(newRepo => this.initialize())
+    this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => this.initialize());
   }
 
   ngOnInit() {

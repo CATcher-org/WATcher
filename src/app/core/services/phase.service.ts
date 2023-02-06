@@ -44,13 +44,13 @@ export class PhaseService {
   public currentRepo: Repo; // current or main repository of current phase
   public otherRepos: Repo[]; // more repositories relevant to this phase
 
-  /** 
+  /**
    * Expose an observable to track changes to currentRepo
-   * 
-   * TODO - replace all references to currentRepo to have 
+   *
+   * TODO - replace all references to currentRepo to have
    * dependencies subscribe to this observable?
    */
-  public repoChanged$ : Subject<Repo | null> = new Subject();
+  public repoChanged$: Subject<Repo | null> = new Subject();
 
   public sessionData = STARTING_SESSION_DATA; // stores session data for the session
 
