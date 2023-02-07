@@ -6,6 +6,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Label } from '../../core/models/label.model';
+import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
 
@@ -31,7 +32,7 @@ export class LabelChipBarComponent implements OnInit {
 
   @ViewChild('labelInput', { static: true }) labelInput: ElementRef<HTMLInputElement>;
 
-  constructor(private labelService: LabelService, private logger: LoggingService) {}
+  constructor(private labelService: LabelService, private logger: LoggingService, private errorHandlingService: ErrorHandlingService) {}
 
   ngOnInit(): void {
     this.load();
@@ -43,7 +44,7 @@ export class LabelChipBarComponent implements OnInit {
         this.logger.debug('LabelChipBarComponent: Fetched labels from Github');
       },
       (err) => {
-        throw new Error('Failed to fetch labels from Github.');
+        this.errorHandlingService.handleError(new Error('Failed to fetch labels from Github.'));
       },
       () => {
         this.initialize();

@@ -68,7 +68,7 @@ export class ConfirmLoginComponent implements OnInit {
         (error) => {
           this.authService.changeAuthState(AuthState.NotAuthenticated);
           this.errorHandlingService.handleError(error);
-          this.logger.info(`Completion of login process failed with an error: ${error}`);
+          this.logger.info(`ConfirmLoginComponent: Completion of login process failed with an error: ${error}`);
         }
       );
     this.handleAuthSuccess();

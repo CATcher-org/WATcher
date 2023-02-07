@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatOption, MatSelect, MatSort } from '@angular/material';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { catchError } from 'rxjs/operators';
 import { GithubUser } from '../core/models/github-user.model';
 import { ErrorHandlingService } from '../core/services/error-handling.service';
 import { GithubService } from '../core/services/github.service';
@@ -96,7 +95,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
 
     // Fetch issues
-    this.issueService.reloadAllIssues().pipe(catchError((err) => 'Failed to fetch issues for repo. Check your repo name.'));
+    this.issueService.reloadAllIssues();
 
     // Fetch labels
     this.labelChipBar.load();
