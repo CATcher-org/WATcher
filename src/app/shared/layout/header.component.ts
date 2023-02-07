@@ -1,11 +1,10 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router, RoutesRecognized } from '@angular/router';
 import { filter, pairwise } from 'rxjs/operators';
-import { Repo } from '../../core/models/repo.model';
 import { AppConfig } from '../../../environments/environment';
 import { Phase } from '../../core/models/phase.model';
+import { Repo } from '../../core/models/repo.model';
 import { AuthService } from '../../core/services/auth.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { ElectronService } from '../../core/services/electron.service';
@@ -37,7 +36,7 @@ export class HeaderComponent implements OnInit {
   private readonly noButtonDialogMessage = "No, I don't wish to log out";
 
   /** Model for the displayed repository name */
-  currentRepo: string = '';
+  currentRepo = '';
 
   constructor(
     private router: Router,

@@ -1,10 +1,8 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatOption, MatSelect, MatSort } from '@angular/material';
-import { MatSelectSearchClearDirective } from 'ngx-mat-select-search/mat-select-search-clear.directive';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
-import { Repo } from '../core/models/repo.model';
 import { GithubService } from '../core/services/github.service';
 import { IssueService } from '../core/services/issue.service';
 import { LoggingService } from '../core/services/logging.service';

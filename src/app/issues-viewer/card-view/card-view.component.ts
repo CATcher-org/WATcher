@@ -5,9 +5,9 @@ import { GithubUser } from '../../core/models/github-user.model';
 import { Issue } from '../../core/models/issue.model';
 import { GithubService } from '../../core/services/github.service';
 import { IssueService } from '../../core/services/issue.service';
+import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
-import { LabelService } from '../../core/services/label.service';
 
 @Component({
   selector: 'app-card-view',
