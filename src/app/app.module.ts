@@ -38,7 +38,14 @@ import { RepoChangeFormComponent } from './shared/repo-change-form/repo-change-f
 import { SharedModule } from './shared/shared.module';
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, UserConfirmationComponent, LabelDefinitionPopupComponent, RepoChangeFormComponent, SessionFixConfirmationComponent],
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    UserConfirmationComponent,
+    LabelDefinitionPopupComponent,
+    RepoChangeFormComponent,
+    SessionFixConfirmationComponent
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

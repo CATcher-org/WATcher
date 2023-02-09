@@ -16,7 +16,7 @@ import { LoggingService } from './logging.service';
 export class UserService {
   public currentUser: User;
 
-  constructor(private githubService: GithubService, private logger : LoggingService) {}
+  constructor(private githubService: GithubService, private logger: LoggingService) {}
 
   /**
    * Get the authenticated user if it exist.
@@ -40,7 +40,7 @@ export class UserService {
   }
 
   reset() {
-    this.logger.info('UserService: Clearing current user')
+    this.logger.info('UserService: Clearing current user');
     this.currentUser = undefined;
   }
 }

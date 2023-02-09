@@ -5,6 +5,7 @@ import { GithubUser } from '../../core/models/github-user.model';
 import { Issue } from '../../core/models/issue.model';
 import { GithubService } from '../../core/services/github.service';
 import { IssueService } from '../../core/services/issue.service';
+import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
 
@@ -28,7 +29,12 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   issues: IssuesDataTable;
   issues$: Observable<Issue[]>;
 
-  constructor(private githubService: GithubService, public issueService: IssueService, private logger: LoggingService) {}
+  constructor(
+    private githubService: GithubService,
+    public issueService: IssueService,
+    public labelService: LabelService,
+    private logger: LoggingService
+  ) {}
 
   ngOnInit() {
     this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.assignee, this.filters);
