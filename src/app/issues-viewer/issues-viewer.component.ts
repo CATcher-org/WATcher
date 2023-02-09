@@ -43,10 +43,6 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('milestoneSelectorRef', { static: false }) milestoneSelectorRef: MatSelect;
 
-  /** Switch repository form */
-  repoForm = new FormGroup({
-    repoInput: new FormControl(['', Validators.required])
-  });
 
   constructor(
     public phaseService: PhaseService,
