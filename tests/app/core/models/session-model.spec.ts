@@ -5,7 +5,7 @@ import {
   OPENED_PHASE_REPO_UNDEFINED,
   SESSION_DATA_UNAVAILABLE
 } from '../../../../src/app/core/models/session.model';
-import { BUG_REPORTING_PHASE_SESSION_DATA, NO_OPEN_PHASES_SESSION_DATA } from '../../../constants/session.constants';
+import { BUG_REPORTING_PHASE_SESSION_DATA } from '../../../constants/session.constants';
 
 describe('Session Model', () => {
   describe('assertSessionDataIntegrity()', () => {
