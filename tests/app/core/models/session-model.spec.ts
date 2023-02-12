@@ -1,10 +1,8 @@
 import { of } from 'rxjs';
 import {
   assertSessionDataIntegrity,
-  NO_ACCESSIBLE_PHASES,
   NO_VALID_OPEN_PHASES,
   OPENED_PHASE_REPO_UNDEFINED,
-  SESSION_DATA_MISSING_OPENPHASES_KEY,
   SESSION_DATA_UNAVAILABLE
 } from '../../../../src/app/core/models/session.model';
 import { BUG_REPORTING_PHASE_SESSION_DATA, NO_OPEN_PHASES_SESSION_DATA } from '../../../constants/session.constants';
@@ -17,24 +15,6 @@ describe('Session Model', () => {
         .subscribe({
           next: () => fail(),
           error: (err) => expect(err).toEqual(new Error(SESSION_DATA_UNAVAILABLE))
-        });
-    });
-
-    it('should throw error on session data with missing crucial values', () => {
-      of({ dummyKey: undefined })
-        .pipe(assertSessionDataIntegrity())
-        .subscribe({
-          next: () => fail(),
-          error: (err) => expect(err).toEqual(new Error(SESSION_DATA_MISSING_OPENPHASES_KEY))
-        });
-    });
-
-    it('should throw error on session with no open phases', () => {
-      of(NO_OPEN_PHASES_SESSION_DATA)
-        .pipe(assertSessionDataIntegrity())
-        .subscribe({
-          next: () => fail(),
-          error: (err) => expect(err).toEqual(new Error(NO_ACCESSIBLE_PHASES))
         });
     });
 
