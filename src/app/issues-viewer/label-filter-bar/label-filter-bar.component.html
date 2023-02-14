@@ -1,4 +1,6 @@
-<button mat-raised-button *ngIf="loaded" [matMenuTriggerFor]="menu">test</button>
+<button mat-raised-button *ngIf="loaded" [matMenuTriggerFor]="menu">
+  {{ selectedLabelNames.length == 0 ? 'All' : selectedLabelNames.length }} Selected | {{ hiddenLabelNames?.size || 0 }} Hidden
+</button>
 
 <button mat-raised-button disabled *ngIf="!loaded">
   <mat-progress-bar mode="query"></mat-progress-bar>
