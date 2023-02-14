@@ -16,19 +16,28 @@
     <div style="height: 400px; width: 120%; overflow-y: auto">
       <mat-selection-list [(ngModel)]="selectedLabelNames" (selectionChange)="selectedLabels.next(selectedLabelNames)">
         <mat-list-option
+          #option
           *ngFor="let index of filteredLabelIndexes | async"
           [value]="allLabels[index].name"
           [disabled]="hiddenLabelNames.has(allLabels[index].name)"
         >
           <div style="display: flex; flex-direction: row; width: max-content">
-            <button mat-icon-button *ngIf="!hiddenLabelNames.has(allLabels[index].name)" (click)="hide(allLabels[index].name)">
+            <button
+              mat-icon-button
+              *ngIf="!hiddenLabelNames.has(allLabels[index].name)"
+              (click)="hide(allLabels[index].name); $event.stopPropagation()"
+            >
               <mat-icon>visibility</mat-icon>
             </button>
-            <button mat-icon-button *ngIf="hiddenLabelNames.has(allLabels[index].name)" (click)="show(allLabels[index].name)">
+            <button
+              mat-icon-button
+              *ngIf="hiddenLabelNames.has(allLabels[index].name)"
+              (click)="show(allLabels[index].name); $event.stopPropagation()"
+            >
               <mat-icon>visibility_off</mat-icon>
             </button>
 
-            <mat-chip [ngStyle]="labelService.setLabelStyle(allLabels[index].color)">
+            <mat-chip [ngStyle]="labelService.setLabelStyle(allLabels[index].color)" [disabled]="option.disabled">
               {{ allLabels[index].name }}
             </mat-chip>
           </div>

@@ -41,7 +41,15 @@ export class LabelFilterBarComponent implements OnInit {
       return;
     }
 
+    // unhides labels that are originally selected
+    const index = this.selectedLabelNames.indexOf(label);
+    if (index != -1) {
+      this.selectedLabelNames.splice(index, 1);
+    }
+
+    console.log(label);
     this.hiddenLabelNames.add(label);
+    console.log(this.hiddenLabelNames);
     this.hiddenLabels.next(this.hiddenLabelNames);
   }
 
