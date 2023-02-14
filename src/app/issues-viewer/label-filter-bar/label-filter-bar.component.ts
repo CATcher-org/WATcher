@@ -47,9 +47,7 @@ export class LabelFilterBarComponent implements OnInit {
       this.selectedLabelNames.splice(index, 1);
     }
 
-    console.log(label);
     this.hiddenLabelNames.add(label);
-    console.log(this.hiddenLabelNames);
     this.hiddenLabels.next(this.hiddenLabelNames);
   }
 
