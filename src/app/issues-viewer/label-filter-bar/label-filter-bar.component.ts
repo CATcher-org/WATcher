@@ -1,10 +1,10 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatListOption } from '@angular/material';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
-import { MatListOption, MatSelectionList, MatSelectionListChange } from '@angular/material';
 
 type simplifiedLabel = {
   name: string;
@@ -26,7 +26,7 @@ export class LabelFilterBarComponent implements OnInit {
   selectedLabelNames: string[] = [];
   hiddenLabelNames: Set<string> = new Set();
   labelCtrl = new FormControl('');
-  loaded: boolean = false;
+  loaded = false;
 
   constructor(private labelService: LabelService, private logger: LoggingService) {}
 
@@ -43,7 +43,7 @@ export class LabelFilterBarComponent implements OnInit {
     // unhides labels that are originally selected
     const index = this.selectedLabelNames.indexOf(label);
     console.log(this.selectedLabelNames);
-    if (index != -1) {
+    if (index !== -1) {
       this.selectedLabelNames.splice(index, 1);
       this.selectedLabels.next(this.selectedLabelNames);
     }

@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatOption, MatSelect, MatSort } from '@angular/material';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
@@ -10,7 +9,6 @@ import { MilestoneService } from '../core/services/milestone.service';
 import { PhaseService } from '../core/services/phase.service';
 import { TABLE_COLUMNS } from '../shared/issue-tables/issue-tables-columns';
 import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../shared/issue-tables/IssuesDataTable';
-import { throwIfFalse } from '../shared/lib/custom-ops';
 import { CardViewComponent } from './card-view/card-view.component';
 import { LabelChipBarComponent } from './label-chip-bar/label-chip-bar.component';
 
