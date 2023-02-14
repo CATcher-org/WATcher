@@ -1,8 +1,8 @@
-<button mat-raised-button *ngIf="loaded" [matMenuTriggerFor]="menu">
+<button mat-raised-button *ngIf="loaded" [matMenuTriggerFor]="menu" color="accent">
   {{ selectedLabelNames.length == 0 ? 'All' : selectedLabelNames.length }} Selected | {{ hiddenLabelNames?.size || 0 }} Hidden
 </button>
 
-<button mat-raised-button disabled *ngIf="!loaded">
+<button mat-raised-button disabled *ngIf="!loaded" color="accent">
   <mat-progress-bar mode="query"></mat-progress-bar>
 </button>
 

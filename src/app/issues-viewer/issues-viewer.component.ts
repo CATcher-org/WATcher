@@ -10,7 +10,6 @@ import { PhaseService } from '../core/services/phase.service';
 import { TABLE_COLUMNS } from '../shared/issue-tables/issue-tables-columns';
 import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../shared/issue-tables/IssuesDataTable';
 import { CardViewComponent } from './card-view/card-view.component';
-import { LabelChipBarComponent } from './label-chip-bar/label-chip-bar.component';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
 
 @Component({
