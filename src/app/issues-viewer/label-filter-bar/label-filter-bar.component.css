@@ -17,6 +17,13 @@
   scrollbar-width: none; /* Firefox */
 }
 
+.flexbox-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
 .scroll-container::-webkit-scrollbar {
   display: none; /* Hide scrollbar for Chrome, Safari and Opera */
 }
@@ -30,11 +37,13 @@
 }
 
 .mat-chip {
+  position: inherit;
   border-radius: 6px;
   font-size: 12px;
   padding: 11px 7px;
   min-height: 16px;
-  margin: 2px;
+  margin: 0px;
+  top: 50%;
 }
 
 mat-list-option {

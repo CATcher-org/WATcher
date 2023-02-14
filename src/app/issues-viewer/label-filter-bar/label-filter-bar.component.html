@@ -22,7 +22,7 @@
           [disabled]="hiddenLabelNames.has(allLabels[index].name)"
           class="list-option"
         >
-          <div style="display: flex; flex-direction: row; width: max-content">
+          <div class="flexbox-container">
             <button
               mat-icon-button
               *ngIf="!hiddenLabelNames.has(allLabels[index].name)"

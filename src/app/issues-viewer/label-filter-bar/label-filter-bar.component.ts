@@ -60,6 +60,11 @@ export class LabelFilterBarComponent implements OnInit {
     this.hiddenLabels.next(this.hiddenLabelNames);
   }
 
+  /**
+   * chip as of the current project version consumes click events
+   * this method is used as an workaround the issue.
+   * https://github.com/angular/components/issues/19759
+   */
   simulateClick(el: MatListOption): void {
     if (el.disabled) {
       return;
