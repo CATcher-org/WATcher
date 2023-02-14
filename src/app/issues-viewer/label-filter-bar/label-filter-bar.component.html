@@ -1,0 +1,37 @@
+<button mat-raised-button *ngIf="loaded" [matMenuTriggerFor]="menu">test</button>
+
+<button mat-raised-button disabled *ngIf="!loaded">
+  <mat-progress-bar mode="query"></mat-progress-bar>
+</button>
+
+<mat-menu #menu="matMenu" class="popupmenu">
+  <div (click)="$event.stopPropagation()" class="popup-container">
+    <mat-form-field appearance="standard">
+      <mat-label>Labels</mat-label>
+      <input matInput placeholder="Find labels" [formControl]="labelCtrl" />
+    </mat-form-field>
+
+    <div style="height: 400px; width: 120%; overflow-y: auto">
+      <mat-selection-list [(ngModel)]="selectedLabelNames" (selectionChange)="selectedLabels.next(selectedLabelNames)">
+        <mat-list-option
+          *ngFor="let index of filteredLabelIndexes | async"
+          [value]="allLabels[index].name"
+          [disabled]="hiddenLabelNames.has(allLabels[index].name)"
+        >
+          <div style="display: flex; flex-direction: row; width: max-content">
+            <button mat-icon-button *ngIf="!hiddenLabelNames.has(allLabels[index].name)" (click)="hide(allLabels[index].name)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button mat-icon-button *ngIf="hiddenLabelNames.has(allLabels[index].name)" (click)="show(allLabels[index].name)">
+              <mat-icon>visibility_off</mat-icon>
+            </button>
+
+            <mat-chip [ngStyle]="labelService.setLabelStyle(allLabels[index].color)">
+              {{ allLabels[index].name }}
+            </mat-chip>
+          </div>
+        </mat-list-option>
+      </mat-selection-list>
+    </div>
+  </div>
+</mat-menu>

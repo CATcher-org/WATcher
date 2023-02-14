@@ -1,0 +1,22 @@
+.popup-container {
+  padding-top: 0px;
+  padding-left: 15px;
+  padding-right: 15px;
+  flex-direction: column;
+}
+
+.popupmenu {
+  width: max-content;
+}
+
+.mat-chip {
+  border-radius: 6px;
+  font-size: 12px;
+  padding: 11px 7px;
+  min-height: 16px;
+  margin: 2px;
+}
+
+mat-list-option {
+  width: max-content;
+}
