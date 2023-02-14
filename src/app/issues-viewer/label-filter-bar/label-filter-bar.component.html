@@ -8,18 +8,19 @@
 
 <mat-menu #menu="matMenu" class="popupmenu">
   <div (click)="$event.stopPropagation()" class="popup-container">
-    <mat-form-field appearance="standard">
+    <mat-form-field appearance="standard" class="input-field">
       <mat-label>Labels</mat-label>
       <input matInput placeholder="Find labels" [formControl]="labelCtrl" />
     </mat-form-field>
 
-    <div style="height: 400px; width: 120%; overflow-y: auto">
+    <div class="scroll-container">
       <mat-selection-list [(ngModel)]="selectedLabelNames" (selectionChange)="selectedLabels.next(selectedLabelNames)">
         <mat-list-option
           #option
           *ngFor="let index of filteredLabelIndexes | async"
           [value]="allLabels[index].name"
           [disabled]="hiddenLabelNames.has(allLabels[index].name)"
+          class="list-option"
         >
           <div style="display: flex; flex-direction: row; width: max-content">
             <button
@@ -37,7 +38,11 @@
               <mat-icon>visibility_off</mat-icon>
             </button>
 
-            <mat-chip [ngStyle]="labelService.setLabelStyle(allLabels[index].color)" [disabled]="option.disabled">
+            <mat-chip
+              [ngStyle]="labelService.setLabelStyle(allLabels[index].color)"
+              [disabled]="option.disabled"
+              (click)="simulateClick(option)"
+            >
               {{ allLabels[index].name }}
             </mat-chip>
           </div>

@@ -4,6 +4,7 @@ import { FormControl } from '@angular/forms';
 import { map, startWith } from 'rxjs/operators';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
+import { MatListOption, MatSelectionList, MatSelectionListChange } from '@angular/material';
 
 type simplifiedLabel = {
   name: string;
@@ -26,8 +27,6 @@ export class LabelFilterBarComponent implements OnInit {
   hiddenLabelNames: Set<string> = new Set();
   labelCtrl = new FormControl('');
   loaded: boolean = false;
-
-  @ViewChild('labelInput', { static: true }) labelInput: ElementRef<HTMLInputElement>;
 
   constructor(private labelService: LabelService, private logger: LoggingService) {}
 
@@ -59,6 +58,14 @@ export class LabelFilterBarComponent implements OnInit {
     }
     this.hiddenLabelNames.delete(label);
     this.hiddenLabels.next(this.hiddenLabelNames);
+  }
+
+  simulateClick(el: MatListOption): void {
+    if (el.disabled) {
+      return;
+    }
+    el.toggle();
+    this.selectedLabels.next(this.selectedLabelNames);
   }
 
   public load() {
