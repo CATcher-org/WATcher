@@ -11,6 +11,7 @@ import { TABLE_COLUMNS } from '../shared/issue-tables/issue-tables-columns';
 import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../shared/issue-tables/IssuesDataTable';
 import { CardViewComponent } from './card-view/card-view.component';
 import { LabelChipBarComponent } from './label-chip-bar/label-chip-bar.component';
+import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
 
 @Component({
   selector: 'app-issues-viewer',
@@ -42,7 +43,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   /** One MatSort controls all IssueDataTables */
   @ViewChild(MatSort, { static: true }) matSort: MatSort;
 
-  @ViewChild(LabelChipBarComponent, { static: true }) labelChipBar: LabelChipBarComponent;
+  @ViewChild(LabelFilterBarComponent, { static: true }) labelFilterBar: LabelFilterBarComponent;
 
   @ViewChild('milestoneSelectorRef', { static: false }) milestoneSelectorRef: MatSelect;
 
@@ -106,7 +107,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.issueService.reloadAllIssues();
 
     // Fetch labels
-    this.labelChipBar.load();
+    this.labelFilterBar.load();
 
     // Fetch milestones
     this.milestoneService.fetchMilestones().subscribe(

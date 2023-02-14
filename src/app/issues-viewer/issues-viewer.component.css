@@ -24,7 +24,7 @@ app-label-chip-bar {
 }
 
 .label-filter-grid-tile {
-  overflow: auto;
+  width: 100%;
 }
 
 .submit-button {
