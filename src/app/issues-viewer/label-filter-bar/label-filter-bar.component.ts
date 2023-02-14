@@ -40,7 +40,7 @@ export class LabelFilterBarComponent implements OnInit {
       return;
     }
 
-    // unhides labels that are originally selected
+    /** unhides labels that are originally selected */
     const index = this.selectedLabelNames.indexOf(label);
     console.log(this.selectedLabelNames);
     if (index !== -1) {
@@ -52,6 +52,7 @@ export class LabelFilterBarComponent implements OnInit {
     this.hiddenLabels.next(this.hiddenLabelNames);
   }
 
+  /** Show labels that were hidden */
   show(label: string): void {
     if (!this.hiddenLabelNames.has(label)) {
       return;
@@ -73,6 +74,7 @@ export class LabelFilterBarComponent implements OnInit {
     this.selectedLabels.next(this.selectedLabelNames);
   }
 
+  /** loads in the labels in the repository */
   public load() {
     this.labelService.fetchLabels().subscribe(
       (response) => {
