@@ -42,7 +42,6 @@ export class LabelFilterBarComponent implements OnInit {
 
     /** unhides labels that are originally selected */
     const index = this.selectedLabelNames.indexOf(label);
-    console.log(this.selectedLabelNames);
     if (index !== -1) {
       this.selectedLabelNames.splice(index, 1);
       this.selectedLabels.next(this.selectedLabelNames);
@@ -88,13 +87,18 @@ export class LabelFilterBarComponent implements OnInit {
   }
 
   private initialize() {
-    this.labelIndex = this.labelService.labels.map((label, index) => index);
+    this.labelIndex = [...this.labelService.labels.keys()];
     this.allLabels = this.labelService.labels.map((label) => {
       return {
         name: label.getFormattedName(),
         color: label.color
       };
     });
+    /**
+     * initializing labelCtrl with initial value of '' allows filteredLabelIndexes
+     * to initialize with the labelIndex values instead of starting with an empty list
+     * This prevents the menu to display empty list when first opened by the user
+     */
     this.filteredLabelIndexes = this.labelCtrl.valueChanges.pipe(
       startWith(''),
       map((label: string | null) => (label ? this._filter(label) : this.labelIndex))
