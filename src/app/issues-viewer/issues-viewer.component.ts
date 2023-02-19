@@ -43,7 +43,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(LabelChipBarComponent, { static: true }) labelChipBar: LabelChipBarComponent;
 
-  @ViewChild('milestoneSelectorRef', { static: false }) milestoneSelectorRef: MatSelect;
+  @ViewChild('milestoneSelectorRef') milestoneSelectorRef: MatSelect;
 
   constructor(
     public phaseService: PhaseService,
