@@ -10,40 +10,33 @@
   <div (click)="$event.stopPropagation()" class="popup-container">
     <mat-form-field appearance="standard" class="input-field">
       <mat-label>Labels</mat-label>
-      <input matInput placeholder="Find labels" [formControl]="labelCtrl" />
+      <input #input matInput placeholder="Find labels" />
     </mat-form-field>
 
     <div class="scroll-container">
       <mat-selection-list [(ngModel)]="selectedLabelNames" (selectionChange)="selectedLabels.next(selectedLabelNames)">
         <mat-list-option
           #option
-          *ngFor="let index of filteredLabelIndexes | async"
-          [value]="allLabels[index].name"
-          [disabled]="hiddenLabelNames.has(allLabels[index].name)"
+          *ngFor="let label of allLabels"
+          [value]="label.name"
+          [selected]="selectedLabelNames.includes(label.name)"
           class="list-option"
+          [class.hidden]="filter(input.value, label.name)"
         >
           <div class="flexbox-container">
-            <button
-              mat-icon-button
-              *ngIf="!hiddenLabelNames.has(allLabels[index].name)"
-              (click)="hide(allLabels[index].name); option.selected = false; $event.stopPropagation()"
-            >
+            <button mat-icon-button *ngIf="!hiddenLabelNames.has(label.name)" (click)="hide(label.name); $event.stopPropagation()">
               <mat-icon>visibility</mat-icon>
             </button>
-            <button
-              mat-icon-button
-              *ngIf="hiddenLabelNames.has(allLabels[index].name)"
-              (click)="show(allLabels[index].name); $event.stopPropagation()"
-            >
+            <button mat-icon-button *ngIf="hiddenLabelNames.has(label.name)" (click)="show(label.name); $event.stopPropagation()">
               <mat-icon>visibility_off</mat-icon>
             </button>
 
             <mat-chip
-              [ngStyle]="labelService.setLabelStyle(allLabels[index].color)"
-              [disabled]="option.disabled"
+              [ngStyle]="labelService.setLabelStyle(label.color)"
+              [disabled]="hiddenLabelNames.has(label.name)"
               (click)="simulateClick(option)"
             >
-              {{ allLabels[index].name }}
+              {{ label.name }}
             </mat-chip>
           </div>
         </mat-list-option>

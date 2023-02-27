@@ -46,6 +46,10 @@
   top: 50%;
 }
 
+.hidden {
+  display: none !important;
+}
+
 mat-list-option {
   width: max-content;
 }
