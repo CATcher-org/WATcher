@@ -6,7 +6,7 @@ import { map, startWith } from 'rxjs/operators';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
 
-type simplifiedLabel = {
+export type simplifiedLabel = {
   name: string;
   color: string;
 };
