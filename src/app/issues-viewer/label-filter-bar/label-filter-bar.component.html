@@ -14,7 +14,11 @@
     </mat-form-field>
 
     <div class="scroll-container">
-      <mat-selection-list [(ngModel)]="selectedLabelNames" (selectionChange)="selectedLabels.next(selectedLabelNames)">
+      <mat-selection-list
+        [(ngModel)]="selectedLabelNames"
+        (selectionChange)="selectedLabels.next(selectedLabelNames)"
+        [compareWith]="comparator"
+      >
         <mat-list-option
           #option
           *ngFor="let label of allLabels"
@@ -34,7 +38,7 @@
             <mat-chip
               [ngStyle]="labelService.setLabelStyle(label.color)"
               [disabled]="hiddenLabelNames.has(label.name)"
-              (click)="simulateClick(option)"
+              (click)="simulateClick(option); $event.stopPropagation()"
             >
               {{ label.name }}
             </mat-chip>

@@ -86,7 +86,12 @@ export class LabelFilterBarComponent implements OnInit {
     this.loaded = true;
   }
 
-  public filter(filter: string, target: string): boolean {
+  filter(filter: string, target: string): boolean {
     return !target.toLowerCase().includes(filter.toLowerCase());
+  }
+
+  comparator(o1: any, o2: any): boolean {
+    console.log(o1);
+    return true;
   }
 }
