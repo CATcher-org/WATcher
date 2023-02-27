@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { MatListOption } from '@angular/material';
 import { BehaviorSubject } from 'rxjs';
 import { LabelService } from '../../core/services/label.service';
@@ -22,7 +21,6 @@ export class LabelFilterBarComponent implements OnInit {
   allLabels: simplifiedLabel[];
   selectedLabelNames: string[] = [];
   hiddenLabelNames: Set<string> = new Set();
-  labelCtrl = new FormControl('');
   loaded = false;
 
   constructor(private labelService: LabelService, private logger: LoggingService) {}
