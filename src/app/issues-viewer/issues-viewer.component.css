@@ -19,12 +19,8 @@
   width: 100%;
 }
 
-app-label-chip-bar {
-  width: 100%;
-}
-
 .label-filter-grid-tile {
-  overflow: auto;
+  width: 100%;
 }
 
 .submit-button {

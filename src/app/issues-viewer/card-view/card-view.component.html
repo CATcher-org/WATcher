@@ -31,9 +31,15 @@
             <mat-chip-list aria-label="Labels">
               <span *ngIf="issue.milestone" class="octicon-milestone" octicon="milestone" color="grey" size="8"></span>
               {{ issue.milestone?.title }}
-              <mat-chip *ngFor="let label of issue.githubLabels" [ngStyle]="labelService.setLabelStyle(label.color)" selected>
-                {{ label.name }}
-              </mat-chip>
+              <ng-container *ngFor="let label of issue.githubLabels">
+                <mat-chip
+                  *ngIf="!issues.dropdownFilter?.hiddenLabels.has(label.name)"
+                  [ngStyle]="labelService.setLabelStyle(label.color)"
+                  selected
+                >
+                  {{ label.name }}
+                </mat-chip>
+              </ng-container>
             </mat-chip-list>
           </mat-card-content>
         </span>
