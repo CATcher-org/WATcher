@@ -591,11 +591,11 @@ export class GithubService {
       headers: { 'If-None-Match': this.issuesCacheManager.getEtagFor(pageNumber) },
       state: 'all'
     });
-    const apiCall$ = from(apiCall.catch(
-      err => {
+    const apiCall$ = from(
+      apiCall.catch((err) => {
         return this.issuesCacheManager.get(pageNumber);
-      }
-    ));
+      })
+    );
 
     return apiCall$.pipe(
       catchError((err) => {
