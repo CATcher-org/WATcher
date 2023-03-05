@@ -76,10 +76,6 @@ div.column-header .mat-card-header {
   border-left: 2.4px solid purple;
 }
 
-.border-red {
-  border-left: 2.4px solid red;
-}
-
 .mat-card-content {
   margin-bottom: 2px;
 }
