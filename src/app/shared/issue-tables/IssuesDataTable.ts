@@ -15,6 +15,7 @@ export type DropdownFilter = {
   sort: string;
   labels: string[];
   milestones: string[];
+  hiddenLabels?: Set<string>;
 };
 
 export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
