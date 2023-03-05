@@ -82,12 +82,24 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** Returns status color for issue */
   getIssueOpenOrCloseColor(issue: Issue) {
-    return issue.state === 'OPEN' ? 'green' : 'purple';
+    if (issue.state === 'OPEN') {
+      return 'green';
+    } else if (issue.issueOrPr === 'PullRequest' && issue.state === 'CLOSED') {
+      return 'red';
+    } else {
+      return 'purple';
+    }
   }
 
   /** Returns CSS class for border color */
   getIssueOpenOrCloseColorCSSClass(issue: Issue) {
-    return issue.state === 'OPEN' ? 'border-green' : 'border-purple';
+    if (issue.state === 'OPEN') {
+      return 'border-green';
+    } else if (issue.issueOrPr === 'PullRequest' && issue.state === 'CLOSED') {
+      return 'border-red';
+    } else {
+      return 'border-purple';
+    }
   }
 
   /**
@@ -109,7 +121,10 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
       case type === 'PullRequest' && state === 'OPEN': {
         return 'git-pull-request';
       }
-      case type === 'PullRequest': {
+      case type === 'PullRequest' && state === 'CLOSED': {
+        return 'git-pull-request-closed';
+      }
+      case type === 'PullRequest' && state === 'MERGED': {
         return 'git-merge';
       }
       default: {
