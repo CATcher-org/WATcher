@@ -7,7 +7,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./repo-change-form.component.css']
 })
 export class RepoChangeFormComponent {
-  private repoName: String;
+  public repoName: String;
 
   constructor(public dialogRef: MatDialogRef<RepoChangeFormComponent>, @Inject(MAT_DIALOG_DATA) public data) {
     this.repoName = data.repoName;
