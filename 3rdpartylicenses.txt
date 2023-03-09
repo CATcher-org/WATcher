@@ -85,8 +85,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
-@angular/material/autocomplete
-
 @angular/material/bottom-sheet
 
 @angular/material/button
@@ -107,9 +105,13 @@ THE SOFTWARE.
 
 @angular/material/icon
 
+@angular/material/list
+
 @angular/material/menu
 
 @angular/material/paginator
+
+@angular/material/progress-bar
 
 @angular/material/progress-spinner
 
@@ -294,7 +296,7 @@ THE SOFTWARE.
 MIT
 MIT License
 
-Copyright (c) 2022 GitHub Inc.
+Copyright (c) 2023 GitHub Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
