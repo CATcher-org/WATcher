@@ -1,4 +1,4 @@
-<button mat-raised-button *ngIf="loaded" [matMenuTriggerFor]="menu" color="accent">
+<button mat-raised-button *ngIf="loaded" [matMenuTriggerFor]="menu">
   {{ selectedLabelNames.length == 0 ? 'All' : selectedLabelNames.length }} Selected | {{ hiddenLabelNames?.size || 0 }} Hidden
 </button>
 
