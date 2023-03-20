@@ -196,8 +196,19 @@ export class HeaderComponent implements OnInit {
   /**
    * Change repository viewed on Issue Dashboard.
    */
-  switchRepo() {
-    this.phaseService.changeCurrentRepository(Repo.of(this.currentRepo));
+  switchRepo(repo: Repo) {
+    this.phaseService.changeCurrentRepository(repo);
+  }
+
+  changeRepositoryInPhaseIfValid(repo: Repo, newRepoString: string) {
+    this.phaseService.isValidRepository(repo).subscribe((isValidRepository) => {
+      if (!isValidRepository) {
+        throw new Error('Invalid repo. Please check your organisation and repo name.');
+      }
+
+      this.switchRepo(repo);
+      this.currentRepo = newRepoString;
+    });
   }
 
   openChangeRepoDialog() {
@@ -207,9 +218,10 @@ export class HeaderComponent implements OnInit {
       if (!res) {
         return;
       }
+      const newRepo = Repo.of(res);
 
-      this.currentRepo = res;
-      this.switchRepo();
+      // instead of switching immediately, check if this is a valid repo first
+      this.changeRepositoryInPhaseIfValid(newRepo, res);
     });
   }
 }
