@@ -108,11 +108,10 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     // Fetch labels
     this.labelFilterBar.load();
 
-    // Fetch milestones
+    // Fetch milestones and update dropdown filter
     this.milestoneService.fetchMilestones().subscribe(
       (response) => {
-        this.logger.debug('IssuesViewerComponent: Fetched milestones from Github');
-        this.milestoneSelectorRef.options.forEach((data: MatOption) => data.deselect());
+        this.milestoneService.milestones.forEach((milestone) => this.dropdownFilter.milestones.push(milestone.number));
       },
       (err) => {},
       () => {}

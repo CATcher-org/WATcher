@@ -129,7 +129,7 @@ export class IssuesDataTable extends DataSource<Issue> {
                   return this.dropdownFilter.labels.every((label) => issue.labels.includes(label));
                 });
 
-              if (Array.isArray(this.dropdownFilter.milestones) && this.dropdownFilter.milestones.length > 0) {
+              if (Array.isArray(this.dropdownFilter.milestones)) {
                 data = data.filter((issue) => {
                   return issue.milestone && this.dropdownFilter.milestones.some((milestone) => issue.milestone.number === milestone);
                 });
