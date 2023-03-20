@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
 import { Phase } from '../../core/models/phase.model';
 import { Repo } from '../../core/models/repo.model';
@@ -65,11 +65,17 @@ export class ConfirmLoginComponent implements OnInit {
       .createUserModel(this.username)
       .pipe(
         flatMap(() => {
-          if (Repo.isEmptyRepo(this.phaseService.currentRepo)) {
-            // We can return anything here since the result is never used
-            return of();
+          const currentRepo = this.phaseService.currentRepo;
+          if (Repo.isEmptyRepo(currentRepo)) {
+            return of(false);
           }
-          this.githubEventService.setLatestChangeEvent();
+          return this.phaseService.isValidRepository(currentRepo);
+        }),
+        flatMap((isValidRepository) => {
+          if (!isValidRepository) {
+            return new Observable();
+          }
+          return this.githubEventService.setLatestChangeEvent();
         })
       )
       .subscribe(

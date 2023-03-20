@@ -99,11 +99,11 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
    * Fetch and initialize all information from repository to populate Issue Dashboard.
    */
   private initialize() {
+    this.checkIfValidRepository();
+
     // Fetch assignees
     this.assignees = [];
-    if (Repo.isEmptyRepo(this.phaseService.currentRepo)) {
-      throw new Error('Invalid repo name. Please provide repo name in the format Org/Repo.');
-    }
+
     this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
 
     // Fetch issues
@@ -121,5 +121,22 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
       (err) => {},
       () => {}
     );
+  }
+
+  /**
+   * Checks if our current repository available on phase service is indeed a valid repository
+   */
+  private checkIfValidRepository() {
+    const currentRepo = this.phaseService.currentRepo;
+
+    if (Repo.isEmptyRepo(currentRepo)) {
+      throw new Error('Invalid repo name. Please provide repo name in the format Org/Repo.');
+    }
+
+    this.phaseService.isValidRepository(currentRepo).subscribe((isValidRepository) => {
+      if (!isValidRepository) {
+        throw new Error('Invalid repo name. Please check your organisation and repo name.');
+      }
+    });
   }
 }
