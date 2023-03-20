@@ -29,8 +29,8 @@
           </mat-card-header>
           <mat-card-content>
             <mat-chip-list aria-label="Labels">
-              <span *ngIf="issue.milestone" class="octicon-milestone" octicon="milestone" color="grey" size="8"></span>
-              {{ issue.milestone?.title }}
+              <span *ngIf="issue.milestone.state" class="octicon-milestone" octicon="milestone" color="grey" size="8"></span>
+              {{ issue.milestone?.title !== 'untracked' ? issue.milestone?.title : '' }}
               <ng-container *ngFor="let label of issue.githubLabels">
                 <mat-chip
                   *ngIf="!issues.dropdownFilter?.hiddenLabels.has(label.name)"
