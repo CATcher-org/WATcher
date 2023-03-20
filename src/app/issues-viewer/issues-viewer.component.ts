@@ -2,6 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, View
 import { MatOption, MatSelect, MatSort } from '@angular/material';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
+import { Repo } from '../core/models/repo.model';
 import { GithubService } from '../core/services/github.service';
 import { IssueService } from '../core/services/issue.service';
 import { LoggingService } from '../core/services/logging.service';
@@ -100,6 +101,9 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   private initialize() {
     // Fetch assignees
     this.assignees = [];
+    if (Repo.isEmptyRepo(this.phaseService.currentRepo)) {
+      throw new Error('Invalid repo name. Please provide repo name in the format Org/Repo.');
+    }
     this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
 
     // Fetch issues

@@ -26,7 +26,7 @@ export class LabelFilterBarComponent implements OnInit {
   constructor(private labelService: LabelService, private logger: LoggingService) {}
 
   ngOnInit() {
-    this.loaded = false;
+    this.setLoaded(false);
     this.load();
   }
 
@@ -67,9 +67,13 @@ export class LabelFilterBarComponent implements OnInit {
       (response) => {
         this.logger.debug('LabelFilterBarComponent: Fetched labels from Github');
       },
-      (err) => {},
+      (err) => {
+        this.logger.info(`LabelFilterBarComponent: Encountered errors (${err})`);
+        this.setLoaded(true);
+      },
       () => {
         this.initialize();
+        this.setLoaded(true);
       }
     );
   }
@@ -81,7 +85,10 @@ export class LabelFilterBarComponent implements OnInit {
         color: label.color
       };
     });
-    this.loaded = true;
+  }
+
+  private setLoaded(nextLoadedValue: boolean) {
+    this.loaded = nextLoadedValue;
   }
 
   filter(filter: string, target: string): boolean {

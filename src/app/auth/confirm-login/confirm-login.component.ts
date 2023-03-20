@@ -1,7 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { of } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
 import { Phase } from '../../core/models/phase.model';
+import { Repo } from '../../core/models/repo.model';
 import { AuthService, AuthState } from '../../core/services/auth.service';
 import { ElectronService } from '../../core/services/electron.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
@@ -58,9 +60,18 @@ export class ConfirmLoginComponent implements OnInit {
   completeLoginProcess(): void {
     this.authService.changeAuthState(AuthState.AwaitingAuthentication);
     this.phaseService.initializeCurrentRepository();
+    this.logger.info(`ConfirmLoginComponent: Current repo is ${this.phaseService.currentRepo}`);
     this.userService
       .createUserModel(this.username)
-      .pipe(flatMap(() => this.githubEventService.setLatestChangeEvent()))
+      .pipe(
+        flatMap(() => {
+          if (Repo.isEmptyRepo(this.phaseService.currentRepo)) {
+            // We can return anything here since the result is never used
+            return of();
+          }
+          this.githubEventService.setLatestChangeEvent();
+        })
+      )
       .subscribe(
         () => {
           this.handleAuthSuccess();

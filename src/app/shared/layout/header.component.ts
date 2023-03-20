@@ -189,8 +189,12 @@ export class HeaderComponent implements OnInit {
   }
 
   initializeRepoNameInTitle() {
-    this.currentRepo = this.phaseService.currentRepo.toString();
-    this.logger.info('HeaderComponent: initializing current repo name');
+    if (Repo.isEmptyRepo(this.phaseService.currentRepo)) {
+      return;
+    }
+    const currentRepoString = this.phaseService.currentRepo.toString();
+    this.logger.info(`HeaderComponent: initializing current repo name as ${currentRepoString}`);
+    this.currentRepo = currentRepoString;
   }
 
   /**

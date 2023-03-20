@@ -21,8 +21,31 @@ export class Repo {
     return new Repo(repoUrlSplit[0], repoUrlSplit[1]);
   }
 
+  public static ofEmptyRepo() {
+    return EMPTY_REPO;
+  }
+
+  public static isEmptyRepo(repo: unknown) {
+    if (repo instanceof Repo) {
+      const otherRepo = repo as Repo;
+      return otherRepo.equals(EMPTY_REPO);
+    }
+
+    return false;
+  }
+
   /** String representation of a Repo. */
   public toString(): string {
     return this.owner + '/' + this.name;
   }
+
+  public equals(otherRepo: unknown): boolean {
+    if (otherRepo instanceof Repo) {
+      return otherRepo.name === this.name && otherRepo.owner === this.owner;
+    }
+
+    return false;
+  }
 }
+
+const EMPTY_REPO = new Repo('', '');

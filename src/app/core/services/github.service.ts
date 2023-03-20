@@ -379,7 +379,7 @@ export class GithubService {
       map((response) => {
         return response['data'];
       }),
-      catchError((err) => throwError('Failed to fetch assignable users for repo.'))
+      catchError((err) => throwError('Failed to fetch assignable users for repo (getUsersAssignable).'))
     );
   }
 
@@ -457,7 +457,7 @@ export class GithubService {
       map((response) => {
         return response['data'];
       }),
-      catchError((err) => throwError('Failed to fetch events for repo.'))
+      catchError((err) => throwError('Failed to fetch events for repo (fetchEventsForRepo).'))
     );
   }
 
@@ -468,7 +468,7 @@ export class GithubService {
         repo: REPO,
         page: pageNumber
       })
-    ).pipe(catchError((err) => throwError('Failed to fetch events for repo.')));
+    ).pipe(catchError((err) => throwError('Failed to fetch events for repo (fetchEventsForRepoCall).')));
   }
 
   /**
