@@ -27,7 +27,7 @@ export class Issue {
   hiddenDataInDescription: HiddenData;
   updated_at: string;
   closed_at: string;
-  milestone?: Milestone;
+  milestone: Milestone;
   state: string;
   issueOrPr: string;
   author: string;
