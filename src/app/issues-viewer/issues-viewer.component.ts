@@ -1,5 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { MatOption, MatSelect, MatSort } from '@angular/material';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { MatSort } from '@angular/material/sort';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
 import { GithubService } from '../core/services/github.service';
