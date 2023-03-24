@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatListOption } from '@angular/material';
+import { MatListOption } from '@angular/material/list';
 import { BehaviorSubject } from 'rxjs';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
