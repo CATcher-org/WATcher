@@ -1,4 +1,4 @@
-import { MatPaginator } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
 import { EventWeek } from '../event-week.model';
 
 export function paginateData(paginator: MatPaginator, data: EventWeek[]): EventWeek[] {
