@@ -16,7 +16,7 @@ export class Repo {
   public static of(repoUrl: string) {
     const repoUrlSplit = repoUrl.split('/');
     if (repoUrlSplit.length !== 2) {
-      throw new Error('Invalid repo name. Please provide repo name in the format Org/Repo.');
+      throw new Error('Invalid repository name. Please provide repo name in the format Org/Repository Name.');
     }
     return new Repo(repoUrlSplit[0], repoUrlSplit[1]);
   }

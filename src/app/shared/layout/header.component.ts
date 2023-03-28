@@ -207,7 +207,7 @@ export class HeaderComponent implements OnInit {
   changeRepositoryInPhaseIfValid(repo: Repo, newRepoString: string) {
     this.phaseService.isValidRepository(repo).subscribe((isValidRepository) => {
       if (!isValidRepository) {
-        throw new Error('Invalid repo. Please check your organisation and repo name.');
+        throw new Error('Invalid repository name. Please check your organisation and repository name.');
       }
 
       this.switchRepo(repo);

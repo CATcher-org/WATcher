@@ -131,12 +131,12 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     const currentRepo = this.phaseService.currentRepo;
 
     if (Repo.isInvalidRepoName(currentRepo)) {
-      throw new Error('Invalid repo name. Please provide repo name in the format Org/Repository.');
+      throw new Error('Invalid repository name. Please provide repo name in the format Org/Repository.');
     }
 
     this.phaseService.isValidRepository(currentRepo).subscribe((isValidRepository) => {
       if (!isValidRepository) {
-        throw new Error('Invalid repo name. Please check your organisation and repository name.');
+        throw new Error('Invalid repository name. Please check your organisation and repository name.');
       }
     });
   }
