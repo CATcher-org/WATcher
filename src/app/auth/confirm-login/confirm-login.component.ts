@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { flatMap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 import { Phase } from '../../core/models/phase.model';
 import { Repo } from '../../core/models/repo.model';
 import { AuthService, AuthState } from '../../core/services/auth.service';
@@ -64,14 +64,14 @@ export class ConfirmLoginComponent implements OnInit {
     this.userService
       .createUserModel(this.username)
       .pipe(
-        flatMap(() => {
+        mergeMap(() => {
           const currentRepo = this.phaseService.currentRepo;
-          if (Repo.isEmptyRepo(currentRepo)) {
+          if (Repo.isInvalidRepoName(currentRepo)) {
             return of(false);
           }
           return this.phaseService.isValidRepository(currentRepo);
         }),
-        flatMap((isValidRepository) => {
+        mergeMap((isValidRepository) => {
           if (!isValidRepository) {
             return new Observable();
           }

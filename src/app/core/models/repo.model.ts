@@ -25,7 +25,7 @@ export class Repo {
     return EMPTY_REPO;
   }
 
-  public static isEmptyRepo(repo: unknown) {
+  public static isInvalidRepoName(repo: unknown) {
     if (repo instanceof Repo) {
       const otherRepo = repo as Repo;
       return otherRepo.equals(EMPTY_REPO);

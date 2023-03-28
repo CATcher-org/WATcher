@@ -189,7 +189,7 @@ export class HeaderComponent implements OnInit {
   }
 
   initializeRepoNameInTitle() {
-    if (Repo.isEmptyRepo(this.phaseService.currentRepo)) {
+    if (Repo.isInvalidRepoName(this.phaseService.currentRepo)) {
       return;
     }
     const currentRepoString = this.phaseService.currentRepo.toString();
