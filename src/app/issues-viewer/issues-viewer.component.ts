@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import { MatSort } from '@angular/material/sort';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -114,11 +113,11 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     // Fetch labels
     this.labelFilterBar.load();
 
-    // Fetch milestones
+    // Fetch milestones and update dropdown filter
     this.milestoneService.fetchMilestones().subscribe(
       (response) => {
         this.logger.debug('IssuesViewerComponent: Fetched milestones from Github');
-        this.milestoneSelectorRef.options.forEach((data: MatOption) => data.deselect());
+        this.milestoneService.milestones.forEach((milestone) => this.dropdownFilter.milestones.push(milestone.number));
       },
       (err) => {},
       () => {}
