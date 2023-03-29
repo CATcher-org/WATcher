@@ -193,7 +193,7 @@ export class HeaderComponent implements OnInit {
       return;
     }
     const currentRepoString = this.phaseService.currentRepo.toString();
-    this.logger.info(`HeaderComponent: initializing current repo name as ${currentRepoString}`);
+    this.logger.info(`HeaderComponent: initializing current repository name as ${currentRepoString}`);
     this.currentRepo = currentRepoString;
   }
 
@@ -205,7 +205,7 @@ export class HeaderComponent implements OnInit {
   }
 
   changeRepositoryInPhaseIfValid(repo: Repo, newRepoString: string) {
-    this.phaseService.isValidRepository(repo).subscribe((isValidRepository) => {
+    this.githubService.isRepositoryPresent(repo.owner, repo.name).subscribe((isValidRepository) => {
       if (!isValidRepository) {
         throw new Error('Invalid repository name. Please check your organisation and repository name.');
       }

@@ -7,6 +7,7 @@ import { Repo } from '../../core/models/repo.model';
 import { AuthService, AuthState } from '../../core/services/auth.service';
 import { ElectronService } from '../../core/services/electron.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
+import { GithubService } from '../../core/services/github.service';
 import { GithubEventService } from '../../core/services/githubevent.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { PhaseService } from '../../core/services/phase.service';
@@ -23,13 +24,14 @@ export class ConfirmLoginComponent implements OnInit {
 
   constructor(
     public electronService: ElectronService,
-    private authService: AuthService,
-    private phaseService: PhaseService,
-    private userService: UserService,
-    private errorHandlingService: ErrorHandlingService,
-    private githubEventService: GithubEventService,
-    private logger: LoggingService,
-    private router: Router
+    public authService: AuthService,
+    public phaseService: PhaseService,
+    public userService: UserService,
+    public errorHandlingService: ErrorHandlingService,
+    public githubEventService: GithubEventService,
+    public logger: LoggingService,
+    public router: Router,
+    public githubService: GithubService
   ) {}
 
   ngOnInit() {}
@@ -69,7 +71,7 @@ export class ConfirmLoginComponent implements OnInit {
           if (Repo.isInvalidRepoName(currentRepo)) {
             return of(false);
           }
-          return this.phaseService.isValidRepository(currentRepo);
+          return this.githubService.isRepositoryPresent(currentRepo.owner, currentRepo.name);
         }),
         mergeMap((isValidRepository) => {
           if (!isValidRepository) {
