@@ -18,8 +18,6 @@ const mockUser: User = {
   role: UserRole.Student
 };
 
-const emptyRepo = Repo.ofEmptyRepo();
-
 const getRepoWithValidName = () => new Repo('mock', 'repo');
 
 describe('ConfirmLoginComponent', () => {
