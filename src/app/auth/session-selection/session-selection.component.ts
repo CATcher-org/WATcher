@@ -64,6 +64,8 @@ export class SessionSelectionComponent implements OnInit {
     if (repoOrg && repoName) {
       window.localStorage.setItem('org', repoOrg);
       window.localStorage.setItem('dataRepo', repoName);
+    } else {
+      window.localStorage.clear();
     }
 
     this.logger.info(`SessionSelectionComponent: Selected Repository: ${repoInformation}`);
