@@ -59,13 +59,15 @@ export class SessionSelectionComponent implements OnInit {
      *
      * Since localStorage::setItem with an undefined value can result in
      * the subsequent value being stored as a string being 'undefined', check
-     * if undefined before storing it.
+     * if undefined before storing it. Let's reset the items before setting them.
      */
+
+    window.localStorage.removeItem('org');
+    window.localStorage.removeItem('dataRepo');
+
     if (repoOrg && repoName) {
       window.localStorage.setItem('org', repoOrg);
       window.localStorage.setItem('dataRepo', repoName);
-    } else {
-      window.localStorage.clear();
     }
 
     this.logger.info(`SessionSelectionComponent: Selected Repository: ${repoInformation}`);
