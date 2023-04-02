@@ -7,7 +7,6 @@ import { Phase } from '../../core/models/phase.model';
 import { Repo } from '../../core/models/repo.model';
 import { AuthService } from '../../core/services/auth.service';
 import { DialogService } from '../../core/services/dialog.service';
-import { ElectronService } from '../../core/services/electron.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { GithubService } from '../../core/services/github.service';
 import { GithubEventService } from '../../core/services/githubevent.service';
@@ -49,7 +48,6 @@ export class HeaderComponent implements OnInit {
     private issueService: IssueService,
     private errorHandlingService: ErrorHandlingService,
     private githubService: GithubService,
-    private electronService: ElectronService,
     private dialogService: DialogService
   ) {
     router.events
@@ -123,9 +121,7 @@ export class HeaderComponent implements OnInit {
 
   viewBrowser() {
     if (this.phaseService.currentPhase === Phase.activityDashboard) {
-      this.electronService.openLink(
-        `https://github.com/${this.phaseService.currentRepo.owner}/${this.phaseService.currentRepo.name}/pulse`
-      );
+      window.open(`https://github.com/${this.phaseService.currentRepo.owner}/${this.phaseService.currentRepo.name}/pulse`);
       return;
     }
 
@@ -142,11 +138,11 @@ export class HeaderComponent implements OnInit {
       issueUrl = routerUrl.substring(issueUrlIndex);
     }
     // Open the url in user's preferred browser
-    this.electronService.openLink('https://github.com/'.concat(this.githubService.getRepoURL()).concat(issueUrl));
+    window.open('https://github.com/'.concat(this.githubService.getRepoURL()).concat(issueUrl));
   }
 
   openIssueTracker() {
-    this.electronService.openLink(ISSUE_TRACKER_URL);
+    window.open(ISSUE_TRACKER_URL);
   }
 
   reload() {
