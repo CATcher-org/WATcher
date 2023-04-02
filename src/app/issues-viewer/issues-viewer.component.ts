@@ -104,6 +104,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
 
     // Fetch issues
+    this.issueService.reset(false);
     this.issueService.reloadAllIssues();
 
     // Fetch labels
