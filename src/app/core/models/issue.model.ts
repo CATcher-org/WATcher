@@ -27,7 +27,7 @@ export class Issue {
   hiddenDataInDescription: HiddenData;
   updated_at: string;
   closed_at: string;
-  milestone?: Milestone;
+  milestone: Milestone;
   state: string;
   issueOrPr: string;
   author: string;
@@ -123,7 +123,8 @@ export class Issue {
     this.title = githubIssue.title;
     this.hiddenDataInDescription = new HiddenData(githubIssue.body);
     this.description = Issue.updateDescription(this.hiddenDataInDescription.originalStringWithoutHiddenData);
-    this.milestone = githubIssue.milestone ? new Milestone(githubIssue.milestone) : null;
+    // githubIssue without milestone will be set to default milestone
+    this.milestone = githubIssue.milestone ? new Milestone(githubIssue.milestone) : Milestone.DefaultMilestone;
     this.state = githubIssue.state;
     this.issueOrPr = githubIssue.issueOrPr;
     this.author = githubIssue.user.login;

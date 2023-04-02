@@ -39,6 +39,10 @@ export class MilestoneService {
     for (const milestone of milestones) {
       milestoneData.push(new Milestone(milestone));
     }
+    milestoneData.sort((a: Milestone, b: Milestone) => a.title.localeCompare(b.title));
+
+    // add default milestone for untracked issues/PRs at the end
+    milestoneData.push(Milestone.DefaultMilestone);
     return milestoneData;
   }
 }

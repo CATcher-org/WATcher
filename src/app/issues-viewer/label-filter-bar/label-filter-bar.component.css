@@ -46,6 +46,10 @@
   top: 50%;
 }
 
+.mat-stroked-button {
+  font-weight: normal;
+}
+
 .hidden {
   display: none !important;
 }

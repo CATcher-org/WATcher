@@ -41,9 +41,9 @@
         <mat-form-field appearance="standard">
           <mat-label>Milestone</mat-label>
           <mat-select #milestoneSelectorRef [(value)]="this.dropdownFilter.milestones" (selectionChange)="applyDropdownFilter()" multiple>
-            <mat-option *ngFor="let milestone of this.milestoneService.milestones" [value]="milestone.number">{{
-              milestone.title
-            }}</mat-option>
+            <mat-option *ngFor="let milestone of this.milestoneService.milestones" [value]="milestone.number">
+              {{ milestone.title }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
       </div>
