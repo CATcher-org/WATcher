@@ -1,0 +1,46 @@
+<button mat-stroked-button *ngIf="loaded" [matMenuTriggerFor]="menu">
+  {{ selectedLabelNames.length == 0 ? 'All' : selectedLabelNames.length }} Selected | {{ hiddenLabelNames?.size || 0 }} Hidden ▾
+</button>
+
+<button mat-stroked-button disabled *ngIf="!loaded" color="accent">
+  <mat-progress-bar mode="query"></mat-progress-bar>
+</button>
+
+<mat-menu #menu="matMenu" class="popupmenu">
+  <div (click)="$event.stopPropagation()" class="popup-container">
+    <mat-form-field appearance="standard" class="input-field">
+      <mat-label>Labels</mat-label>
+      <input #input matInput placeholder="Find labels" />
+    </mat-form-field>
+
+    <div class="scroll-container">
+      <mat-selection-list [(ngModel)]="selectedLabelNames" (selectionChange)="selectedLabels.next(selectedLabelNames)">
+        <mat-list-option
+          #option
+          *ngFor="let label of allLabels"
+          [value]="label.name"
+          [selected]="selectedLabelNames.includes(label.name)"
+          class="list-option"
+          [class.hidden]="filter(input.value, label.name)"
+        >
+          <div class="flexbox-container">
+            <button mat-icon-button *ngIf="!hiddenLabelNames.has(label.name)" (click)="hide(label.name); $event.stopPropagation()">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button mat-icon-button *ngIf="hiddenLabelNames.has(label.name)" (click)="show(label.name); $event.stopPropagation()">
+              <mat-icon>visibility_off</mat-icon>
+            </button>
+
+            <mat-chip
+              [ngStyle]="labelService.setLabelStyle(label.color)"
+              [disabled]="hiddenLabelNames.has(label.name)"
+              (click)="simulateClick(option); $event.stopPropagation()"
+            >
+              {{ label.name }}
+            </mat-chip>
+          </div>
+        </mat-list-option>
+      </mat-selection-list>
+    </div>
+  </div>
+</mat-menu>

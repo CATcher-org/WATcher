@@ -591,9 +591,16 @@ export class GithubService {
       headers: { 'If-None-Match': this.issuesCacheManager.getEtagFor(pageNumber) },
       state: 'all'
     });
-    const apiCall$ = from(apiCall);
+    const apiCall$ = from(
+      apiCall.catch((err) => {
+        return this.issuesCacheManager.get(pageNumber);
+      })
+    );
+
     return apiCall$.pipe(
       catchError((err) => {
+        // catchError does not appear to catch an error on an observable created from a promise...
+        this.logger.info(`GithubService: Error caught in getIssuesAPICall`);
         return of(this.issuesCacheManager.get(pageNumber));
       })
     );

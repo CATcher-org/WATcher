@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatOption, MatSelect, MatSort } from '@angular/material';
+import { MatSelect } from '@angular/material/select';
+import { MatSort } from '@angular/material/sort';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
 import { GithubService } from '../core/services/github.service';
@@ -11,7 +11,7 @@ import { PhaseService } from '../core/services/phase.service';
 import { TABLE_COLUMNS } from '../shared/issue-tables/issue-tables-columns';
 import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../shared/issue-tables/IssuesDataTable';
 import { CardViewComponent } from './card-view/card-view.component';
-import { LabelChipBarComponent } from './label-chip-bar/label-chip-bar.component';
+import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
 
 @Component({
   selector: 'app-issues-viewer',
@@ -34,19 +34,18 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   labelFilter$ = new BehaviorSubject<string[]>([]);
   labelFilterSubscription: Subscription;
 
+  /** Selected label to hide */
+  hiddenLabels$ = new BehaviorSubject<Set<string>>(new Set());
+  hiddenLabelSubscription: Subscription;
+
   @ViewChildren(CardViewComponent) cardViews: QueryList<CardViewComponent>;
 
   /** One MatSort controls all IssueDataTables */
   @ViewChild(MatSort, { static: true }) matSort: MatSort;
 
-  @ViewChild(LabelChipBarComponent, { static: true }) labelChipBar: LabelChipBarComponent;
+  @ViewChild(LabelFilterBarComponent, { static: true }) labelFilterBar: LabelFilterBarComponent;
 
   @ViewChild('milestoneSelectorRef', { static: false }) milestoneSelectorRef: MatSelect;
-
-  /** Switch repository form */
-  repoForm = new FormGroup({
-    repoInput: new FormControl(['', Validators.required])
-  });
 
   constructor(
     public phaseService: PhaseService,
@@ -68,10 +67,16 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.dropdownFilter.labels = labels;
       this.applyDropdownFilter();
     });
+
+    this.hiddenLabelSubscription = this.hiddenLabels$.subscribe((labels) => {
+      this.dropdownFilter.hiddenLabels = labels;
+      this.applyDropdownFilter();
+    });
   }
 
   ngOnDestroy(): void {
     this.labelFilterSubscription.unsubscribe();
+    this.hiddenLabelSubscription.unsubscribe();
     this.repoChangeSubscription.unsubscribe();
   }
 
@@ -102,13 +107,13 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.issueService.reloadAllIssues();
 
     // Fetch labels
-    this.labelChipBar.load();
+    this.labelFilterBar.load();
 
-    // Fetch milestones
+    // Fetch milestones and update dropdown filter
     this.milestoneService.fetchMilestones().subscribe(
       (response) => {
         this.logger.debug('IssuesViewerComponent: Fetched milestones from Github');
-        this.milestoneSelectorRef.options.forEach((data: MatOption) => data.deselect());
+        this.milestoneService.milestones.forEach((milestone) => this.dropdownFilter.milestones.push(milestone.number));
       },
       (err) => {},
       () => {}

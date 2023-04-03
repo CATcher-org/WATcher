@@ -1,6 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { GithubUser } from '../../core/models/github-user.model';
 import { GithubEventService } from '../../core/services/githubevent.service';
 import { LoggingService } from '../../core/services/logging.service';

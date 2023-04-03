@@ -1,6 +1,6 @@
 <div>
   <mat-grid-list cols="7" rowHeight="80px">
-    <mat-grid-tile colspan="2">
+    <mat-grid-tile colspan="3">
       <mat-form-field class="search-bar">
         <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search" />
       </mat-form-field>
@@ -41,16 +41,16 @@
         <mat-form-field appearance="standard">
           <mat-label>Milestone</mat-label>
           <mat-select #milestoneSelectorRef [(value)]="this.dropdownFilter.milestones" (selectionChange)="applyDropdownFilter()" multiple>
-            <mat-option *ngFor="let milestone of this.milestoneService.milestones" [value]="milestone.number">{{
-              milestone.title
-            }}</mat-option>
+            <mat-option *ngFor="let milestone of this.milestoneService.milestones" [value]="milestone.number">
+              {{ milestone.title }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
       </div>
     </mat-grid-tile>
 
-    <mat-grid-tile class="label-filter-grid-tile" colspan="2">
-      <app-label-chip-bar [selectedLabels]="this.labelFilter$"></app-label-chip-bar>
+    <mat-grid-tile class="label-filter-grid-tile" colspan="1">
+      <app-label-filter-bar [selectedLabels]="this.labelFilter$" [hiddenLabels]="this.hiddenLabels$"></app-label-filter-bar>
     </mat-grid-tile>
   </mat-grid-list>
 

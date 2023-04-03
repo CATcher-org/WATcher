@@ -1,5 +1,6 @@
 import { DataSource } from '@angular/cdk/table';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
 import { flatMap, map } from 'rxjs/operators';
 import { GithubUser } from '../../core/models/github-user.model';
@@ -15,6 +16,7 @@ export type DropdownFilter = {
   sort: string;
   labels: string[];
   milestones: string[];
+  hiddenLabels?: Set<string>;
 };
 
 export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
@@ -128,7 +130,7 @@ export class IssuesDataTable extends DataSource<Issue> {
                   return this.dropdownFilter.labels.every((label) => issue.labels.includes(label));
                 });
 
-              if (Array.isArray(this.dropdownFilter.milestones) && this.dropdownFilter.milestones.length > 0) {
+              if (Array.isArray(this.dropdownFilter.milestones)) {
                 data = data.filter((issue) => {
                   return issue.milestone && this.dropdownFilter.milestones.some((milestone) => issue.milestone.number === milestone);
                 });
