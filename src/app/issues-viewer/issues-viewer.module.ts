@@ -8,6 +8,7 @@ import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.com
 
 @NgModule({
   imports: [IssuesViewerRoutingModule, SharedModule, MarkdownModule.forChild()],
-  declarations: [IssuesViewerComponent, CardViewComponent, LabelFilterBarComponent]
+  declarations: [IssuesViewerComponent, CardViewComponent, LabelFilterBarComponent],
+  exports: [IssuesViewerComponent, LabelFilterBarComponent, CardViewComponent]
 })
 export class IssuesViewerModule {}

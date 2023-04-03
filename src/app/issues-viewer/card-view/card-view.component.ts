@@ -9,6 +9,7 @@ import { IssueService } from '../../core/services/issue.service';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-card-view',
