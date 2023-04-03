@@ -6,38 +6,8 @@
   margin: 8px 0px 8px 0px;
 }
 
-.mat-chip-list {
-  margin: 0;
-}
-
-.mat-chip {
-  border-radius: 6px;
-  font-size: 10px;
-  padding: 11px 7px;
-  min-height: 16px;
-  margin: 2px;
-}
-
-.mat-card-title {
-  display: flex;
-  align-items: center;
-  font-size: 12px;
-  text-align: left;
-  overflow: auto;
-}
-
 .column-header .mat-card-title {
   font-size: 14px;
-}
-
-span.octicon {
-  margin-right: 8px;
-  display: inline-flex;
-}
-
-span.octicon-milestone {
-  margin-right: 4px;
-  display: inline-flex;
 }
 
 .mat-card {
@@ -61,32 +31,6 @@ div.column-header .mat-card-header {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-:host ::ng-deep .mat-chip-list-wrapper .mat-standard-chip,
-.mat-chip-list-wrapper input.mat-input-element {
-  margin: 2px;
-}
-
-.border-green {
-  border-left: 2.4px solid green;
-}
-
-.border-purple {
-  border-left: 2.4px solid purple;
-}
-
-.mat-card-content {
-  margin-bottom: 2px;
-}
-
-.mat-card-subtitle {
-  display: flex;
-  align-items: center;
-  font-size: 11px;
-  text-align: left;
-  overflow: auto;
-  margin: 6px 0;
 }
 
 .row-count {
