@@ -105,6 +105,11 @@ export class IssuesDataTable extends DataSource<Issue> {
                     return issue.assignees.includes(this.assignee.login);
                   }
                 });
+              } else {
+                // If no assignee, filter the unassigned issues only.
+                data = data.filter((issue) => {
+                  return issue.assignees.length === 0;
+                });
               }
               // Dropdown Filters
               data = data
