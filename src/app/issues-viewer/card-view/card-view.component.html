@@ -18,7 +18,8 @@
   </div>
 
   <div *ngFor="let issue of this.issues$ | async; index as i">
-    <mat-card class="card" [ngClass]="this.getIssueOpenOrCloseColorCSSClass(issue)">
+    <app-issue-pr-card [issue]="issue"></app-issue-pr-card>
+    <!-- <mat-card class="card" [ngClass]="this.getIssueOpenOrCloseColorCSSClass(issue)">
       <a class="no-underline link-grey-dark" (click)="viewIssueInBrowser(issue.id, $event)">
         <span [matTooltip]="this.issue.updated_at">
           <mat-card-header>
@@ -44,7 +45,7 @@
           </mat-card-content>
         </span>
       </a>
-    </mat-card>
+    </mat-card> -->
   </div>
 
   <mat-card *ngIf="this.issues.isLoading$ | async" style="display: flex; justify-content: center; align-items: center">
