@@ -1,0 +1,25 @@
+<mat-card class="card" [ngClass]="getIssueOpenOrCloseColorCSSClass()">
+  <a class="no-underline link-grey-dark" (click)="viewIssueInBrowser($event)">
+    <span [matTooltip]="this.issue.updated_at">
+      <mat-card-header>
+        <mat-card-title>
+          <span class="octicon" [octicon]="getOcticon()" [color]="getIssueOpenOrCloseColor()"></span>
+          #{{ issue.id }}: {{ fitTitleText() }}
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-chip-list aria-label="Labels">
+          <ng-container *ngIf="issue.milestone.state">
+            <span class="octicon-milestone" octicon="milestone" color="grey" size="8"></span>
+            {{ issue.milestone.title }}
+          </ng-container>
+          <ng-container *ngFor="let label of issue.githubLabels">
+            <mat-chip *ngIf="!dropdownFilter?.hiddenLabels.has(label.name)" [ngStyle]="labelService.setLabelStyle(label.color)" selected>
+              {{ label.name }}
+            </mat-chip>
+          </ng-container>
+        </mat-chip-list>
+      </mat-card-content>
+    </span>
+  </a>
+</mat-card>

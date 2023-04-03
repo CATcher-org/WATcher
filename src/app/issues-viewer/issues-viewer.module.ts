@@ -5,9 +5,10 @@ import { CardViewComponent } from './card-view/card-view.component';
 import { IssuesViewerRoutingModule } from './issues-viewer-routing.module';
 import { IssuesViewerComponent } from './issues-viewer.component';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
+import { IssuePrCardComponent } from '../shared/issue-pr-card/issue-pr-card.component';
 
 @NgModule({
   imports: [IssuesViewerRoutingModule, SharedModule, MarkdownModule.forChild()],
-  declarations: [IssuesViewerComponent, CardViewComponent, LabelFilterBarComponent]
+  declarations: [IssuesViewerComponent, CardViewComponent, LabelFilterBarComponent, IssuePrCardComponent]
 })
 export class IssuesViewerModule {}
