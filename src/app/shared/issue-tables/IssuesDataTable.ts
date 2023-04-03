@@ -108,7 +108,7 @@ export class IssuesDataTable extends DataSource<Issue> {
               } else {
                 // If no assignee, filter the unassigned issues only.
                 data = data.filter((issue) => {
-                  return issue.assignees.length === 0;
+                  return issue.issueOrPr !== 'PullRequest' && issue.assignees.length === 0;
                 });
               }
               // Dropdown Filters
