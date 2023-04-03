@@ -4,10 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { GithubUser } from '../../core/models/github-user.model';
 import { Issue } from '../../core/models/issue.model';
-import { GithubService } from '../../core/services/github.service';
 import { IssueService } from '../../core/services/issue.service';
-import { LabelService } from '../../core/services/label.service';
-import { LoggingService } from '../../core/services/logging.service';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
 
 @Component({
@@ -30,7 +27,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   issues: IssuesDataTable;
   issues$: Observable<Issue[]>;
 
-  constructor(public issueService: IssueService, private logger: LoggingService) {}
+  constructor(public issueService: IssueService) {}
 
   ngOnInit() {
     this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.assignee, this.filters);
