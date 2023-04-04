@@ -9,23 +9,7 @@ import { IssueService } from '../../core/services/issue.service';
 import { paginateData } from './issue-paginator';
 import { getSortedData } from './issue-sorter';
 import { applySearchFilter } from './search-filter';
-
-export type DropdownFilter = {
-  status: string;
-  type: string;
-  sort: string;
-  labels: string[];
-  milestones: string[];
-  hiddenLabels?: Set<string>;
-};
-
-export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
-  status: 'all',
-  type: 'all',
-  sort: 'id',
-  labels: [],
-  milestones: []
-};
+import { applyDropdownFilter, DEFAULT_DROPDOWN_FILTER, DropdownFilter } from './dropdownfilter';
 
 export class IssuesDataTable extends DataSource<Issue> {
   public count = 0;
@@ -107,34 +91,7 @@ export class IssuesDataTable extends DataSource<Issue> {
                 });
               }
               // Dropdown Filters
-              data = data
-                .filter((issue) => {
-                  if (this.dropdownFilter.status === 'open') {
-                    return issue.state === 'OPEN';
-                  } else if (this.dropdownFilter.status === 'closed') {
-                    return issue.state !== 'OPEN';
-                  } else {
-                    return true;
-                  }
-                })
-                .filter((issue) => {
-                  if (this.dropdownFilter.type === 'issue') {
-                    return issue.issueOrPr === 'Issue';
-                  } else if (this.dropdownFilter.type === 'pullrequest') {
-                    return issue.issueOrPr === 'PullRequest';
-                  } else {
-                    return true;
-                  }
-                })
-                .filter((issue) => {
-                  return this.dropdownFilter.labels.every((label) => issue.labels.includes(label));
-                });
-
-              if (Array.isArray(this.dropdownFilter.milestones)) {
-                data = data.filter((issue) => {
-                  return issue.milestone && this.dropdownFilter.milestones.some((milestone) => issue.milestone.number === milestone);
-                });
-              }
+              data = data.filter(applyDropdownFilter(this.dropdownFilter));
 
               if (this.sort !== undefined) {
                 data = getSortedData(this.sort, data);

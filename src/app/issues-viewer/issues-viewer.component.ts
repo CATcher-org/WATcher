@@ -9,7 +9,7 @@ import { LoggingService } from '../core/services/logging.service';
 import { MilestoneService } from '../core/services/milestone.service';
 import { PhaseService } from '../core/services/phase.service';
 import { TABLE_COLUMNS } from '../shared/issue-tables/issue-tables-columns';
-import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../shared/issue-tables/IssuesDataTable';
+import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../shared/issue-tables/dropdownfilter';
 import { CardViewComponent } from './card-view/card-view.component';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
 

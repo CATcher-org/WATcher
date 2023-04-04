@@ -4,7 +4,7 @@ import { GithubUser } from '../core/models/github-user.model';
 import { GithubService } from '../core/services/github.service';
 import { IssueService } from '../core/services/issue.service';
 import { LoggingService } from '../core/services/logging.service';
-import { DEFAULT_DROPDOWN_FILTER, DropdownFilter, IssuesDataTable } from '../shared/issue-tables/IssuesDataTable';
+import { IssuesDataTable } from '../shared/issue-tables/IssuesDataTable';
 import { CardViewComponent } from '../issues-viewer/card-view/card-view.component';
 import { MatSort } from '@angular/material/sort';
 import { LabelFilterBarComponent } from '../issues-viewer/label-filter-bar/label-filter-bar.component';
@@ -13,6 +13,7 @@ import { PhaseService } from '../core/services/phase.service';
 import { MilestoneService } from '../core/services/milestone.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Issues } from '../core/models/issue.model';
+import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../shared/issue-tables/dropdownfilter';
 
 @Component({
   selector: 'app-detailed-viewer',
