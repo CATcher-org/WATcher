@@ -17,7 +17,7 @@ export class IssuePrCardHeaderComponent {
    * @returns string to create icon
    */
   getOcticon() {
-    const type =this.issue.issueOrPr;
+    const type = this.issue.issueOrPr;
     const state = this.issue.state;
 
     switch (true) {
@@ -52,7 +52,6 @@ export class IssuePrCardHeaderComponent {
       return 'purple';
     }
   }
-  
 
   /**
    * Formats the title text to account for those that contain long words.
