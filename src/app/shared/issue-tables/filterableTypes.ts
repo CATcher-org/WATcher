@@ -1,7 +1,7 @@
 import { DropdownFilter } from "./dropdownfilter";
 
 export interface FilterableSource {
-    filter: string
+    filter: string;
     dropdownFilter: DropdownFilter;
 }
 

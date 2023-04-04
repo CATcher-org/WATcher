@@ -1,12 +1,12 @@
 import { Component, Input, OnInit, QueryList, ViewChild } from '@angular/core';
-import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../issue-tables/dropdownfilter';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { MatSort } from '@angular/material/sort';
 import { MatSelect } from '@angular/material/select';
-import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
-import { FilterableComponent } from '../issue-tables/FilterableComponent';
-import { MilestoneService } from '../../core/services/milestone.service';
+import { MatSort } from '@angular/material/sort';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { LoggingService } from '../../core/services/logging.service';
+import { MilestoneService } from '../../core/services/milestone.service';
+import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../issue-tables/dropdownfilter';
+import { FilterableComponent } from '../issue-tables/filterableTypes';
+import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
 
 @Component({
   selector: 'app-filter-bar',
@@ -34,7 +34,7 @@ export class FilterBarComponent implements OnInit {
   @ViewChild('milestoneSelectorRef', { static: false }) milestoneSelectorRef: MatSelect;
 
   constructor(
-    private milestoneService: MilestoneService,
+    public milestoneService: MilestoneService,
     private logger: LoggingService
   ) {}
 
@@ -67,21 +67,21 @@ export class FilterBarComponent implements OnInit {
     applyFilter(filterValue: string) {
       this.views$.value?.forEach((v) => (v.retrieveFilterable().filter = filterValue));
     }
-  
+
     /**
      * Signals to IssuesDataTable that a change has occurred in dropdown filter.
      */
     applyDropdownFilter() {
       this.views$.value?.forEach((v) => (v.retrieveFilterable().dropdownFilter = this.dropdownFilter));
     }
-  
+
     /**
      * Fetch and initialize all information from repository to populate Issue Dashboard.
      */
     private initialize() {
       // Fetch labels
       this.labelFilterBar.load();
-  
+
       // Fetch milestones and update dropdown filter
       this.milestoneService.fetchMilestones().subscribe(
         (response) => {

@@ -6,11 +6,11 @@ import { flatMap, map } from 'rxjs/operators';
 import { GithubUser } from '../../core/models/github-user.model';
 import { Issue } from '../../core/models/issue.model';
 import { IssueService } from '../../core/services/issue.service';
+import { applyDropdownFilter, DEFAULT_DROPDOWN_FILTER, DropdownFilter } from './dropdownfilter';
+import { FilterableSource } from './filterableTypes';
 import { paginateData } from './issue-paginator';
 import { getSortedData } from './issue-sorter';
 import { applySearchFilter } from './search-filter';
-import { applyDropdownFilter, DEFAULT_DROPDOWN_FILTER, DropdownFilter } from './dropdownfilter';
-import { FilterableSource } from './FilterableComponent';
 
 export class IssuesDataTable extends DataSource<Issue> implements FilterableSource {
   public count = 0;

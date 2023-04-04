@@ -1,15 +1,14 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { MatSort } from '@angular/material/sort';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
 import { GithubService } from '../core/services/github.service';
 import { IssueService } from '../core/services/issue.service';
-import { LoggingService } from '../core/services/logging.service';
 import { MilestoneService } from '../core/services/milestone.service';
 import { PhaseService } from '../core/services/phase.service';
+import { FilterBarComponent } from '../shared/filter-bar/filter-bar.component';
 import { TABLE_COLUMNS } from '../shared/issue-tables/issue-tables-columns';
 import { CardViewComponent } from './card-view/card-view.component';
-import { FilterBarComponent } from '../shared/filter-bar/filter-bar.component';
-import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-issues-viewer',
@@ -29,7 +28,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChildren(CardViewComponent) cardViews: QueryList<CardViewComponent>;
   @ViewChild('filterbar') filterBar: FilterBarComponent;
-  
+
   matSort: MatSort;
 
   views = new BehaviorSubject<QueryList<CardViewComponent>>(undefined);
@@ -39,7 +38,6 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     public githubService: GithubService,
     public issueService: IssueService,
     public milestoneService: MilestoneService,
-    private logger: LoggingService
   ) {
     this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => this.initialize());
   }

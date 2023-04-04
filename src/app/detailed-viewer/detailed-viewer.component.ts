@@ -1,18 +1,17 @@
 import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { GithubUser } from '../core/models/github-user.model';
-import { GithubService } from '../core/services/github.service';
-import { IssueService } from '../core/services/issue.service';
-import { LoggingService } from '../core/services/logging.service';
-import { IssuesDataTable } from '../shared/issue-tables/IssuesDataTable';
-import { CardViewComponent } from '../issues-viewer/card-view/card-view.component';
-import { MatSort } from '@angular/material/sort';
 import { MatSelect } from '@angular/material/select';
-import { PhaseService } from '../core/services/phase.service';
-import { MilestoneService } from '../core/services/milestone.service';
+import { MatSort } from '@angular/material/sort';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { GithubUser } from '../core/models/github-user.model';
 import { Issues } from '../core/models/issue.model';
+import { GithubService } from '../core/services/github.service';
+import { LoggingService } from '../core/services/logging.service';
+import { MilestoneService } from '../core/services/milestone.service';
+import { PhaseService } from '../core/services/phase.service';
+import { CardViewComponent } from '../issues-viewer/card-view/card-view.component';
 import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../shared/issue-tables/dropdownfilter';
+import { IssuesDataTable } from '../shared/issue-tables/IssuesDataTable';
 
 @Component({
   selector: 'app-detailed-viewer',
@@ -32,11 +31,9 @@ export class DetailedViewerComponent implements OnInit {
     public githubService: GithubService,
     public milestoneService: MilestoneService,
     private route: ActivatedRoute,
-    private issueService: IssueService,
     private router: Router,
     private logger: LoggingService
   ) {
-    ``;
     this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => this.initialize());
   }
 
@@ -81,6 +78,6 @@ export class DetailedViewerComponent implements OnInit {
   }
 
   initialize(): void {
-    
+
   }
 }

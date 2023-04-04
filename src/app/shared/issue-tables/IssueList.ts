@@ -8,7 +8,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { getSortedData } from './issue-sorter';
 import { paginateData } from './issue-paginator';
-import { FilterableSource } from './FilterableComponent';
+import { FilterableSource } from './filterableTypes';
 
 /**
  * Class similar to IssueDataTable but instead of listening to issueService,
