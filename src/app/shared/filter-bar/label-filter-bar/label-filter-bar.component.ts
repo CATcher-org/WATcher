@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatListOption } from '@angular/material/list';
 import { BehaviorSubject } from 'rxjs';
-import { LabelService } from '../../core/services/label.service';
-import { LoggingService } from '../../core/services/logging.service';
+import { LabelService } from '../../../core/services/label.service';
+import { LoggingService } from '../../../core/services/logging.service';
 
 export type simplifiedLabel = {
   name: string;

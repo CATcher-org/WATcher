@@ -1,5 +1,6 @@
 <div>
-  <mat-grid-list cols="7" rowHeight="80px">
+  <app-filter-bar></app-filter-bar>
+  <!-- <mat-grid-list cols="7" rowHeight="80px">
     <mat-grid-tile colspan="3">
       <mat-form-field class="search-bar">
         <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search" />
@@ -52,7 +53,7 @@
     <mat-grid-tile class="label-filter-grid-tile" colspan="1">
       <app-label-filter-bar [selectedLabels]="this.labelFilter$" [hiddenLabels]="this.hiddenLabels$"></app-label-filter-bar>
     </mat-grid-tile>
-  </mat-grid-list>
+  </mat-grid-list> -->
 
   <div style="display: flex">
     <app-card-view

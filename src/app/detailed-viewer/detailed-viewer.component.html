@@ -5,26 +5,13 @@
     </mat-grid-tile>
     <ng-container *ngIf="user">
       <!-- user icon/name -->
-      <mat-grid-tile colspan="2" rowspan="3" style.background="lightblue">
-        <a>
-          <div class="profile-card">
-            <div
-              mat-card-avatar
-              class="profile-icon"
-              [ngStyle]="{
-                background: 'url(' + user.avatar_url + ')',
-                'background-size': 'contain',
-                'background-position': 'center'
-              }"
-            ></div>
-            <div class="profile-name">
-              {{ user.login }}
-            </div>
-          </div>
-        </a>
+      <mat-grid-tile colspan="2" rowspan="3">
+        <app-profile-icon [name]="user.login" [avatar_url]="user.avatar_url"></app-profile-icon>
       </mat-grid-tile>
       <!-- user contribution details -->
-      <mat-grid-tile colspan="5" rowspan="3" style.background="lightgreen">2</mat-grid-tile>
+      <mat-grid-tile colspan="5" rowspan="3" style.background="lightgreen">
+        <app-profile-details></app-profile-details>
+      </mat-grid-tile>
     </ng-container>
 
     <!-- search/filter bar -->
