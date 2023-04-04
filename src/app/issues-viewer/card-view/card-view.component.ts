@@ -54,7 +54,6 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   }
 
   viewUserInBrowser() {
-    console.log(this.assignee);
     this.logger.info(`CardViewComponent: Open user ${this.assignee.login} in browser`);
 
     this.router.navigate(['/user', this.assignee.login]);

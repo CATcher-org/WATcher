@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { MatSort } from '@angular/material/sort';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
 import { GithubService } from '../core/services/github.service';
@@ -29,8 +28,6 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(CardViewComponent) cardViews: QueryList<CardViewComponent>;
   @ViewChild('filterbar') filterBar: FilterBarComponent;
 
-  matSort: MatSort;
-
   views = new BehaviorSubject<QueryList<CardViewComponent>>(undefined);
 
   constructor(
@@ -48,7 +45,6 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.viewChange = this.cardViews.changes.subscribe(x => this.views.next(x));
-    this.matSort = this.filterBar.matSort;
   }
 
   ngOnDestroy(): void {

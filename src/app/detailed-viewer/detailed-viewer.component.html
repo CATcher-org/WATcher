@@ -13,8 +13,15 @@
         <app-profile-details></app-profile-details>
       </mat-grid-tile>
     </ng-container>
-
-    <!-- search/filter bar -->
-    <app-filter-bar></app-filter-bar>
   </mat-grid-list>
+
+  <app-filter-bar [views$]="this.views" #filterbar></app-filter-bar>
+  <div style="display: flex">
+    <app-profile-list
+      *ngFor="let header of headers"
+      [headerInfo]="header"
+      [sort] = "filterbar.matSort"
+      style="flex: 1 1 0px"
+    ></app-profile-list>
+  </div>
 </div>

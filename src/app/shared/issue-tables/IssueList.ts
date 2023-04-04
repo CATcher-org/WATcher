@@ -22,11 +22,15 @@ export class IssueList extends DataSource<Issue> implements FilterableSource {
   private issueSubscription: Subscription;
   public count = 0;
 
-  constructor(private issues$: BehaviorSubject<Issue[]>, private sort: MatSort, private paginator: MatPaginator) {
+  constructor(
+    private issues$: BehaviorSubject<Issue[]>,
+    private sort: MatSort,
+    private paginator: MatPaginator,
+  ) {
     super();
   }
 
-  connect(): Observable<Issue[] | readonly Issue[]> {
+  connect(): Observable<Issue[]> {
     return this.observableIssues.asObservable();
   }
 
@@ -69,7 +73,7 @@ export class IssueList extends DataSource<Issue> implements FilterableSource {
       if (this.paginator) {
         data = paginateData(this.paginator, data);
       }
-      this.issues$.next(data);
+      this.observableIssues.next(data);
     });
   }
 }

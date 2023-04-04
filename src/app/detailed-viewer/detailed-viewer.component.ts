@@ -4,14 +4,16 @@ import { MatSort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
-import { Issues } from '../core/models/issue.model';
+import { Issue } from '../core/models/issue.model';
 import { GithubService } from '../core/services/github.service';
 import { LoggingService } from '../core/services/logging.service';
 import { MilestoneService } from '../core/services/milestone.service';
 import { PhaseService } from '../core/services/phase.service';
-import { CardViewComponent } from '../issues-viewer/card-view/card-view.component';
 import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../shared/issue-tables/dropdownfilter';
 import { IssuesDataTable } from '../shared/issue-tables/IssuesDataTable';
+import { IssueService } from '../core/services/issue.service';
+import { FilterBarComponent } from '../shared/filter-bar/filter-bar.component';
+import { ProfileInput, ProfileListComponent } from './profile-list/profile-list.component';
 
 @Component({
   selector: 'app-detailed-viewer',
@@ -20,16 +22,57 @@ import { IssuesDataTable } from '../shared/issue-tables/IssuesDataTable';
 })
 export class DetailedViewerComponent implements OnInit {
   public user: GithubUser = undefined;
-  issues: IssuesDataTable;
-  public userAssignedIssues: Issues[];
-  public userCreatedIssues: Issues[];
-  public userAssignedPRs: Issues[];
-  public userCreatedPRs: Issues[];
+  public userAssignedIssues$ = new BehaviorSubject<Issue[]>([]);
+  public userCreatedIssues$ = new BehaviorSubject<Issue[]>([]);
+  public userAssignedPRs$ = new BehaviorSubject<Issue[]>([]);
+  public userCreatedPRs$ = new BehaviorSubject<Issue[]>([]);
+
+  private userSubscription: Subscription;
+  private issueSubscription: Subscription;
+
+  @ViewChild('filterbar') filterBar: FilterBarComponent;
+  matSort: MatSort;
+
+  @ViewChildren(ProfileListComponent) cardViews: QueryList<ProfileListComponent>;
+  views = new BehaviorSubject<QueryList<ProfileListComponent>>(undefined);
+  viewChange: Subscription;
+
+  /** Observes for any change in repo*/
+  repoChangeSubscription: Subscription;
+  issueChangeSubscription: Subscription;
+
+  headers: ProfileInput[] = [
+    {
+      octicon: "issue-opened",
+      title: "Assigned Issues",
+      color: "blue",
+      source$: this.userAssignedIssues$
+    },
+    {
+      octicon: "issue-opened",
+      title: "Created Issues",
+      color: "green",
+      source$: this.userCreatedIssues$
+    },
+    {
+      octicon: "git-pull-request",
+      title: "Assigned PRs",
+      color: "blue",
+      source$: this.userAssignedPRs$
+    },
+    {
+      octicon: "git-pull-request",
+      title: "Created PRs",
+      color: "green",
+      source$: this.userCreatedPRs$
+    }
+  ];
 
   constructor(
     private phaseService: PhaseService,
     public githubService: GithubService,
     public milestoneService: MilestoneService,
+    private issueService: IssueService,
     private route: ActivatedRoute,
     private router: Router,
     private logger: LoggingService
@@ -37,28 +80,7 @@ export class DetailedViewerComponent implements OnInit {
     this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => this.initialize());
   }
 
-  /** Observes for any change in repo*/
-  repoChangeSubscription: Subscription;
 
-  /** Selected dropdown filter value */
-  dropdownFilter: DropdownFilter = DEFAULT_DROPDOWN_FILTER;
-
-  /** Selected label filters, instance passed into LabelChipBar to populate */
-  labelFilter$ = new BehaviorSubject<string[]>([]);
-  labelFilterSubscription: Subscription;
-
-  /** Selected label to hide */
-  hiddenLabels$ = new BehaviorSubject<Set<string>>(new Set());
-  hiddenLabelSubscription: Subscription;
-
-  @ViewChildren(CardViewComponent) cardViews: QueryList<CardViewComponent>;
-
-  /** One MatSort controls all IssueDataTables */
-  @ViewChild(MatSort, { static: true }) matSort: MatSort;
-
-  // @ViewChild(LabelFilterBarComponent, { static: true }) labelFilterBar: LabelFilterBarComponent;
-
-  @ViewChild('milestoneSelectorRef', { static: false }) milestoneSelectorRef: MatSelect;
 
   ngOnInit() {
     if (this.route.snapshot.paramMap.get('name') === undefined) {
@@ -69,15 +91,66 @@ export class DetailedViewerComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.views.next(this.cardViews);
+    this.viewChange = this.cardViews.changes.subscribe(x => this.views.next(x));
+    this.matSort = this.filterBar.matSort;
   }
 
   ngOnDestroy(): void {
-    this.labelFilterSubscription.unsubscribe();
-    this.hiddenLabelSubscription.unsubscribe();
     this.repoChangeSubscription.unsubscribe();
+    this.userSubscription.unsubscribe();
+    this.issueSubscription.unsubscribe();
+    this.viewChange.unsubscribe();
+
+    this.userAssignedIssues$.complete();
+    this.userCreatedIssues$.complete();
+    this.userAssignedPRs$.complete();
+    this.userCreatedPRs$.complete();
   }
 
   initialize(): void {
+    const targettedUser = this.route.snapshot.paramMap.get('name');
+    this.user = null;
+    this.userSubscription = this.githubService.getUsersAssignable().subscribe(users => {
+      for (let user of users) {
+        if (user.login === targettedUser) {
+          this.user = user;
 
+          if (this.issueSubscription) {
+            this.issueSubscription.unsubscribe();
+          }
+          this.issueSubscription = this.issueService.issues$.subscribe(issues => {
+            issues = issues.reverse();
+            let assignedIssue: Issue[] = [];
+            let createdIssue: Issue[] = [];
+            let assignedPR: Issue[] = [];
+            let createdPR: Issue[] = [];
+            for (let issue of issues) {
+              if (issue.issueOrPr === "Issue") {
+                if (issue.author === this.user.login) {
+                  createdIssue.push(issue);
+                }
+                if (issue.assignees?.indexOf(this.user.login) !== -1) {
+                  assignedIssue.push(issue);
+                }
+              } else if (issue.issueOrPr === "PullRequest") {
+                if (issue.author === this.user.login) {
+                  createdPR.push(issue);
+                }
+                if (issue.assignees?.indexOf(this.user.login) !== -1) {
+                  assignedPR.push(issue);
+                }
+              }
+            }
+            this.userAssignedIssues$.next(assignedIssue);
+            this.userCreatedIssues$.next(createdIssue);
+            this.userAssignedPRs$.next(assignedPR);
+            this.userCreatedPRs$.next(createdPR);
+          });
+          return;
+        }
+      }
+      this.logger.info(`DetailedViewerComponent: User ${targettedUser} is not found`);
+    });
   }
 }

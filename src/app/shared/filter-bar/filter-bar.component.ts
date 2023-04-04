@@ -65,14 +65,14 @@ export class FilterBarComponent implements OnInit {
    * @param filterValue
    */
     applyFilter(filterValue: string) {
-      this.views$.value?.forEach((v) => (v.retrieveFilterable().filter = filterValue));
+      this.views$?.value?.forEach((v) => (v.retrieveFilterable().filter = filterValue));
     }
 
     /**
      * Signals to IssuesDataTable that a change has occurred in dropdown filter.
      */
     applyDropdownFilter() {
-      this.views$.value?.forEach((v) => (v.retrieveFilterable().dropdownFilter = this.dropdownFilter));
+      this.views$?.value?.forEach((v) => (v.retrieveFilterable().dropdownFilter = this.dropdownFilter));
     }
 
     /**
