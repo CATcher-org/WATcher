@@ -8,6 +8,7 @@ import { IssueService } from '../../core/services/issue.service';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
 import { Router } from '@angular/router';
 import { LoggingService } from '../../core/services/logging.service';
+import { FilterableComponent, FilterableSource } from '../../shared/issue-tables/FilterableComponent';
 
 @Component({
   selector: 'app-card-view',
@@ -18,7 +19,7 @@ import { LoggingService } from '../../core/services/logging.service';
 /**
  * Displays issues as Cards.
  */
-export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, FilterableComponent {
   @Input() headers: string[];
   @Input() assignee?: GithubUser = undefined;
   @Input() filters?: any = undefined;
@@ -30,7 +31,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   issues$: Observable<Issue[]>;
 
   constructor(public issueService: IssueService, private logger: LoggingService, private router: Router) {}
-
+  
   ngOnInit() {
     this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.assignee, this.filters);
   }
@@ -41,12 +42,17 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
       this.issues$ = this.issues.connect();
     });
   }
-
+  
   ngOnDestroy(): void {
     setTimeout(() => {
       this.issues.disconnect();
     });
   }
+
+  retrieveFilterable(): FilterableSource {
+    return this.issues;
+  };
+
   viewUserInBrowser() {
     console.log(this.assignee);
     this.logger.info(`CardViewComponent: Open user ${this.assignee.login} in browser`);

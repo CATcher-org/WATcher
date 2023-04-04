@@ -10,8 +10,9 @@ import { paginateData } from './issue-paginator';
 import { getSortedData } from './issue-sorter';
 import { applySearchFilter } from './search-filter';
 import { applyDropdownFilter, DEFAULT_DROPDOWN_FILTER, DropdownFilter } from './dropdownfilter';
+import { FilterableSource } from './FilterableComponent';
 
-export class IssuesDataTable extends DataSource<Issue> {
+export class IssuesDataTable extends DataSource<Issue> implements FilterableSource {
   public count = 0;
   private filterChange = new BehaviorSubject('');
   private dropdownFilterChange = new BehaviorSubject(DEFAULT_DROPDOWN_FILTER);

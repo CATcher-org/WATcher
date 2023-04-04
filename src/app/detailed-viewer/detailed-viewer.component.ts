@@ -7,7 +7,6 @@ import { LoggingService } from '../core/services/logging.service';
 import { IssuesDataTable } from '../shared/issue-tables/IssuesDataTable';
 import { CardViewComponent } from '../issues-viewer/card-view/card-view.component';
 import { MatSort } from '@angular/material/sort';
-import { LabelFilterBarComponent } from '../issues-viewer/label-filter-bar/label-filter-bar.component';
 import { MatSelect } from '@angular/material/select';
 import { PhaseService } from '../core/services/phase.service';
 import { MilestoneService } from '../core/services/milestone.service';
@@ -60,7 +59,7 @@ export class DetailedViewerComponent implements OnInit {
   /** One MatSort controls all IssueDataTables */
   @ViewChild(MatSort, { static: true }) matSort: MatSort;
 
-  @ViewChild(LabelFilterBarComponent, { static: true }) labelFilterBar: LabelFilterBarComponent;
+  // @ViewChild(LabelFilterBarComponent, { static: true }) labelFilterBar: LabelFilterBarComponent;
 
   @ViewChild('milestoneSelectorRef', { static: false }) milestoneSelectorRef: MatSelect;
 
@@ -73,16 +72,6 @@ export class DetailedViewerComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    /** Apply dropdown filter when LabelChipBar populates with label filters */
-    this.labelFilterSubscription = this.labelFilter$.subscribe((labels) => {
-      this.dropdownFilter.labels = labels;
-      this.applyDropdownFilter();
-    });
-
-    this.hiddenLabelSubscription = this.hiddenLabels$.subscribe((labels) => {
-      this.dropdownFilter.hiddenLabels = labels;
-      this.applyDropdownFilter();
-    });
   }
 
   ngOnDestroy(): void {
@@ -91,51 +80,7 @@ export class DetailedViewerComponent implements OnInit {
     this.repoChangeSubscription.unsubscribe();
   }
 
-  /**
-   * Signals to IssuesDataTable that a change has occurred in filter.
-   * @param filterValue
-   */
-  applyFilter(filterValue: string) {
-    this.cardViews.forEach((v) => (v.issues.filter = filterValue));
-  }
-
-  /**
-   * Signals to IssuesDataTable that a change has occurred in dropdown filter.
-   */
-  applyDropdownFilter() {
-    this.cardViews.forEach((v) => (v.issues.dropdownFilter = this.dropdownFilter));
-  }
-
-  /**
-   * Fetch and initialize all information from repository to populate Issue Dashboard.
-   */
-  private initialize() {
-    // Fetch assignees
-    const targettedUser = this.route.snapshot.paramMap.get('name');
-    this.user = null;
-    this.githubService.getUsersAssignable().subscribe((users) => {
-      for (let user of users) {
-        if (user.login === targettedUser) {
-          this.user = user;
-          return;
-        }
-      }
-      this.logger.info(`DetailedViewerComponent: ${targettedUser} is not found!`);
-    });
-
-    // Fetch issues
-    this.issueService.reloadAllIssues();
-    // Fetch labels
-    this.labelFilterBar.load();
-
-    // Fetch milestones and update dropdown filter
-    this.milestoneService.fetchMilestones().subscribe(
-      (response) => {
-        this.logger.debug('DetailedViewerComponent: Fetched milestones from Github');
-        this.milestoneService.milestones.forEach((milestone) => this.dropdownFilter.milestones.push(milestone.number));
-      },
-      (err) => {},
-      () => {}
-    );
+  initialize(): void {
+    
   }
 }

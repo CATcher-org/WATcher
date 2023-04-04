@@ -27,25 +27,8 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Users to show as columns */
   assignees: GithubUser[];
 
-  /** Selected dropdown filter value */
-  dropdownFilter: DropdownFilter = DEFAULT_DROPDOWN_FILTER;
-
-  /** Selected label filters, instance passed into LabelChipBar to populate */
-  labelFilter$ = new BehaviorSubject<string[]>([]);
-  labelFilterSubscription: Subscription;
-
-  /** Selected label to hide */
-  hiddenLabels$ = new BehaviorSubject<Set<string>>(new Set());
-  hiddenLabelSubscription: Subscription;
-
   @ViewChildren(CardViewComponent) cardViews: QueryList<CardViewComponent>;
-
-  /** One MatSort controls all IssueDataTables */
-  @ViewChild(MatSort, { static: true }) matSort: MatSort;
-
-  @ViewChild(LabelFilterBarComponent, { static: true }) labelFilterBar: LabelFilterBarComponent;
-
-  @ViewChild('milestoneSelectorRef', { static: false }) milestoneSelectorRef: MatSelect;
+  views = new BehaviorSubject<QueryList<CardViewComponent>>(undefined);
 
   constructor(
     public phaseService: PhaseService,
@@ -62,37 +45,11 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    /** Apply dropdown filter when LabelChipBar populates with label filters */
-    this.labelFilterSubscription = this.labelFilter$.subscribe((labels) => {
-      this.dropdownFilter.labels = labels;
-      this.applyDropdownFilter();
-    });
-
-    this.hiddenLabelSubscription = this.hiddenLabels$.subscribe((labels) => {
-      this.dropdownFilter.hiddenLabels = labels;
-      this.applyDropdownFilter();
-    });
+    this.cardViews.changes.subscribe(x => this.views.next(x))
   }
 
   ngOnDestroy(): void {
-    this.labelFilterSubscription.unsubscribe();
-    this.hiddenLabelSubscription.unsubscribe();
     this.repoChangeSubscription.unsubscribe();
-  }
-
-  /**
-   * Signals to IssuesDataTable that a change has occurred in filter.
-   * @param filterValue
-   */
-  applyFilter(filterValue: string) {
-    this.cardViews.forEach((v) => (v.issues.filter = filterValue));
-  }
-
-  /**
-   * Signals to IssuesDataTable that a change has occurred in dropdown filter.
-   */
-  applyDropdownFilter() {
-    this.cardViews.forEach((v) => (v.issues.dropdownFilter = this.dropdownFilter));
   }
 
   /**
@@ -105,18 +62,5 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Fetch issues
     this.issueService.reloadAllIssues();
-
-    // Fetch labels
-    this.labelFilterBar.load();
-
-    // Fetch milestones and update dropdown filter
-    this.milestoneService.fetchMilestones().subscribe(
-      (response) => {
-        this.logger.debug('IssuesViewerComponent: Fetched milestones from Github');
-        this.milestoneService.milestones.forEach((milestone) => this.dropdownFilter.milestones.push(milestone.number));
-      },
-      (err) => {},
-      () => {}
-    );
   }
 }

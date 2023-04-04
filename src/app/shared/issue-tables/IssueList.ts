@@ -8,12 +8,13 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { getSortedData } from './issue-sorter';
 import { paginateData } from './issue-paginator';
+import { FilterableSource } from './FilterableComponent';
 
 /**
  * Class similar to IssueDataTable but instead of listening to issueService,
  * it will listen to an observable instead
  */
-export class IssueList extends DataSource<Issue> {
+export class IssueList extends DataSource<Issue> implements FilterableSource {
   readonly DISPLAYEDCOLUMN = [TABLE_COLUMNS.ID, TABLE_COLUMNS.TITLE, TABLE_COLUMNS.ASSIGNEE, TABLE_COLUMNS.LABEL];
   private observableIssues = new BehaviorSubject<Issue[]>([]);
   private _dropdownFilter = new BehaviorSubject<DropdownFilter>(DEFAULT_DROPDOWN_FILTER);
@@ -44,11 +45,11 @@ export class IssueList extends DataSource<Issue> {
     this._dropdownFilter.next(newFilter);
   }
 
-  get searchFilter(): string {
+  get filter(): string {
     return this._searchFilter.value;
   }
 
-  set searchFilter(newFilter: string) {
+  set filter(newFilter: string) {
     this._searchFilter.next(newFilter);
   }
 
@@ -60,7 +61,7 @@ export class IssueList extends DataSource<Issue> {
     this.issueSubscription = merge(...displayDataChanges).subscribe(() => {
       let data = this.issues$.getValue();
       this.count = data.length;
-      data = data.filter(searchFilter(this.searchFilter, this.DISPLAYEDCOLUMN));
+      data = data.filter(searchFilter(this.filter, this.DISPLAYEDCOLUMN));
       data = data.filter(applyDropdownFilter(this.dropdownFilter));
       if (this.sort) {
         data = getSortedData(this.sort, data);
