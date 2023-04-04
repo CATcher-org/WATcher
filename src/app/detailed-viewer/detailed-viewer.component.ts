@@ -1,17 +1,14 @@
 import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { MatSelect } from '@angular/material/select';
 import { MatSort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
 import { Issue } from '../core/models/issue.model';
 import { GithubService } from '../core/services/github.service';
+import { IssueService } from '../core/services/issue.service';
 import { LoggingService } from '../core/services/logging.service';
 import { MilestoneService } from '../core/services/milestone.service';
 import { PhaseService } from '../core/services/phase.service';
-import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../shared/issue-tables/dropdownfilter';
-import { IssuesDataTable } from '../shared/issue-tables/IssuesDataTable';
-import { IssueService } from '../core/services/issue.service';
 import { FilterBarComponent } from '../shared/filter-bar/filter-bar.component';
 import { ProfileInput, ProfileListComponent } from './profile-list/profile-list.component';
 
@@ -112,7 +109,7 @@ export class DetailedViewerComponent implements OnInit {
     const targettedUser = this.route.snapshot.paramMap.get('name');
     this.user = null;
     this.userSubscription = this.githubService.getUsersAssignable().subscribe(users => {
-      for (let user of users) {
+      for (const user of users) {
         if (user.login === targettedUser) {
           this.user = user;
 
@@ -121,11 +118,11 @@ export class DetailedViewerComponent implements OnInit {
           }
           this.issueSubscription = this.issueService.issues$.subscribe(issues => {
             issues = issues.reverse();
-            let assignedIssue: Issue[] = [];
-            let createdIssue: Issue[] = [];
-            let assignedPR: Issue[] = [];
-            let createdPR: Issue[] = [];
-            for (let issue of issues) {
+            const assignedIssue: Issue[] = [];
+            const createdIssue: Issue[] = [];
+            const assignedPR: Issue[] = [];
+            const createdPR: Issue[] = [];
+            for (const issue of issues) {
               if (issue.issueOrPr === "Issue") {
                 if (issue.author === this.user.login) {
                   createdIssue.push(issue);

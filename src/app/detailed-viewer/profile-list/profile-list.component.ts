@@ -1,17 +1,17 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { IssueList } from '../../shared/issue-tables/IssueList';
-import { FilterableComponent, FilterableSource } from '../../shared/issue-tables/filterableTypes';
-import { Issue } from '../../core/models/issue.model';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Issue } from '../../core/models/issue.model';
+import { FilterableComponent, FilterableSource } from '../../shared/issue-tables/filterableTypes';
+import { IssueList } from '../../shared/issue-tables/IssueList';
 
 export type ProfileInput = {
   title: string;
   octicon: string;
   color: string;
   source$: BehaviorSubject<Issue[]>;
-}
+};
 
 @Component({
   selector: 'app-profile-list',
@@ -23,30 +23,29 @@ export class ProfileListComponent implements OnInit, AfterViewInit, OnDestroy, F
   @Input() sort?: MatSort = undefined;
   @Input() headerInfo: ProfileInput;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  
+
   issues: IssueList;
   issues$: Observable<Issue[]>;
 
   constructor() { }
-  
+
   ngOnInit(): void {
     this.issues = new IssueList(this.headerInfo.source$, this.sort, this.paginator);
   }
-  
+
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.issues.loadData();
       this.issues$ = this.issues.connect();
     });
   }
-  
+
   ngOnDestroy(): void {
     setTimeout(() => {
       this.issues.disconnect();
-    })
+    });
   }
 
-  
   retrieveFilterable(): FilterableSource {
     return this.issues;
   }

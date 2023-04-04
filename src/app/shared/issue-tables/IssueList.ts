@@ -1,14 +1,14 @@
+import { DataSource } from '@angular/cdk/collections';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
 import { Issue } from '../../core/models/issue.model';
-import { DataSource } from '@angular/cdk/collections';
-import { searchFilter } from './search-filter';
-import { TABLE_COLUMNS } from './issue-tables-columns';
-import { DEFAULT_DROPDOWN_FILTER, DropdownFilter, applyDropdownFilter } from './dropdownfilter';
-import { MatSort } from '@angular/material/sort';
-import { MatPaginator } from '@angular/material/paginator';
-import { getSortedData } from './issue-sorter';
-import { paginateData } from './issue-paginator';
+import { applyDropdownFilter, DEFAULT_DROPDOWN_FILTER, DropdownFilter } from './dropdownfilter';
 import { FilterableSource } from './filterableTypes';
+import { paginateData } from './issue-paginator';
+import { getSortedData } from './issue-sorter';
+import { TABLE_COLUMNS } from './issue-tables-columns';
+import { searchFilter } from './search-filter';
 
 /**
  * Class similar to IssueDataTable but instead of listening to issueService,
