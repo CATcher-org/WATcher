@@ -1,4 +1,4 @@
-import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -17,7 +17,7 @@ import { ProfileInput, ProfileListComponent } from './profile-list/profile-list.
   templateUrl: './detailed-viewer.component.html',
   styleUrls: ['./detailed-viewer.component.css']
 })
-export class DetailedViewerComponent implements OnInit {
+export class DetailedViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   public user: GithubUser = undefined;
   public userAssignedIssues$ = new BehaviorSubject<Issue[]>([]);
   public userCreatedIssues$ = new BehaviorSubject<Issue[]>([]);
@@ -40,27 +40,27 @@ export class DetailedViewerComponent implements OnInit {
 
   headers: ProfileInput[] = [
     {
-      octicon: "issue-opened",
-      title: "Assigned Issues",
-      color: "blue",
+      octicon: 'issue-opened',
+      title: 'Assigned Issues',
+      color: 'blue',
       source$: this.userAssignedIssues$
     },
     {
-      octicon: "issue-opened",
-      title: "Created Issues",
-      color: "green",
+      octicon: 'issue-opened',
+      title: 'Created Issues',
+      color: 'green',
       source$: this.userCreatedIssues$
     },
     {
-      octicon: "git-pull-request",
-      title: "Assigned PRs",
-      color: "blue",
+      octicon: 'git-pull-request',
+      title: 'Assigned PRs',
+      color: 'blue',
       source$: this.userAssignedPRs$
     },
     {
-      octicon: "git-pull-request",
-      title: "Created PRs",
-      color: "green",
+      octicon: 'git-pull-request',
+      title: 'Created PRs',
+      color: 'green',
       source$: this.userCreatedPRs$
     }
   ];
@@ -77,8 +77,6 @@ export class DetailedViewerComponent implements OnInit {
     this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => this.initialize());
   }
 
-
-
   ngOnInit() {
     if (this.route.snapshot.paramMap.get('name') === undefined) {
       this.logger.info('detailed-viewer: Missing username');
@@ -89,7 +87,7 @@ export class DetailedViewerComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.views.next(this.cardViews);
-    this.viewChange = this.cardViews.changes.subscribe(x => this.views.next(x));
+    this.viewChange = this.cardViews.changes.subscribe((x) => this.views.next(x));
     this.matSort = this.filterBar.matSort;
   }
 
@@ -108,7 +106,7 @@ export class DetailedViewerComponent implements OnInit {
   initialize(): void {
     const targettedUser = this.route.snapshot.paramMap.get('name');
     this.user = null;
-    this.userSubscription = this.githubService.getUsersAssignable().subscribe(users => {
+    this.userSubscription = this.githubService.getUsersAssignable().subscribe((users) => {
       for (const user of users) {
         if (user.login === targettedUser) {
           this.user = user;
@@ -116,21 +114,21 @@ export class DetailedViewerComponent implements OnInit {
           if (this.issueSubscription) {
             this.issueSubscription.unsubscribe();
           }
-          this.issueSubscription = this.issueService.issues$.subscribe(issues => {
+          this.issueSubscription = this.issueService.issues$.subscribe((issues) => {
             issues = issues.reverse();
             const assignedIssue: Issue[] = [];
             const createdIssue: Issue[] = [];
             const assignedPR: Issue[] = [];
             const createdPR: Issue[] = [];
             for (const issue of issues) {
-              if (issue.issueOrPr === "Issue") {
+              if (issue.issueOrPr === 'Issue') {
                 if (issue.author === this.user.login) {
                   createdIssue.push(issue);
                 }
                 if (issue.assignees?.indexOf(this.user.login) !== -1) {
                   assignedIssue.push(issue);
                 }
-              } else if (issue.issueOrPr === "PullRequest") {
+              } else if (issue.issueOrPr === 'PullRequest') {
                 if (issue.author === this.user.login) {
                   createdPR.push(issue);
                 }

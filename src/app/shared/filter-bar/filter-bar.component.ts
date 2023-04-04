@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, QueryList, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChild } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
 import { MatSort } from '@angular/material/sort';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -13,7 +13,7 @@ import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.com
   templateUrl: './filter-bar.component.html',
   styleUrls: ['./filter-bar.component.css']
 })
-export class FilterBarComponent implements OnInit {
+export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() views$: BehaviorSubject<QueryList<FilterableComponent>>;
   /** Selected dropdown filter value */
   dropdownFilter: DropdownFilter = DEFAULT_DROPDOWN_FILTER;
@@ -33,10 +33,7 @@ export class FilterBarComponent implements OnInit {
 
   @ViewChild('milestoneSelectorRef', { static: false }) milestoneSelectorRef: MatSelect;
 
-  constructor(
-    public milestoneService: MilestoneService,
-    private logger: LoggingService
-  ) {}
+  constructor(public milestoneService: MilestoneService, private logger: LoggingService) {}
 
   ngOnInit() {
     this.initialize();
@@ -60,37 +57,36 @@ export class FilterBarComponent implements OnInit {
     this.hiddenLabelSubscription.unsubscribe();
   }
 
-    /**
+  /**
    * Signals to IssuesDataTable that a change has occurred in filter.
    * @param filterValue
    */
-    applyFilter(filterValue: string) {
-      this.views$?.value?.forEach((v) => (v.retrieveFilterable().filter = filterValue));
-    }
+  applyFilter(filterValue: string) {
+    this.views$?.value?.forEach((v) => (v.retrieveFilterable().filter = filterValue));
+  }
 
-    /**
-     * Signals to IssuesDataTable that a change has occurred in dropdown filter.
-     */
-    applyDropdownFilter() {
-      this.views$?.value?.forEach((v) => (v.retrieveFilterable().dropdownFilter = this.dropdownFilter));
-    }
+  /**
+   * Signals to IssuesDataTable that a change has occurred in dropdown filter.
+   */
+  applyDropdownFilter() {
+    this.views$?.value?.forEach((v) => (v.retrieveFilterable().dropdownFilter = this.dropdownFilter));
+  }
 
-    /**
-     * Fetch and initialize all information from repository to populate Issue Dashboard.
-     */
-    private initialize() {
-      // Fetch labels
-      this.labelFilterBar.load();
+  /**
+   * Fetch and initialize all information from repository to populate Issue Dashboard.
+   */
+  private initialize() {
+    // Fetch labels
+    this.labelFilterBar.load();
 
-      // Fetch milestones and update dropdown filter
-      this.milestoneService.fetchMilestones().subscribe(
-        (response) => {
-          this.logger.debug('IssuesViewerComponent: Fetched milestones from Github');
-          this.milestoneService.milestones.forEach((milestone) => this.dropdownFilter.milestones.push(milestone.number));
-        },
-        (err) => {},
-        () => {}
-      );
-    }
-
+    // Fetch milestones and update dropdown filter
+    this.milestoneService.fetchMilestones().subscribe(
+      (response) => {
+        this.logger.debug('IssuesViewerComponent: Fetched milestones from Github');
+        this.milestoneService.milestones.forEach((milestone) => this.dropdownFilter.milestones.push(milestone.number));
+      },
+      (err) => {},
+      () => {}
+    );
+  }
 }
