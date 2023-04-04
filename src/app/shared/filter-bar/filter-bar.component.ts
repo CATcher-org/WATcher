@@ -36,7 +36,7 @@ export class FilterBarComponent implements OnInit {
   constructor(
     private milestoneService: MilestoneService,
     private logger: LoggingService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.initialize();
