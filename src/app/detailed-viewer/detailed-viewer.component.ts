@@ -11,6 +11,7 @@ import { MilestoneService } from '../core/services/milestone.service';
 import { PhaseService } from '../core/services/phase.service';
 import { FilterBarComponent } from '../shared/filter-bar/filter-bar.component';
 import { ProfileInput, ProfileListComponent } from './profile-list/profile-list.component';
+import { startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-detailed-viewer',
@@ -113,7 +114,7 @@ export class DetailedViewerComponent implements OnInit, OnDestroy, AfterViewInit
     const targettedUser = this.route.snapshot.paramMap.get('name');
     this.user = null;
     this.issueService.stopPollIssues();
-    // this.issueService.startPollIssues();
+    this.issueService.startPollIssues();
     this.userSubscription = this.githubService.getUsersAssignable().subscribe((users) => {
       for (const user of users) {
         if (user.login === targettedUser) {
@@ -122,34 +123,37 @@ export class DetailedViewerComponent implements OnInit, OnDestroy, AfterViewInit
           if (this.issueSubscription) {
             this.issueSubscription.unsubscribe();
           }
-          this.issueSubscription = this.issueService.reloadAllIssues().subscribe((issues) => {
-            issues = issues.reverse();
-            const assignedIssue: Issue[] = [];
-            const createdIssue: Issue[] = [];
-            const assignedPR: Issue[] = [];
-            const createdPR: Issue[] = [];
-            for (const issue of issues) {
-              if (issue.issueOrPr === 'Issue') {
-                if (issue.author === this.user.login) {
-                  createdIssue.push(issue);
-                }
-                if (issue.assignees?.indexOf(this.user.login) !== -1) {
-                  assignedIssue.push(issue);
-                }
-              } else if (issue.issueOrPr === 'PullRequest') {
-                if (issue.author === this.user.login) {
-                  createdPR.push(issue);
-                }
-                if (issue.assignees?.indexOf(this.user.login) !== -1) {
-                  assignedPR.push(issue);
+          this.issueService.startPollIssues();
+          this.issueSubscription = this.issueService.issues$
+            .pipe(startWith()) // forces initial load if issues are already loaded
+            .subscribe(() => {
+              let issues = this.issueService.issues$.getValue().reverse();
+              const assignedIssue: Issue[] = [];
+              const createdIssue: Issue[] = [];
+              const assignedPR: Issue[] = [];
+              const createdPR: Issue[] = [];
+              for (const issue of issues) {
+                if (issue.issueOrPr === 'Issue') {
+                  if (issue.author === this.user.login) {
+                    createdIssue.push(issue);
+                  }
+                  if (issue.assignees?.indexOf(this.user.login) !== -1) {
+                    assignedIssue.push(issue);
+                  }
+                } else if (issue.issueOrPr === 'PullRequest') {
+                  if (issue.author === this.user.login) {
+                    createdPR.push(issue);
+                  }
+                  if (issue.assignees?.indexOf(this.user.login) !== -1) {
+                    assignedPR.push(issue);
+                  }
                 }
               }
-            }
-            this.userAssignedIssues$.next(assignedIssue);
-            this.userCreatedIssues$.next(createdIssue);
-            this.userAssignedPRs$.next(assignedPR);
-            this.userCreatedPRs$.next(createdPR);
-          });
+              this.userAssignedIssues$.next(assignedIssue);
+              this.userCreatedIssues$.next(createdIssue);
+              this.userAssignedPRs$.next(assignedPR);
+              this.userCreatedPRs$.next(createdPR);
+            });
           return;
         }
       }
