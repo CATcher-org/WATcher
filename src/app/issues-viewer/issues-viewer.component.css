@@ -30,3 +30,9 @@
 .switch-repo-tile {
   background-color: lightblue;
 }
+
+.wrapper {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+}
