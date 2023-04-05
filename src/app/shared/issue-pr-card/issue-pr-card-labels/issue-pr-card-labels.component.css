@@ -1,0 +1,17 @@
+.mat-chip {
+    border-radius: 6px;
+    font-size: 10px;
+    padding: 11px 7px;
+    min-height: 16px;
+    margin: 2px;
+}
+
+:host ::ng-deep .mat-chip-list-wrapper .mat-standard-chip,
+.mat-chip-list-wrapper input.mat-input-element {
+  margin: 2px;
+}
+
+.mat-chip-list {
+    margin: 0;
+}
+  
