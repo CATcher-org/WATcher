@@ -2,6 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, View
 import { MatSort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { startWith } from 'rxjs/operators';
 import { GithubUser } from '../core/models/github-user.model';
 import { Issue } from '../core/models/issue.model';
 import { GithubService } from '../core/services/github.service';
@@ -11,7 +12,6 @@ import { MilestoneService } from '../core/services/milestone.service';
 import { PhaseService } from '../core/services/phase.service';
 import { FilterBarComponent } from '../shared/filter-bar/filter-bar.component';
 import { ProfileInput, ProfileListComponent } from './profile-list/profile-list.component';
-import { startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-detailed-viewer',
@@ -127,7 +127,7 @@ export class DetailedViewerComponent implements OnInit, OnDestroy, AfterViewInit
           this.issueSubscription = this.issueService.issues$
             .pipe(startWith()) // forces initial load if issues are already loaded
             .subscribe(() => {
-              let issues = this.issueService.issues$.getValue().reverse();
+              const issues = this.issueService.issues$.getValue().reverse();
               const assignedIssue: Issue[] = [];
               const createdIssue: Issue[] = [];
               const assignedPR: Issue[] = [];
