@@ -12,6 +12,7 @@ import { MilestoneService } from '../core/services/milestone.service';
 import { PhaseService } from '../core/services/phase.service';
 import { FilterBarComponent } from '../shared/filter-bar/filter-bar.component';
 import { ProfileInput, ProfileListComponent } from './profile-list/profile-list.component';
+import { Phase } from '../core/models/phase.model';
 
 @Component({
   selector: 'app-detailed-viewer',
@@ -158,6 +159,7 @@ export class DetailedViewerComponent implements OnInit, OnDestroy, AfterViewInit
         }
       }
       this.logger.info(`DetailedViewerComponent: User ${targettedUser} is not found`);
+      this.router.navigate([Phase.issuesViewer]);
     });
   }
 }
