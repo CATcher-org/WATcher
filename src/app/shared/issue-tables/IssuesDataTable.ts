@@ -83,7 +83,7 @@ export class IssuesDataTable extends DataSource<Issue> {
     ].filter((x) => x !== undefined);
 
     this.issueService.startPollIssues();
-    merge(...displayDataChanges)
+    this.issueSubscription = merge(...displayDataChanges)
       .pipe(
         // maps each change in display value to new issue ordering or filtering
         map(() => {
