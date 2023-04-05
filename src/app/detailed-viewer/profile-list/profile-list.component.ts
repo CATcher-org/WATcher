@@ -11,6 +11,7 @@ export type ProfileInput = {
   octicon: string;
   color: string;
   source$: BehaviorSubject<Issue[]>;
+  isLoading$?: Observable<boolean>;
 };
 
 @Component({
@@ -27,7 +28,7 @@ export class ProfileListComponent implements OnInit, AfterViewInit, OnDestroy, F
   issues: IssueList;
   issues$: Observable<Issue[]>;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
     this.issues = new IssueList(this.headerInfo.source$, this.sort, this.paginator);

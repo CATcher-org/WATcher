@@ -20,7 +20,8 @@
     <app-profile-list
       *ngFor="let header of headers"
       [headerInfo]="header"
-      [sort] = "filterbar.matSort"
+      [sort]="filterbar.matSort"
+      [isLoading$]="issueService.isLoading.asObservable()"
       style="flex: 1 1 0px"
     ></app-profile-list>
   </div>

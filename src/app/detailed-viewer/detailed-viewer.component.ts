@@ -43,25 +43,29 @@ export class DetailedViewerComponent implements OnInit, OnDestroy, AfterViewInit
       octicon: 'issue-opened',
       title: 'Assigned Issues',
       color: 'blue',
-      source$: this.userAssignedIssues$
+      source$: this.userAssignedIssues$,
+      isLoading$: this.issueService.isLoading.asObservable()
     },
     {
       octicon: 'issue-opened',
       title: 'Created Issues',
       color: 'green',
-      source$: this.userCreatedIssues$
+      source$: this.userCreatedIssues$,
+      isLoading$: this.issueService.isLoading.asObservable()
     },
     {
       octicon: 'git-pull-request',
       title: 'Assigned PRs',
       color: 'blue',
-      source$: this.userAssignedPRs$
+      source$: this.userAssignedPRs$,
+      isLoading$: this.issueService.isLoading.asObservable()
     },
     {
       octicon: 'git-pull-request',
       title: 'Created PRs',
       color: 'green',
-      source$: this.userCreatedPRs$
+      source$: this.userCreatedPRs$,
+      isLoading$: this.issueService.isLoading.asObservable()
     }
   ];
 
@@ -101,11 +105,15 @@ export class DetailedViewerComponent implements OnInit, OnDestroy, AfterViewInit
     this.userCreatedIssues$.complete();
     this.userAssignedPRs$.complete();
     this.userCreatedPRs$.complete();
+
+    this.issueService.stopPollIssues();
   }
 
   initialize(): void {
     const targettedUser = this.route.snapshot.paramMap.get('name');
     this.user = null;
+    this.issueService.stopPollIssues();
+    // this.issueService.startPollIssues();
     this.userSubscription = this.githubService.getUsersAssignable().subscribe((users) => {
       for (const user of users) {
         if (user.login === targettedUser) {
@@ -114,7 +122,7 @@ export class DetailedViewerComponent implements OnInit, OnDestroy, AfterViewInit
           if (this.issueSubscription) {
             this.issueSubscription.unsubscribe();
           }
-          this.issueSubscription = this.issueService.issues$.subscribe((issues) => {
+          this.issueSubscription = this.issueService.reloadAllIssues().subscribe((issues) => {
             issues = issues.reverse();
             const assignedIssue: Issue[] = [];
             const createdIssue: Issue[] = [];
