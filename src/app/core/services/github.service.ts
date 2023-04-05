@@ -13,7 +13,9 @@ import {
   FetchIssuesByTeamQuery,
   FetchIssuesQuery,
   FetchPullRequests,
-  FetchPullRequestsQuery
+  FetchPullRequestsQuery,
+  FetchAllActivities,
+  FetchAllActivitiesQuery
 } from '../../../../graphql/graphql-types';
 import { AppConfig } from '../../../environments/environment';
 import { getNumberOfPages } from '../../shared/lib/github-paginator-parser';
@@ -182,6 +184,17 @@ export class GithubService {
     return zip(issueObs, prObs).pipe(map((x) => x[0].concat(x[1])));
   }
 
+  fetchCommitGraphqlByUser(userId: string): Observable<any> {
+    const newQueryRef = this.apollo.watchQuery<FetchAllActivitiesQuery>({
+      query: FetchAllActivities,
+      variables: {
+        owner: ORG_NAME,
+        name: REPO
+      }
+    });
+    return from(newQueryRef.refetch());
+  }
+
   /**
    * Checks if there are pages of filtered issues that are not cached in the cache model,
    * and updates the model to cache these new pages.
@@ -260,7 +273,6 @@ export class GithubService {
       });
       this.issueQueryRefs.set(id, newQueryRef);
     }
-
     const queryRef = this.issueQueryRefs.get(id);
     return this.toFetchIssue(id).pipe(
       filter((toFetch) => toFetch),

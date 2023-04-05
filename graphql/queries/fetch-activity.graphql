@@ -1,0 +1,15 @@
+query FetchAllActivities($owner: String!, $name: String!, $id: ID!) {
+  repository(owner: $owner, name: $name) {
+    defaultBranchRef {
+      target {
+        ... on Commit {
+          history(author: { id: $id }) {
+            nodes {
+              ...CommitStats
+            }
+          }
+        }
+      }
+    }
+  }
+}

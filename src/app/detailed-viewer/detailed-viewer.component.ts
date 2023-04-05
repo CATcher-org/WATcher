@@ -123,7 +123,7 @@ export class DetailedViewerComponent implements OnInit, OnDestroy, AfterViewInit
       for (const user of users) {
         if (user.login === targettedUser) {
           this.user = user;
-
+          console.log(user.node_id);
           if (this.issueSubscription) {
             // prevents multiple subscription to issueService
             this.issueSubscription.unsubscribe();
