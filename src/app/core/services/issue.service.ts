@@ -277,8 +277,7 @@ export class IssueService {
     this.issues$.next(new Array<Issue>());
 
     this.stopPollIssues();
-    this.isLoading.complete();
-    this.isLoading = new BehaviorSubject<boolean>(false);
+    this.isLoading.next(false);
   }
 
   private initializeData(): Observable<Issue[]> {
