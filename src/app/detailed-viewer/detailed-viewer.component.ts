@@ -5,6 +5,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import { GithubUser } from '../core/models/github-user.model';
 import { Issue } from '../core/models/issue.model';
+import { Phase } from '../core/models/phase.model';
 import { GithubService } from '../core/services/github.service';
 import { IssueService } from '../core/services/issue.service';
 import { LoggingService } from '../core/services/logging.service';
@@ -12,7 +13,6 @@ import { MilestoneService } from '../core/services/milestone.service';
 import { PhaseService } from '../core/services/phase.service';
 import { FilterBarComponent } from '../shared/filter-bar/filter-bar.component';
 import { ProfileInput, ProfileListComponent } from './profile-list/profile-list.component';
-import { Phase } from '../core/models/phase.model';
 
 @Component({
   selector: 'app-detailed-viewer',
