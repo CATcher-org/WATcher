@@ -80,7 +80,10 @@ export class DetailedViewerComponent implements OnInit, OnDestroy, AfterViewInit
     private router: Router,
     private logger: LoggingService
   ) {
-    this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => this.initialize());
+    this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => {
+      issueService.reset(false);
+      this.initialize();
+    });
   }
 
   ngOnInit() {
@@ -122,6 +125,7 @@ export class DetailedViewerComponent implements OnInit, OnDestroy, AfterViewInit
           this.user = user;
 
           if (this.issueSubscription) {
+            // prevents multiple subscription to issueService
             this.issueSubscription.unsubscribe();
           }
           this.issueService.startPollIssues();
