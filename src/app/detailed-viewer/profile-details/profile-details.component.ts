@@ -1,8 +1,7 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { GithubService } from '../../core/services/github.service';
-import { GithubUser } from '../../core/models/github-user.model';
 import { Apollo } from 'apollo-angular';
 import { FetchIssue } from '../../../../graphql/graphql-types';
+import { GithubUser } from '../../core/models/github-user.model';
 
 @Component({
   selector: 'app-profile-details',
@@ -13,7 +12,7 @@ export class ProfileDetailsComponent implements OnInit, AfterViewInit {
   @Input() user: GithubUser;
   anycontent: any;
 
-  constructor(private apollo: Apollo, private githubService: GithubService) {}
+  constructor(private apollo: Apollo) {}
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {

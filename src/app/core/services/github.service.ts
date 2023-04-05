@@ -6,6 +6,8 @@ import { DocumentNode } from 'graphql';
 import { forkJoin, from, Observable, of, throwError, zip } from 'rxjs';
 import { catchError, filter, flatMap, map, throwIfEmpty } from 'rxjs/operators';
 import {
+  FetchAllActivities,
+  FetchAllActivitiesQuery,
   FetchIssue,
   FetchIssueQuery,
   FetchIssues,
@@ -13,9 +15,7 @@ import {
   FetchIssuesByTeamQuery,
   FetchIssuesQuery,
   FetchPullRequests,
-  FetchPullRequestsQuery,
-  FetchAllActivities,
-  FetchAllActivitiesQuery
+  FetchPullRequestsQuery
 } from '../../../../graphql/graphql-types';
 import { AppConfig } from '../../../environments/environment';
 import { getNumberOfPages } from '../../shared/lib/github-paginator-parser';
