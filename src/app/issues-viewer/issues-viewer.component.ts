@@ -54,7 +54,10 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     public milestoneService: MilestoneService,
     private logger: LoggingService
   ) {
-    this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => this.initialize());
+    this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => {
+      this.issueService.reset(false);
+      this.initialize();
+    });
   }
 
   ngOnInit() {
