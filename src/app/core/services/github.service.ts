@@ -194,6 +194,7 @@ export class GithubService {
         name: REPO,
         id: userId
       },
+      //@ts-ignore
       (result) => result.data.repository.defaultBranchRef.target.history.edges,
       GithubGraphqlCommitStat
     );

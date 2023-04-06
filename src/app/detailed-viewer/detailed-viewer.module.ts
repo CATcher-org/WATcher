@@ -10,9 +10,17 @@ import { ProfileActivitiesComponent } from './profile-activities/profile-activit
 import { ProfileDetailsComponent } from './profile-details/profile-details.component';
 import { ProfileIconComponent } from './profile-icon/profile-icon.component';
 import { ProfileListComponent } from './profile-list/profile-list.component';
+import { DiffstatComponent } from './diffstat/diffstat.component';
 
 @NgModule({
   imports: [DetailedViewerRoutingModule, FilterBarModule, SharedModule, IssuesPrCardModule, IssuesViewerModule, MarkdownModule.forChild()],
-  declarations: [DetailedViewerComponent, ProfileIconComponent, ProfileDetailsComponent, ProfileActivitiesComponent, ProfileListComponent]
+  declarations: [
+    DetailedViewerComponent,
+    ProfileIconComponent,
+    ProfileDetailsComponent,
+    ProfileActivitiesComponent,
+    ProfileListComponent,
+    DiffstatComponent
+  ]
 })
 export class DetailedViewerModule {}

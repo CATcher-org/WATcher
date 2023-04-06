@@ -1,0 +1,36 @@
+.diffstat {
+  font-size: 12px;
+  font-weight: 600;
+  color: #7d8590;
+  white-space: nowrap;
+  cursor: default;
+  display: flex;
+}
+
+.diffstat-block-added {
+  background-color: #3fb950;
+  outline: 1px solid whitesmoke;
+}
+
+.diffstat-block-deleted {
+  background-color: #f85149;
+  outline: 1px solid whitesmoke;
+}
+
+.diffstat-block-deleted,
+.diffstat-block-added,
+.diffstat-block-neutral {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-left: 1px;
+  outline-offset: -1px;
+}
+
+.deletions {
+  color: #f85149;
+}
+
+.additions {
+  color: #3fb950;
+}
