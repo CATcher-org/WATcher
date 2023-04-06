@@ -1,11 +1,14 @@
-query FetchAllActivities($owner: String!, $name: String!, $id: ID!) {
+query FetchAllActivitiesFromUser($owner: String!, $name: String!, $id: ID!, $cursor: String) {
   repository(owner: $owner, name: $name) {
     defaultBranchRef {
       target {
         ... on Commit {
-          history(author: { id: $id }) {
-            nodes {
-              ...CommitStats
+          history(author: { id: $id }, first: 100, after: $cursor) {
+            edges {
+              cursor
+              node {
+                ...CommitStats
+              }
             }
           }
         }

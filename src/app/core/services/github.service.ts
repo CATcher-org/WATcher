@@ -6,8 +6,8 @@ import { DocumentNode } from 'graphql';
 import { forkJoin, from, Observable, of, throwError, zip } from 'rxjs';
 import { catchError, filter, flatMap, map, throwIfEmpty } from 'rxjs/operators';
 import {
-  FetchAllActivities,
-  FetchAllActivitiesQuery,
+  FetchAllActivitiesFromUser,
+  FetchAllActivitiesFromUserQuery,
   FetchIssue,
   FetchIssueQuery,
   FetchIssues,
@@ -35,6 +35,7 @@ import { SessionData } from '../models/session.model';
 import { ElectronService } from './electron.service';
 import { ERRORCODE_NOT_FOUND, ErrorHandlingService } from './error-handling.service';
 import { LoggingService } from './logging.service';
+import GithubGraphqlCommitStat from '../models/github/github-graphql.commitstats.model';
 
 const { Octokit } = require('@octokit/rest');
 
@@ -184,15 +185,28 @@ export class GithubService {
     return zip(issueObs, prObs).pipe(map((x) => x[0].concat(x[1])));
   }
 
+  //@ts-ignore
   fetchCommitGraphqlByUser(userId: string): Observable<any> {
-    const newQueryRef = this.apollo.watchQuery<FetchAllActivitiesQuery>({
-      query: FetchAllActivities,
+    const newQueryRef = this.apollo.watchQuery<FetchAllActivitiesFromUserQuery>({
+      query: FetchAllActivitiesFromUser,
       variables: {
         owner: ORG_NAME,
-        name: REPO
+        name: REPO,
+        id: userId
       }
     });
-    return from(newQueryRef.refetch());
+    // return newQueryRef.valueChanges;
+    return this.fetchGraphqlList<FetchAllActivitiesFromUserQuery, any>(
+      FetchAllActivitiesFromUser,
+      {
+        owner: ORG_NAME,
+        name: REPO,
+        id: userId
+      },
+
+      (result) => result.data.repository.defaultBranchRef.target.history.edges,
+      GithubGraphqlCommitStat
+    );
   }
 
   /**
