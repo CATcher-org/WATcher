@@ -9,5 +9,6 @@ export class GithubGraphqlCommitStat extends GithubCommit {
     this.setDate(stats.committedDate);
     this.url = stats.url;
     this.messageHeadline = stats.messageHeadline;
+    this.messageBody = stats.messageBody;
   }
 }

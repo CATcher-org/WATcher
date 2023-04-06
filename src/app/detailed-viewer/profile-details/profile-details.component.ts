@@ -44,19 +44,18 @@ export class ProfileDetailsComponent implements OnInit, AfterViewInit {
   private firstTime: number;
 
   constructor(private githubService: GithubService) {}
-  ngOnInit(): void {}
-
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     this.githubService.fetchCommitGraphqlByUser(this.user.node_id).subscribe((x) => {
       this.commits = x;
-      this.commits.reverse(); // convert to earliest to latest
       this.createPrefixSum();
     });
   }
 
+  ngAfterViewInit(): void {}
+
   createPrefixSum() {
-    this.firstTime = new Date(this.commits[0].committedDate.getDate()).getTime();
-    const prefixArr = new Array(this.commitToIndex(this.commits[this.commits.length - 1]) + 1);
+    this.firstTime = new Date(this.commits[this.commits.length - 1].committedDate.getDate()).getTime();
+    const prefixArr = new Array(this.commitToIndex(this.commits[0]) + 1);
     prefixArr.fill(new CumulativeStats());
     for (const commit of this.commits) {
       prefixArr[this.commitToIndex(commit)].add(new CumulativeStats(commit));

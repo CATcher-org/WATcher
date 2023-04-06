@@ -4,6 +4,7 @@ export class GithubCommit {
   committedDate: Date;
   messageHeadline: string;
   url: string;
+  messageBody: string;
 
   constructor() {
     this.additions = 0;

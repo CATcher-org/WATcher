@@ -1,11 +1,10 @@
-<span class="diffstat" id="diffstat">
-  <span class="additions"> +5,690 </span>
-  <span class="deletions"> −17 </span>
+<span class="diffstat" [matTooltip]="additions + ' lines added, ' + deletions + ' lines deleted'">
+  <span class="additions"> +{{ additions }} </span>
+  <span class="deletions"> −{{ deletions }} </span>
   <span>
-    <span class="diffstat-block-added"></span>
-    <span class="diffstat-block-added"></span>
-    <span class="diffstat-block-added"></span>
-    <span class="diffstat-block-added"></span>
-    <span class="diffstat-block-neutral"></span>
+    <ng-container *ngFor="let item of [].constructor(boxCount); let i = index">
+      <span class="diffstat-block-added" *ngIf="i + 1 <= changeDelta"></span>
+      <span class="diffstat-block-deleted" *ngIf="i + 1 > changeDelta"></span>
+    </ng-container>
   </span>
 </span>

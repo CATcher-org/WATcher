@@ -9,12 +9,12 @@
         <app-profile-icon [name]="user.login" [avatar_url]="user.avatar_url"></app-profile-icon>
       </mat-grid-tile>
       <!-- user contribution details -->
-      <mat-grid-tile colspan="5" rowspan="3" style.background="lightgreen">
-        <app-profile-details [user]="user"></app-profile-details>
+      <mat-grid-tile colspan="5" rowspan="5">
+        <app-profile-details [user]="user" style="width: 100%; height: 100%"></app-profile-details>
       </mat-grid-tile>
     </ng-container>
   </mat-grid-list>
-
+  <mat-divider></mat-divider>
   <app-filter-bar [views$]="this.views" #filterbar></app-filter-bar>
   <div style="display: flex">
     <app-profile-list

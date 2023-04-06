@@ -1,0 +1,41 @@
+<div class="flex-container">
+  <h3>{{ listTitle }}</h3>
+  <app-diffstat [additions]="1000" [deletions]="30" [boxCount]="10"></app-diffstat>
+</div>
+<mat-divider></mat-divider>
+<div class="basic-container hidden_scrollbar">
+  <mat-accordion class="headers-align">
+    <mat-expansion-panel *ngFor="let commit of commitList; let i = index" [expanded]="i === step" (opened)="setStep(i)">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ commit.messageHeadline }}
+        </mat-panel-title>
+        <mat-panel-description class="right-align">
+          <app-diffstat [additions]="commit.additions" [deletions]="commit.deletions"></app-diffstat>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <span class="flex-container">
+        <h4>Commit Message</h4>
+        <span>
+          Commited on: {{ commit.committedDate.toLocaleString() }}
+          <a [href]="commit.url">
+            <button mat-icon-button class="right-align">
+              <img class="github-logo" src="./assets/images/github-logo.png" alt="github-logo" />
+            </button>
+          </a>
+        </span>
+      </span>
+      <mat-divider></mat-divider>
+      <div
+        class="commit-description"
+        [innerText]="commit.messageBody.length ? commit.messageBody : 'Sadly, no commit message was provided 😔'"
+      ></div>
+      <mat-action-row>
+        <button *ngIf="i > 0" mat-button color="warn" (click)="prevStep()">Previous</button>
+
+        <button *ngIf="i < commitList.length - 1" mat-button color="primary" (click)="nextStep()">Next</button>
+      </mat-action-row>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

@@ -11,6 +11,7 @@ import { ProfileDetailsComponent } from './profile-details/profile-details.compo
 import { ProfileIconComponent } from './profile-icon/profile-icon.component';
 import { ProfileListComponent } from './profile-list/profile-list.component';
 import { DiffstatComponent } from './diffstat/diffstat.component';
+import { CommitListComponent } from './commit-list/commit-list.component';
 
 @NgModule({
   imports: [DetailedViewerRoutingModule, FilterBarModule, SharedModule, IssuesPrCardModule, IssuesViewerModule, MarkdownModule.forChild()],
@@ -20,7 +21,8 @@ import { DiffstatComponent } from './diffstat/diffstat.component';
     ProfileDetailsComponent,
     ProfileActivitiesComponent,
     ProfileListComponent,
-    DiffstatComponent
+    DiffstatComponent,
+    CommitListComponent
   ]
 })
 export class DetailedViewerModule {}
