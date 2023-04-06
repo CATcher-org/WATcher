@@ -35,7 +35,7 @@ import { SessionData } from '../models/session.model';
 import { ElectronService } from './electron.service';
 import { ERRORCODE_NOT_FOUND, ErrorHandlingService } from './error-handling.service';
 import { LoggingService } from './logging.service';
-import GithubGraphqlCommitStat from '../models/github/github-graphql.commitstats.model';
+import { GithubGraphqlCommitStat } from '../models/github/github-graphql.commitstats.model';
 
 const { Octokit } = require('@octokit/rest');
 
@@ -185,7 +185,6 @@ export class GithubService {
     return zip(issueObs, prObs).pipe(map((x) => x[0].concat(x[1])));
   }
 
-  //@ts-ignore
   fetchCommitGraphqlByUser(userId: string): Observable<any> {
     const newQueryRef = this.apollo.watchQuery<FetchAllActivitiesFromUserQuery>({
       query: FetchAllActivitiesFromUser,
@@ -204,6 +203,7 @@ export class GithubService {
         id: userId
       },
 
+      //@ts-ignore
       (result) => result.data.repository.defaultBranchRef.target.history.edges,
       GithubGraphqlCommitStat
     );
