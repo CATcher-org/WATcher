@@ -1,5 +1,15 @@
-<div class="flex-container">
-  <h3>{{ listTitle }}</h3>
+<div class="flex-container space-apart">
+  <div class="flex-container">
+    <h3 [matTooltip]="updateTime ? 'Last updated on ' + updateTime.toLocaleString() : ''">
+      {{ listTitle }}
+    </h3>
+    <button mat-icon-button matTooltip="Change date range">
+      <mat-icon>calendar_today</mat-icon>
+    </button>
+    <button mat-icon-button (click)="refresh.emit()" matTooltip="Refresh Commits">
+      <mat-icon>cached</mat-icon>
+    </button>
+  </div>
   <app-diffstat [additions]="1000" [deletions]="30" [boxCount]="10"></app-diffstat>
 </div>
 <mat-divider></mat-divider>
@@ -15,7 +25,7 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <span class="flex-container">
+      <span class="flex-container space-apart">
         <h4>Commit Message</h4>
         <span>
           Commited on: {{ commit.committedDate.toLocaleString() }}

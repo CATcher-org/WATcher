@@ -1,3 +1,10 @@
 <div class="container">
-  <app-commit-list [commitList]="commits" listTitle="Recent Commits"></app-commit-list>
+  <mat-progress-bar *ngIf="!commits" mode="query"></mat-progress-bar>
+  <app-commit-list
+    *ngIf="commits"
+    [commitList]="commits"
+    listTitle="Recent Commits"
+    (refresh)="reloadData()"
+    [updateTime]="queryDate"
+  ></app-commit-list>
 </div>
