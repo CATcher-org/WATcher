@@ -2,7 +2,7 @@ import { DataSource } from '@angular/cdk/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
-import { flatMap, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { GithubUser } from '../../core/models/github-user.model';
 import { Issue } from '../../core/models/issue.model';
 import { IssueService } from '../../core/services/issue.service';
@@ -68,7 +68,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
     ].filter((x) => x !== undefined);
 
     this.issueService.startPollIssues();
-    this.issueSubscription = this.issueService.issues$
+    this.issueSubscription = merge(...displayDataChanges)
       .pipe(
         flatMap(() => {
           // merge creates an observable from values that changes display
@@ -94,19 +94,17 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
               // Dropdown Filters
               data = data.filter(applyDropdownFilter(this.dropdownFilter));
 
-              if (this.sort !== undefined) {
-                data = getSortedData(this.sort, data);
-              }
-              data = this.getFilteredTeamData(data);
-              data = applySearchFilter(this.filter, this.displayedColumn, this.issueService, data);
-              this.count = data.length;
+          if (this.sort !== undefined) {
+            data = getSortedData(this.sort, data);
+          }
+          data = this.getFilteredTeamData(data);
+          data = applySearchFilter(this.filter, this.displayedColumn, this.issueService, data);
+          this.count = data.length;
 
-              if (this.paginator !== undefined) {
-                data = paginateData(this.paginator, data);
-              }
-              return data;
-            })
-          );
+          if (this.paginator !== undefined) {
+            data = paginateData(this.paginator, data);
+          }
+          return data;
         })
       )
       .subscribe((issues) => {
