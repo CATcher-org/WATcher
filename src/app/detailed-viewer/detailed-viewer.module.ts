@@ -4,7 +4,7 @@ import { IssuesViewerModule } from '../issues-viewer/issues-viewer.module';
 import { FilterBarModule } from '../shared/filter-bar/filter-bar.module';
 import { IssuesPrCardModule } from '../shared/issue-pr-card/issue-pr-card.module';
 import { SharedModule } from '../shared/shared.module';
-import { CommitListComponent } from './commit-list/commit-list.component';
+import { CommitListComponent, DateRangeDialog } from './commit-list/commit-list.component';
 import { DetailedViewerRoutingModule } from './detailed-viewer-routing.module';
 import { DetailedViewerComponent } from './detailed-viewer.component';
 import { DiffstatComponent } from './diffstat/diffstat.component';
@@ -22,7 +22,8 @@ import { ProfileListComponent } from './profile-list/profile-list.component';
     ProfileActivitiesComponent,
     ProfileListComponent,
     DiffstatComponent,
-    CommitListComponent
+    CommitListComponent,
+    DateRangeDialog
   ]
 })
 export class DetailedViewerModule {}

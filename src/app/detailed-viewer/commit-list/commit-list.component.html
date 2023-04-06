@@ -3,19 +3,20 @@
     <h3 [matTooltip]="updateTime ? 'Last updated on ' + updateTime.toLocaleString() : ''">
       {{ listTitle }}
     </h3>
-    <button mat-icon-button matTooltip="Change date range">
+    <span> ({{ liveStats.count }}/{{ commitList.length }} shown) </span>
+    <button mat-icon-button matTooltip="Change date range" (click)="openDialog()">
       <mat-icon>calendar_today</mat-icon>
     </button>
     <button mat-icon-button (click)="refresh.emit()" matTooltip="Refresh Commits">
       <mat-icon>autorenew</mat-icon>
     </button>
   </div>
-  <app-diffstat [additions]="1000" [deletions]="30" [boxCount]="10"></app-diffstat>
+  <app-diffstat [additions]="liveStats.additions" [deletions]="liveStats.deletions" [boxCount]="10"></app-diffstat>
 </div>
 <mat-divider></mat-divider>
 <div class="basic-container hidden_scrollbar">
   <mat-accordion class="headers-align">
-    <mat-expansion-panel *ngFor="let commit of commitList; let i = index" [expanded]="i === step" (opened)="setStep(i)">
+    <mat-expansion-panel *ngFor="let commit of commits; let i = index" [expanded]="i === step" (opened)="setStep(i)">
       <mat-expansion-panel-header>
         <mat-panel-title>
           {{ commit.messageHeadline }}
