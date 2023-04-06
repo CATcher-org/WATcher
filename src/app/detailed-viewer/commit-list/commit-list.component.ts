@@ -61,9 +61,8 @@ export class CommitListComponent implements OnInit {
 
   ngOnInit(): void {
     this.createPrefixSum();
-    this.updateList(this.commitList[0].committedDate, this.commitList[this.commitList.length - 1].committedDate);
+    this.updateList(this.commitList[0]?.committedDate, this.commitList[this.commitList.length - 1]?.committedDate);
   }
-
   setStep(index: number) {
     this.step = index;
   }
@@ -77,6 +76,10 @@ export class CommitListComponent implements OnInit {
   }
 
   createPrefixSum() {
+    if (this.commitList.length === 0) {
+      this.ps = new PrefixSum([], () => new CumulativeStats());
+      return;
+    }
     this.firstTime = new Date(this.commitList[0].committedDate.toDateString()).getTime();
     this.endIndex = this.commitToIndex(this.commitList[this.commitList.length - 1]);
     const prefixArr = new Array(this.endIndex + 1);
@@ -99,7 +102,12 @@ export class CommitListComponent implements OnInit {
     return this.dateToIndex(commit.committedDate);
   }
 
-  updateList(sDate: Date, eDate: Date): void {
+  updateList(sDate?: Date, eDate?: Date): void {
+    if (!sDate || !eDate) {
+      this.commits = [];
+      this.liveStats = new CumulativeStats();
+      return;
+    }
     // close all opened commits
     this.step = -1;
     // ensure start date is at 0000 while end date ends at 2359

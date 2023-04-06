@@ -10,6 +10,22 @@
   margin-left: 8px;
 }
 
+.empty-message {
+  font-size: xx-large;
+  color: lightslategray;
+  margin: 10px;
+}
+
+.empty-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: lightgrey;
+  font-size: xx-large;
+  font-weight: light;
+}
+
 .flex-container {
   display: flex;
   flex-direction: row;

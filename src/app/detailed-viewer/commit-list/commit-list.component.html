@@ -4,7 +4,7 @@
       {{ listTitle }}
     </h3>
     <span> ({{ liveStats.count }}/{{ commitList.length }} shown) </span>
-    <button mat-icon-button matTooltip="Change date range" (click)="openDialog()">
+    <button mat-icon-button matTooltip="Change date range" (click)="openDialog()" [disabled]="!this.commitList.length">
       <mat-icon>calendar_today</mat-icon>
     </button>
     <button mat-icon-button (click)="refresh.emit()" matTooltip="Refresh Commits">
@@ -15,6 +15,10 @@
 </div>
 <mat-divider></mat-divider>
 <div class="basic-container hidden_scrollbar">
+  <div *ngIf="commits.length === 0" class="empty-wrapper">
+    <mat-icon class="empty-message">help</mat-icon>
+    <span>There is nothing here.</span>
+  </div>
   <mat-accordion class="headers-align">
     <mat-expansion-panel *ngFor="let commit of commits; let i = index" [expanded]="i === step" (opened)="setStep(i)">
       <mat-expansion-panel-header>

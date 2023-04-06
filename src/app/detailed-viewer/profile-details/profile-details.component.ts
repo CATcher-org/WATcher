@@ -59,7 +59,7 @@ export class ProfileDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     });
   }
 
-  getStats() {
+  getStats(): void {
     const ret: UserStats = {
       averageCommitTime: 'Not enough Commits',
       averageGapBetweenCommit: 'Not enough Commits',
@@ -85,7 +85,7 @@ export class ProfileDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     if (this.commits.length === 0) {
-      return ret;
+      return this.details.emit(ret);
     }
     ret.firstCommitDate = this.commits[0].committedDate.toLocaleString();
     ret.lastCommitDate = this.commits[this.commits.length - 1].committedDate.toLocaleString();
