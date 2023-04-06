@@ -70,29 +70,26 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
     this.issueService.startPollIssues();
     this.issueSubscription = merge(...displayDataChanges)
       .pipe(
-        flatMap(() => {
-          // merge creates an observable from values that changes display
-          return merge(...displayDataChanges).pipe(
-            // maps each change in display value to new issue ordering or filtering
-            map(() => {
-              let data = <Issue[]>Object.values(this.issueService.issues$.getValue()).reverse();
-              if (this.defaultFilter) {
-                data = data.filter(this.defaultFilter);
+        // maps each change in display value to new issue ordering or filtering
+        map(() => {
+          let data = <Issue[]>Object.values(this.issueService.issues$.getValue()).reverse();
+          if (this.defaultFilter) {
+            data = data.filter(this.defaultFilter);
+          }
+          // Filter by assignee of issue
+          if (this.assignee) {
+            data = data.filter((issue) => {
+              if (issue.issueOrPr === 'PullRequest') {
+                return issue.author === this.assignee.login;
+              } else if (!issue.assignees) {
+                return false;
+              } else {
+                return issue.assignees.includes(this.assignee.login);
               }
-              // Filter by assignee of issue
-              if (this.assignee) {
-                data = data.filter((issue) => {
-                  if (issue.issueOrPr === 'PullRequest') {
-                    return issue.author === this.assignee.login;
-                  } else if (!issue.assignees) {
-                    return false;
-                  } else {
-                    return issue.assignees.includes(this.assignee.login);
-                  }
-                });
-              }
-              // Dropdown Filters
-              data = data.filter(applyDropdownFilter(this.dropdownFilter));
+            });
+          }
+          // Dropdown Filters
+          data = data.filter(applyDropdownFilter(this.dropdownFilter));
 
           if (this.sort !== undefined) {
             data = getSortedData(this.sort, data);
