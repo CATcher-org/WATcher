@@ -2,7 +2,7 @@ import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { GithubUser } from '../../core/models/github-user.model';
 import { GithubService } from '../../core/services/github.service';
 import { GithubCommit } from '../../core/models/github/github-commit.model';
-import { Accumulator, PrefixSum } from '../../core/models/datastructure/rsq.model';
+import { Accumulator } from '../../core/models/datastructure/rsq.model';
 
 const DAYINMILISECOND = 1000 * 60 * 60 * 24;
 
