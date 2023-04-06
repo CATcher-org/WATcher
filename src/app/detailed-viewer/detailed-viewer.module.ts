@@ -8,7 +8,6 @@ import { CommitListComponent, DateRangeDialogComponent } from './commit-list/com
 import { DetailedViewerRoutingModule } from './detailed-viewer-routing.module';
 import { DetailedViewerComponent } from './detailed-viewer.component';
 import { DiffstatComponent } from './diffstat/diffstat.component';
-import { ProfileActivitiesComponent } from './profile-activities/profile-activities.component';
 import { ProfileDetailsComponent } from './profile-details/profile-details.component';
 import { ProfileIconComponent } from './profile-icon/profile-icon.component';
 import { ProfileListComponent } from './profile-list/profile-list.component';
@@ -20,7 +19,6 @@ import { ProfileSummaryComponent } from './profile-summary/profile-summary.compo
     DetailedViewerComponent,
     ProfileIconComponent,
     ProfileDetailsComponent,
-    ProfileActivitiesComponent,
     ProfileListComponent,
     DiffstatComponent,
     CommitListComponent,
