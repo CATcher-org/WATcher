@@ -1,5 +1,5 @@
-import { GithubCommit } from './github-commit.model';
 import { CommitStatsFragment } from '../../../../../graphql/graphql-types';
+import { GithubCommit } from './github-commit.model';
 
 export class GithubGraphqlCommitStat extends GithubCommit {
   constructor(stats: CommitStatsFragment) {

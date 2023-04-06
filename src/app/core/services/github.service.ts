@@ -186,14 +186,6 @@ export class GithubService {
   }
 
   fetchCommitGraphqlByUser(userId: string): Observable<any> {
-    const newQueryRef = this.apollo.watchQuery<FetchAllActivitiesFromUserQuery>({
-      query: FetchAllActivitiesFromUser,
-      variables: {
-        owner: ORG_NAME,
-        name: REPO,
-        id: userId
-      }
-    });
     // return newQueryRef.valueChanges;
     return this.fetchGraphqlList<FetchAllActivitiesFromUserQuery, any>(
       FetchAllActivitiesFromUser,
@@ -202,8 +194,6 @@ export class GithubService {
         name: REPO,
         id: userId
       },
-
-      //@ts-ignore
       (result) => result.data.repository.defaultBranchRef.target.history.edges,
       GithubGraphqlCommitStat
     );

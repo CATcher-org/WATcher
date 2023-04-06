@@ -3,6 +3,11 @@ export interface Accumulator<U> {
   sub(o: U): void;
 }
 
+// returns least significant one bit
+const LSOne = (num: number): number => {
+  return num & -num;
+};
+
 abstract class RangeQueries<T extends Accumulator<T>> {
   /**
    * Find RSQ(1, a)
@@ -36,6 +41,24 @@ abstract class RangeQueries<T extends Accumulator<T>> {
 }
 
 /**
+ * 1-Indexed Prefix Sum to abstract away rsq operations
+ */
+export class PrefixSum<T extends Accumulator<T>> extends RangeQueries<T> {
+  constructor(private arr: T[], private identity: () => T) {
+    super();
+    for (let i = 1; i < arr.length; i++) {
+      arr[i].add(arr[i - 1]);
+    }
+  }
+
+  prefixSum(a: number): T {
+    const ret = this.identity();
+    ret.add(this.arr[a]);
+    return ret;
+  }
+}
+
+/**
  * Binary Indexed Tree enables fast Range search queries calculations in O(log n) time
  * This Tree is 1-indexed
  */
@@ -51,8 +74,8 @@ export class FenwickTree<T extends Accumulator<T>> extends RangeQueries<T> {
   }
 
   prefixSum(a: number): T {
-    let ret = this.identityFun();
-    for (; a > 0; a -= a & -a) {
+    const ret = this.identityFun();
+    for (; a > 0; a -= LSOne(a)) {
       ret.add(this.internalArray[a]);
     }
     return ret;
@@ -64,7 +87,7 @@ export class FenwickTree<T extends Accumulator<T>> extends RangeQueries<T> {
    * @param change
    */
   adjust(index: number, change: T) {
-    for (; index < this.internalArray.length; index += index & -index) {
+    for (; index < this.internalArray.length; index += LSOne(index)) {
       this.internalArray[index].add(change);
     }
   }

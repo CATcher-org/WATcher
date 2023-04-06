@@ -10,17 +10,9 @@ import { ProfileActivitiesComponent } from './profile-activities/profile-activit
 import { ProfileDetailsComponent } from './profile-details/profile-details.component';
 import { ProfileIconComponent } from './profile-icon/profile-icon.component';
 import { ProfileListComponent } from './profile-list/profile-list.component';
-import { CalendarViewComponent } from './calendar-view/calendar-view.component';
 
 @NgModule({
   imports: [DetailedViewerRoutingModule, FilterBarModule, SharedModule, IssuesPrCardModule, IssuesViewerModule, MarkdownModule.forChild()],
-  declarations: [
-    DetailedViewerComponent,
-    ProfileIconComponent,
-    ProfileDetailsComponent,
-    ProfileActivitiesComponent,
-    ProfileListComponent,
-    CalendarViewComponent
-  ]
+  declarations: [DetailedViewerComponent, ProfileIconComponent, ProfileDetailsComponent, ProfileActivitiesComponent, ProfileListComponent]
 })
 export class DetailedViewerModule {}

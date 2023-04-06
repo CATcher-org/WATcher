@@ -2,7 +2,7 @@ import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { GithubUser } from '../../core/models/github-user.model';
 import { GithubService } from '../../core/services/github.service';
 import { GithubCommit } from '../../core/models/github/github-commit.model';
-import { Accumulator } from '../../core/models/datastructure/rsq.model';
+import { Accumulator, PrefixSum } from '../../core/models/datastructure/rsq.model';
 
 const DAYINMILISECOND = 1000 * 60 * 60 * 24;
 
@@ -40,7 +40,8 @@ export class ProfileDetailsComponent implements OnInit, AfterViewInit {
   commits: GithubCommit[];
   firstCommitDay: number;
   lastCommitDay: number;
-  prefixArr: PrefixSum<CumulativeStats>;
+  ps: PrefixSum<CumulativeStats>;
+  private firstTime: number;
 
   constructor(private githubService: GithubService) {}
   ngOnInit(): void {}
@@ -54,28 +55,22 @@ export class ProfileDetailsComponent implements OnInit, AfterViewInit {
   }
 
   createPrefixSum() {
-    this.firstCommitDay = ProfileDetailsComponent.toDay(this.commits[0].committedDate);
-    this.lastCommitDay = ProfileDetailsComponent.toDay(this.commits[this.commits.length - 1].committedDate);
-    const commitToIndex = (c) => ProfileDetailsComponent.toDay(c.committedDate) - this.firstCommitDay + 1;
-    const arr = new Array<CumulativeStats>(this.lastCommitDay - this.firstCommitDay + 2);
-    arr.fill(new CumulativeStats());
+    this.firstTime = new Date(this.commits[0].committedDate.getDate()).getTime();
+    const prefixArr = new Array(this.commitToIndex(this.commits[this.commits.length - 1]) + 1);
+    prefixArr.fill(new CumulativeStats());
     for (const commit of this.commits) {
-      console.log(commitToIndex(commit));
-      arr[commitToIndex(commit)].add(new CumulativeStats(commit));
+      prefixArr[this.commitToIndex(commit)].add(new CumulativeStats(commit));
     }
 
-    for (let i = 1; i < arr.length; i++) {
-      arr[i].add(arr[i - 1]);
-    }
-
-    this.prefixArr = new PrefixSum(arr, () => new CumulativeStats());
+    this.ps = new PrefixSum(prefixArr, () => new CumulativeStats());
   }
 
-  /**
-   * returns the number of days since Jan 1, 1970
-   */
-  static toDay(date: Date): number {
-    // less overhead compared to Math.floor
-    return ~~(date.getTime() / DAYINMILISECOND);
+  // returns 1 indexed from date
+  dateToIndex(date: Date): number {
+    return Math.floor((date.getTime() - this.firstTime) / DAYINMILISECOND) + 1;
+  }
+
+  commitToIndex(commit: GithubCommit) {
+    return this.dateToIndex(commit.committedDate);
   }
 }
