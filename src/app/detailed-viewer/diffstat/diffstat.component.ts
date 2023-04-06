@@ -8,7 +8,7 @@ import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 export class DiffstatComponent implements OnInit, AfterViewInit {
   @Input() additions: number;
   @Input() deletions: number;
-  @Input() boxCount: number = 6;
+  @Input() boxCount = 6;
   changeDelta: number;
   constructor() {}
 

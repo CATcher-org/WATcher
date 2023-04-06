@@ -25,6 +25,7 @@ import { IssueLastModifiedManagerModel } from '../models/github/cache-manager/is
 import { IssuesCacheManager } from '../models/github/cache-manager/issues-cache-manager.model';
 import { GithubComment } from '../models/github/github-comment.model';
 import { GithubEvent } from '../models/github/github-event.model';
+import { GithubGraphqlCommitStat } from '../models/github/github-graphql.commitstats.model';
 import { GithubGraphqlIssue } from '../models/github/github-graphql.issue';
 import { GithubGraphqlIssueOrPr } from '../models/github/github-graphql.issue-or-pr';
 import RestGithubIssueFilter from '../models/github/github-issue-filter.model';
@@ -35,7 +36,6 @@ import { SessionData } from '../models/session.model';
 import { ElectronService } from './electron.service';
 import { ERRORCODE_NOT_FOUND, ErrorHandlingService } from './error-handling.service';
 import { LoggingService } from './logging.service';
-import { GithubGraphqlCommitStat } from '../models/github/github-graphql.commitstats.model';
 
 const { Octokit } = require('@octokit/rest');
 
@@ -194,7 +194,7 @@ export class GithubService {
         name: REPO,
         id: userId
       },
-      //@ts-ignore
+      // @ts-ignore
       (result) => result.data.repository.defaultBranchRef.target.history.edges,
       GithubGraphqlCommitStat
     );

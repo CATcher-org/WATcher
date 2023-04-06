@@ -5,6 +5,7 @@ export interface Accumulator<U> {
 
 // returns least significant one bit
 const LSOne = (num: number): number => {
+  // tslint:disable-next-line:no-bitwise
   return num & -num;
 };
 
