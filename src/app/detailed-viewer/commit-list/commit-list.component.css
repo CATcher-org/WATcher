@@ -17,6 +17,10 @@
   width: 100%;
 }
 
+.flex-container > h3 {
+  margin-right: 2px;
+}
+
 .space-apart {
   justify-content: space-between;
 }

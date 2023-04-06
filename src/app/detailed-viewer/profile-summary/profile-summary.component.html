@@ -1,0 +1,52 @@
+<div class="scroll-container hidden_scrollbar">
+  <mat-list>
+    <mat-list-item *ngIf="!stats">
+      <mat-progress-bar mode="query"></mat-progress-bar>
+    </mat-list-item>
+    <ng-container *ngIf="stats">
+      <mat-list-item>
+        <span class="container">
+          <span class="type">Total Commits:</span>
+          <span class="result">{{ stats.totalCommit }}</span>
+        </span>
+      </mat-list-item>
+      <mat-list-item>
+        <span class="container">
+          <span class="type">First Commit On:</span>
+          <span class="result">{{ stats.firstCommitDate }}</span>
+        </span>
+      </mat-list-item>
+      <mat-list-item>
+        <span class="container">
+          <span class="type">Latest Commit On:</span>
+          <span class="result">{{ stats.lastCommitDate }}</span>
+        </span>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <span class="container">
+          <span class="type">Average Commit Time:</span>
+          <span class="result">{{ stats.averageCommitTime }}</span>
+        </span>
+      </mat-list-item>
+      <mat-list-item>
+        <span class="container">
+          <span class="type">Longest delay between Commits:</span>
+          <span class="result">{{ stats.LongestGapBetweenCommit }}</span>
+        </span>
+      </mat-list-item>
+      <mat-list-item>
+        <span class="container">
+          <span class="type">Shortest delay between Commits:</span>
+          <span class="result">{{ stats.ShortestGapBetweenCommit }}</span>
+        </span>
+      </mat-list-item>
+      <mat-list-item>
+        <span class="container">
+          <span class="type">Average delay between Commits:</span>
+          <span class="result">{{ stats.averageGapBetweenCommit }}</span>
+        </span>
+      </mat-list-item>
+    </ng-container>
+  </mat-list>
+</div>

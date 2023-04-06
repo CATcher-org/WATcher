@@ -1,10 +1,10 @@
-import { Subscription } from 'rxjs';
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { GithubUser } from '../../core/models/github-user.model';
 import { GithubCommit } from '../../core/models/github/github-commit.model';
 import { GithubService } from '../../core/services/github.service';
 
-type UserStats = {
+export type UserStats = {
   averageCommitTime: string;
   firstCommitDate: string;
   lastCommitDate: string;
@@ -47,6 +47,7 @@ export class ProfileDetailsComponent implements OnInit, AfterViewInit, OnDestroy
 
   reloadData() {
     this.commits = undefined;
+    this.details.emit();
     if (this.commitSubscription) {
       this.commitSubscription.unsubscribe();
     }
@@ -59,7 +60,7 @@ export class ProfileDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   getStats() {
-    let ret: UserStats = {
+    const ret: UserStats = {
       averageCommitTime: 'Not enough Commits',
       averageGapBetweenCommit: 'Not enough Commits',
       LongestGapBetweenCommit: 'Not enough Commits',
@@ -73,7 +74,7 @@ export class ProfileDetailsComponent implements OnInit, AfterViewInit, OnDestroy
       let smallestGap = Infinity;
       let totalGap = 0;
       for (let i = 1; i < this.commits.length; i++) {
-        let gap = this.commits[i].committedDate.getTime() - this.commits[i - 1].committedDate.getTime();
+        const gap = this.commits[i].committedDate.getTime() - this.commits[i - 1].committedDate.getTime();
         largestGap = Math.max(largestGap, gap);
         smallestGap = Math.min(smallestGap, gap);
         totalGap += gap;
@@ -83,7 +84,7 @@ export class ProfileDetailsComponent implements OnInit, AfterViewInit, OnDestroy
       ret.averageGapBetweenCommit = this.convertMiliToString(totalGap / (this.commits.length - 1));
     }
 
-    if (this.commits.length == 0) {
+    if (this.commits.length === 0) {
       return ret;
     }
     ret.firstCommitDate = this.commits[0].committedDate.toLocaleString();
@@ -102,11 +103,11 @@ export class ProfileDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   convertMiliToString(time: number, is24hour: boolean = false): string {
-    let days = Math.floor(time / DAY);
+    const days = Math.floor(time / DAY);
     time = time % DAY;
     const dt = new Date(time);
     if (is24hour) {
-      return `${dt.getHours()}:${dt.getMinutes()}`;
+      return dt.toLocaleTimeString();
     }
     return `${days} days, ${dt.getHours()} hours, ${dt.getMinutes()} minutes`;
   }

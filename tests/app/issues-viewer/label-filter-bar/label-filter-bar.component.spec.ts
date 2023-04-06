@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LabelFilterBarComponent } from '../../../../src/app/issues-viewer/label-filter-bar/label-filter-bar.component';
+import { LabelFilterBarComponent } from '../../../../src/app/shared/filter-bar/label-filter-bar/label-filter-bar.component';
 
 // const dummyDataLabels: simplifiedLabel[] = [
 //   {

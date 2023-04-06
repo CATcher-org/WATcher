@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Accumulator, PrefixSum } from '../../core/models/datastructure/rsq.model';
 import { GithubCommit } from '../../core/models/github/github-commit.model';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 const DAYINMILISECOND = 1000 * 60 * 60 * 24;
 
@@ -38,7 +38,7 @@ class CumulativeStats implements Accumulator<CumulativeStats> {
   templateUrl: './commit-list.component.html',
   styleUrls: ['./commit-list.component.css']
 })
-export class CommitListComponent implements OnInit, AfterViewInit {
+export class CommitListComponent implements OnInit {
   @Input() commitList: GithubCommit[];
   @Input() listTitle: string;
   @Input() updateTime: Date;
@@ -63,8 +63,6 @@ export class CommitListComponent implements OnInit, AfterViewInit {
     this.createPrefixSum();
     this.updateList(this.commitList[0].committedDate, this.commitList[this.commitList.length - 1].committedDate);
   }
-
-  ngAfterViewInit(): void {}
 
   setStep(index: number) {
     this.step = index;
@@ -118,7 +116,7 @@ export class CommitListComponent implements OnInit, AfterViewInit {
   }
 
   openDialog(): void {
-    const dialogRef = this.dialog.open<DateRangeDialog, DialogData, DialogData>(DateRangeDialog, {
+    const dialogRef = this.dialog.open<DateRangeDialogComponent, DialogData, DialogData>(DateRangeDialogComponent, {
       data: {
         minDate: this.commitList[0].committedDate,
         maxDate: this.commitList[this.commitList.length - 1].committedDate
@@ -126,7 +124,6 @@ export class CommitListComponent implements OnInit, AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log('The dialog was closed');
       if (result) {
         this.startIndex = this.dateToIndex(result.minDate);
         this.endIndex = this.dateToIndex(result.maxDate);
@@ -137,11 +134,11 @@ export class CommitListComponent implements OnInit, AfterViewInit {
 }
 
 @Component({
-  selector: 'queryrange-dialog',
+  selector: 'app-queryrange-dialog',
   templateUrl: './queryrange.html'
 })
-export class DateRangeDialog {
-  constructor(public dialogRef: MatDialogRef<DateRangeDialog, DialogData>, @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+export class DateRangeDialogComponent {
+  constructor(public dialogRef: MatDialogRef<DateRangeDialogComponent, DialogData>, @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
 
   checkValid(d1: string, d2: string): boolean {
     const start = new Date(d1);

@@ -1,4 +1,3 @@
-
 .hidden {
   display: none;
 }
@@ -14,6 +13,13 @@
   font-size: 14px;
   max-width: 20%;
   width: 25%; /* depends on number of filters*/
+}
+
+.center {
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
 }
 
 .search-bar {
@@ -34,4 +40,9 @@
 
 .switch-repo-tile {
   background-color: lightblue;
+}
+
+.fill-tile {
+  width: 100%;
+  height: 100%;
 }
