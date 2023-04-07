@@ -30,7 +30,7 @@ const DAY = HOUR * 24;
   templateUrl: './profile-details.component.html',
   styleUrls: ['./profile-details.component.css']
 })
-export class ProfileDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ProfileDetailsComponent implements OnInit, OnDestroy {
   @Input() user: GithubUser;
   @Output() details = new EventEmitter<UserStats>();
 
@@ -42,8 +42,6 @@ export class ProfileDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   ngOnInit(): void {
     this.reloadData();
   }
-
-  ngAfterViewInit(): void {}
 
   ngOnDestroy(): void {
     if (this.commitSubscription) {

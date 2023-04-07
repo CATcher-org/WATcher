@@ -9,7 +9,7 @@ import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
   templateUrl: './diffstat.component.html',
   styleUrls: ['./diffstat.component.css']
 })
-export class DiffstatComponent implements OnInit, AfterViewInit {
+export class DiffstatComponent implements OnInit {
   @Input() additions: number;
   @Input() deletions: number;
   @Input() boxCount = 6;
@@ -23,8 +23,6 @@ export class DiffstatComponent implements OnInit, AfterViewInit {
       this.changeDelta = (this.additions / (this.additions + this.deletions)) * this.boxCount;
     }
   }
-
-  ngAfterViewInit(): void {}
 
   isAdd(i: number): boolean {
     return i + 1 <= this.changeDelta;
