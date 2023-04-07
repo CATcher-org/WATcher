@@ -1,9 +1,12 @@
 import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
+import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { Accumulator, PrefixSum } from '../../core/models/datastructure/rsq.model';
 import { GithubCommit } from '../../core/models/github/github-commit.model';
-
-const DAYINMILISECOND = 1000 * 60 * 60 * 24;
+import { DAY_IN_MILISECOND, toMaxTime, toMinTime } from '../datetimehelper';
+import { Moment } from 'moment';
+import { DateRangeDialogComponent } from '../query-range/query-range.component';
 
 /**
  * Takes in a sorted list of commits and visually display each commit using a expansion panel.
@@ -11,8 +14,8 @@ const DAYINMILISECOND = 1000 * 60 * 60 * 24;
  * A DiffStat component is used to summary the cumulative addition as well as deletion of commits in the current view
  */
 export interface DateRange {
-  minDate: Date;
-  maxDate: Date;
+  minDate: Moment;
+  maxDate: Moment;
 }
 class CumulativeStats implements Accumulator<CumulativeStats> {
   additions: number;
@@ -46,7 +49,7 @@ class CumulativeStats implements Accumulator<CumulativeStats> {
 export class CommitListComponent implements OnInit {
   @Input() commitList: GithubCommit[];
   @Input() listTitle: string;
-  @Input() updateTime: Date;
+  @Input() updateTime: Moment;
   @Output() refresh = new EventEmitter<any>();
 
   // this will be displayed
@@ -61,7 +64,7 @@ export class CommitListComponent implements OnInit {
   endIndex: number;
 
   ps: PrefixSum<CumulativeStats>;
-  private firstTime: number;
+  private firstTime: Moment;
 
   constructor(public dialog: MatDialog) {}
 
@@ -85,31 +88,30 @@ export class CommitListComponent implements OnInit {
       this.ps = new PrefixSum([], () => new CumulativeStats());
       return;
     }
-    this.firstTime = new Date(this.commitList[0].committedDate.toDateString()).getTime();
-    this.endIndex = this.commitToIndex(this.commitList[this.commitList.length - 1]);
+    this.firstTime = toMinTime(this.commitList[0].committedDate);
+
+    const commitToIndex = (commit: GithubCommit) => this.dateToIndex(commit.committedDate);
+
+    this.endIndex = commitToIndex(this.commitList[this.commitList.length - 1]);
     const prefixArr = new Array(this.endIndex + 1);
     for (let i = 0; i < prefixArr.length; i++) {
       prefixArr[i] = new CumulativeStats();
     }
     for (const commit of this.commitList) {
-      prefixArr[this.commitToIndex(commit)].add(new CumulativeStats(commit));
+      prefixArr[commitToIndex(commit)].add(new CumulativeStats(commit));
     }
 
     this.ps = new PrefixSum(prefixArr, () => new CumulativeStats());
   }
 
-  // returns 1 indexed from date
-  dateToIndex(date: Date): number {
-    return Math.floor((date.getTime() - this.firstTime) / DAYINMILISECOND) + 1;
+  // Convert date to index of commitList
+  dateToIndex(date: Moment): number {
+    return Math.floor(date.diff(this.firstTime) / DAY_IN_MILISECOND) + 1;
   }
 
-  commitToIndex(commit: GithubCommit) {
-    return this.dateToIndex(commit.committedDate);
-  }
-
-  updateList(sDate?: Date, eDate?: Date): void {
-    this.dateRange.maxDate = sDate;
-    this.dateRange.minDate = eDate;
+  updateList(sDate?: Moment, eDate?: Moment): void {
+    this.dateRange.minDate = sDate;
+    this.dateRange.maxDate = eDate;
 
     if (!sDate || !eDate) {
       this.commits = [];
@@ -119,8 +121,8 @@ export class CommitListComponent implements OnInit {
     // close all opened commits
     this.step = -1;
     // ensure start date is at 0000 while end date ends at 2359
-    sDate = new Date(new Date(sDate).toDateString());
-    eDate = new Date(new Date(eDate.toDateString()).getTime() + DAYINMILISECOND - 1);
+    sDate = toMinTime(sDate);
+    eDate = toMaxTime(eDate);
     this.commits = [];
     for (const commit of this.commitList) {
       if (sDate <= commit.committedDate && commit.committedDate <= eDate) {
@@ -147,34 +149,6 @@ export class CommitListComponent implements OnInit {
         this.endIndex = this.dateToIndex(result.maxDate);
         this.updateList(result.minDate, result.maxDate);
       }
-    });
-  }
-}
-
-@Component({
-  selector: 'app-queryrange-dialog',
-  templateUrl: './queryrange.html'
-})
-export class DateRangeDialogComponent {
-  constructor(public dialogRef: MatDialogRef<DateRangeDialogComponent, DateRange>, @Inject(MAT_DIALOG_DATA) public data: DateRange) {}
-
-  checkValid(d1: string, d2: string): boolean {
-    const start = new Date(d1);
-    const end = new Date(d2);
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-      return false;
-    }
-    if (end > this.data.maxDate || start < this.data.minDate) {
-      return false;
-    }
-
-    return start <= end;
-  }
-
-  onSubmitClick(d1: string, d2: string): void {
-    this.dialogRef.close({
-      minDate: new Date(d1),
-      maxDate: new Date(d2)
     });
   }
 }

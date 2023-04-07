@@ -1,7 +1,10 @@
+import * as moment from 'moment';
+import { Moment } from 'moment';
+
 export class GithubCommit {
   additions: number;
   deletions: number;
-  committedDate: Date;
+  committedDate: Moment;
   messageHeadline: string;
   url: string;
   messageBody: string;
@@ -12,6 +15,6 @@ export class GithubCommit {
   }
 
   setDate(s: string) {
-    this.committedDate = new Date(s);
+    this.committedDate = moment(s);
   }
 }

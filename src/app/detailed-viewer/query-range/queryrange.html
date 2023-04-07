@@ -1,6 +1,6 @@
 <h3 mat-dialog-title>Select commit time range</h3>
 <div mat-dialog-content>
-  <mat-form-field>
+  <mat-form-field style="margin-right: 5px">
     <mat-label>Choose a date</mat-label>
     <input matInput [min]="data.minDate" [max]="data.maxDate" #in_start [matDatepicker]="picker" />
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>

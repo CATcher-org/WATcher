@@ -1,10 +1,10 @@
 <div class="flex-container space-apart">
   <div class="flex-container">
-    <h3 [matTooltip]="updateTime ? 'Last updated on ' + updateTime.toLocaleString() : ''">
+    <h3 [matTooltip]="updateTime ? 'Last updated on ' + updateTime.format('DD/MM/YYYY h:mm:ss a') : ''">
       {{ listTitle }} ({{ liveStats.count }}/{{ commitList.length }})
     </h3>
     <span class="small" *ngIf="dateRange.minDate">
-      {{ dateRange.minDate?.toLocaleDateString() }} - {{ dateRange.maxDate?.toLocaleDateString() }}</span
+      {{ dateRange.minDate?.format('DD/MM/YYYY') }} - {{ dateRange.maxDate?.format('DD/MM/YYYY') }}</span
     >
     <button mat-icon-button matTooltip="Change date range" (click)="openDialog()" [disabled]="!this.commitList.length">
       <mat-icon>calendar_today</mat-icon>
@@ -40,7 +40,7 @@
       <span class="flex-container space-apart">
         <h4>Commit Message</h4>
         <span>
-          Commited on: {{ commit.committedDate.toLocaleString() }}
+          Commited on: {{ commit.committedDate.format('DD/MM/YYYY, h:mm:ss a') }}
           <a [href]="commit.url">
             <button mat-icon-button class="right-align">
               <img class="github-logo" src="./assets/images/github-logo.png" alt="github-logo" />

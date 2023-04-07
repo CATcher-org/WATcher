@@ -3,6 +3,9 @@ import { Subscription } from 'rxjs';
 import { GithubUser } from '../../core/models/github-user.model';
 import { GithubCommit } from '../../core/models/github/github-commit.model';
 import { GithubService } from '../../core/services/github.service';
+import { DATETIME, convertMiliToString, getTimeinMilisecond, toMinTime } from '../datetimehelper';
+import { Moment } from 'moment';
+import * as moment from 'moment';
 
 export type UserStats = {
   averageCommitTime: string;
@@ -36,7 +39,7 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
 
   commitSubscription: Subscription;
   commits: GithubCommit[];
-  queryDate: Date;
+  queryDate: Moment;
 
   constructor(private githubService: GithubService) {}
   ngOnInit(): void {
@@ -56,7 +59,7 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
       this.commitSubscription.unsubscribe();
     }
     this.commitSubscription = this.githubService.fetchCommitGraphqlByUser(this.user.node_id).subscribe((x) => {
-      this.queryDate = new Date();
+      this.queryDate = moment();
       x.reverse();
       this.commits = x;
       this.getStats();
@@ -78,41 +81,26 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
       let smallestGap = Infinity;
       let totalGap = 0;
       for (let i = 1; i < this.commits.length; i++) {
-        const gap = this.commits[i].committedDate.getTime() - this.commits[i - 1].committedDate.getTime();
+        const gap = this.commits[i].committedDate.diff(this.commits[i - 1].committedDate);
         largestGap = Math.max(largestGap, gap);
         smallestGap = Math.min(smallestGap, gap);
         totalGap += gap;
       }
-      ret.LongestGapBetweenCommit = this.convertMiliToString(largestGap);
-      ret.ShortestGapBetweenCommit = this.convertMiliToString(smallestGap);
-      ret.averageGapBetweenCommit = this.convertMiliToString(totalGap / (this.commits.length - 1));
+      ret.LongestGapBetweenCommit = convertMiliToString(largestGap);
+      ret.ShortestGapBetweenCommit = convertMiliToString(smallestGap);
+      ret.averageGapBetweenCommit = convertMiliToString(totalGap / (this.commits.length - 1));
     }
 
     if (this.commits.length === 0) {
       return this.details.emit(ret);
     }
-    ret.firstCommitDate = this.commits[0].committedDate.toLocaleString();
-    ret.lastCommitDate = this.commits[this.commits.length - 1].committedDate.toLocaleString();
+    ret.firstCommitDate = this.commits[0].committedDate.format(DATETIME);
+    ret.lastCommitDate = this.commits[this.commits.length - 1].committedDate.format(DATETIME);
     let cumulative = 0;
     for (const commit of this.commits) {
-      cumulative += this.getTime(commit.committedDate);
+      cumulative += getTimeinMilisecond(commit.committedDate);
     }
-    cumulative = Math.floor(cumulative / this.commits.length);
-    ret.averageCommitTime = this.convertMiliToString(cumulative, true);
+    ret.averageCommitTime = new Date(cumulative / this.commits.length).toLocaleTimeString();
     this.details.emit(ret);
-  }
-
-  getTime(date: Date): number {
-    return date.getTime() - new Date(date.toDateString()).getTime();
-  }
-
-  convertMiliToString(time: number, is24hour: boolean = false): string {
-    const days = Math.floor(time / DAY);
-    time = time % DAY;
-    const dt = new Date(time);
-    if (is24hour) {
-      return dt.toLocaleTimeString();
-    }
-    return `${days} days, ${dt.getHours()} hours, ${dt.getMinutes()} minutes`;
   }
 }
