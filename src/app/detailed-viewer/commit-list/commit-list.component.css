@@ -16,6 +16,11 @@
   margin: 10px;
 }
 
+.small {
+  font-size: small;
+  color: grey;
+}
+
 .empty-wrapper {
   display: flex;
   flex-direction: column;

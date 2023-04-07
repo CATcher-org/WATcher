@@ -2,7 +2,9 @@
   <div class="column-header">
     <mat-card>
       <mat-card-header>
-        <div mat-card-avatar [octicon]="headerInfo.octicon" [color]="headerInfo.color" size="10"></div>
+        <div mat-card-avatar>
+          <div [octicon]="headerInfo.octicon" [color]="headerInfo.color" size="20"></div>
+        </div>
         <mat-card-title>
           {{ headerInfo.title }}
         </mat-card-title>

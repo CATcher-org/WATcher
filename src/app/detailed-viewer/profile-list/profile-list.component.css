@@ -6,6 +6,12 @@
   margin: 8px 0px 8px 0px;
 }
 
+.mat-card-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .mat-card-title {
   display: flex;
   align-items: center;

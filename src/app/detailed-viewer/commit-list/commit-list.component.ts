@@ -10,7 +10,7 @@ const DAYINMILISECOND = 1000 * 60 * 60 * 24;
  * This component will also allow the user to select the range of commits to view by letting them select the start and end date.
  * A DiffStat component is used to summary the cumulative addition as well as deletion of commits in the current view
  */
-export interface DialogData {
+export interface DateRange {
   minDate: Date;
   maxDate: Date;
 }
@@ -53,9 +53,10 @@ export class CommitListComponent implements OnInit {
   commits: GithubCommit[];
 
   liveStats: CumulativeStats;
+  dateRange: DateRange = { maxDate: undefined, minDate: undefined };
 
   step = -1;
-
+  latestToLast = true;
   startIndex = 1;
   endIndex: number;
 
@@ -68,16 +69,15 @@ export class CommitListComponent implements OnInit {
     this.createPrefixSum();
     this.updateList(this.commitList[0]?.committedDate, this.commitList[this.commitList.length - 1]?.committedDate);
   }
+
+  toggleOrder() {
+    this.latestToLast = !this.latestToLast;
+    this.commits.reverse();
+    this.step = -1;
+  }
+
   setStep(index: number) {
     this.step = index;
-  }
-
-  nextStep() {
-    this.step++;
-  }
-
-  prevStep() {
-    this.step--;
   }
 
   createPrefixSum() {
@@ -108,6 +108,9 @@ export class CommitListComponent implements OnInit {
   }
 
   updateList(sDate?: Date, eDate?: Date): void {
+    this.dateRange.maxDate = sDate;
+    this.dateRange.minDate = eDate;
+
     if (!sDate || !eDate) {
       this.commits = [];
       this.liveStats = new CumulativeStats();
@@ -124,12 +127,14 @@ export class CommitListComponent implements OnInit {
         this.commits.push(commit);
       }
     }
-    this.commits.reverse();
+    if (this.latestToLast) {
+      this.commits.reverse();
+    }
     this.liveStats = this.ps.rsq(this.startIndex, this.endIndex);
   }
 
   openDialog(): void {
-    const dialogRef = this.dialog.open<DateRangeDialogComponent, DialogData, DialogData>(DateRangeDialogComponent, {
+    const dialogRef = this.dialog.open<DateRangeDialogComponent, DateRange, DateRange>(DateRangeDialogComponent, {
       data: {
         minDate: this.commitList[0].committedDate,
         maxDate: this.commitList[this.commitList.length - 1].committedDate
@@ -151,12 +156,15 @@ export class CommitListComponent implements OnInit {
   templateUrl: './queryrange.html'
 })
 export class DateRangeDialogComponent {
-  constructor(public dialogRef: MatDialogRef<DateRangeDialogComponent, DialogData>, @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+  constructor(public dialogRef: MatDialogRef<DateRangeDialogComponent, DateRange>, @Inject(MAT_DIALOG_DATA) public data: DateRange) {}
 
   checkValid(d1: string, d2: string): boolean {
     const start = new Date(d1);
     const end = new Date(d2);
     if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return false;
+    }
+    if (end > this.data.maxDate || start < this.data.minDate) {
       return false;
     }
 
