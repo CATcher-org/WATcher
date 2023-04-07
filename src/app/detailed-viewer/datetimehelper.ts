@@ -6,17 +6,11 @@ export const DATE = 'DD/MM/YYYY';
 export const TIME = 'h:mm:ss a';
 export const DATETIME = 'DD/MM/YYYY h:mm:ss a';
 
-export const toMinTime = (d: Moment) => {
-  return d.clone().startOf('day');
-};
+export const toMinTime = (d: Moment) => d.clone().startOf('day');
 
-export const toMaxTime = (d: Moment) => {
-  return d.clone().endOf('day');
-};
+export const toMaxTime = (d: Moment) => d.clone().endOf('day');
 
-export const getTimeinMilisecond = (d: Moment) => {
-  return toMinTime(d).diff(d);
-};
+export const getTimeinMilisecond = (d: Moment) => toMinTime(d).diff(d);
 
 export const convertMiliToString = (time: number) => {
   const days = Math.floor(time / DAY_IN_MILISECOND);
@@ -24,3 +18,5 @@ export const convertMiliToString = (time: number) => {
   const dt = moment.utc(time);
   return `${days} days, ${dt.format('H[ hours, ]m[ minutes]')}`;
 };
+
+export const miliToTime = (time: number) => moment.utc(time).format(TIME);

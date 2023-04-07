@@ -1,11 +1,9 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
-import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Moment } from 'moment';
 import { Accumulator, PrefixSum } from '../../core/models/datastructure/rsq.model';
 import { GithubCommit } from '../../core/models/github/github-commit.model';
 import { DAY_IN_MILISECOND, toMaxTime, toMinTime } from '../datetimehelper';
-import { Moment } from 'moment';
 import { DateRangeDialogComponent } from '../query-range/query-range.component';
 
 /**

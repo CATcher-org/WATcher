@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Moment } from 'moment';
+import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { GithubUser } from '../../core/models/github-user.model';
 import { GithubCommit } from '../../core/models/github/github-commit.model';
 import { GithubService } from '../../core/services/github.service';
-import { DATETIME, convertMiliToString, getTimeinMilisecond, toMinTime } from '../datetimehelper';
-import { Moment } from 'moment';
-import * as moment from 'moment';
+import { convertMiliToString, DATETIME, getTimeinMilisecond, miliToTime } from '../datetimehelper';
 
 export type UserStats = {
   averageCommitTime: string;
@@ -16,11 +16,6 @@ export type UserStats = {
   LongestGapBetweenCommit: string;
   ShortestGapBetweenCommit: string;
 };
-
-const SEC = 1000;
-const MIN = SEC * 60;
-const HOUR = MIN * 60;
-const DAY = HOUR * 24;
 
 /**
  * Calls upon the githubService to retrieve all commits made by the user in the specified repository.
@@ -100,7 +95,7 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
     for (const commit of this.commits) {
       cumulative += getTimeinMilisecond(commit.committedDate);
     }
-    ret.averageCommitTime = new Date(cumulative / this.commits.length).toLocaleTimeString();
+    ret.averageCommitTime = miliToTime(cumulative / this.commits.length);
     this.details.emit(ret);
   }
 }
