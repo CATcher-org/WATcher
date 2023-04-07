@@ -194,6 +194,7 @@ export class GithubService {
         name: REPO,
         id: userId
       },
+      // the auto generated file does not seem to include .target type
       // @ts-ignore
       (result) => result.data.repository.defaultBranchRef.target.history.edges,
       GithubGraphqlCommitStat

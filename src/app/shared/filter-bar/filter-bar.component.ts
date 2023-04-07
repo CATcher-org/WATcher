@@ -8,6 +8,10 @@ import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../issue-tables/dropdow
 import { FilterableComponent } from '../issue-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
 
+/**
+ * This component is abstracted out filterbar used by both detailed-viewer page
+ * and Issues-viewer
+ */
 @Component({
   selector: 'app-filter-bar',
   templateUrl: './filter-bar.component.html',

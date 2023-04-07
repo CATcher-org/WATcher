@@ -14,6 +14,11 @@ import { PhaseService } from '../core/services/phase.service';
 import { FilterBarComponent } from '../shared/filter-bar/filter-bar.component';
 import { ProfileInput, ProfileListComponent } from './profile-list/profile-list.component';
 
+/**
+ * Responsible for structuring the page as well as passing data between components.
+ * Also responsible for retrieving Issues and PRs from the repos and classifying them
+ * into "Created" and "Assigned" PRs and Issues to be displayed by the 4 ProfileListComponents
+ */
 @Component({
   selector: 'app-detailed-viewer',
   templateUrl: './detailed-viewer.component.html',

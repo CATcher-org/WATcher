@@ -19,6 +19,12 @@ const MIN = SEC * 60;
 const HOUR = MIN * 60;
 const DAY = HOUR * 24;
 
+/**
+ * Calls upon the githubService to retrieve all commits made by the user in the specified repository.
+ * This component also passes the commit list to the CommitListComponent as well as generate
+ * the summary statistics which is to be displayed by the ProfileSummaryComponent
+ */
+
 @Component({
   selector: 'app-profile-details',
   templateUrl: './profile-details.component.html',

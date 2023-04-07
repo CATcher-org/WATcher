@@ -14,6 +14,11 @@ export type ProfileInput = {
   isLoading$?: Observable<boolean>;
 };
 
+/**
+ * Similar component to the CardViews in the main dashboard
+ * but it takes in an observable source instead of the users to filter.
+ */
+
 @Component({
   selector: 'app-profile-list',
   templateUrl: './profile-list.component.html',

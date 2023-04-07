@@ -20,7 +20,8 @@ export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
 /**
  * This module serves to improve separation of concerns in IssuesDataTable.ts and IssueList.ts module by containing the logic for
  * applying dropdownFilter to the issues data table in this module.
- * This module exports a single function applySearchFilter which is called by IssuesDataTable.
+ * This module exports a single function applyDropDownFilter which is called by IssueList.
+ * This functions returns a function to check if a issue matches a dropdownfilter
  */
 export function applyDropdownFilter(dropdownFilter: DropdownFilter): (a: Issue) => boolean {
   return (issue) => {

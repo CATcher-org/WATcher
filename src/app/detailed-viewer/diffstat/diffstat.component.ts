@@ -1,5 +1,9 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 
+/**
+ * Visually displays the number of additions of lines
+ * and deletions of lines along with it's corresponding ratio
+ */
 @Component({
   selector: 'app-diffstat',
   templateUrl: './diffstat.component.html',

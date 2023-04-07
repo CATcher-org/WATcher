@@ -2,6 +2,14 @@ import { Issue } from '../../core/models/issue.model';
 import { IssueService } from '../../core/services/issue.service';
 import { TABLE_COLUMNS } from './issue-tables-columns';
 
+/**
+ * This module serves to improve separation of concerns in IssuesDataTable.ts module by containing the logic for
+ * applying search filter to the issues data table in this module.
+ * This module exports a 2 function applySearchFilter and searchFilter
+ * SearchFilter returns a function to test if an Issue matches
+ * applySearchFilter applies searchfilter to a list of issues.
+ */
+
 export function searchFilter(filter: string, displayedColumn: string[]): (a: Issue) => boolean {
   const searchKey = filter.toLowerCase();
   return (issue: Issue) => {
@@ -28,11 +36,6 @@ export function searchFilter(filter: string, displayedColumn: string[]): (a: Iss
   };
 }
 
-/**
- * This module serves to improve separation of concerns in IssuesDataTable.ts module by containing the logic for
- * applying search filter to the issues data table in this module.
- * This module exports a single function applySearchFilter which is called by IssuesDataTable.
- */
 export function applySearchFilter(filter: string, displayedColumn: string[], issueService: IssueService, data: Issue[]): Issue[] {
   const result = data.slice().filter(searchFilter(filter, displayedColumn));
   return result;

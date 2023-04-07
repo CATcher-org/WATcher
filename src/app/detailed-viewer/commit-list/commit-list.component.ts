@@ -5,6 +5,11 @@ import { GithubCommit } from '../../core/models/github/github-commit.model';
 
 const DAYINMILISECOND = 1000 * 60 * 60 * 24;
 
+/**
+ * Takes in a sorted list of commits and visually display each commit using a expansion panel.
+ * This component will also allow the user to select the range of commits to view by letting them select the start and end date.
+ * A DiffStat component is used to summary the cumulative addition as well as deletion of commits in the current view
+ */
 export interface DialogData {
   minDate: Date;
   maxDate: Date;

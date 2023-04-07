@@ -1,5 +1,8 @@
 import { Component, Input } from '@angular/core';
 
+/**
+ * Displays the username and the github profile icon
+ */
 @Component({
   selector: 'app-profile-icon',
   templateUrl: './profile-icon.component.html',
@@ -9,6 +12,5 @@ export class ProfileIconComponent {
   @Input() name: string;
   @Input() avatar_url: string;
 
-  constructor() { }
-
+  constructor() {}
 }
