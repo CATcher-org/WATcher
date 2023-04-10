@@ -1,0 +1,42 @@
+.card {
+  margin: 8px 0px 8px 0px;
+}
+
+.mat-card {
+  padding: 10px;
+}
+
+.column-header {
+  justify-content: center;
+  margin: 0;
+}
+
+.border-green {
+  border-left: 2.4px solid green;
+}
+
+.border-purple {
+  border-left: 2.4px solid purple;
+}
+
+.border-red {
+  border-left: 2.4px solid red;
+}
+
+.mat-card-content {
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  text-align: left;
+  margin: 0px;
+  padding: 0px;
+}
+
+.mat-card-subtitle {
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  text-align: left;
+  overflow: auto;
+  margin: 6px 0;
+}

@@ -56,9 +56,19 @@ export class SessionSelectionComponent implements OnInit {
     /**
      * Persist repo information in local browser storage
      * To retrieve after authentication redirects back to WATcher
+     *
+     * Since localStorage::setItem with an undefined value can result in
+     * the subsequent value being stored as a string being 'undefined', check
+     * if undefined before storing it. Let's reset the items before setting them.
      */
-    window.localStorage.setItem('org', repoOrg);
-    window.localStorage.setItem('dataRepo', repoName);
+
+    window.localStorage.removeItem('org');
+    window.localStorage.removeItem('dataRepo');
+
+    if (repoOrg && repoName) {
+      window.localStorage.setItem('org', repoOrg);
+      window.localStorage.setItem('dataRepo', repoName);
+    }
 
     this.logger.info(`SessionSelectionComponent: Selected Repository: ${repoInformation}`);
 
