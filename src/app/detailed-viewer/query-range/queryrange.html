@@ -1,0 +1,25 @@
+<h3 mat-dialog-title>Select commit time range</h3>
+<div mat-dialog-content>
+  <mat-form-field style="margin-right: 5px">
+    <mat-label>Choose a date</mat-label>
+    <input matInput [min]="data.minDate" [max]="data.maxDate" #in_start [matDatepicker]="picker" />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker [startAt]="data.minDate" #picker></mat-datepicker>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Choose a ending date</mat-label>
+    <input matInput [min]="data.minDate" [max]="data.maxDate" #in_end [matDatepicker]="picker2" />
+    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+    <mat-datepicker [startAt]="data.maxDate" #picker2></mat-datepicker>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button
+    mat-button
+    [disabled]="!checkValid(in_start.value, in_end.value) || !in_start.value.length || !in_end.value.length"
+    (click)="onSubmitClick(in_start.value, in_end.value)"
+  >
+    Update
+  </button>
+  <button mat-button mat-dialog-close>Cancel</button>
+</div>

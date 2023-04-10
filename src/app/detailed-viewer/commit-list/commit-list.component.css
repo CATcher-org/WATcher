@@ -1,0 +1,74 @@
+.basic-container {
+  padding: 5px;
+  display: block;
+  height: 80%;
+  width: 100%;
+  padding-bottom: 5px;
+}
+
+.headers-align .mat-mdc-form-field + .mat-mdc-form-field {
+  margin-left: 8px;
+}
+
+.empty-message {
+  font-size: xx-large;
+  color: lightslategray;
+  margin: 10px;
+}
+
+.small {
+  font-size: small;
+  color: grey;
+}
+
+.empty-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: lightgrey;
+  font-size: xx-large;
+  font-weight: light;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+
+.flex-container > h3 {
+  margin-right: 2px;
+}
+
+.space-apart {
+  justify-content: space-between;
+}
+
+.hidden_scrollbar {
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.hidden_scrollbar::-webkit-scrollbar {
+  /* WebKit */
+  width: 0;
+  height: 0;
+}
+
+.right-align {
+  align-items: center;
+  justify-content: right;
+}
+
+.github-logo {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.commit-description {
+  margin: 5px 5px 5px 5px;
+}
