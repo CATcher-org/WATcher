@@ -98,7 +98,16 @@ export class PhaseService {
    * Retrieves the repository url from local storage and sets to current repository.
    */
   initializeCurrentRepository() {
-    const repo = new Repo(window.localStorage.getItem('org'), window.localStorage.getItem('dataRepo'));
+    const org = window.localStorage.getItem('org');
+    const repoName = window.localStorage.getItem('dataRepo');
+    this.logger.info(`Phase Service: received initial org (${org}) and initial name (${repoName})`);
+    let repo: Repo;
+    if (!org || !repoName) {
+      repo = Repo.ofEmptyRepo();
+    } else {
+      repo = new Repo(org, repoName);
+    }
+    this.logger.info(`PhaseService: Repo is ${repo}`);
     this.setRepository(repo);
   }
 

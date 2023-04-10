@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LabelFilterBarComponent } from '../../../../src/app/issues-viewer/label-filter-bar/label-filter-bar.component';
 
@@ -33,11 +33,13 @@ describe('LabelFilterBarComponent', () => {
   let component: LabelFilterBarComponent;
   let fixture: ComponentFixture<LabelFilterBarComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [LabelFilterBarComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [LabelFilterBarComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LabelFilterBarComponent);
