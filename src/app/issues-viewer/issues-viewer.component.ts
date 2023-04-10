@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { BehaviorSubject, Subscription, of } from 'rxjs';
+import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
 import { Repo } from '../core/models/repo.model';
 import { GithubService } from '../core/services/github.service';
