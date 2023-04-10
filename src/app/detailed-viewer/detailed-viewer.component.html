@@ -1,0 +1,18 @@
+<div>
+  <mat-grid-list cols="7" rowHeight="80px">
+    <mat-grid-tile cols="7" rowspan="3" *ngIf="!user">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    </mat-grid-tile>
+    <ng-container *ngIf="user">
+      <!-- user icon/name -->
+      <mat-grid-tile colspan="3" rowspan="3">
+        <app-profile-icon class="fill-tile" [name]="user.login" [avatar_url]="user.avatar_url"></app-profile-icon>
+      </mat-grid-tile>
+      <!-- user contribution details -->
+      <mat-grid-tile colspan="4" rowspan="6"> </mat-grid-tile>
+      <!-- user summary -->
+      <mat-grid-tile colspan="3" rowspan="3"> </mat-grid-tile>
+    </ng-container>
+  </mat-grid-list>
+  <mat-divider></mat-divider>
+</div>

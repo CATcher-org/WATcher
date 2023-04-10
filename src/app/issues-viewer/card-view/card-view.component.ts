@@ -1,10 +1,12 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { GithubUser } from '../../core/models/github-user.model';
 import { Issue } from '../../core/models/issue.model';
 import { IssueService } from '../../core/services/issue.service';
+import { LoggingService } from '../../core/services/logging.service';
 import { FilterableComponent, FilterableSource } from '../../shared/issue-tables/filterableTypes';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
 
@@ -28,7 +30,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   issues: IssuesDataTable;
   issues$: Observable<Issue[]>;
 
-  constructor(public issueService: IssueService) {}
+  constructor(public issueService: IssueService, private logger: LoggingService, private router: Router) {}
 
   ngOnInit() {
     this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.assignee, this.filters);
@@ -49,5 +51,11 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
 
   retrieveFilterable(): FilterableSource {
     return this.issues;
+  }
+
+  viewUserInBrowser() {
+    this.logger.info(`CardViewComponent: Open user ${this.assignee.login} in browser`);
+
+    this.router.navigate(['/user', this.assignee.login]);
   }
 }
