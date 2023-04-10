@@ -1,0 +1,11 @@
+<mat-card class="card" [ngClass]="getIssueOpenOrCloseColorCSSClass()">
+  <a class="no-underline link-grey-dark" (click)="viewIssueInBrowser($event)">
+    <span [matTooltip]="this.issue.updated_at">
+      <app-issue-pr-card-header [issue]="issue"></app-issue-pr-card-header>
+      <mat-card-content>
+        <app-issue-pr-card-milestone [milestone]="issue.milestone"></app-issue-pr-card-milestone>
+        <app-issue-pr-card-labels [labels]="issue.githubLabels" [labelSet]="dropdownFilter?.hiddenLabels"></app-issue-pr-card-labels>
+      </mat-card-content>
+    </span>
+  </a>
+</mat-card>

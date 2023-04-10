@@ -1,9 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { flatMap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 import { Phase } from '../../core/models/phase.model';
+import { Repo } from '../../core/models/repo.model';
 import { AuthService, AuthState } from '../../core/services/auth.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
+import { GithubService } from '../../core/services/github.service';
 import { GithubEventService } from '../../core/services/githubevent.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { PhaseService } from '../../core/services/phase.service';
@@ -25,7 +28,8 @@ export class ConfirmLoginComponent implements OnInit {
     private errorHandlingService: ErrorHandlingService,
     private githubEventService: GithubEventService,
     private logger: LoggingService,
-    private router: Router
+    private router: Router,
+    public githubService: GithubService
   ) {}
 
   ngOnInit() {}
@@ -55,9 +59,24 @@ export class ConfirmLoginComponent implements OnInit {
   completeLoginProcess(): void {
     this.authService.changeAuthState(AuthState.AwaitingAuthentication);
     this.phaseService.initializeCurrentRepository();
+    this.logger.info(`ConfirmLoginComponent: Current repo is ${this.phaseService.currentRepo}`);
     this.userService
       .createUserModel(this.username)
-      .pipe(flatMap(() => this.githubEventService.setLatestChangeEvent()))
+      .pipe(
+        mergeMap(() => {
+          const currentRepo = this.phaseService.currentRepo;
+          if (Repo.isInvalidRepoName(currentRepo)) {
+            return of(false);
+          }
+          return this.githubService.isRepositoryPresent(currentRepo.owner, currentRepo.name);
+        }),
+        mergeMap((isValidRepository) => {
+          if (!isValidRepository) {
+            return new Observable();
+          }
+          return this.githubEventService.setLatestChangeEvent();
+        })
+      )
       .subscribe(
         () => {
           this.handleAuthSuccess();

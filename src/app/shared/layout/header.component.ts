@@ -185,15 +185,30 @@ export class HeaderComponent implements OnInit {
   }
 
   initializeRepoNameInTitle() {
-    this.currentRepo = this.phaseService.currentRepo.toString();
-    this.logger.info('HeaderComponent: initializing current repo name');
+    if (Repo.isInvalidRepoName(this.phaseService.currentRepo)) {
+      return;
+    }
+    const currentRepoString = this.phaseService.currentRepo.toString();
+    this.logger.info(`HeaderComponent: initializing current repository name as ${currentRepoString}`);
+    this.currentRepo = currentRepoString;
   }
 
   /**
    * Change repository viewed on Issue Dashboard.
    */
-  switchRepo() {
-    this.phaseService.changeCurrentRepository(Repo.of(this.currentRepo));
+  switchRepo(repo: Repo) {
+    this.phaseService.changeCurrentRepository(repo);
+  }
+
+  changeRepositoryInPhaseIfValid(repo: Repo, newRepoString: string) {
+    this.githubService.isRepositoryPresent(repo.owner, repo.name).subscribe((isValidRepository) => {
+      if (!isValidRepository) {
+        throw new Error('Invalid repository name. Please check your organisation and repository name.');
+      }
+
+      this.switchRepo(repo);
+      this.currentRepo = newRepoString;
+    });
   }
 
   openChangeRepoDialog() {
@@ -203,9 +218,10 @@ export class HeaderComponent implements OnInit {
       if (!res) {
         return;
       }
+      const newRepo = Repo.of(res);
 
-      this.currentRepo = res;
-      this.switchRepo();
+      // instead of switching immediately, check if this is a valid repo first
+      this.changeRepositoryInPhaseIfValid(newRepo, res);
     });
   }
 }
