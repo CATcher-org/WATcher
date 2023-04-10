@@ -4,6 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
+import { PhaseService } from '../../core/services/phase.service';
 import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../issue-tables/dropdownfilter';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
@@ -19,6 +20,9 @@ import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.com
 })
 export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() views$: BehaviorSubject<QueryList<FilterableComponent>>;
+
+  repoChangeSubscription: Subscription;
+
   /** Selected dropdown filter value */
   dropdownFilter: DropdownFilter = DEFAULT_DROPDOWN_FILTER;
 
@@ -30,6 +34,9 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   hiddenLabels$ = new BehaviorSubject<Set<string>>(new Set());
   hiddenLabelSubscription: Subscription;
 
+  /** Milestone subscription */
+  milestoneSubscription: Subscription;
+
   /** One MatSort controls all IssueDataTables */
   @ViewChild(MatSort, { static: true }) matSort: MatSort;
 
@@ -37,7 +44,9 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('milestoneSelectorRef', { static: false }) milestoneSelectorRef: MatSelect;
 
-  constructor(public milestoneService: MilestoneService, private logger: LoggingService) {}
+  constructor(public milestoneService: MilestoneService, private phaseService: PhaseService, private logger: LoggingService) {
+    this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => this.initialize());
+  }
 
   ngOnInit() {
     this.initialize();
@@ -57,8 +66,10 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.labelFilterSubscription.unsubscribe();
-    this.hiddenLabelSubscription.unsubscribe();
+    this.labelFilterSubscription?.unsubscribe();
+    this.hiddenLabelSubscription?.unsubscribe();
+    this.milestoneSubscription.unsubscribe();
+    this.repoChangeSubscription.unsubscribe();
   }
 
   /**
@@ -84,7 +95,7 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.labelFilterBar.load();
 
     // Fetch milestones and update dropdown filter
-    this.milestoneService.fetchMilestones().subscribe(
+    this.milestoneSubscription = this.milestoneService.fetchMilestones().subscribe(
       (response) => {
         this.logger.debug('IssuesViewerComponent: Fetched milestones from Github');
         this.milestoneService.milestones.forEach((milestone) => this.dropdownFilter.milestones.push(milestone.number));

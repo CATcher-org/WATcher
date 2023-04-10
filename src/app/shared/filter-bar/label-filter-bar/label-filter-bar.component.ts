@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatListOption } from '@angular/material/list';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { LabelService } from '../../../core/services/label.service';
 import { LoggingService } from '../../../core/services/logging.service';
 
@@ -14,7 +14,7 @@ export type simplifiedLabel = {
   templateUrl: './label-filter-bar.component.html',
   styleUrls: ['./label-filter-bar.component.css']
 })
-export class LabelFilterBarComponent implements OnInit {
+export class LabelFilterBarComponent implements OnInit, OnDestroy {
   @Input() selectedLabels: BehaviorSubject<string[]>;
   @Input() hiddenLabels: BehaviorSubject<Set<string>>;
 
@@ -23,11 +23,17 @@ export class LabelFilterBarComponent implements OnInit {
   hiddenLabelNames: Set<string> = new Set();
   loaded = false;
 
+  labelSubscription: Subscription;
+
   constructor(private labelService: LabelService, private logger: LoggingService) {}
 
   ngOnInit() {
     this.loaded = false;
     this.load();
+  }
+
+  ngOnDestroy(): void {
+    this.labelSubscription?.unsubscribe();
   }
 
   hide(label: string): void {
@@ -63,7 +69,7 @@ export class LabelFilterBarComponent implements OnInit {
 
   /** loads in the labels in the repository */
   public load() {
-    this.labelService.fetchLabels().subscribe(
+    this.labelSubscription = this.labelService.fetchLabels().subscribe(
       (response) => {
         this.logger.debug('LabelFilterBarComponent: Fetched labels from Github');
       },
