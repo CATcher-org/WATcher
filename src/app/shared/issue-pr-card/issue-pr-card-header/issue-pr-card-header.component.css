@@ -1,0 +1,26 @@
+span.octicon {
+  margin-right: 8px;
+  display: inline-flex;
+}
+
+.mat-card-title {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  text-align: left;
+  overflow: auto;
+}
+
+.column-header .mat-card-title {
+  font-size: 14px;
+}
+
+.mat-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:host ::ng-deep .mat-card-header-text {
+  margin: 2px;
+}

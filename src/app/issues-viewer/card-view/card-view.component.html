@@ -19,35 +19,7 @@
   </div>
 
   <div *ngFor="let issue of this.issues$ | async; index as i">
-    <mat-card class="card" [ngClass]="this.getIssueOpenOrCloseColorCSSClass(issue)">
-      <a class="no-underline link-grey-dark" (click)="viewIssueInBrowser(issue.id, $event)">
-        <span [matTooltip]="this.issue.updated_at">
-          <mat-card-header>
-            <mat-card-title>
-              <span class="octicon" [octicon]="this.getOcticon(issue)" [color]="this.getIssueOpenOrCloseColor(issue)"></span>
-              #{{ issue.id }}: {{ this.fitTitleText(issue.title) }}
-            </mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <mat-chip-list aria-label="Labels">
-              <ng-container *ngIf="issue.milestone.state">
-                <span class="octicon-milestone" octicon="milestone" color="grey" size="8"></span>
-                {{ issue.milestone.title }}
-              </ng-container>
-              <ng-container *ngFor="let label of issue.githubLabels">
-                <mat-chip
-                  *ngIf="!issues.dropdownFilter?.hiddenLabels.has(label.name)"
-                  [ngStyle]="labelService.setLabelStyle(label.color)"
-                  selected
-                >
-                  {{ label.name }}
-                </mat-chip>
-              </ng-container>
-            </mat-chip-list>
-          </mat-card-content>
-        </span>
-      </a>
-    </mat-card>
+    <app-issue-pr-card [issue]="issue" [dropdownFilter]="issues.dropdownFilter"></app-issue-pr-card>
   </div>
 
   <mat-card *ngIf="this.issues.isLoading$ | async" style="display: flex; justify-content: center; align-items: center">

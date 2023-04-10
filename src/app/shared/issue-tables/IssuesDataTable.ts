@@ -2,7 +2,7 @@ import { DataSource } from '@angular/cdk/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
-import { flatMap, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { GithubUser } from '../../core/models/github-user.model';
 import { Issue } from '../../core/models/issue.model';
 import { IssueService } from '../../core/services/issue.service';
@@ -83,77 +83,71 @@ export class IssuesDataTable extends DataSource<Issue> {
     ].filter((x) => x !== undefined);
 
     this.issueService.startPollIssues();
-    this.issueSubscription = this.issueService.issues$
+    this.issueSubscription = merge(...displayDataChanges)
       .pipe(
-        flatMap(() => {
-          // merge creates an observable from values that changes display
-          return merge(...displayDataChanges).pipe(
-            // maps each change in display value to new issue ordering or filtering
-            map(() => {
-              let data = <Issue[]>Object.values(this.issueService.issues$.getValue()).reverse();
-              if (this.defaultFilter) {
-                data = data.filter(this.defaultFilter);
-              }
-              // Filter by assignee of issue
-              if (this.assignee) {
-                data = data.filter((issue) => {
-                  if (issue.issueOrPr === 'PullRequest') {
-                    return issue.author === this.assignee.login;
-                  } else if (!issue.assignees) {
-                    return false;
-                  } else {
-                    return issue.assignees.includes(this.assignee.login);
-                  }
-                });
+        // maps each change in display value to new issue ordering or filtering
+        map(() => {
+          let data = <Issue[]>Object.values(this.issueService.issues$.getValue()).reverse();
+          if (this.defaultFilter) {
+            data = data.filter(this.defaultFilter);
+          }
+          // Filter by assignee of issue
+          if (this.assignee) {
+            data = data.filter((issue) => {
+              if (issue.issueOrPr === 'PullRequest') {
+                return issue.author === this.assignee.login;
+              } else if (!issue.assignees) {
+                return false;
               } else {
-                // If no assignee, filter the unassigned issues only.
-                data = data.filter((issue) => {
-                  return issue.issueOrPr !== 'PullRequest' && issue.assignees.length === 0;
-                });
+                return issue.assignees.includes(this.assignee.login);
               }
-              // Dropdown Filters
-              data = data
-                .filter((issue) => {
-                  if (this.dropdownFilter.status === 'open') {
-                    return issue.state === 'OPEN';
-                  } else if (this.dropdownFilter.status === 'closed') {
-                    return issue.state !== 'OPEN';
-                  } else {
-                    return true;
-                  }
-                })
-                .filter((issue) => {
-                  if (this.dropdownFilter.type === 'issue') {
-                    return issue.issueOrPr === 'Issue';
-                  } else if (this.dropdownFilter.type === 'pullrequest') {
-                    return issue.issueOrPr === 'PullRequest';
-                  } else {
-                    return true;
-                  }
-                })
-                .filter((issue) => {
-                  return this.dropdownFilter.labels.every((label) => issue.labels.includes(label));
-                });
-
-              if (Array.isArray(this.dropdownFilter.milestones)) {
-                data = data.filter((issue) => {
-                  return issue.milestone && this.dropdownFilter.milestones.some((milestone) => issue.milestone.number === milestone);
-                });
+            });
+          } else {
+            data = data.filter((issue) => {
+              return issue.issueOrPr !== 'PullRequest' && issue.assignees.length === 0;
+            });
+          }
+          // Dropdown Filters
+          data = data
+            .filter((issue) => {
+              if (this.dropdownFilter.status === 'open') {
+                return issue.state === 'OPEN';
+              } else if (this.dropdownFilter.status === 'closed') {
+                return issue.state !== 'OPEN';
+              } else {
+                return true;
               }
-
-              if (this.sort !== undefined) {
-                data = getSortedData(this.sort, data);
-              }
-              data = this.getFilteredTeamData(data);
-              data = applySearchFilter(this.filter, this.displayedColumn, this.issueService, data);
-              this.count = data.length;
-
-              if (this.paginator !== undefined) {
-                data = paginateData(this.paginator, data);
-              }
-              return data;
             })
-          );
+            .filter((issue) => {
+              if (this.dropdownFilter.type === 'issue') {
+                return issue.issueOrPr === 'Issue';
+              } else if (this.dropdownFilter.type === 'pullrequest') {
+                return issue.issueOrPr === 'PullRequest';
+              } else {
+                return true;
+              }
+            })
+            .filter((issue) => {
+              return this.dropdownFilter.labels.every((label) => issue.labels.includes(label));
+            });
+
+          if (Array.isArray(this.dropdownFilter.milestones)) {
+            data = data.filter((issue) => {
+              return issue.milestone && this.dropdownFilter.milestones.some((milestone) => issue.milestone.number === milestone);
+            });
+          }
+
+          if (this.sort !== undefined) {
+            data = getSortedData(this.sort, data);
+          }
+          data = this.getFilteredTeamData(data);
+          data = applySearchFilter(this.filter, this.displayedColumn, this.issueService, data);
+          this.count = data.length;
+
+          if (this.paginator !== undefined) {
+            data = paginateData(this.paginator, data);
+          }
+          return data;
         })
       )
       .subscribe((issues) => {

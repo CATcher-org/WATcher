@@ -1,8 +1,9 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
 import { MatSort } from '@angular/material/sort';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
+import { Repo } from '../core/models/repo.model';
 import { GithubService } from '../core/services/github.service';
 import { IssueService } from '../core/services/issue.service';
 import { LoggingService } from '../core/services/logging.service';
@@ -99,11 +100,19 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
    * Fetch and initialize all information from repository to populate Issue Dashboard.
    */
   private initialize() {
+    this.checkIfValidRepository().subscribe((isValidRepository) => {
+      if (!isValidRepository) {
+        throw new Error('Invalid repository name. Please provide repository name in the format Org/Repository.');
+      }
+    });
+
     // Fetch assignees
     this.assignees = [];
+
     this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
 
     // Fetch issues
+    this.issueService.reset(false);
     this.issueService.reloadAllIssues();
 
     // Fetch labels
@@ -118,5 +127,18 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
       (err) => {},
       () => {}
     );
+  }
+
+  /**
+   * Checks if our current repository available on phase service is indeed a valid repository
+   */
+  private checkIfValidRepository() {
+    const currentRepo = this.phaseService.currentRepo;
+
+    if (Repo.isInvalidRepoName(currentRepo)) {
+      return of(false);
+    }
+
+    return this.githubService.isRepositoryPresent(currentRepo.owner, currentRepo.name);
   }
 }
