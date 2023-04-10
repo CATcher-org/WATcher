@@ -11,6 +11,7 @@ import { DiffstatComponent } from './diffstat/diffstat.component';
 import { ProfileDetailsComponent } from './profile-details/profile-details.component';
 import { ProfileIconComponent } from './profile-icon/profile-icon.component';
 import { ProfileListComponent } from './profile-list/profile-list.component';
+import { DateRangeDialogComponent } from './query-range/query-range.component';
 
 @NgModule({
   imports: [DetailedViewerRoutingModule, FilterBarModule, SharedModule, IssuesPrCardModule, IssuesViewerModule, MarkdownModule.forChild()],
@@ -20,7 +21,8 @@ import { ProfileListComponent } from './profile-list/profile-list.component';
     ProfileDetailsComponent,
     ProfileListComponent,
     DiffstatComponent,
-    CommitListComponent
+    CommitListComponent,
+    DateRangeDialogComponent
   ]
 })
 export class DetailedViewerModule {}

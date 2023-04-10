@@ -4,6 +4,7 @@ import { Moment } from 'moment';
 import { Accumulator, PrefixSum } from '../../core/models/datastructure/rsq.model';
 import { GithubCommit } from '../../core/models/github/github-commit.model';
 import { DAY_IN_MILISECOND, toMaxTime, toMinTime } from '../datetimehelper';
+import { DateRangeDialogComponent } from '../query-range/query-range.component';
 
 /**
  * Takes in a sorted list of commits and visually display each commit using a expansion panel.
@@ -130,5 +131,22 @@ export class CommitListComponent implements OnInit {
       this.commits.reverse();
     }
     this.liveStats = this.ps.rsq(this.startIndex, this.endIndex);
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open<DateRangeDialogComponent, DateRange, DateRange>(DateRangeDialogComponent, {
+      data: {
+        minDate: this.commitList[0].committedDate,
+        maxDate: this.commitList[this.commitList.length - 1].committedDate
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.startIndex = this.dateToIndex(result.minDate);
+        this.endIndex = this.dateToIndex(result.maxDate);
+        this.updateList(result.minDate, result.maxDate);
+      }
+    });
   }
 }
