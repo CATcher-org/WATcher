@@ -6,9 +6,6 @@
     <span class="small" *ngIf="dateRange.minDate">
       {{ dateRange.minDate?.format('DD/MM/YYYY') }} - {{ dateRange.maxDate?.format('DD/MM/YYYY') }}</span
     >
-    <button mat-icon-button matTooltip="Change date range" (click)="openDialog()" [disabled]="!this.commitList.length">
-      <mat-icon>calendar_today</mat-icon>
-    </button>
     <button mat-icon-button (click)="toggleOrder()">
       <mat-icon *ngIf="!latestToLast" matTooltip="Sort from latest to earliest">arrow_upward</mat-icon>
       <mat-icon *ngIf="latestToLast" matTooltip="Sort from earliest to latest">arrow_downward</mat-icon>
