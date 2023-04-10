@@ -7,9 +7,10 @@ import { SharedModule } from '../shared/shared.module';
 import { DetailedViewerRoutingModule } from './detailed-viewer-routing.module';
 import { DetailedViewerComponent } from './detailed-viewer.component';
 import { ProfileIconComponent } from './profile-icon/profile-icon.component';
+import { ProfileListComponent } from './profile-list/profile-list.component';
 
 @NgModule({
   imports: [DetailedViewerRoutingModule, FilterBarModule, SharedModule, IssuesPrCardModule, IssuesViewerModule, MarkdownModule.forChild()],
-  declarations: [DetailedViewerComponent, ProfileIconComponent]
+  declarations: [DetailedViewerComponent, ProfileIconComponent, ProfileListComponent]
 })
 export class DetailedViewerModule {}
