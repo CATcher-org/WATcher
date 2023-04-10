@@ -1,0 +1,50 @@
+.scroll-container {
+  height: 100%;
+  width: 100%;
+  padding-right: 5px;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  height: fit-content;
+}
+
+.mat-list-base .mat-list-item,
+.mat-list-base .mat-list-option {
+  height: fit-content;
+  margin: 11px;
+}
+
+.container > span {
+  font-size: 15px;
+}
+
+.type {
+  font-weight: bold;
+}
+
+.result {
+  font-weight: normal;
+}
+
+.hidden_scrollbar {
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.hidden_scrollbar::-webkit-scrollbar {
+  /* WebKit */
+  width: 0;
+  height: 0;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

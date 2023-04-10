@@ -10,10 +10,12 @@
       </mat-grid-tile>
       <!-- user contribution details -->
       <mat-grid-tile colspan="4" rowspan="6">
-        <app-profile-details [user]="user" class="fill-tile"></app-profile-details>
+        <app-profile-details [user]="user" class="fill-tile" (details)="stats = $event"></app-profile-details>
       </mat-grid-tile>
       <!-- user summary -->
-      <mat-grid-tile colspan="3" rowspan="3"> </mat-grid-tile>
+      <mat-grid-tile colspan="3" rowspan="3">
+        <app-profile-summary [stats]="stats" class="fill-tile"></app-profile-summary>
+      </mat-grid-tile>
     </ng-container>
   </mat-grid-list>
   <mat-divider></mat-divider>

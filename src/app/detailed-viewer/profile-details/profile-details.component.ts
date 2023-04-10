@@ -5,6 +5,17 @@ import { Subscription } from 'rxjs';
 import { GithubUser } from '../../core/models/github-user.model';
 import { GithubCommit } from '../../core/models/github/github-commit.model';
 import { GithubService } from '../../core/services/github.service';
+import { convertMiliToString, DATETIME, getTimeinMilisecond, miliToTime } from '../datetimehelper';
+
+export type UserStats = {
+  averageCommitTime: string;
+  firstCommitDate: string;
+  lastCommitDate: string;
+  totalCommit: number;
+  averageGapBetweenCommit: string;
+  LongestGapBetweenCommit: string;
+  ShortestGapBetweenCommit: string;
+};
 
 /**
  * Calls upon the githubService to retrieve all commits made by the user in the specified repository.
@@ -19,6 +30,7 @@ import { GithubService } from '../../core/services/github.service';
 })
 export class ProfileDetailsComponent implements OnInit, OnDestroy {
   @Input() user: GithubUser;
+  @Output() details = new EventEmitter<UserStats>();
 
   commitSubscription: Subscription;
   commits: GithubCommit[];
@@ -37,6 +49,7 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
 
   reloadData() {
     this.commits = undefined;
+    this.details.emit();
     if (this.commitSubscription) {
       this.commitSubscription.unsubscribe();
     }
@@ -44,6 +57,45 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
       this.queryDate = moment();
       x.reverse();
       this.commits = x;
+      this.getStats();
     });
+  }
+
+  getStats(): void {
+    const ret: UserStats = {
+      averageCommitTime: 'Not enough Commits',
+      averageGapBetweenCommit: 'Not enough Commits',
+      LongestGapBetweenCommit: 'Not enough Commits',
+      ShortestGapBetweenCommit: 'Not enough Commits',
+      totalCommit: this.commits.length,
+      firstCommitDate: 'Not enough Commits',
+      lastCommitDate: 'Not enough Commits'
+    };
+    if (this.commits.length >= 2) {
+      let largestGap = -Infinity;
+      let smallestGap = Infinity;
+      let totalGap = 0;
+      for (let i = 1; i < this.commits.length; i++) {
+        const gap = this.commits[i].committedDate.diff(this.commits[i - 1].committedDate);
+        largestGap = Math.max(largestGap, gap);
+        smallestGap = Math.min(smallestGap, gap);
+        totalGap += gap;
+      }
+      ret.LongestGapBetweenCommit = convertMiliToString(largestGap);
+      ret.ShortestGapBetweenCommit = convertMiliToString(smallestGap);
+      ret.averageGapBetweenCommit = convertMiliToString(totalGap / (this.commits.length - 1));
+    }
+
+    if (this.commits.length === 0) {
+      return this.details.emit(ret);
+    }
+    ret.firstCommitDate = this.commits[0].committedDate.format(DATETIME);
+    ret.lastCommitDate = this.commits[this.commits.length - 1].committedDate.format(DATETIME);
+    let cumulative = 0;
+    for (const commit of this.commits) {
+      cumulative += getTimeinMilisecond(commit.committedDate);
+    }
+    ret.averageCommitTime = miliToTime(cumulative / this.commits.length);
+    this.details.emit(ret);
   }
 }
