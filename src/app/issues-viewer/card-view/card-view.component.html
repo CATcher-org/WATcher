@@ -1,16 +1,17 @@
 <div class="card-column">
   <div class="column-header">
     <mat-card>
-      <mat-card-header>
+      <mat-card-header [ngStyle]="{ height: '40px' }">
         <div
           mat-card-avatar
+          *ngIf="this.assignee"
           [ngStyle]="{
             background: 'url(' + this.assignee.avatar_url + ')',
             'background-size': '40px'
           }"
         ></div>
         <mat-card-title>
-          {{ this.assignee !== undefined ? this.assignee.login : '' }}
+          {{ this.assignee !== undefined ? this.assignee.login : 'Unassigned Issues' }}
         </mat-card-title>
         <div class="row-count">{{ this.issues.count }}</div>
       </mat-card-header>

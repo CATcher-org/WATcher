@@ -22,7 +22,6 @@ export class IssuePrCardComponent {
     this.githubService.viewIssueInBrowser(this.issue.id, event);
   }
 
-
   /** Returns CSS class for border color */
   getIssueOpenOrCloseColorCSSClass() {
     if (this.issue.state === 'OPEN') {
