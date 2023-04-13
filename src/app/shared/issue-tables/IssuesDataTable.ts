@@ -102,6 +102,10 @@ export class IssuesDataTable extends DataSource<Issue> {
                 return issue.assignees.includes(this.assignee.login);
               }
             });
+          } else {
+            data = data.filter((issue) => {
+              return issue.issueOrPr !== 'PullRequest' && issue.assignees.length === 0;
+            });
           }
           // Dropdown Filters
           data = data
