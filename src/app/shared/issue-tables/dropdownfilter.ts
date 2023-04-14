@@ -30,6 +30,7 @@ export function applyDropdownFilter(dropdownFilter: DropdownFilter): (a: Issue) 
     if (dropdownFilter.status === 'open') {
       ret = ret && issue.state === 'OPEN';
     } else if (dropdownFilter.status === 'closed') {
+      // there is apparently also a status called 'all' based on github api
       ret = ret && issue.state === 'CLOSED';
     }
 
