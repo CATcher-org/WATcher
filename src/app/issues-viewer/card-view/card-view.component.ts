@@ -54,8 +54,10 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   }
 
   viewUserInBrowser() {
-    this.logger.info(`CardViewComponent: Open user ${this.assignee.login} in browser`);
+    if (this.assignee) {
+      this.logger.info(`CardViewComponent: Open user ${this.assignee.login} in browser`);
 
-    this.router.navigate(['/user', this.assignee.login]);
+      this.router.navigate(['/user', this.assignee.login]);
+    }
   }
 }
