@@ -29,6 +29,8 @@ export function applyDropdownFilter(dropdownFilter: DropdownFilter): (a: Issue) 
 
     if (dropdownFilter.status === 'open') {
       ret = ret && issue.state === 'OPEN';
+    } else if (dropdownFilter.status === 'closed') {
+      ret = ret && issue.state === 'CLOSED';
     }
 
     if (dropdownFilter.type === 'issue') {
