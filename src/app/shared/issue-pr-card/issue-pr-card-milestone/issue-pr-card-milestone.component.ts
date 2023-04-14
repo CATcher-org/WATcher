@@ -9,5 +9,5 @@ import { Milestone } from '../../../core/models/milestone.model';
 export class IssuePrCardMilestoneComponent {
   @Input() milestone: Milestone;
 
-  constructor() { }
+  constructor() {}
 }

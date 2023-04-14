@@ -10,5 +10,5 @@ import { LabelService } from '../../../core/services/label.service';
 export class IssuePrCardLabelsComponent {
   @Input() labels: Label[];
   @Input() labelSet: Set<Label>;
-  constructor(public labelService: LabelService) { }
+  constructor(public labelService: LabelService) {}
 }

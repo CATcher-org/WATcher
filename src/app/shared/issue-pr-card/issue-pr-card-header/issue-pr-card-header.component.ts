@@ -7,10 +7,9 @@ import { Issue } from '../../../core/models/issue.model';
   styleUrls: ['./issue-pr-card-header.component.css']
 })
 export class IssuePrCardHeaderComponent {
-
   @Input() issue: Issue;
 
-  constructor() { }
+  constructor() {}
 
   /**
    * Returns corresponding Github icon identifier for issue to display.
@@ -73,5 +72,4 @@ export class IssuePrCardHeaderComponent {
       })
       .join(SPLITTER_TEXT);
   }
-
 }
