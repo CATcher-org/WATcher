@@ -1,12 +1,12 @@
 span.octicon-milestone {
-    margin-right: 4px;
-    display: inline-flex;
+  margin-right: 4px;
+  display: inline-flex;
 }
 
 .milestone {
-    display: inline-flex;
-    margin-right: 8px;
-    margin-bottom: 0px;
-    margin-top: 0px;
-    align-items: center;
+  display: inline-flex;
+  margin-right: 8px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  align-items: center;
 }
