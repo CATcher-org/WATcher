@@ -1,0 +1,54 @@
+<mat-grid-list cols="7" rowHeight="80px">
+  <mat-grid-tile colspan="3">
+    <mat-form-field class="search-bar">
+      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search" />
+    </mat-form-field>
+  </mat-grid-tile>
+
+  <mat-grid-tile colspan="3">
+    <div class="dropdown-filters">
+      <mat-form-field appearance="standard">
+        <mat-label>Status</mat-label>
+        <mat-select [(value)]="this.dropdownFilter.status" (selectionChange)="applyDropdownFilter()">
+          <mat-option value="all">All</mat-option>
+          <mat-option value="open">Open</mat-option>
+          <mat-option value="closed">Closed</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="standard">
+        <mat-label>Type</mat-label>
+        <mat-select [(value)]="this.dropdownFilter.type" (selectionChange)="applyDropdownFilter()">
+          <mat-option value="all">All</mat-option>
+          <mat-option value="issue">Issue</mat-option>
+          <mat-option value="pullrequest">Pull Request</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="standard" matSort [matSortDisableClear]="true">
+        <mat-label>Sort</mat-label>
+        <mat-select [(value)]="this.dropdownFilter.sort" (selectionChange)="applyDropdownFilter()">
+          <mat-option value="id">
+            <span mat-sort-header="id">ID</span>
+          </mat-option>
+          <mat-option value="title">
+            <span mat-sort-header="title">Title</span>
+          </mat-option>
+          <mat-option value="date">
+            <span mat-sort-header="date">Date Updated</span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="standard">
+        <mat-label>Milestone</mat-label>
+        <mat-select #milestoneSelectorRef [(value)]="this.dropdownFilter.milestones" (selectionChange)="applyDropdownFilter()" multiple>
+          <mat-option *ngFor="let milestone of this.milestoneService.milestones" [value]="milestone.number">
+            {{ milestone.title }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </mat-grid-tile>
+
+  <mat-grid-tile class="label-filter-grid-tile" colspan="1">
+    <app-label-filter-bar [selectedLabels]="this.labelFilter$" [hiddenLabels]="this.hiddenLabels$"></app-label-filter-bar>
+  </mat-grid-tile>
+</mat-grid-list>

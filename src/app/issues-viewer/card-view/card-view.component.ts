@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { GithubUser } from '../../core/models/github-user.model';
 import { Issue } from '../../core/models/issue.model';
 import { IssueService } from '../../core/services/issue.service';
+import { FilterableComponent, FilterableSource } from '../../shared/issue-tables/filterableTypes';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
 
 @Component({
@@ -16,7 +17,7 @@ import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
 /**
  * Displays issues as Cards.
  */
-export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, FilterableComponent {
   @Input() headers: string[];
   @Input() assignee?: GithubUser = undefined;
   @Input() filters?: any = undefined;
@@ -44,5 +45,9 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy {
     setTimeout(() => {
       this.issues.disconnect();
     });
+  }
+
+  retrieveFilterable(): FilterableSource {
+    return this.issues;
   }
 }

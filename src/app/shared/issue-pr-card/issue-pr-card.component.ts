@@ -3,7 +3,7 @@ import { Issue } from '../../core/models/issue.model';
 import { GithubService } from '../../core/services/github.service';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
-import { DropdownFilter } from '../issue-tables/IssuesDataTable';
+import { DropdownFilter } from '../issue-tables/dropdownfilter';
 
 @Component({
   selector: 'app-issue-pr-card',
