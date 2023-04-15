@@ -6,7 +6,6 @@ import { AppConfig } from '../../environments/environment';
 import { GithubUser } from '../core/models/github-user.model';
 import { ApplicationService } from '../core/services/application.service';
 import { AuthService, AuthState } from '../core/services/auth.service';
-import { ElectronService } from '../core/services/electron.service';
 import { ErrorHandlingService } from '../core/services/error-handling.service';
 import { LoggingService } from '../core/services/logging.service';
 import { PhaseService } from '../core/services/phase.service';
@@ -30,7 +29,6 @@ export class AuthComponent implements OnInit, OnDestroy {
 
   constructor(
     public appService: ApplicationService,
-    public electronService: ElectronService,
     private authService: AuthService,
     private userService: UserService,
     private errorHandlingService: ErrorHandlingService,
@@ -39,20 +37,7 @@ export class AuthComponent implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private activatedRoute: ActivatedRoute,
     private logger: LoggingService
-  ) {
-    this.electronService.registerIpcListener('github-oauth-reply', (event, { token, error, isWindowClosed }) => {
-      this.ngZone.run(() => {
-        if (error) {
-          if (!isWindowClosed) {
-            this.errorHandlingService.handleError(error);
-          }
-          this.goToSessionSelect();
-          return;
-        }
-        this.authService.storeOAuthAccessToken(token);
-      });
-    });
-  }
+  ) {}
 
   ngOnInit() {
     this.logger.startSession();
@@ -108,7 +93,6 @@ export class AuthComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.electronService.removeIpcListeners('github-oauth-reply');
     if (this.authStateSubscription) {
       this.authStateSubscription.unsubscribe();
     }
