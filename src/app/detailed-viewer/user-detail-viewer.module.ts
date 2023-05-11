@@ -4,12 +4,12 @@ import { IssuesViewerModule } from '../issues-viewer/issues-viewer.module';
 import { FilterBarModule } from '../shared/filter-bar/filter-bar.module';
 import { IssuesPrCardModule } from '../shared/issue-pr-card/issue-pr-card.module';
 import { SharedModule } from '../shared/shared.module';
-import { DetailedViewerRoutingModule } from './detailed-viewer-routing.module';
-import { DetailedViewerComponent } from './detailed-viewer.component';
 import { ProfileIconComponent } from './profile-icon/profile-icon.component';
+import { DetailedViewerRoutingModule } from './user-detail-viewer-routing.module';
+import { UserDetailViewerComponent } from './user-detail-viewer.component';
 
 @NgModule({
   imports: [DetailedViewerRoutingModule, FilterBarModule, SharedModule, IssuesPrCardModule, IssuesViewerModule, MarkdownModule.forChild()],
-  declarations: [DetailedViewerComponent, ProfileIconComponent]
+  declarations: [UserDetailViewerComponent, ProfileIconComponent]
 })
 export class DetailedViewerModule {}

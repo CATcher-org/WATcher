@@ -15,10 +15,10 @@ import { PhaseService } from '../core/services/phase.service';
  */
 @Component({
   selector: 'app-detailed-viewer',
-  templateUrl: './detailed-viewer.component.html',
-  styleUrls: ['./detailed-viewer.component.css']
+  templateUrl: './user-detail-viewer.component.html',
+  styleUrls: ['./user-detail-viewer.component.css']
 })
-export class DetailedViewerComponent implements OnInit, OnDestroy, AfterViewInit {
+export class UserDetailViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   public user: GithubUser = undefined;
 
   private userSubscription: Subscription;
@@ -42,7 +42,7 @@ export class DetailedViewerComponent implements OnInit, OnDestroy, AfterViewInit
 
   ngOnInit() {
     if (this.route.snapshot.paramMap.get('name') === undefined) {
-      this.logger.info('detailed-viewer: Missing username');
+      this.logger.info('UserDetailViewerComponent: Missing username');
       this.router.navigate(['']);
     }
     this.initialize();
@@ -65,7 +65,7 @@ export class DetailedViewerComponent implements OnInit, OnDestroy, AfterViewInit
           return;
         }
       }
-      this.logger.info(`DetailedViewerComponent: User ${targettedUser} is not found`);
+      this.logger.info(`UserDetailViewerComponent: User ${targettedUser} is not found`);
       this.router.navigate([Phase.issuesViewer]);
     });
   }
