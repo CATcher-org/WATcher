@@ -13,6 +13,6 @@ import { UserDetailViewerComponent } from './user-detail-viewer.component';
 
 @NgModule({
   imports: [DetailedViewerRoutingModule, FilterBarModule, SharedModule, IssuesPrCardModule, IssuesViewerModule, MarkdownModule.forChild()],
-  declarations: [UserDetailViewerComponent, ProfileIconComponent, ProfileListComponent]
+  declarations: [UserDetailViewerComponent, ProfileIconComponent, ProfileDetailsComponent, ProfileListComponent, CommitListComponent]
 })
 export class DetailedViewerModule {}
