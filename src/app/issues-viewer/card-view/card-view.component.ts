@@ -63,7 +63,6 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   switchToUserDetailPhase() {
     if (this.assignee) {
       this.logger.info(`CardViewComponent: Open user ${this.assignee.login} in browser`);
-      this.phaseService.changePhase(Phase.userDetailViewer);
       this.router.navigate([Phase.userDetailViewer, this.assignee.login]);
     }
   }
