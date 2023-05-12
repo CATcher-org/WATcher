@@ -80,6 +80,7 @@ export class UserDetailViewerComponent implements OnInit, OnDestroy, AfterViewIn
     private router: Router,
     private logger: LoggingService
   ) {
+    this.phaseService.changePhase(Phase.userDetailViewer);
     this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => {
       issueService.reset(false);
       this.initialize();
