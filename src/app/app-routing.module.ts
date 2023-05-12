@@ -4,13 +4,13 @@ import { ActivityDashboardModule } from './activity-dashboard/activity-dashboard
 import { AuthModule } from './auth/auth.module';
 import { AuthGuard } from './core/guards/auth.guard';
 import { IssuesViewerModule } from './issues-viewer/issues-viewer.module';
-import { DetailedViewerModule } from './user-detail-viewer/user-detail-viewer.module';
+import { UserDetailViewerModule } from './user-detail-viewer/user-detail-viewer.module';
 
 const routes: Routes = [
   { path: '', loadChildren: () => AuthModule },
   { path: 'issuesViewer', loadChildren: () => IssuesViewerModule, canLoad: [AuthGuard] },
   { path: 'activityDashboard', loadChildren: () => ActivityDashboardModule, canLoad: [AuthGuard] },
-  { path: 'user', loadChildren: () => DetailedViewerModule, canLoad: [AuthGuard] }
+  { path: 'user', loadChildren: () => UserDetailViewerModule, canLoad: [AuthGuard] }
 ];
 
 @NgModule({
