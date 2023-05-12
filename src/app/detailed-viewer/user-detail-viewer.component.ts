@@ -39,7 +39,6 @@ export class UserDetailViewerComponent implements OnInit, OnDestroy, AfterViewIn
 
   /** Observes for any change in repo*/
   repoChangeSubscription: Subscription;
-  issueChangeSubscription: Subscription;
 
   headers: ProfileInput[] = [
     {
