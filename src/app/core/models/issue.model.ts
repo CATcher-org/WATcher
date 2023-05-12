@@ -328,5 +328,10 @@ export const IssuesFilter = {
     Student: 'NO_FILTER',
     Tutor: 'NO_FILTER',
     Admin: 'NO_FILTER'
+  },
+  user: {
+    Student: 'NO_FILTER',
+    Tutor: 'NO_FILTER',
+    Admin: 'NO_FILTER'
   }
 };
