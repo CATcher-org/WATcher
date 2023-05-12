@@ -41,7 +41,7 @@ export class UserDetailViewerComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   ngOnInit() {
-    if (this.route.snapshot.paramMap.get('name') === undefined) {
+    if (this.route.snapshot.paramMap.get('name') === null) {
       this.logger.info('UserDetailViewerComponent: Missing username');
       this.router.navigate(['']);
     }
