@@ -5,7 +5,6 @@ import { mergeMap } from 'rxjs/operators';
 import { Phase } from '../../core/models/phase.model';
 import { Repo } from '../../core/models/repo.model';
 import { AuthService, AuthState } from '../../core/services/auth.service';
-import { ElectronService } from '../../core/services/electron.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { GithubService } from '../../core/services/github.service';
 import { GithubEventService } from '../../core/services/githubevent.service';
@@ -23,14 +22,13 @@ export class ConfirmLoginComponent implements OnInit {
   @Input() currentSessionOrg: string;
 
   constructor(
-    public electronService: ElectronService,
-    public authService: AuthService,
-    public phaseService: PhaseService,
-    public userService: UserService,
-    public errorHandlingService: ErrorHandlingService,
-    public githubEventService: GithubEventService,
-    public logger: LoggingService,
-    public router: Router,
+    private authService: AuthService,
+    private phaseService: PhaseService,
+    private userService: UserService,
+    private errorHandlingService: ErrorHandlingService,
+    private githubEventService: GithubEventService,
+    private logger: LoggingService,
+    private router: Router,
     public githubService: GithubService
   ) {}
 
@@ -43,7 +41,6 @@ export class ConfirmLoginComponent implements OnInit {
 
   logIntoAnotherAccount() {
     this.logger.info('ConfirmLoginComponent: Logging into another account');
-    this.electronService.clearCookies();
     this.authService.startOAuthProcess();
   }
 

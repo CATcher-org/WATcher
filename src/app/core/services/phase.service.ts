@@ -13,7 +13,8 @@ export const SESSION_AVALIABILITY_FIX_FAILED = 'Session Availability Fix failed.
  */
 export const PhaseDescription = {
   [Phase.issuesViewer]: 'Issues Dashboard',
-  [Phase.activityDashboard]: 'Activity Dashboard'
+  [Phase.activityDashboard]: 'Activity Dashboard',
+  [Phase.userDetailViewer]: 'User Details'
 };
 
 /**
