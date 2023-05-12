@@ -18,7 +18,7 @@ import { ProfileInput, ProfileListComponent } from './profile-list/profile-list.
  * into "Created" and "Assigned" PRs and Issues to be displayed by the 4 ProfileListComponents
  */
 @Component({
-  selector: 'app-detailed-viewer',
+  selector: 'app-user-detail-viewer',
   templateUrl: './user-detail-viewer.component.html',
   styleUrls: ['./user-detail-viewer.component.css']
 })
@@ -38,7 +38,6 @@ export class UserDetailViewerComponent implements OnInit, OnDestroy, AfterViewIn
 
   /** Observes for any change in repo*/
   repoChangeSubscription: Subscription;
-  issueChangeSubscription: Subscription;
 
   headers: ProfileInput[] = [
     {
@@ -80,6 +79,7 @@ export class UserDetailViewerComponent implements OnInit, OnDestroy, AfterViewIn
     private router: Router,
     private logger: LoggingService
   ) {
+    this.phaseService.changePhase(Phase.userDetailViewer);
     this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => {
       issueService.reset(false);
       this.initialize();
@@ -87,9 +87,9 @@ export class UserDetailViewerComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   ngOnInit() {
-    if (this.route.snapshot.paramMap.get('name') === undefined) {
+    if (this.route.snapshot.paramMap.get('name') === null) {
       this.logger.info('UserDetailViewerComponent: Missing username');
-      this.router.navigate(['']);
+      this.router.navigateByUrl(Phase.issuesViewer);
     }
     this.initialize();
   }

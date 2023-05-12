@@ -9,7 +9,6 @@ import { HiddenData } from '../models/hidden-data.model';
 import { Issue, Issues, IssuesFilter, STATUS } from '../models/issue.model';
 import { Phase } from '../models/phase.model';
 import { appVersion } from './application.service';
-import { ElectronService } from './electron.service';
 import { GithubService } from './github.service';
 import { PhaseService } from './phase.service';
 import { UserService } from './user.service';
@@ -34,12 +33,7 @@ export class IssueService {
   /** Whether the IssueService is downloading the data from Github*/
   public isLoading = new BehaviorSubject<boolean>(false);
 
-  constructor(
-    private githubService: GithubService,
-    private userService: UserService,
-    private phaseService: PhaseService,
-    private electronService: ElectronService
-  ) {
+  constructor(private githubService: GithubService, private userService: UserService, private phaseService: PhaseService) {
     this.issues$ = new BehaviorSubject(new Array<Issue>());
   }
 
@@ -119,7 +113,7 @@ export class IssueService {
 
   createIssue(title: string, description: string, severity: string, type: string): Observable<Issue> {
     const labelsArray = [this.createLabel('severity', severity), this.createLabel('type', type)];
-    const clientType = this.electronService.isElectron() ? 'Desktop' : 'Web';
+    const clientType = 'Web';
     const hiddenData = new Map([
       ['session', this.sessionId],
       ['Version', `${clientType} v${appVersion}`]

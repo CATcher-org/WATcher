@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
+import { Phase } from '../core/models/phase.model';
 import { Repo } from '../core/models/repo.model';
 import { GithubService } from '../core/services/github.service';
 import { IssueService } from '../core/services/issue.service';
@@ -36,6 +37,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     public issueService: IssueService,
     public milestoneService: MilestoneService
   ) {
+    phaseService.changePhase(Phase.issuesViewer);
     this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => {
       this.issueService.reset(false);
       this.initialize();
