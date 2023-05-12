@@ -19,4 +19,4 @@ import { UserDetailViewerComponent } from './user-detail-viewer.component';
   ],
   declarations: [UserDetailViewerComponent, ProfileIconComponent]
 })
-export class DetailedViewerModule {}
+export class UserDetailViewerModule {}
