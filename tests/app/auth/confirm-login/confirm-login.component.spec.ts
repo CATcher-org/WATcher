@@ -5,7 +5,6 @@ import { ConfirmLoginComponent } from '../../../../src/app/auth/confirm-login/co
 import { Repo } from '../../../../src/app/core/models/repo.model';
 import { User, UserRole } from '../../../../src/app/core/models/user.model';
 import { AuthService } from '../../../../src/app/core/services/auth.service';
-import { ElectronService } from '../../../../src/app/core/services/electron.service';
 import { ErrorHandlingService } from '../../../../src/app/core/services/error-handling.service';
 import { GithubService } from '../../../../src/app/core/services/github.service';
 import { GithubEventService } from '../../../../src/app/core/services/githubevent.service';
@@ -21,7 +20,6 @@ const mockUser: User = {
 const getRepoWithValidName = () => new Repo('mock', 'repo');
 
 describe('ConfirmLoginComponent', () => {
-  let electronService: jasmine.SpyObj<ElectronService>;
   let authService: jasmine.SpyObj<AuthService>;
   let phaseService: jasmine.SpyObj<PhaseService>;
   let userService: jasmine.SpyObj<UserService>;
@@ -34,7 +32,6 @@ describe('ConfirmLoginComponent', () => {
   let fixture: ComponentFixture<ConfirmLoginComponent>;
 
   beforeEach(async(() => {
-    electronService = jasmine.createSpyObj<ElectronService>('ElectronService', ['clearCookies']);
     authService = jasmine.createSpyObj<AuthService>('AuthService', ['changeAuthState', 'setTitleWithPhaseDetail', 'startOAuthProcess']);
     phaseService = jasmine.createSpyObj<PhaseService>('PhaseService', ['initializeCurrentRepository', 'currentRepo']);
     logger = jasmine.createSpyObj<LoggingService>('LoggingService', ['info']);
@@ -46,7 +43,6 @@ describe('ConfirmLoginComponent', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: ElectronService, useValue: electronService },
         { provide: AuthService, useValue: authService },
         { provide: PhaseService, useValue: phaseService },
         { provide: LoggingService, useValue: logger },

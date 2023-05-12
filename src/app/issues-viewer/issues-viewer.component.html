@@ -1,7 +1,7 @@
 <div>
   <app-filter-bar [views$]="views" #filterbar></app-filter-bar>
 
-  <div style="display: flex">
+  <div class="wrapper">
     <app-card-view
       *ngFor="let assignee of assignees"
       class="issue-table"

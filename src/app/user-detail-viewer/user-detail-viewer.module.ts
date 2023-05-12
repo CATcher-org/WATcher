@@ -11,11 +11,18 @@ import { ProfileIconComponent } from './profile-icon/profile-icon.component';
 import { ProfileListComponent } from './profile-list/profile-list.component';
 import { ProfileSummaryComponent } from './profile-summary/profile-summary.component';
 import { DateRangeDialogComponent } from './query-range/query-range.component';
-import { DetailedViewerRoutingModule } from './user-detail-viewer-routing.module';
+import { UserDetailViewerRoutingModule } from './user-detail-viewer-routing.module';
 import { UserDetailViewerComponent } from './user-detail-viewer.component';
 
 @NgModule({
-  imports: [DetailedViewerRoutingModule, FilterBarModule, SharedModule, IssuesPrCardModule, IssuesViewerModule, MarkdownModule.forChild()],
+  imports: [
+    UserDetailViewerRoutingModule,
+    FilterBarModule,
+    SharedModule,
+    IssuesPrCardModule,
+    IssuesViewerModule,
+    MarkdownModule.forChild()
+  ],
   declarations: [
     UserDetailViewerComponent,
     ProfileIconComponent,
@@ -27,4 +34,4 @@ import { UserDetailViewerComponent } from './user-detail-viewer.component';
     ProfileSummaryComponent
   ]
 })
-export class DetailedViewerModule {}
+export class UserDetailViewerModule {}
