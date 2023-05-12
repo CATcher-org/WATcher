@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ActivityDashboardModule } from './activity-dashboard/activity-dashboard.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthGuard } from './core/guards/auth.guard';
-import { DetailedViewerModule } from './detailed-viewer/user-detail-viewer.module';
+import { DetailedViewerModule } from './user-detail-viewer/user-detail-viewer.module';
 import { IssuesViewerModule } from './issues-viewer/issues-viewer.module';
 
 const routes: Routes = [
