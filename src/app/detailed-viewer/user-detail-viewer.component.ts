@@ -19,7 +19,7 @@ import { ProfileInput, ProfileListComponent } from './profile-list/profile-list.
  * into "Created" and "Assigned" PRs and Issues to be displayed by the 4 ProfileListComponents
  */
 @Component({
-  selector: 'app-detailed-viewer',
+  selector: 'app-user-detail-viewer',
   templateUrl: './user-detail-viewer.component.html',
   styleUrls: ['./user-detail-viewer.component.css']
 })
