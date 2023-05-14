@@ -10,7 +10,7 @@
             'background-size': '40px'
           }"
         ></div>
-        <mat-card-title>
+        <mat-card-title [class.link-grey-dark]="this.assignee !== undefined" (click)="switchToUserDetailPhase()">
           {{ this.assignee !== undefined ? this.assignee.login : 'Unassigned Issues' }}
         </mat-card-title>
         <div class="row-count">{{ this.issues.count }}</div>

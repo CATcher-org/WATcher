@@ -35,6 +35,7 @@ import { HeaderComponent } from './shared/layout';
 import { markedOptionsFactory } from './shared/lib/marked';
 import { RepoChangeFormComponent } from './shared/repo-change-form/repo-change-form.component';
 import { SharedModule } from './shared/shared.module';
+import { UserDetailViewerModule } from './user-detail-viewer/user-detail-viewer.module';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { SharedModule } from './shared/shared.module';
     BrowserAnimationsModule,
     AuthModule,
     IssuesViewerModule,
+    UserDetailViewerModule,
     ActivityDashboardModule,
     SharedModule,
     HttpClientModule,

@@ -4,5 +4,6 @@
  */
 export enum Phase {
   issuesViewer = 'issuesViewer',
-  activityDashboard = 'activityDashboard'
+  activityDashboard = 'activityDashboard',
+  userDetailViewer = 'user'
 }
