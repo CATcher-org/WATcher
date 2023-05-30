@@ -24,7 +24,7 @@ export function getSortedData(sort: MatSort, data: Issue[]): Issue[] {
       case 'id':
         return direction * compareByIntegerValue(a.id, b.id);
       case 'date':
-        return direction * compareByDateValue(a.created_at, b.created_at);
+        return direction * compareByDateValue(a.updated_at, b.updated_at);
       default:
         // title, responseTag are string values
         return direction * compareByStringValue(a[sort.active], b[sort.active]);
