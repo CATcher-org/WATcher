@@ -42,6 +42,8 @@ div.column-header .mat-card-header {
 }
 
 .mat-card-content {
+  height: 53vh;
+  overflow: auto;
   margin-bottom: 2px;
 }
 
