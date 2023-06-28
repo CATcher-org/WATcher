@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatListOption } from '@angular/material/list';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { LabelService } from '../../../core/services/label.service';
@@ -25,7 +25,7 @@ export class LabelFilterBarComponent implements OnInit, OnDestroy {
 
   labelSubscription: Subscription;
 
-  constructor(private labelService: LabelService, private logger: LoggingService) {}
+  constructor(private labelService: LabelService, private logger: LoggingService, private cdref: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.loaded = false;
@@ -92,5 +92,11 @@ export class LabelFilterBarComponent implements OnInit, OnDestroy {
 
   filter(filter: string, target: string): boolean {
     return !target.toLowerCase().includes(filter.toLowerCase());
+  }
+
+  removeAllSelection(): void {
+    this.selectedLabels.next([]);
+    this.selectedLabelNames = [];
+    this.cdref.detectChanges();
   }
 }
