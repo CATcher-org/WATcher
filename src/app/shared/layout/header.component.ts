@@ -201,13 +201,17 @@ export class HeaderComponent implements OnInit {
   }
 
   changeRepositoryInPhaseIfValid(repo: Repo, newRepoString: string) {
+    this.phaseService.isChangingRepo.next(true);
+
     this.githubService.isRepositoryPresent(repo.owner, repo.name).subscribe((isValidRepository) => {
       if (!isValidRepository) {
+        this.phaseService.isChangingRepo.next(false);
         throw new Error('Invalid repository name. Please check your organisation and repository name.');
       }
 
       this.switchRepo(repo);
       this.currentRepo = newRepoString;
+      this.phaseService.isChangingRepo.next(false);
     });
   }
 
