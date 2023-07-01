@@ -45,6 +45,11 @@ div.column-header .mat-card-header {
   height: 53vh;
   overflow: auto;
   margin-bottom: 2px;
+  scrollbar-width: none;
+}
+
+.mat-card-content::-webkit-scrollbar {
+  display: none;
 }
 
 .mat-card-subtitle {
