@@ -18,8 +18,8 @@
     </mat-card>
   </div>
 
-  <mat-card-content>
-    <div *ngFor="let issue of this.issues$ | async; index as i">
+  <mat-card-content style="position: relative;">
+    <div *ngFor="let issue of this.issues$ | async; index as i" class="scrollable-container" style="position: relative; z-index: -1;">
       <app-issue-pr-card [issue]="issue" [dropdownFilter]="issues.dropdownFilter"></app-issue-pr-card>
     </div>
     <mat-card *ngIf="this.issues.isLoading$ | async" style="display: flex; justify-content: center; align-items: center">
