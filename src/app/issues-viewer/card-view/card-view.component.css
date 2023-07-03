@@ -33,6 +33,8 @@ div.column-header .mat-card-title {
 
 div.column-header {
   justify-content: center;
+  position: relative;
+  z-index: 1;
 }
 
 div.column-header .mat-card-header {
