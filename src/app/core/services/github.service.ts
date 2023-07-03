@@ -190,16 +190,6 @@ export class GithubService {
   }
 
   /**
-   * Creates a repository in for the authenticated user location.
-   * @param name - Name of Repo to create.
-   * @return Observable<boolean> - That returns true if the repository has been successfully
-   *                                created.
-   */
-  createRepository(name: string): void {
-    octokit.repos.createForAuthenticatedUser({ name: name });
-  }
-
-  /**
    * Fetches information about an issue using GraphQL.
    *
    * If the issue is not modified, return a `304 - Not Modified` response.
@@ -321,37 +311,6 @@ export class GithubService {
         return response['data'];
       }),
       catchError((err) => throwError('Failed to fetch assignable users for repository'))
-    );
-  }
-
-  closeIssue(id: number): Observable<GithubIssue> {
-    return from(octokit.issues.update({ owner: ORG_NAME, repo: REPO, issue_number: id, state: 'closed' })).pipe(
-      map((response: GithubResponse<GithubIssue>) => {
-        this.issuesLastModifiedManager.set(id, response.headers['last-modified']);
-        return new GithubIssue(response.data);
-      })
-    );
-  }
-
-  updateIssue(id: number, title: string, description: string, labels: string[], assignees?: string[]): Observable<GithubIssue> {
-    return from(
-      octokit.issues.update({
-        owner: ORG_NAME,
-        repo: REPO,
-        issue_number: id,
-        title: title,
-        body: description,
-        labels: labels,
-        assignees: assignees
-      })
-    ).pipe(
-      map((response: GithubResponse<GithubIssue>) => {
-        this.issuesLastModifiedManager.set(id, response.headers['last-modified']);
-        return new GithubIssue(response.data);
-      }),
-      catchError((err) => {
-        return throwError(err);
-      })
     );
   }
 
