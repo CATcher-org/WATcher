@@ -1,5 +1,5 @@
 <div>
-  <div *ngIf="this.phaseService.isChangingRepo | async; else elseBlock;" style="display: flex; justify-content: center; align-items: center">
+  <div class="loading-spinner" *ngIf="this.phaseService.isChangingRepo | async; else elseBlock;">
     <mat-progress-spinner 
       color="primary"
       mode="indeterminate"
