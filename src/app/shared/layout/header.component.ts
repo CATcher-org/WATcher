@@ -198,6 +198,7 @@ export class HeaderComponent implements OnInit {
    */
   switchRepo(repo: Repo) {
     this.phaseService.changeCurrentRepository(repo);
+    this.auth.setTitleWithPhaseDetail();
   }
 
   changeRepositoryInPhaseIfValid(repo: Repo, newRepoString: string) {
