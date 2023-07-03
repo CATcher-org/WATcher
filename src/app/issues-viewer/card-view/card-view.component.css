@@ -41,11 +41,12 @@ div.column-header .mat-card-header {
   justify-content: center;
 }
 
-.mat-card-content {
+.scrollable-container {
   height: 53vh;
   overflow: auto;
   margin-bottom: 2px;
   scrollbar-width: none;
+  position: relative;
 
   /* Ref: https://css-scroll-shadows.vercel.app */
   background: 
@@ -59,8 +60,19 @@ div.column-header .mat-card-header {
   background-size: 100% 15px, 100% 15px, 100% 5px, 100% 5px;
 }
 
-.mat-card-content::-webkit-scrollbar {
+.scrollable-container::-webkit-scrollbar {
   display: none;
+}
+
+.issue-pr-cards {
+  position: relative;
+  z-index: -1;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .mat-card-subtitle {
