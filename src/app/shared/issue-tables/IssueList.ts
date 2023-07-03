@@ -11,8 +11,9 @@ import { TABLE_COLUMNS } from './issue-tables-columns';
 import { searchFilter } from './search-filter';
 
 /**
- * Class similar to IssueDataTable but instead of listening to issueService,
- * it will listen to an observable instead
+ * IssueList is similar to IssueDataTable but instead of listening to issueService,
+ * it will listen to for changes in a list of issues instead.
+ * This is useful for when you want to manage a list of issues that could have been filtered from issueService.
  */
 export class IssueList extends DataSource<Issue> implements FilterableSource {
   readonly DISPLAYEDCOLUMN = [TABLE_COLUMNS.ID, TABLE_COLUMNS.TITLE, TABLE_COLUMNS.ASSIGNEE, TABLE_COLUMNS.LABEL];
