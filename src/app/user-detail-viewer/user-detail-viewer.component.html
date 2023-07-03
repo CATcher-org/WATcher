@@ -15,4 +15,14 @@
     </ng-container>
   </mat-grid-list>
   <mat-divider></mat-divider>
+  <app-filter-bar [views$]="this.views" #filterbar></app-filter-bar>
+  <div style="display: flex">
+    <app-profile-list
+      *ngFor="let header of headers"
+      [headerInfo]="header"
+      [sort]="filterbar.matSort"
+      [isLoading$]="issueService.isLoading.asObservable()"
+      style="flex: 1 1 0px"
+    ></app-profile-list>
+  </div>
 </div>
