@@ -109,7 +109,15 @@ export class SessionSelectionComponent implements OnInit {
     });
   }
 
+  private formatRepoInformation(orgName: string, dataRepo: string): string {
+    return [orgName, dataRepo].join('/');
+  }
+
   private autofillRepo() {
-    this.repoForm.get('repo').setValue(this.urlEncodedRepo);
+    const repoOrg: string = window.localStorage.getItem('org');
+    const repoName: string = window.localStorage.getItem('dataRepo');
+    if (repoOrg && repoName) {
+      this.repoForm.get('repo').setValue(this.formatRepoInformation(repoOrg, repoName));
+    }
   }
 }

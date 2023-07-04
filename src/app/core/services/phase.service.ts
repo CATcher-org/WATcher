@@ -87,6 +87,16 @@ export class PhaseService {
       this.otherRepos.push(this.currentRepo); // TODO feature: can be used to provide repo suggestions
     }
     this.setRepository(repo, this.otherRepos);
+
+    /**
+     * Adapted from session-selection.component.ts
+     */
+    window.localStorage.removeItem('org');
+    window.localStorage.removeItem('dataRepo');
+
+    window.localStorage.setItem('org', repo.owner);
+    window.localStorage.setItem('dataRepo', repo.name);
+
     this.repoChanged$.next(repo);
   }
 
