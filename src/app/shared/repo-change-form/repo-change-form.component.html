@@ -2,7 +2,7 @@
 <div mat-dialog-content>
   <mat-form-field appearance="fill">
     <mat-label>Repository Location (Org/Repo)</mat-label>
-    <input matInput [(ngModel)]="this.repoName" />
+    <input matInput [(ngModel)]="this.repoName" (keydown.enter)="onYesClick()"/>
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
