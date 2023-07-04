@@ -27,9 +27,13 @@ Commit message to be used when the PR is merged
 (NOTE: Wrap the body at 72 characters)
 ```
 
-### Checklist:
+<details><summary>
+<h3>Checklist:</h3>
+</summary>
 
 - [ ] I have tested my changes thoroughly.
 - [ ] I have created tests for any new code files created in this PR or provided a link to a issue/PR that addresses this.
 - [ ] I have added or modified code comments to improve code readability where necessary.
 - [ ] I have updated the project's documentation as necessary.
+
+</details>
