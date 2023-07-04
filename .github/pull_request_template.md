@@ -2,11 +2,12 @@
 Fixes #[Issue_number]
 
 #### Type of change:
-- [ ] ✨ New Feature/ Enhancement
-- [ ] 🐛 Bug Fix
-- [ ] 🧪 Tests Update
-- [ ] 📝 Documentation Update (CATcher-org/WATcher-docs#[Issue_number])
-- [ ] 🎨 Code Refactoring
+(Delete where appropriate)
+- ✨ New Feature/ Enhancement
+- 🐛 Bug Fix
+- 🧪 Tests Update
+- 📝 Documentation Update (CATcher-org/WATcher-docs#[Issue_number])
+- 🎨 Code Refactoring
 
 ### Changes Made:
 * [Description of the changes made in your PR]
