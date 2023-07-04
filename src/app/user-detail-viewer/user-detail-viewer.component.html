@@ -9,7 +9,9 @@
         <app-profile-icon class="fill-tile" [name]="user.login" [avatar_url]="user.avatar_url"></app-profile-icon>
       </mat-grid-tile>
       <!-- user contribution details -->
-      <mat-grid-tile colspan="4" rowspan="6"> </mat-grid-tile>
+      <mat-grid-tile colspan="4" rowspan="6">
+        <app-profile-details [user]="user" class="fill-tile"></app-profile-details>
+      </mat-grid-tile>
       <!-- user summary -->
       <mat-grid-tile colspan="3" rowspan="3"> </mat-grid-tile>
     </ng-container>

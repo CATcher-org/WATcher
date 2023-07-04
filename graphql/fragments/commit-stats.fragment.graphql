@@ -1,0 +1,8 @@
+fragment CommitStats on Commit {
+  additions
+  deletions
+  committedDate
+  messageHeadline
+  url
+  messageBody
+}

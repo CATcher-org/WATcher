@@ -1,0 +1,56 @@
+<div class="flex-container space-apart">
+  <div class="flex-container">
+    <h3 [matTooltip]="updateTime ? 'Last updated on ' + updateTime.format('DD/MM/YYYY h:mm:ss a') : ''">
+      {{ listTitle }}
+    </h3>
+    <span class="small" *ngIf="dateRange.minDate">
+      {{ dateRange.minDate?.format('DD/MM/YYYY') }} - {{ dateRange.maxDate?.format('DD/MM/YYYY') }}</span
+    >
+    <button mat-icon-button (click)="toggleOrder()">
+      <mat-icon *ngIf="!latestToLast" matTooltip="Sort from latest to earliest">arrow_upward</mat-icon>
+      <mat-icon *ngIf="latestToLast" matTooltip="Sort from earliest to latest">arrow_downward</mat-icon>
+    </button>
+
+    <button mat-icon-button (click)="refresh.emit()" matTooltip="Refresh Commits">
+      <mat-icon>autorenew</mat-icon>
+    </button>
+  </div>
+</div>
+<mat-divider></mat-divider>
+<div class="basic-container hidden_scrollbar">
+  <div *ngIf="commits.length === 0" class="empty-wrapper">
+    <mat-icon class="empty-message">help</mat-icon>
+    <span>There is nothing here.</span>
+  </div>
+  <mat-accordion class="headers-align">
+    <mat-expansion-panel *ngFor="let commit of commits; let i = index" [expanded]="i === step" (opened)="setStep(i)">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ commit.messageHeadline }}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <span class="flex-container space-apart">
+        <h4>Commit Message</h4>
+        <span>
+          Commited on: {{ commit.committedDate.format('DD/MM/YYYY, h:mm:ss a') }}
+          <a [href]="commit.url">
+            <button mat-icon-button class="right-align">
+              <img class="github-logo" src="./assets/images/github-logo.png" alt="github-logo" />
+            </button>
+          </a>
+        </span>
+      </span>
+      <mat-divider></mat-divider>
+      <div
+        class="commit-description"
+        [innerText]="commit.messageBody.length ? commit.messageBody : 'Sadly, no commit message was provided 😔'"
+      ></div>
+      <mat-action-row>
+        <button *ngIf="i > 0" mat-button color="warn" (click)="setStep(i - 1)">Previous</button>
+
+        <button *ngIf="i < commitList.length - 1" mat-button color="primary" (click)="setStep(i + 1)">Next</button>
+      </mat-action-row>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

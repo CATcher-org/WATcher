@@ -99,7 +99,7 @@ export class AppModule {
         this.logger.info('AppModule: GraphQL response', operation.getContext(), `in ${Math.round(time)}ms`);
         const repo = operation.getContext().response.body.data.repository;
         const item = Object.keys(repo)[0];
-        this.logger.debug('AppModule: GraphQL response body', item, repo[item].edges.length, repo[item].edges);
+        this.logger.debug('AppModule: GraphQL response body', item, repo[item].edges?.length, repo[item].edges);
         return result;
       });
     });
