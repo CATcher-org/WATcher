@@ -72,8 +72,8 @@ export class SessionSelectionComponent implements OnInit {
     if (repoOrg && repoName) {
       window.localStorage.setItem('org', repoOrg);
       window.localStorage.setItem('dataRepo', repoName);
-      
-      // Update suggestions
+
+      // Update autofill repository URL suggestions in localStorage
       if (!this.suggestions.includes(repoInformation)) {
         this.suggestions.push(repoInformation);
         window.localStorage.setItem('suggestions', JSON.stringify(this.suggestions));
@@ -118,7 +118,7 @@ export class SessionSelectionComponent implements OnInit {
       repo: ['', Validators.required]
     });
     this.suggestions = JSON.parse(window.localStorage.getItem('suggestions')) || [];
-    // Ref: https://v10.material.angular.io/components/autocomplete/overview 
+    // Ref: https://v10.material.angular.io/components/autocomplete/overview
     this.filteredSuggestions = this.repoForm.get('repo').valueChanges
       .pipe(
         startWith(''),
