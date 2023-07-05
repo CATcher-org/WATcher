@@ -90,6 +90,19 @@ export class PhaseService {
     this.repoChanged$.next(repo);
   }
 
+  async changeRepositoryIfValid(repo: Repo) {
+    this.isChangingRepo.next(true);
+
+    const isValidRepository = await this.githubService.isRepositoryPresent(repo.owner, repo.name).toPromise();
+    if (!isValidRepository) {
+      this.isChangingRepo.next(false);
+      throw new Error('Invalid repository name. Please check your organisation and repository name.');
+    }
+
+    this.changeCurrentRepository(repo);
+    this.isChangingRepo.next(false);
+  }
+
   /**
    * Returns the full repository array of the current feature.
    */
