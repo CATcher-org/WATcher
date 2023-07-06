@@ -10,7 +10,7 @@
 }
 
 .scroll-container {
-  height: 400px;
+  max-height: 400px;
   width: 100%;
   overflow-y: auto;
   -ms-overflow-style: none; /* IE and Edge */
