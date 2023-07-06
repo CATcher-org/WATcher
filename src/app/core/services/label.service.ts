@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, Observable, Subscription, timer } from 'rxjs';
+import { catchError, exhaustMap, map } from 'rxjs/operators';
 import { Label } from '../models/label.model';
 import { GithubService } from './github.service';
 
@@ -22,9 +22,39 @@ const COLOR_WHITE = 'ffffff'; // Light color for text with dark background
  * from the GitHub repository for the WATcher application.
  */
 export class LabelService {
-  labels: Label[];
+  static readonly POLL_INTERVAL = 5000; // 5 seconds
 
-  constructor(private githubService: GithubService) {}
+  labels: Label[];
+  labels$: BehaviorSubject<Label[]>;
+
+  private labelsPollSubscription: Subscription;
+
+  constructor(private githubService: GithubService) {
+    this.labels$ = new BehaviorSubject(new Array<Label>());
+  }
+
+  startPollLabels() {
+    if (this.labelsPollSubscription === undefined) {
+      this.labelsPollSubscription = timer(0, LabelService.POLL_INTERVAL)
+        .pipe(
+          exhaustMap(() => {
+            return this.fetchLabels().pipe(
+              catchError(() => {
+                return EMPTY;
+              })
+            );
+          })
+        )
+        .subscribe();
+    }
+  }
+
+  stopPollLabels() {
+    if (this.labelsPollSubscription) {
+      this.labelsPollSubscription.unsubscribe();
+      this.labelsPollSubscription = undefined;
+    }
+  }
 
   /**
    * Fetch labels from Github.
@@ -91,5 +121,12 @@ export class LabelService {
     };
 
     return styles;
+  }
+
+  reset() {
+    this.labels = undefined;
+    this.labels$.next(new Array<Label>());
+
+    this.stopPollLabels();
   }
 }
