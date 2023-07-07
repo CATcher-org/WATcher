@@ -17,7 +17,7 @@
       <mat-selection-list [(ngModel)]="selectedLabelNames" (selectionChange)="selectedLabels.next(selectedLabelNames)">
         <mat-list-option
           #option
-          *ngFor="let label of allLabels"
+          *ngFor="let label of this.labels$ | async;"
           [value]="label.name"
           [selected]="selectedLabelNames.includes(label.name)"
           class="list-option"

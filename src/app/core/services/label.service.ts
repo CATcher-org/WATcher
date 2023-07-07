@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, EMPTY, Observable, Subscription, timer } from 'rxjs';
-import { catchError, exhaustMap, map } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, Observable, of, Subscription, timer } from 'rxjs';
+import { catchError, exhaustMap, finalize, map } from 'rxjs/operators';
 import { Label } from '../models/label.model';
 import { GithubService } from './github.service';
 
@@ -13,6 +13,11 @@ const COLOR_DARKNESS_THRESHOLD = 0.184;
 const COLOR_BLACK = '000000'; // Dark color for text with light background
 const COLOR_WHITE = 'ffffff'; // Light color for text with dark background
 
+export type simplifiedLabel = {
+  name: string;
+  color: string;
+};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -22,16 +27,15 @@ const COLOR_WHITE = 'ffffff'; // Light color for text with dark background
  * from the GitHub repository for the WATcher application.
  */
 export class LabelService {
-  static readonly POLL_INTERVAL = 5000; // 5 seconds
+  static readonly POLL_INTERVAL = 30000; // 5 seconds
 
   labels: Label[];
-  labels$: BehaviorSubject<Label[]>;
+  simplifiedLabels: simplifiedLabel[];
 
   private labelsPollSubscription: Subscription;
+  private labelsSubject = new BehaviorSubject<simplifiedLabel[]>([]);
 
-  constructor(private githubService: GithubService) {
-    this.labels$ = new BehaviorSubject(new Array<Label>());
-  }
+  constructor(private githubService: GithubService) {}
 
   startPollLabels() {
     if (this.labelsPollSubscription === undefined) {
@@ -45,7 +49,9 @@ export class LabelService {
             );
           })
         )
-        .subscribe();
+        .subscribe(() => {
+          this.labelsSubject.next(this.simplifiedLabels);
+        });
     }
   }
 
@@ -56,6 +62,15 @@ export class LabelService {
     }
   }
 
+  connect(): Observable<simplifiedLabel[]> {
+    return this.labelsSubject.asObservable();
+  }
+
+  disconnect() {
+    this.labelsSubject.complete();
+    this.stopPollLabels();
+  }
+
   /**
    * Fetch labels from Github.
    */
@@ -63,6 +78,13 @@ export class LabelService {
     return this.githubService.fetchAllLabels().pipe(
       map((response) => {
         this.labels = this.parseLabelData(response);
+        this.simplifiedLabels = this.labels.map((label) => {
+          return {
+            name: label.getFormattedName(),
+            color: label.color
+          };
+        });
+        this.labelsSubject.next(this.simplifiedLabels);
         return response;
       })
     );
@@ -125,7 +147,6 @@ export class LabelService {
 
   reset() {
     this.labels = undefined;
-    this.labels$.next(new Array<Label>());
 
     this.stopPollLabels();
   }

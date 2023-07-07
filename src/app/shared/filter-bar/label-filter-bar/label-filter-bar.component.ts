@@ -1,13 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatListOption } from '@angular/material/list';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { LabelService } from '../../../core/services/label.service';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { LabelService, simplifiedLabel } from '../../../core/services/label.service';
 import { LoggingService } from '../../../core/services/logging.service';
-
-export type simplifiedLabel = {
-  name: string;
-  color: string;
-};
 
 @Component({
   selector: 'app-label-filter-bar',
@@ -18,7 +13,7 @@ export class LabelFilterBarComponent implements OnInit, OnDestroy {
   @Input() selectedLabels: BehaviorSubject<string[]>;
   @Input() hiddenLabels: BehaviorSubject<Set<string>>;
 
-  allLabels: simplifiedLabel[];
+  labels$: Observable<simplifiedLabel[]>;
   selectedLabelNames: string[] = [];
   hiddenLabelNames: Set<string> = new Set();
   loaded = false;
@@ -29,11 +24,18 @@ export class LabelFilterBarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loaded = false;
-    this.load();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.load();
+      this.labels$ = this.labelService.connect();
+    });
   }
 
   ngOnDestroy(): void {
     this.labelSubscription?.unsubscribe();
+    this.labelService.disconnect();
   }
 
   hide(label: string): void {
@@ -69,25 +71,16 @@ export class LabelFilterBarComponent implements OnInit, OnDestroy {
 
   /** loads in the labels in the repository */
   public load() {
+    this.labelService.startPollLabels();
     this.labelSubscription = this.labelService.fetchLabels().subscribe(
       (response) => {
         this.logger.debug('LabelFilterBarComponent: Fetched labels from Github');
       },
       (err) => {},
       () => {
-        this.initialize();
+        this.loaded = true;
       }
     );
-  }
-
-  private initialize() {
-    this.allLabels = this.labelService.labels.map((label) => {
-      return {
-        name: label.getFormattedName(),
-        color: label.color
-      };
-    });
-    this.loaded = true;
   }
 
   filter(filter: string, target: string): boolean {
