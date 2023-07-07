@@ -35,7 +35,6 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
 
   ngOnDestroy(): void {
     this.labelSubscription?.unsubscribe();
-    this.labelService.disconnect();
   }
 
   hide(label: string): void {

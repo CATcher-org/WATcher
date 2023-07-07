@@ -66,11 +66,6 @@ export class LabelService {
     return this.labelsSubject.asObservable();
   }
 
-  disconnect() {
-    this.labelsSubject.complete();
-    this.stopPollLabels();
-  }
-
   /**
    * Fetch labels from Github.
    */
