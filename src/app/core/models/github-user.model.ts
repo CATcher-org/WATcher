@@ -11,3 +11,7 @@ export interface GithubUser {
   updated_at: string;
   url: string;
 }
+
+export interface GithubUserWithHasIssues extends GithubUser {
+  hasIssues: boolean;
+}

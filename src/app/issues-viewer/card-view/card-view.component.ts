@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -22,6 +22,8 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   @Input() assignee?: GithubUser = undefined;
   @Input() filters?: any = undefined;
   @Input() sort?: MatSort = undefined;
+  @Input() hasIssues!: boolean;
+  @Output() hasIssuesChange = new EventEmitter<boolean>();
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
@@ -38,6 +40,10 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
     setTimeout(() => {
       this.issues.loadIssues();
       this.issues$ = this.issues.connect();
+      this.issues$.subscribe((issues) => {
+        this.hasIssues = issues.length > 0;
+        this.hasIssuesChange.emit(this.hasIssues);
+      });
     });
   }
 

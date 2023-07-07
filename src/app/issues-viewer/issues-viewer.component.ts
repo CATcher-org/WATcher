@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
-import { GithubUser } from '../core/models/github-user.model';
+import { GithubUserWithHasIssues } from '../core/models/github-user.model';
 import { Repo } from '../core/models/repo.model';
 import { GithubService } from '../core/services/github.service';
 import { IssueService } from '../core/services/issue.service';
@@ -24,7 +24,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   viewChange: Subscription;
 
   /** Users to show as columns */
-  assignees: GithubUser[];
+  assignees: GithubUserWithHasIssues[];
 
   @ViewChildren(CardViewComponent) cardViews: QueryList<CardViewComponent>;
 
@@ -68,7 +68,10 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     // Fetch assignees
     this.assignees = [];
 
-    this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
+    this.githubService.getUsersAssignable().subscribe((assignees) => {
+      // Defaults to false, so every user is initially hidden.
+      this.assignees = assignees.map((assignee) => ({ ...assignee, hasIssues: false }));
+    });
 
     // Fetch issues
     this.issueService.reloadAllIssues();
