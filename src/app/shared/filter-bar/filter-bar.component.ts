@@ -91,9 +91,6 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
    * Fetch and initialize all information from repository to populate Issue Dashboard.
    */
   private initialize() {
-    // Fetch labels
-    this.labelFilterBar.load();
-
     // Fetch milestones and update dropdown filter
     this.milestoneSubscription = this.milestoneService.fetchMilestones().subscribe(
       (response) => {
