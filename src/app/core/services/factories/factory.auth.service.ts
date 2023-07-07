@@ -40,5 +40,15 @@ export function AuthServiceFactory(
   //   );
   // }
   console.log(logger);
-  return new AuthService(router, ngZone, githubService, userService, issueService, labelService, phaseService, githubEventService, titleService, logger);
+  return new AuthService(
+    router,
+    ngZone,
+    githubService,
+    userService,
+    issueService,
+    labelService,
+    phaseService,
+    githubEventService,
+    titleService,
+    logger);
 }
