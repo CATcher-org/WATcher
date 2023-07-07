@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatListOption } from '@angular/material/list';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { LabelService, simplifiedLabel } from '../../../core/services/label.service';
@@ -9,7 +9,7 @@ import { LoggingService } from '../../../core/services/logging.service';
   templateUrl: './label-filter-bar.component.html',
   styleUrls: ['./label-filter-bar.component.css']
 })
-export class LabelFilterBarComponent implements OnInit, OnDestroy {
+export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() selectedLabels: BehaviorSubject<string[]>;
   @Input() hiddenLabels: BehaviorSubject<Set<string>>;
 

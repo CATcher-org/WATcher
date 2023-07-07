@@ -147,7 +147,7 @@ export class LabelService {
 
   reset() {
     this.labels = undefined;
-
+    this.simplifiedLabels = undefined;
     this.stopPollLabels();
   }
 }

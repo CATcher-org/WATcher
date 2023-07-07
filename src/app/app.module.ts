@@ -25,6 +25,7 @@ import { IssueServiceFactory } from './core/services/factories/factory.issue.ser
 import { GithubService } from './core/services/github.service';
 import { GithubEventService } from './core/services/githubevent.service';
 import { IssueService } from './core/services/issue.service';
+import { LabelService } from './core/services/label.service';
 import { LoggingService } from './core/services/logging.service';
 import { PhaseService } from './core/services/phase.service';
 import { SessionFixConfirmationComponent } from './core/services/session-fix-confirmation/session-fix-confirmation.component';
@@ -72,7 +73,7 @@ import { SharedModule } from './shared/shared.module';
     {
       provide: AuthService,
       useFactory: AuthServiceFactory,
-      deps: [Router, NgZone, GithubService, UserService, IssueService, PhaseService, GithubEventService, Title, LoggingService]
+      deps: [Router, NgZone, GithubService, UserService, IssueService, LabelService, PhaseService, GithubEventService, Title, LoggingService]
     },
     {
       provide: IssueService,
