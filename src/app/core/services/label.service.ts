@@ -27,7 +27,7 @@ export type simplifiedLabel = {
  * from the GitHub repository for the WATcher application.
  */
 export class LabelService {
-  static readonly POLL_INTERVAL = 30000; // 5 seconds
+  static readonly POLL_INTERVAL = 5000; // 5 seconds
 
   labels: Label[];
   simplifiedLabels: simplifiedLabel[];
