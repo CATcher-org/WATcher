@@ -367,7 +367,8 @@ export class GithubService {
     return from(
       octokit.issues.listAssignees({
         owner: ORG_NAME,
-        repo: REPO
+        repo: REPO,
+        per_page: 100
       })
     ).pipe(
       map((response) => {

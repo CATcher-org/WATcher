@@ -1,0 +1,78 @@
+.card-column {
+  margin: 8px;
+}
+
+.mat-card-title {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  text-align: left;
+  overflow: auto;
+  overflow-wrap: anywhere;
+}
+
+.column-header .mat-card-title {
+  font-size: 14px;
+}
+
+.mat-card {
+  padding: 10px;
+}
+
+:host ::ng-deep div.mat-card-header-text {
+  margin: 2px;
+}
+
+div.column-header .mat-card-title {
+  justify-content: center;
+  margin: 0;
+}
+
+div.column-header {
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+div.column-header .mat-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scrollable-container {
+  height: 53vh;
+  overflow: auto;
+  margin-bottom: 2px;
+  scrollbar-width: none;
+  position: relative;
+
+  /* Ref: https://css-scroll-shadows.vercel.app */
+  background: linear-gradient(white 33%, transparent), linear-gradient(transparent, white 66%) 0 100%,
+    radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.5), transparent),
+    radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.5), transparent) 0 100%;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-attachment: local, local, scroll, scroll;
+  background-size: 100% 15px, 100% 15px, 100% 5px, 100% 5px;
+}
+
+.scrollable-container::-webkit-scrollbar {
+  display: none;
+}
+
+.user-cards .mat-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hidden {
+  display: none !important;
+}

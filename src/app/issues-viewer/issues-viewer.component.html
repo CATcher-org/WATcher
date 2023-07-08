@@ -17,6 +17,7 @@
         [class.hidden]="!assignee.hasIssues"
       ></app-card-view>
       <app-card-view class="issue-table" [headers]="this.displayedColumns" [sort]="filterbar.matSort"></app-card-view>
+      <app-card-view-other-users [users]="this.assignees"></app-card-view-other-users>
     </div>
   </ng-template>
 </div>
