@@ -76,20 +76,23 @@ export class PhaseService {
 
   /**
    * Changes current respository to a new repository.
-   * If on Issue Dashboard, add previously visited repositories to otherRepos.
    * @param repo New current repository
    */
-  changeCurrentRepository(repo: Repo): void {
+  private changeCurrentRepository(repo: Repo): void {
     this.logger.info(`PhaseService: Changing current repository to '${repo}'`);
 
     if (this.currentPhase === Phase.issuesViewer) {
       /** Adds past repositories to phase */
-      this.otherRepos.push(this.currentRepo); // TODO feature: can be used to provide repo suggestions
+      this.otherRepos.push(this.currentRepo);
     }
     this.setRepository(repo, this.otherRepos);
     this.repoChanged$.next(repo);
   }
 
+  /**
+   * Change repository if a valid repository is provided
+   * @param repo New repository
+   */
   async changeRepositoryIfValid(repo: Repo) {
     this.isChangingRepo.next(true);
 
