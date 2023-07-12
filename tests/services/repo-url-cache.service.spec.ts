@@ -1,7 +1,7 @@
 import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { RepoUrlCacheService } from '../../src/app/core/services/repo-url-cache.service';
 import { MockLocalStorage } from '../helper/mock.local.storage';
-import { Observable } from 'rxjs';
 
 let repoUrlCacheService: RepoUrlCacheService;
 
@@ -23,13 +23,13 @@ describe('RepoUrlCacheService', () => {
 
   afterEach(() => {
     localStorage.clear();
-  })
+  });
 
   it('should load with no suggestions if localStorage is empty', () => {
     repoUrlCacheService = new RepoUrlCacheService();
-    
+
     expect(repoUrlCacheService.suggestions).toEqual([]);
-  })
+  });
 
   it('should load with suggestions if localStorage is not empty', () => {
     localStorage.setItem(RepoUrlCacheService.KEY_NAME, JSON.stringify([repoNameOne, repoNameTwo]));
@@ -37,12 +37,12 @@ describe('RepoUrlCacheService', () => {
     repoUrlCacheService = new RepoUrlCacheService();
 
     expect(repoUrlCacheService.suggestions).toEqual([repoNameOne, repoNameTwo]);
-  })
+  });
 
   describe('cache()', () => {
     it('should update suggestions if it does not already include the repo', () => {
       repoUrlCacheService = new RepoUrlCacheService();
-      
+
       repoUrlCacheService.cache(repoNameOne);
 
       // suggestions in repoUrlCacheService should be updated
@@ -70,7 +70,7 @@ describe('RepoUrlCacheService', () => {
       const formControl = new FormControl();
 
       repoUrlCacheService = new RepoUrlCacheService();
-      
+
       const filteredSuggestions = repoUrlCacheService.getFilteredSuggestions(formControl);
 
       expect(filteredSuggestions).toBeInstanceOf(Observable);
