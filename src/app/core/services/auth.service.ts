@@ -2,10 +2,13 @@ import { Injectable } from '@angular/core';
 import { NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 import { AppConfig } from '../../../environments/environment';
 import { generateSessionId } from '../../shared/lib/session';
 import { uuid } from '../../shared/lib/uuid';
+import { Phase } from '../models/phase.model';
+import { ErrorHandlingService } from './error-handling.service';
 import { GithubService } from './github.service';
 import { GithubEventService } from './githubevent.service';
 import { IssueService } from './issue.service';
@@ -34,6 +37,9 @@ export class AuthService {
   accessToken = new BehaviorSubject(undefined);
   private state: string;
 
+  sessionSetupStateSource = new BehaviorSubject(false);
+  sessionSetupState = this.sessionSetupStateSource.asObservable();
+
   ENABLE_POPUP_MESSAGE = 'Please enable pop-ups in your browser';
 
   constructor(
@@ -45,8 +51,9 @@ export class AuthService {
     private phaseService: PhaseService,
     private githubEventService: GithubEventService,
     private titleService: Title,
+    private errorHandlingService: ErrorHandlingService,
     private logger: LoggingService
-  ) {}
+    ) {}
 
   /**
    * Will store the OAuth token.
@@ -102,6 +109,10 @@ export class AuthService {
     this.authStateSource.next(newAuthState);
   }
 
+  changeSessionSetupState(newSessionSetupState: boolean) {
+    this.sessionSetupStateSource.next(newSessionSetupState);
+  }
+
   /**
    * Generates and assigns an unguessable random 'state' string to pass to Github for protection against cross-site request forgery attacks
    */
@@ -131,6 +142,43 @@ export class AuthService {
       )
     );
     this.logger.info(`AuthService: Redirecting for Github authentication`);
+  }
+
+  /**
+   * Handles the clean up required after authentication and setting up of user data is completed.
+   */
+  handleAuthSuccess() {
+    this.setTitleWithPhaseDetail();
+    this.router.navigateByUrl(Phase.issuesViewer);
+    this.changeAuthState(AuthState.Authenticated);
+  }
+
+  /**
+   * Setup user data after authentication.
+   */
+  setupUserData(): void {
+    this.phaseService.initializeCurrentRepository();
+    const currentRepo = this.phaseService.currentRepo;
+    this.githubService.isRepositoryPresent(currentRepo.owner, currentRepo.name)
+      .pipe(
+        mergeMap((isValidRepository) => {
+          if (!isValidRepository) {
+            return new Observable();
+          }
+          return this.githubEventService.setLatestChangeEvent();
+        })
+      )
+      .subscribe(
+        () => {
+          this.handleAuthSuccess();
+        },
+        (error) => {
+          this.changeAuthState(AuthState.NotAuthenticated);
+          this.errorHandlingService.handleError(error);
+          this.logger.info(`AuthService: Completion of auth process failed with an error: ${error}`);
+        }
+      );
+    this.handleAuthSuccess();
   }
 
   /**

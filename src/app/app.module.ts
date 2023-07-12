@@ -72,7 +72,18 @@ import { SharedModule } from './shared/shared.module';
     {
       provide: AuthService,
       useFactory: AuthServiceFactory,
-      deps: [Router, NgZone, GithubService, UserService, IssueService, PhaseService, GithubEventService, Title, LoggingService]
+      deps: [
+        Router,
+        NgZone,
+        GithubService,
+        UserService,
+        IssueService,
+        PhaseService,
+        GithubEventService,
+        Title,
+        ErrorHandlingService,
+        LoggingService
+      ]
     },
     {
       provide: IssueService,

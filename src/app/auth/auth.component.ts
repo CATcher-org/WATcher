@@ -25,6 +25,8 @@ export class AuthComponent implements OnInit, OnDestroy {
   currentUserName: string;
   urlEncodedSessionName: string;
   urlEncodedRepo: string;
+  sessionSetupState: boolean;
+  sessionSetupStateSubscription: Subscription;
   sessionInformation: string;
 
   constructor(
@@ -51,6 +53,7 @@ export class AuthComponent implements OnInit, OnDestroy {
     }
     this.initAccessTokenSubscription();
     this.initAuthStateSubscription();
+    this.initSessionSetupStateSubscription();
     this.createProfileFromUrlQueryParams();
     this.getRepoFromUrlQueryParams();
     if (oauthCode) {
@@ -134,6 +137,10 @@ export class AuthComponent implements OnInit, OnDestroy {
     return this.authState === AuthState.ConfirmOAuthUser;
   }
 
+  isSettingUpSession(): boolean {
+    return this.sessionSetupState;
+  }
+
   get currentSessionOrg(): string {
     if (!this.sessionInformation) {
       // Retrieve org details of session information from local storage
@@ -154,6 +161,14 @@ export class AuthComponent implements OnInit, OnDestroy {
     this.authStateSubscription = this.authService.currentAuthState.subscribe((state) => {
       this.ngZone.run(() => {
         this.authState = state;
+      });
+    });
+  }
+
+  private initSessionSetupStateSubscription() {
+    this.sessionSetupStateSubscription = this.authService.sessionSetupState.subscribe((state) => {
+      this.ngZone.run(() => {
+        this.sessionSetupState = state;
       });
     });
   }

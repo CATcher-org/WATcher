@@ -1,9 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
 import { Phase } from '../../core/models/phase.model';
-import { Repo } from '../../core/models/repo.model';
 import { AuthService, AuthState } from '../../core/services/auth.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { GithubService } from '../../core/services/github.service';
@@ -23,12 +20,9 @@ export class ConfirmLoginComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private phaseService: PhaseService,
     private userService: UserService,
     private errorHandlingService: ErrorHandlingService,
-    private githubEventService: GithubEventService,
     private logger: LoggingService,
-    private router: Router,
     public githubService: GithubService
   ) {}
 
@@ -45,41 +39,15 @@ export class ConfirmLoginComponent implements OnInit {
   }
 
   /**
-   * Handles the clean up required after authentication and setting up of user data is completed.
-   */
-  handleAuthSuccess() {
-    this.authService.setTitleWithPhaseDetail();
-    this.router.navigateByUrl(Phase.issuesViewer);
-    this.authService.changeAuthState(AuthState.Authenticated);
-  }
-
-  /**
    * Will complete the process of logging in the given user.
    */
   completeLoginProcess(): void {
     this.authService.changeAuthState(AuthState.AwaitingAuthentication);
-    this.phaseService.initializeCurrentRepository();
-    this.logger.info(`ConfirmLoginComponent: Current repo is ${this.phaseService.currentRepo}`);
     this.userService
       .createUserModel(this.username)
-      .pipe(
-        mergeMap(() => {
-          const currentRepo = this.phaseService.currentRepo;
-          if (Repo.isInvalidRepoName(currentRepo)) {
-            return of(false);
-          }
-          return this.githubService.isRepositoryPresent(currentRepo.owner, currentRepo.name);
-        }),
-        mergeMap((isValidRepository) => {
-          if (!isValidRepository) {
-            return new Observable();
-          }
-          return this.githubEventService.setLatestChangeEvent();
-        })
-      )
       .subscribe(
         () => {
-          this.handleAuthSuccess();
+          this.authService.changeSessionSetupState(true);
         },
         (error) => {
           this.authService.changeAuthState(AuthState.NotAuthenticated);
@@ -87,6 +55,5 @@ export class ConfirmLoginComponent implements OnInit {
           this.logger.info(`ConfirmLoginComponent: Completion of login process failed with an error: ${error}`);
         }
       );
-    this.handleAuthSuccess();
   }
 }
