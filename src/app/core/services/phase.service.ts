@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Phase } from '../models/phase.model';
 import { Repo } from '../models/repo.model';
 import { SessionData } from '../models/session.model';
@@ -51,6 +51,9 @@ export class PhaseService {
    * dependencies subscribe to this observable?
    */
   public repoChanged$: Subject<Repo | null> = new Subject();
+
+  /** Whether the PhaseService is changing the repository */
+  public isChangingRepo = new BehaviorSubject<boolean>(false);
 
   public sessionData = STARTING_SESSION_DATA; // stores session data for the session
 
