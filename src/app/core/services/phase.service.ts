@@ -87,6 +87,14 @@ export class PhaseService {
       this.otherRepos.push(this.currentRepo); // TODO feature: can be used to provide repo suggestions
     }
     this.setRepository(repo, this.otherRepos);
+
+    // Update autofill repository URL suggestions in localStorage
+    const suggestions: string[] = JSON.parse(window.localStorage.getItem('suggestions')) || [];
+    if (!suggestions.includes(repo.toString())) {
+      suggestions.push(repo.toString());
+      window.localStorage.setItem('suggestions', JSON.stringify(suggestions));
+    }
+
     this.repoChanged$.next(repo);
   }
 
