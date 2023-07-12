@@ -1,12 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Phase } from '../../core/models/phase.model';
 import { AuthService, AuthState } from '../../core/services/auth.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { GithubService } from '../../core/services/github.service';
-import { GithubEventService } from '../../core/services/githubevent.service';
 import { LoggingService } from '../../core/services/logging.service';
-import { PhaseService } from '../../core/services/phase.service';
 import { UserService } from '../../core/services/user.service';
 
 @Component({
