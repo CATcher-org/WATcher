@@ -43,7 +43,7 @@ export class UserDetailViewerComponent implements OnInit, OnDestroy, AfterViewIn
     {
       octicon: 'issue-opened',
       title: 'Assigned Issues',
-      color: 'blue',
+      color: 'green',
       source$: this.userAssignedIssues$,
       isLoading$: this.issueService.isLoading.asObservable()
     },
@@ -57,7 +57,7 @@ export class UserDetailViewerComponent implements OnInit, OnDestroy, AfterViewIn
     {
       octicon: 'git-pull-request',
       title: 'Assigned PRs',
-      color: 'blue',
+      color: 'green',
       source$: this.userAssignedPRs$,
       isLoading$: this.issueService.isLoading.asObservable()
     },
