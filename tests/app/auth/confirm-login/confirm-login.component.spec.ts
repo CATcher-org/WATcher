@@ -49,7 +49,7 @@ describe('ConfirmLoginComponent', () => {
   }));
 
   it('should create', () => {
-    expect(component).toBeFalsy();
+    expect(component).toBeTruthy();
   });
 
   it('should complete login process', () => {
