@@ -150,6 +150,7 @@ export class AuthService {
   handleAuthSuccess() {
     this.setTitleWithPhaseDetail();
     this.router.navigateByUrl(Phase.issuesViewer);
+    this.changeSessionSetupState(false);
     this.changeAuthState(AuthState.Authenticated);
   }
 
@@ -174,6 +175,7 @@ export class AuthService {
         },
         (error) => {
           this.changeAuthState(AuthState.NotAuthenticated);
+          this.changeSessionSetupState(false);
           this.errorHandlingService.handleError(error);
           this.logger.info(`AuthService: Completion of auth process failed with an error: ${error}`);
         }
