@@ -66,7 +66,7 @@ describe('RepoUrlCacheService', () => {
   });
 
   describe('getFilteredSuggestions()', () => {
-    it('should return an Obeservable', () => {
+    it('should return an Observable', () => {
       const formControl = new FormControl();
 
       repoUrlCacheService = new RepoUrlCacheService();
