@@ -1,6 +1,6 @@
 export interface Accumulator<U> {
-  add(o: U): void;
-  sub(o: U): void;
+  add(operand: U): void;
+  subtract(operand: U): void;
 }
 
 abstract class RangeQueries<T extends Accumulator<T>> {
@@ -12,17 +12,17 @@ abstract class RangeQueries<T extends Accumulator<T>> {
   abstract prefixSum(a: number): T;
 
   /**
-   * Find range search query of elements between index a and index b inclusive
+   * Find range sum query of elements between index a and index b inclusive
    * @param a start of range (inclusive)
    * @param b end of range (inclusive)
    * @returns sum of elements between arr[a] to arr[b]
    */
   rsq(a: number, b: number): T {
-    const ret = this.prefixSum(b);
+    const rangeSum = this.prefixSum(b);
     if (a !== 1) {
-      ret.sub(this.prefixSum(a - 1));
+      rangeSum.subtract(this.prefixSum(a - 1));
     }
-    return ret;
+    return rangeSum;
   }
 
   /**
@@ -39,6 +39,11 @@ abstract class RangeQueries<T extends Accumulator<T>> {
  * 1-Indexed Prefix Sum to abstract away rsq operations
  */
 export class PrefixSum<T extends Accumulator<T>> extends RangeQueries<T> {
+  /**
+   * Constructs a PrefixSum by mutating a given array into a prefix sum array in place
+   * @param arr array to be mutated into a prefix sum array
+   * @param identity function to create the identity element of the accumulator
+   */
   constructor(private arr: T[], private identity: () => T) {
     super();
     for (let i = 1; i < arr.length; i++) {

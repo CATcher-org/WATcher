@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Moment } from 'moment';
-import { Accumulator, PrefixSum } from '../../core/models/datastructure/rsq.model';
+import { CumulativeStats } from '../../core/models/cumulative-stats.model';
+import { PrefixSum } from '../../core/models/datastructure/rsq.model';
 import { GithubCommit } from '../../core/models/github/github-commit.model';
 import { DAY_IN_MILISECOND, toMaxTime, toMinTime } from '../datetimehelper';
 
@@ -13,29 +14,6 @@ import { DAY_IN_MILISECOND, toMaxTime, toMinTime } from '../datetimehelper';
 export interface DateRange {
   minDate: Moment;
   maxDate: Moment;
-}
-class CumulativeStats implements Accumulator<CumulativeStats> {
-  additions: number;
-  deletions: number;
-  count: number;
-
-  constructor(commmit?: GithubCommit) {
-    this.additions = commmit?.additions ?? 0;
-    this.deletions = commmit?.deletions ?? 0;
-    this.count = commmit ? 1 : 0;
-  }
-
-  add(o: CumulativeStats): void {
-    this.additions += o.additions;
-    this.deletions += o.deletions;
-    this.count += o.count;
-  }
-
-  sub(o: CumulativeStats): void {
-    this.additions -= o.additions;
-    this.deletions -= o.deletions;
-    this.count -= o.count;
-  }
 }
 
 @Component({
