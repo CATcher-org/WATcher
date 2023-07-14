@@ -60,7 +60,6 @@
     "graphql-tag": "2.11.0",
     "karma-spec-reporter": "0.0.32",
     "moment": "^2.24.0",
-    "ngx-markdown": "^10.1.1",
     "ngx-mat-select-search": "^3.3.3",
     "node-fetch": "^2.6.9",
     "rxjs": "6.5.5",
