@@ -12,6 +12,7 @@
   font-size: 12px;
   text-align: left;
   overflow: auto;
+  overflow-wrap: anywhere;
 }
 
 .column-header .mat-card-title {
