@@ -71,7 +71,7 @@ export class LabelService {
         this.labels = this.parseLabelData(response);
         this.simplifiedLabels = this.labels.map((label) => {
           return {
-            name: label.getFormattedName(),
+            name: label.formattedName,
             color: label.color
           };
         });
