@@ -33,21 +33,22 @@ export class LabelService {
   constructor(private githubService: GithubService) {}
 
   startPollLabels() {
-    if (this.labelsPollSubscription === undefined) {
-      this.labelsPollSubscription = timer(0, LabelService.POLL_INTERVAL)
-        .pipe(
-          exhaustMap(() => {
-            return this.fetchLabels().pipe(
-              catchError(() => {
-                return EMPTY;
-              })
-            );
-          })
-        )
-        .subscribe(() => {
-          this.labelsSubject.next(this.simplifiedLabels);
-        });
+    if (this.labelsPollSubscription) {
+      return;
     }
+    this.labelsPollSubscription = timer(0, LabelService.POLL_INTERVAL)
+      .pipe(
+        exhaustMap(() => {
+          return this.fetchLabels().pipe(
+            catchError(() => {
+              return EMPTY;
+            })
+          );
+        })
+      )
+      .subscribe(() => {
+        this.labelsSubject.next(this.simplifiedLabels);
+      });
   }
 
   stopPollLabels() {
