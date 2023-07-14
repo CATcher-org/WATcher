@@ -27,3 +27,8 @@ export class Label {
     return this.name === label.name && this.category === label.category;
   }
 }
+
+export type SimplifiedLabel = {
+  name: string;
+  color: string;
+};

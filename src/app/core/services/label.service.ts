@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable, of, Subscription, timer } from 'rxjs';
 import { catchError, exhaustMap, finalize, map } from 'rxjs/operators';
-import { Label } from '../models/label.model';
+import { Label, SimplifiedLabel } from '../models/label.model';
 import { GithubService } from './github.service';
 
 /* The threshold to decide if color is dark or light.
@@ -12,11 +12,6 @@ const COLOR_DARKNESS_THRESHOLD = 0.184;
 
 const COLOR_BLACK = '000000'; // Dark color for text with light background
 const COLOR_WHITE = 'ffffff'; // Light color for text with dark background
-
-export type simplifiedLabel = {
-  name: string;
-  color: string;
-};
 
 @Injectable({
   providedIn: 'root'
@@ -30,10 +25,10 @@ export class LabelService {
   static readonly POLL_INTERVAL = 5000; // 5 seconds
 
   labels: Label[];
-  simplifiedLabels: simplifiedLabel[];
+  simplifiedLabels: SimplifiedLabel[];
 
   private labelsPollSubscription: Subscription;
-  private labelsSubject = new BehaviorSubject<simplifiedLabel[]>([]);
+  private labelsSubject = new BehaviorSubject<SimplifiedLabel[]>([]);
 
   constructor(private githubService: GithubService) {}
 
@@ -62,7 +57,7 @@ export class LabelService {
     }
   }
 
-  connect(): Observable<simplifiedLabel[]> {
+  connect(): Observable<SimplifiedLabel[]> {
     return this.labelsSubject.asObservable();
   }
 
