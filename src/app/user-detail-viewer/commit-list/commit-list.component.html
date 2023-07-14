@@ -1,7 +1,7 @@
 <div class="flex-container space-apart">
   <div class="flex-container">
     <h3 [matTooltip]="updateTime ? 'Last updated on ' + updateTime.format('DD/MM/YYYY h:mm:ss a') : ''">
-      {{ listTitle }}
+      {{ listTitle }} ({{ liveStats.count }}/{{ commitList.length }})
     </h3>
     <span class="small" *ngIf="dateRange.minDate">
       {{ dateRange.minDate?.format('DD/MM/YYYY') }} - {{ dateRange.maxDate?.format('DD/MM/YYYY') }}</span
@@ -15,6 +15,7 @@
       <mat-icon>autorenew</mat-icon>
     </button>
   </div>
+  <app-diffstat [additions]="liveStats.additions" [deletions]="liveStats.deletions" [boxCount]="10"></app-diffstat>
 </div>
 <mat-divider></mat-divider>
 <div class="basic-container hidden_scrollbar">
@@ -28,6 +29,9 @@
         <mat-panel-title>
           {{ commit.messageHeadline }}
         </mat-panel-title>
+        <mat-panel-description class="right-align">
+          <app-diffstat [additions]="commit.additions" [deletions]="commit.deletions"></app-diffstat>
+        </mat-panel-description>
       </mat-expansion-panel-header>
 
       <span class="flex-container space-apart">

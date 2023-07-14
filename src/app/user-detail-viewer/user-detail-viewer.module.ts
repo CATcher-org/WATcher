@@ -5,6 +5,7 @@ import { FilterBarModule } from '../shared/filter-bar/filter-bar.module';
 import { IssuesPrCardModule } from '../shared/issue-pr-card/issue-pr-card.module';
 import { SharedModule } from '../shared/shared.module';
 import { CommitListComponent } from './commit-list/commit-list.component';
+import { DiffstatComponent } from './diffstat/diffstat.component';
 import { ProfileDetailsComponent } from './profile-details/profile-details.component';
 import { ProfileIconComponent } from './profile-icon/profile-icon.component';
 import { ProfileListComponent } from './profile-list/profile-list.component';
@@ -20,6 +21,13 @@ import { UserDetailViewerComponent } from './user-detail-viewer.component';
     IssuesViewerModule,
     MarkdownModule.forChild()
   ],
-  declarations: [UserDetailViewerComponent, ProfileIconComponent, ProfileDetailsComponent, ProfileListComponent, CommitListComponent]
+  declarations: [
+    UserDetailViewerComponent,
+    ProfileIconComponent,
+    ProfileDetailsComponent,
+    ProfileListComponent,
+    DiffstatComponent,
+    CommitListComponent
+  ]
 })
 export class UserDetailViewerModule {}

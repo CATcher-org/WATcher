@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Moment } from 'moment';
+import { CumulativeStats } from '../../core/models/cumulative-stats.model';
+import { PrefixSum } from '../../core/models/datastructure/rsq.model';
 import { GithubCommit } from '../../core/models/github/github-commit.model';
 import { DAY_IN_MILISECOND, toMaxTime, toMinTime } from '../datetimehelper';
 
@@ -28,6 +30,7 @@ export class CommitListComponent implements OnInit {
   // this will be displayed
   commits: GithubCommit[];
 
+  liveStats: CumulativeStats;
   dateRange: DateRange = { maxDate: undefined, minDate: undefined };
 
   step = -1;
@@ -35,6 +38,7 @@ export class CommitListComponent implements OnInit {
   startIndex = 1;
   endIndex: number;
 
+  ps: PrefixSum<CumulativeStats>;
   private firstTime: Moment;
 
   constructor(public dialog: MatDialog) {}
@@ -56,6 +60,7 @@ export class CommitListComponent implements OnInit {
 
   createPrefixSum() {
     if (this.commitList.length === 0) {
+      this.ps = new PrefixSum([], () => new CumulativeStats());
       return;
     }
     this.firstTime = toMinTime(this.commitList[0].committedDate);
@@ -63,6 +68,15 @@ export class CommitListComponent implements OnInit {
     const commitToIndex = (commit: GithubCommit) => this.dateToIndex(commit.committedDate);
 
     this.endIndex = commitToIndex(this.commitList[this.commitList.length - 1]);
+    const prefixArr = new Array(this.endIndex + 1);
+    for (let i = 0; i < prefixArr.length; i++) {
+      prefixArr[i] = new CumulativeStats();
+    }
+    for (const commit of this.commitList) {
+      prefixArr[commitToIndex(commit)].add(new CumulativeStats(commit));
+    }
+
+    this.ps = new PrefixSum(prefixArr, () => new CumulativeStats());
   }
 
   // Convert date to index of commitList
@@ -76,6 +90,7 @@ export class CommitListComponent implements OnInit {
 
     if (!sDate || !eDate) {
       this.commits = [];
+      this.liveStats = new CumulativeStats();
       return;
     }
     // close all opened commits
@@ -92,5 +107,6 @@ export class CommitListComponent implements OnInit {
     if (this.latestToLast) {
       this.commits.reverse();
     }
+    this.liveStats = this.ps.rsq(this.startIndex, this.endIndex);
   }
 }
