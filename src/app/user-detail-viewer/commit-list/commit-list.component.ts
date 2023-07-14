@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Moment } from 'moment';
-import { DateRangeDialogComponent } from '../query-range/query-range.component';
 import { CumulativeStats } from '../../core/models/cumulative-stats.model';
 import { PrefixSum } from '../../core/models/datastructure/rsq.model';
 import { GithubCommit } from '../../core/models/github/github-commit.model';
 import { DAY_IN_MILISECOND, toMaxTime, toMinTime } from '../datetimehelper';
+import { DateRangeDialogComponent } from '../query-range/query-range.component';
 
 /**
  * Takes in a sorted list of commits and visually display each commit using a expansion panel.
