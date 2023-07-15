@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Phase } from '../models/phase.model';
 import { Repo } from '../models/repo.model';
 import { SessionData } from '../models/session.model';
@@ -52,6 +52,9 @@ export class PhaseService {
    */
   public repoChanged$: Subject<Repo | null> = new Subject();
 
+  /** Whether the PhaseService is changing the repository */
+  public isChangingRepo = new BehaviorSubject<boolean>(false);
+
   public sessionData = STARTING_SESSION_DATA; // stores session data for the session
 
   constructor(private githubService: GithubService, public logger: LoggingService) {}
@@ -73,18 +76,42 @@ export class PhaseService {
 
   /**
    * Changes current respository to a new repository.
-   * If on Issue Dashboard, add previously visited repositories to otherRepos.
    * @param repo New current repository
    */
-  changeCurrentRepository(repo: Repo): void {
+  private changeCurrentRepository(repo: Repo): void {
     this.logger.info(`PhaseService: Changing current repository to '${repo}'`);
 
     if (this.currentPhase === Phase.issuesViewer) {
       /** Adds past repositories to phase */
-      this.otherRepos.push(this.currentRepo); // TODO feature: can be used to provide repo suggestions
+      this.otherRepos.push(this.currentRepo);
     }
     this.setRepository(repo, this.otherRepos);
+
+    // Update autofill repository URL suggestions in localStorage
+    const suggestions: string[] = JSON.parse(window.localStorage.getItem('suggestions')) || [];
+    if (!suggestions.includes(repo.toString())) {
+      suggestions.push(repo.toString());
+      window.localStorage.setItem('suggestions', JSON.stringify(suggestions));
+    }
+
     this.repoChanged$.next(repo);
+  }
+
+  /**
+   * Change repository if a valid repository is provided
+   * @param repo New repository
+   */
+  async changeRepositoryIfValid(repo: Repo) {
+    this.isChangingRepo.next(true);
+
+    const isValidRepository = await this.githubService.isRepositoryPresent(repo.owner, repo.name).toPromise();
+    if (!isValidRepository) {
+      this.isChangingRepo.next(false);
+      throw new Error('Invalid repository name. Please check your organisation and repository name.');
+    }
+
+    this.changeCurrentRepository(repo);
+    this.isChangingRepo.next(false);
   }
 
   /**
