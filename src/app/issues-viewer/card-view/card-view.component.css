@@ -55,37 +55,31 @@ div.column-header .mat-card-header {
   display: none;
 }
 
-.issue-pr-cards {
-  position: relative;
-}
-
-.loading-spinner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.mat-card-subtitle {
-  display: flex;
-  align-items: center;
-  font-size: 11px;
-  text-align: left;
-  overflow: auto;
-  margin: 6px 0;
-}
-
-.row-count {
-  background-color: rgb(222, 222, 222);
-  border-radius: 3px;
-  cursor: default;
-  padding: 6px;
-  color: rgb(0, 0, 0);
-  font-weight: 410;
-  display: inline-flex;
-  font-size: 14px;
-}
-
 /* Ref: https://css-scroll-shadows.vercel.app */
+.scrollable-container::before {
+  pointer-events: none;
+  content: "";
+  position: absolute;
+  z-index: 2;
+  height: 6px;
+  width: 100%;
+  display: block;
+  background-image:
+    linear-gradient(to bottom, white 66%, transparent);
+}
+
+.scrollable-container::after {
+  pointer-events: none;
+  content: "";
+  position: absolute;
+  z-index: 2;
+  height: 6px;
+  width: 100%;
+  display: block;
+  background-image:
+    linear-gradient(to bottom, transparent, white 66%);
+}
+
 .scrollable-container-wrapper {
   width: 100%;
   position: relative;
@@ -117,28 +111,6 @@ div.column-header .mat-card-header {
   radial-gradient(farthest-side at 50% 100%, rgba(0,0,0, 0.5), transparent);
 }
 
-.scroll-shadow-cover-before {
-  pointer-events: none;
-  content: "";
-  position: relative;
-  z-index: 2;
-  height: 6px;
-  background-image:
-    linear-gradient(to bottom, white 66%, transparent);
-  background-attachment: scroll;
-  }
-
-.scroll-shadow-cover-after {
-  pointer-events: none;
-  content: "";
-  position: relative;
-  z-index: 2;
-  height: 6px;
-  background-image:
-    linear-gradient(to bottom, transparent, white 66%);
-  background-attachment: scroll;
-}
-
 .scroll-shadow-cover-after-empty {
   pointer-events: none;
   content: "";
@@ -151,4 +123,30 @@ div.column-header .mat-card-header {
   background-image:
     linear-gradient(to bottom, transparent, white 66%);
   background-attachment: scroll;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mat-card-subtitle {
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  text-align: left;
+  overflow: auto;
+  margin: 6px 0;
+}
+
+.row-count {
+  background-color: rgb(222, 222, 222);
+  border-radius: 3px;
+  cursor: default;
+  padding: 6px;
+  color: rgb(0, 0, 0);
+  font-weight: 410;
+  display: inline-flex;
+  font-size: 14px;
 }
