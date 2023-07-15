@@ -108,7 +108,7 @@ div.column-header .mat-card-header {
   right: 0;
   height: 5px;
   background-image:
-  radial-gradient(farthest-side at 50% 100%, rgba(0,0,0, 0.5), transparent);
+    radial-gradient(farthest-side at 50% 100%, rgba(0,0,0, 0.5), transparent);
 }
 
 .scroll-shadow-cover-after-empty {
