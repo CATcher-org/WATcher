@@ -58,7 +58,7 @@ div.column-header .mat-card-header {
 /* Ref: https://css-scroll-shadows.vercel.app */
 .scrollable-container::before {
   pointer-events: none;
-  content: "";
+  content: '';
   position: absolute;
   z-index: 2;
   height: 6px;
@@ -70,24 +70,24 @@ div.column-header .mat-card-header {
 
 .scrollable-container::after {
   pointer-events: none;
-  content: "";
-  position: absolute;
+  content: '';
+  position: sticky;
   z-index: 2;
+  top: 100%;
   height: 6px;
   width: 100%;
   display: block;
   background-image:
-    linear-gradient(to bottom, transparent, white 66%);
+    linear-gradient(to top, white 66%, transparent);
 }
 
 .scrollable-container-wrapper {
-  width: 100%;
   position: relative;
 }
 
 .scrollable-container-wrapper::before {
   pointer-events: none;
-  content: "";
+  content: '';
   position: absolute;
   z-index: 1;
   top: 0;
@@ -100,7 +100,7 @@ div.column-header .mat-card-header {
 
 .scrollable-container-wrapper::after {
   pointer-events: none;
-  content: "";
+  content: '';
   position: absolute;
   z-index: 1;
   bottom: 0;
@@ -109,20 +109,6 @@ div.column-header .mat-card-header {
   height: 5px;
   background-image:
     radial-gradient(farthest-side at 50% 100%, rgba(0,0,0, 0.5), transparent);
-}
-
-.scroll-shadow-cover-after-empty {
-  pointer-events: none;
-  content: "";
-  position: absolute;
-  z-index: 2;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 6px;
-  background-image:
-    linear-gradient(to bottom, transparent, white 66%);
-  background-attachment: scroll;
 }
 
 .loading-spinner {
