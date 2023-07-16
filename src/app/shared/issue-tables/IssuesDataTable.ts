@@ -58,14 +58,9 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
       page = this.paginator.page;
     }
 
-    const displayDataChanges = [
-      this.issueService.issues$,
-      page,
-      sortChange,
-      this.filterChange,
-      this.teamFilterChange,
-      this.dropdownFilterChange
-    ].filter((x) => x !== undefined);
+    const displayDataChanges = [this.issueService.issues$, page, sortChange, this.filterChange, this.dropdownFilterChange].filter(
+      (x) => x !== undefined
+    );
 
     this.issueService.startPollIssues();
     this.issueSubscription = merge(...displayDataChanges)
@@ -98,7 +93,6 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
           if (this.sort !== undefined) {
             data = getSortedData(this.sort, data);
           }
-          data = this.getFilteredTeamData(data);
           data = applySearchFilter(this.filter, this.displayedColumn, this.issueService, data);
           this.count = data.length;
 
@@ -119,24 +113,6 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
 
   set filter(filter: string) {
     this.filterChange.next(filter);
-  }
-
-  get teamFilter(): string {
-    return this.teamFilterChange.value;
-  }
-
-  set teamFilter(teamFilter: string) {
-    this.teamFilterChange.next(teamFilter);
-    this.issueService.setIssueTeamFilter(this.teamFilterChange.value);
-  }
-
-  private getFilteredTeamData(data: Issue[]): Issue[] {
-    return data.filter((issue) => {
-      if (!this.teamFilter || this.teamFilter === 'All Teams') {
-        return true;
-      }
-      return issue.teamAssigned.id === this.teamFilter;
-    });
   }
 
   get dropdownFilter(): DropdownFilter {
