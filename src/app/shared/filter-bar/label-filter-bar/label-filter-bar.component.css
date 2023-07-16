@@ -1,3 +1,9 @@
+::ng-deep.mat-menu-content:not(:empty) {
+  /* Override mat-menu-content's non-empty default CSS. */
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+
 ::ng-deep.mat-menu-panel {
   /* Override mat-menu-panel's default CSS. */
   width: 280px;
@@ -5,9 +11,6 @@
 }
 
 .popup-container {
-  padding-top: 0px;
-  padding-left: 15px;
-  padding-right: 15px;
   flex-direction: column;
 }
 
@@ -24,8 +27,8 @@
 
   /* Ref: https://css-scroll-shadows.vercel.app */
   background: linear-gradient(white 33%, transparent), linear-gradient(transparent, white 66%) 0 100%,
-    radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.5), transparent),
-    radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.5), transparent) 0 100%;
+    radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.7), transparent),
+    radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.7), transparent) 0 100%;
   background-color: transparent;
   background-repeat: no-repeat;
   background-attachment: local, local, scroll, scroll;
@@ -44,7 +47,8 @@
 }
 
 .input-field {
-  width: 100%;
+  width: calc(100% - (2 * 15px)); /* To account for left and right padding. */
+  padding: 0 15px;
 }
 
 .list-option {
