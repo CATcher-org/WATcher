@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AuthService, AuthState } from '../../core/services/auth.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
-import { GithubService } from '../../core/services/github.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { UserService } from '../../core/services/user.service';
 
@@ -19,7 +18,6 @@ export class ConfirmLoginComponent implements OnInit {
     private userService: UserService,
     private errorHandlingService: ErrorHandlingService,
     private logger: LoggingService,
-    public githubService: GithubService
   ) {}
 
   ngOnInit() {}
@@ -39,6 +37,7 @@ export class ConfirmLoginComponent implements OnInit {
    */
   completeLoginProcess(): void {
     this.authService.changeAuthState(AuthState.AwaitingAuthentication);
+    this.logger.info(`ConfirmLoginComponent: Completing login process`);
     this.userService
       .createUserModel(this.username)
       .subscribe(

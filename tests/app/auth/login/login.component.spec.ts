@@ -12,7 +12,7 @@ describe('LoginComponent', () => {
   let fixture: ComponentFixture<LoginComponent>;
 
   beforeEach(async(() => {
-    authService = jasmine.createSpyObj<AuthService>('AuthService', ['changeAuthState', 'setTitleWithPhaseDetail', 'startOAuthProcess']);
+    authService = jasmine.createSpyObj<AuthService>('AuthService', ['startOAuthProcess']);
     logger = jasmine.createSpyObj<LoggingService>('LoggingService', ['info']);
     errorHandlingService = jasmine.createSpyObj<ErrorHandlingService>('ErrorHandlingService', ['handleError']);
 
@@ -34,9 +34,10 @@ describe('LoginComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should complete login process', () => {
+  it('should start login process', () => {
     component.startLoginProcess();
 
+    expect(logger.info).toHaveBeenCalled();
     expect(authService.startOAuthProcess).toHaveBeenCalled();
   });
 });

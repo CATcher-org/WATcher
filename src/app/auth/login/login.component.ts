@@ -23,8 +23,9 @@ export class LoginComponent implements OnInit {
     try {
       this.authService.startOAuthProcess();
     } catch (error) {
-      this.errorHandlingService.handleError(error);
       this.authService.changeAuthState(AuthState.NotAuthenticated);
+      this.errorHandlingService.handleError(error);
+      this.logger.info(`LoginComponent: Login process failed with an error: ${error}`);
     }
   }
 }
