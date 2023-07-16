@@ -52,11 +52,9 @@ div.column-header .mat-card-header {
   position: relative;
 
   /* Ref: https://css-scroll-shadows.vercel.app */
-  background: 
-    linear-gradient(white 33%, transparent),
-    linear-gradient(transparent, white 66%) 0 100%,
-    radial-gradient(farthest-side at 50% 0, rgba(0,0,0, 0.5), transparent),
-    radial-gradient(farthest-side at 50% 100%, rgba(0,0,0, 0.5), transparent) 0 100%;
+  background: linear-gradient(white 33%, transparent), linear-gradient(transparent, white 66%) 0 100%,
+    radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.5), transparent),
+    radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.5), transparent) 0 100%;
   background-color: transparent;
   background-repeat: no-repeat;
   background-attachment: local, local, scroll, scroll;

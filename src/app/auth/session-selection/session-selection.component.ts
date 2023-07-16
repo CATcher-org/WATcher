@@ -113,11 +113,10 @@ export class SessionSelectionComponent implements OnInit {
     });
     this.suggestions = JSON.parse(window.localStorage.getItem('suggestions')) || [];
     // Ref: https://v10.material.angular.io/components/autocomplete/overview
-    this.filteredSuggestions = this.repoForm.get('repo').valueChanges
-      .pipe(
-        startWith(''),
-        map(value => this.suggestions.filter(suggestion => suggestion.toLowerCase().includes(value.toLowerCase())))
-      );
+    this.filteredSuggestions = this.repoForm.get('repo').valueChanges.pipe(
+      startWith(''),
+      map((value) => this.suggestions.filter((suggestion) => suggestion.toLowerCase().includes(value.toLowerCase())))
+    );
   }
 
   private autofillRepo() {

@@ -8,7 +8,6 @@ import { HttpLink, HttpLinkModule } from 'apollo-angular-link-http';
 import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
 import { ApolloLink } from 'apollo-link';
 import { setContext } from 'apollo-link-context';
-import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import 'reflect-metadata';
 import graphqlTypes from '../../graphql/graphql-types';
 import '../polyfills';
@@ -32,7 +31,6 @@ import { UserService } from './core/services/user.service';
 import { IssuesViewerModule } from './issues-viewer/issues-viewer.module';
 import { LabelDefinitionPopupComponent } from './shared/label-definition-popup/label-definition-popup.component';
 import { HeaderComponent } from './shared/layout';
-import { markedOptionsFactory } from './shared/lib/marked';
 import { RepoChangeFormComponent } from './shared/repo-change-form/repo-change-form.component';
 import { SharedModule } from './shared/shared.module';
 
@@ -53,12 +51,6 @@ import { SharedModule } from './shared/shared.module';
     ActivityDashboardModule,
     SharedModule,
     HttpClientModule,
-    MarkdownModule.forRoot({
-      markedOptions: {
-        provide: MarkedOptions,
-        useFactory: markedOptionsFactory
-      }
-    }),
     AppRoutingModule,
     ApolloModule,
     HttpLinkModule
