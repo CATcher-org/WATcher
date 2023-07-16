@@ -197,12 +197,13 @@ export class HeaderComponent implements OnInit {
    * Change repository viewed on Issue Dashboard, if a valid repository is provided.
    */
   changeRepositoryIfValid(repo: Repo, newRepoString: string) {
-      this.phaseService.changeRepositoryIfValid(repo)
-        .then(() => {
-          this.auth.setTitleWithPhaseDetail();
-          this.currentRepo = newRepoString;
-        })
-        .catch((error) => this.errorHandlingService.handleError(error));
+    this.phaseService
+      .changeRepositoryIfValid(repo)
+      .then(() => {
+        this.auth.setTitleWithPhaseDetail();
+        this.currentRepo = newRepoString;
+      })
+      .catch((error) => this.errorHandlingService.handleError(error));
   }
 
   openChangeRepoDialog() {
