@@ -56,7 +56,7 @@
   </button>
 
   <button
-    *ngIf="auth.isAuthenticated() && isOpenUrlButtonShown()"
+    *ngIf="auth.isAuthenticated() && auth.isRepoSet()&& isOpenUrlButtonShown()"
     mat-button
     matTooltip="View current page on GitHub"
     (click)="viewBrowser()"
@@ -64,7 +64,7 @@
     <mat-icon>open_in_new</mat-icon>
   </button>
   <button
-    *ngIf="auth.isAuthenticated() && isReloadButtonShown() && !this.isReloadButtonDisabled"
+    *ngIf="auth.isAuthenticated() && auth.isRepoSet() && isReloadButtonShown() && !this.isReloadButtonDisabled"
     mat-button
     matTooltip="Synchronize with Github data"
     (click)="reload()"
