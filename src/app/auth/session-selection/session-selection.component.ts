@@ -113,7 +113,7 @@ export class SessionSelectionComponent implements OnInit {
     this.repoForm = this.formBuilder.group({
       repo: ['', Validators.required]
     });
-
+    
     this.filteredSuggestions = this.repoUrlCacheService.getFilteredSuggestions(this.repoForm.get('repo'));
   }
 

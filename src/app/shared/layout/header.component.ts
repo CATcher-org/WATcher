@@ -194,26 +194,16 @@ export class HeaderComponent implements OnInit {
   }
 
   /**
-   * Change repository viewed on Issue Dashboard.
+   * Change repository viewed on Issue Dashboard, if a valid repository is provided.
    */
-  switchRepo(repo: Repo) {
-    this.phaseService.changeCurrentRepository(repo);
-    this.auth.setTitleWithPhaseDetail();
-  }
-
-  changeRepositoryInPhaseIfValid(repo: Repo, newRepoString: string) {
-    this.phaseService.isChangingRepo.next(true);
-
-    this.githubService.isRepositoryPresent(repo.owner, repo.name).subscribe((isValidRepository) => {
-      if (!isValidRepository) {
-        this.phaseService.isChangingRepo.next(false);
-        throw new Error('Invalid repository name. Please check your organisation and repository name.');
-      }
-
-      this.switchRepo(repo);
-      this.currentRepo = newRepoString;
-      this.phaseService.isChangingRepo.next(false);
-    });
+  changeRepositoryIfValid(repo: Repo, newRepoString: string) {
+    this.phaseService
+      .changeRepositoryIfValid(repo)
+      .then(() => {
+        this.auth.setTitleWithPhaseDetail();
+        this.currentRepo = newRepoString;
+      })
+      .catch((error) => this.errorHandlingService.handleError(error));
   }
 
   openChangeRepoDialog() {
@@ -225,8 +215,7 @@ export class HeaderComponent implements OnInit {
       }
       const newRepo = Repo.of(res);
 
-      // instead of switching immediately, check if this is a valid repo first
-      this.changeRepositoryInPhaseIfValid(newRepo, res);
+      this.changeRepositoryIfValid(newRepo, res);
     });
   }
 }

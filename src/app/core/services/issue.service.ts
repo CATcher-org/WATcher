@@ -3,7 +3,7 @@ import { BehaviorSubject, EMPTY, forkJoin, Observable, of, Subscription, throwEr
 import { catchError, exhaustMap, finalize, flatMap, map } from 'rxjs/operators';
 import RestGithubIssueFilter from '../models/github/github-issue-filter.model';
 import { GithubIssue } from '../models/github/github-issue.model';
-import { Issue, Issues, IssuesFilter, STATUS } from '../models/issue.model';
+import { Issue, Issues, IssuesFilter } from '../models/issue.model';
 import { Phase } from '../models/phase.model';
 import { GithubService } from './github.service';
 import { PhaseService } from './phase.service';

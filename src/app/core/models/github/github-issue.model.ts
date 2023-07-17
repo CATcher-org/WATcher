@@ -68,8 +68,4 @@ export class GithubIssue {
       }
     }
   }
-
-  findTeamId(): string {
-    return `${this.findLabel('team')}.${this.findLabel('tutorial')}`;
-  }
 }
