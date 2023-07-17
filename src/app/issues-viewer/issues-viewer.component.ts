@@ -72,7 +72,6 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Fetch issues
     this.issueService.reloadAllIssues();
-    this.issueService.reloadAllIssues().subscribe();
   }
 
   /**

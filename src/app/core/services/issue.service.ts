@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, EMPTY, forkJoin, merge, Observable, of, Subscription, throwError, timer } from 'rxjs';
-import { catchError, exhaustMap, finalize, flatMap, map, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, Observable, of, Subscription, timer } from 'rxjs';
+import { catchError, exhaustMap, finalize, map } from 'rxjs/operators';
 import RestGithubIssueFilter from '../models/github/github-issue-filter.model';
 import { GithubIssue } from '../models/github/github-issue.model';
-import { Issue, Issues, IssuesFilter, STATUS } from '../models/issue.model';
+import { Issue, Issues, IssuesFilter } from '../models/issue.model';
 import { Phase } from '../models/phase.model';
 import { GithubService } from './github.service';
 import { PhaseService } from './phase.service';
@@ -39,8 +39,6 @@ export class IssueService {
         this.isLoading.next(true);
       }
 
-      // TODO: the current implementation works, but we should make it work with this polling thing instead
-      // TODO: we need to make it work with the isLoading feature too!
       this.issuesPollSubscription = timer(0, IssueService.POLL_INTERVAL)
         .pipe(
           exhaustMap(() => {
@@ -121,7 +119,7 @@ export class IssueService {
   }
 
   private initializeData(): Observable<Issue[]> {
-    let issuesAPICallsByFilter: Observable<Array<GithubIssue>> = undefined;
+    let issuesAPICallsByFilter: Observable<Array<GithubIssue>>;
 
     switch (IssuesFilter[this.phaseService.currentPhase][this.userService.currentUser.role]) {
       case 'FILTER_BY_CREATOR':
