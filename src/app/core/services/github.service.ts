@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { ApolloQueryResult } from 'apollo-client';
 import { DocumentNode } from 'graphql';
-import { forkJoin, from, Observable, of, throwError, zip } from 'rxjs';
-import { catchError, filter, flatMap, map, throwIfEmpty } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin, from, Observable, merge, of, throwError, zip, combineLatest } from 'rxjs';
+import { catchError, concatMap, filter, flatMap, map, throwIfEmpty } from 'rxjs/operators';
 import {
   FetchIssue,
   FetchIssueQuery,
@@ -123,6 +123,10 @@ export class GithubService {
           (result) => result.data.repository.issues.edges,
           GithubGraphqlIssueOrPr
         );
+      }),
+      map((x) => {
+        // console.log("issues", x.length);
+        return x;
       })
     );
     const prObs = this.toFetchIssues(issuesFilter).pipe(
@@ -134,11 +138,21 @@ export class GithubService {
           (result) => result.data.repository.pullRequests.edges,
           GithubGraphqlIssueOrPr
         );
+      }),
+      map((x) => {
+        // console.log("prs", x.length);
+        return x;
       })
     );
 
     // Concatenate both streams together.
-    return zip(issueObs, prObs).pipe(map((x) => x[0].concat(x[1])));
+    // return merge(issueObs, prObs);
+    return zip(issueObs, prObs).pipe(
+      map((x) => {
+        // console.log("zipping", x[0].length, x[1].length);
+        return x[0].concat(x[1]);
+      })
+    );
   }
 
   /**
@@ -483,9 +497,21 @@ export class GithubService {
     pluckEdges: (results: ApolloQueryResult<T>) => Array<any>,
     Model: new (data) => M
   ): Observable<Array<M>> {
+    return this.withPaginationGenerator<T>(pluckEdges, query, variables).pipe(
+      // concatMap((results) => results),
+      map((results: ApolloQueryResult<T>[]) => {
+        const issues = results.reduce((accumulated, current) => accumulated.concat(pluckEdges(current)), []);
+        return issues.map((issue) => new Model(issue.node));
+      }),
+      throwIfEmpty(() => {
+        return new HttpErrorResponse({ status: 304 });
+      })
+    );
+
     return from(this.withPagination<T>(pluckEdges)(query, variables)).pipe(
       map((results: Array<ApolloQueryResult<T>>) => {
         const issues = results.reduce((accumulated, current) => accumulated.concat(pluckEdges(current)), []);
+        console.log('DONE', issues);
         return issues.map((issue) => new Model(issue.node));
       }),
       throwIfEmpty(() => {
@@ -507,6 +533,7 @@ export class GithubService {
       const maxResultsCount = 100;
       const cursor = variables.cursor || null;
       const graphqlQuery = this.apollo.watchQuery<T>({ query, variables: { ...variables, cursor } });
+
       return graphqlQuery.refetch().then(async (results: ApolloQueryResult<T>) => {
         const intermediate = Array.isArray(results) ? results : [results];
         const edges = pluckEdges(results);
@@ -523,4 +550,194 @@ export class GithubService {
       });
     };
   }
+
+  // TODO: jsdocs
+  private withPaginationGenerator<T>(
+    pluckEdges: (results: ApolloQueryResult<T>) => Array<any>,
+    query: DocumentNode,
+    variables: { [key: string]: any } = {}
+  ): Observable<ApolloQueryResult<T>[]> {
+    const maxResultsCount = 100;
+    const apollo = this.apollo;
+
+    let accumulatedResults: ApolloQueryResult<T>[] = [];
+    const behaviorSubject: BehaviorSubject<ApolloQueryResult<T>[]> = new BehaviorSubject(accumulatedResults);
+    const observable = behaviorSubject.asObservable();
+
+    async function helper(cursor: string): Promise<void> {
+      const graphqlQuery = apollo.watchQuery<T>({ query, variables: { ...variables, cursor } });
+
+      await graphqlQuery.refetch().then(async (results: ApolloQueryResult<T>) => {
+        const intermediate = Array.isArray(results) ? results : [results];
+        const edges = pluckEdges(results);
+        const nextCursor = edges.length === 0 ? null : edges[edges.length - 1].cursor;
+
+        accumulatedResults = accumulatedResults.concat(intermediate);
+        // console.log('sending fullResults', accumulatedResults);
+        behaviorSubject.next(accumulatedResults);
+        if (edges.length < maxResultsCount || !nextCursor) {
+          // We are done.
+          // console.log('DONEZO', edges.length < maxResultsCount, nextCursor);
+          return;
+        }
+        // Recurse.
+        await helper(nextCursor);
+        // return intermediate.concat(nextResults);
+      });
+    }
+
+    const initialCursor = null;
+    const observer = async () => {
+      await helper(initialCursor);
+      // Without this extra next, the final results are not sent.
+      behaviorSubject.next(accumulatedResults);
+      behaviorSubject.complete();
+      // console.log("behaviourSubject.complete()", accumulatedResults.length);
+    };
+
+    observer();
+
+    return observable;
+
+    // async function* generator(
+    //   query: DocumentNode,
+    //   variables: { [key: string]: any } = {}
+    // ): Generator<Promise<ApolloQueryResult<T>[]>, void, void> {
+    //   async function* helper(cursor: string) {
+    //     console.log('helper is called', cursor);
+    //
+    //     const graphqlQuery = apollo.watchQuery<T>({ query, variables: { ...variables, cursor } });
+    //
+    //     const { nextCursor, rows } = await graphqlQuery.refetch().then((results: ApolloQueryResult<T>) => {
+    //       const rows: ApolloQueryResult<T>[] = Array.isArray(results) ? results : [results];
+    //       const edges = pluckEdges(results);
+    //
+    //       const nextCursor = edges.length === 0 || edges.length < maxResultsCount ? null : edges[edges.length - 1].cursor;
+    //
+    //       return { nextCursor, rows };
+    //     });
+    //
+    //     if (nextCursor === null) {
+    //       console.log('DONE RECURSING');
+    //       return rows;
+    //     }
+    //
+    //     // Recurse.
+    //     console.log('cursors', cursor, nextCursor);
+    //     helper(nextCursor);
+    //     return rows;
+    //   }
+    //
+    //   const cursor = variables.cursor || null;
+    //
+    //   for await (const val of helper(cursor)) {
+    //     yield val;
+    //   }
+    // }
+    // }
+  }
+
+  // TODO: jsdocs
+  // private withPaginationGenerator2<T>(
+  //   pluckEdges: (results: ApolloQueryResult<T>) => Array<any>,
+  //   query: DocumentNode,
+  //   variables: { [key: string]: any } = {}
+  // ): Observable<Promise<ApolloQueryResult<T>[]>> {
+  //   const maxResultsCount = 100;
+  //   const apollo = this.apollo;
+  //
+  //   async function* generator(
+  //     query: DocumentNode,
+  //     variables: { [key: string]: any } = {}
+  //   ): Generator<Promise<ApolloQueryResult<T>[]>, void, void> {
+  //     async function* helper(cursor: string) {
+  //       console.log('helper is called', cursor);
+  //
+  //       const graphqlQuery = apollo.watchQuery<T>({ query, variables: { ...variables, cursor } });
+  //
+  //       const { nextCursor, rows } = await graphqlQuery.refetch().then((results: ApolloQueryResult<T>) => {
+  //         const rows: ApolloQueryResult<T>[] = Array.isArray(results) ? results : [results];
+  //         const edges = pluckEdges(results);
+  //
+  //         const nextCursor = edges.length === 0 || edges.length < maxResultsCount ? null : edges[edges.length - 1].cursor;
+  //
+  //         return { nextCursor, rows };
+  //       });
+  //
+  //       if (nextCursor === null) {
+  //         console.log('DONE RECURSING');
+  //         return rows;
+  //       }
+  //
+  //       // Recurse.
+  //       console.log('cursors', cursor, nextCursor);
+  //       helper(nextCursor);
+  //       return rows;
+  //     }
+  //
+  //     const cursor = variables.cursor || null;
+  //
+  //     // while (hasNext) {
+  //     // yield * helper(cursor);
+  //     for await (const val of helper(cursor)) {
+  //       yield val;
+  //     }
+  //
+  //     // const graphqlQuery = apollo.watchQuery<T>({ query, variables: { ...variables, cursor } });
+  //     //
+  //     // // NOTE: have to somehow wait for the next query
+  //     // // IDEA: extract this into a helper function, and call this helper function in the `then` callback!
+  //     // // this forces the execution of this bit to be synchronous
+  //     // // then, we cannot use a while loop anymore...
+  //     // //
+  //     // // NOTE: probably a good idea to add a comment explaining this, because this was clearly a problem that the previous dev faced...
+  //     // yield graphqlQuery.refetch().then((results: ApolloQueryResult<T>) => {
+  //     //   const rows: ApolloQueryResult<T>[] = Array.isArray(results) ? results : [results];
+  //     //   const edges = pluckEdges(results);
+  //     //
+  //     //   cursor = edges.length === 0 ? null : edges[edges.length - 1].cursor;
+  //     //
+  //     //   if (edges.length < maxResultsCount || !cursor) {
+  //     //     hasNext = false;
+  //     //   }
+  //     //
+  //     //   return rows;
+  //     // });
+  //     // }
+  //   }
+  //
+  //   return from(generator(query, variables));
+  //
+  //   console.log('withPaginationGenerator is called!');
+  //
+  //   return from(async (subscriber) => {
+  //     console.log('new Observable...');
+  //
+  //     const maxResultsCount = 100;
+  //     let cursor = variables.cursor || null;
+  //
+  //     let hasNext: boolean = true;
+  //
+  //     while (hasNext) {
+  //       console.log('hasNext loop');
+  //
+  //       const graphqlQuery = apollo.watchQuery<T>({ query, variables: { ...variables, cursor } });
+  //
+  //       await graphqlQuery.refetch().then(async (results: ApolloQueryResult<T>) => {
+  //         const rows: ApolloQueryResult<T>[] = Array.isArray(results) ? results : [results];
+  //         const edges = pluckEdges(results);
+  //
+  //         cursor = edges.length === 0 ? null : edges[edges.length - 1].cursor;
+  //         console.log(cursor);
+  //
+  //         if (edges.length < maxResultsCount || !cursor) {
+  //           hasNext = false;
+  //         }
+  //
+  //         console.log('ApolloQueryResult<T>[]', rows);
+  //         subscriber.next(rows);
+  //       });
+  //     }
+  //   });
+  // }
 }

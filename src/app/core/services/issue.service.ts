@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, EMPTY, forkJoin, Observable, of, Subscription, throwError, timer } from 'rxjs';
-import { catchError, exhaustMap, finalize, flatMap, map } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, EMPTY, forkJoin, merge, Observable, of, Subscription, throwError, timer } from 'rxjs';
+import { catchError, exhaustMap, finalize, flatMap, map, switchMap } from 'rxjs/operators';
 import RestGithubIssueFilter from '../models/github/github-issue-filter.model';
 import { GithubIssue } from '../models/github/github-issue.model';
 import { Issue, Issues, IssuesFilter, STATUS } from '../models/issue.model';
@@ -39,6 +39,8 @@ export class IssueService {
         this.isLoading.next(true);
       }
 
+      // TODO: the current implementation works, but we should make it work with this polling thing instead
+      // TODO: we need to make it work with the isLoading feature too!
       this.issuesPollSubscription = timer(0, IssueService.POLL_INTERVAL)
         .pipe(
           exhaustMap(() => {
@@ -119,38 +121,38 @@ export class IssueService {
   }
 
   private initializeData(): Observable<Issue[]> {
-    const issuesAPICallsByFilter: Array<Observable<Array<GithubIssue>>> = [];
+    let issuesAPICallsByFilter: Observable<Array<GithubIssue>> = undefined;
 
     switch (IssuesFilter[this.phaseService.currentPhase][this.userService.currentUser.role]) {
       case 'FILTER_BY_CREATOR':
-        issuesAPICallsByFilter.push(
-          this.githubService.fetchIssuesGraphql(new RestGithubIssueFilter({ creator: this.userService.currentUser.loginId }))
+        issuesAPICallsByFilter = this.githubService.fetchIssuesGraphql(
+          new RestGithubIssueFilter({ creator: this.userService.currentUser.loginId })
         );
         break;
       case 'NO_FILTER':
-        issuesAPICallsByFilter.push(this.githubService.fetchIssuesGraphql(new RestGithubIssueFilter({})));
+        issuesAPICallsByFilter = this.githubService.fetchIssuesGraphql(new RestGithubIssueFilter({}));
         break;
       case 'NO_ACCESS':
       default:
         return of([]);
     }
 
-    // const issuesAPICallsByFilter = filters.map(filter => this.githubService.fetchIssuesGraphql(filter));
-    return forkJoin(issuesAPICallsByFilter).pipe(
-      map((issuesByFilter: [][]) => {
+    return issuesAPICallsByFilter.pipe(
+      map((issuesByFilter: []) => {
         const fetchedIssueIds: Array<Number> = [];
 
         // Take each issue and put it in next in issues$
-        for (const issues of issuesByFilter) {
-          for (const issue of issues) {
-            fetchedIssueIds.push(this.createIssueModel(issue).id);
-            this.createAndSaveIssueModel(issue);
-          }
+        for (const issue of issuesByFilter) {
+          fetchedIssueIds.push(this.createIssueModel(issue).id);
+          this.createAndSaveIssueModel(issue);
         }
 
         const outdatedIssueIds: Array<Number> = this.getOutdatedIssueIds(fetchedIssueIds);
         this.deleteIssuesFromLocalStore(outdatedIssueIds);
 
+        if (this.issues === undefined) {
+          return [];
+        }
         return Object.values(this.issues);
       })
     );
