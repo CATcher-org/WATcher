@@ -5,6 +5,7 @@ import { Repo } from '../models/repo.model';
 import { SessionData } from '../models/session.model';
 import { GithubService } from './github.service';
 import { LoggingService } from './logging.service';
+import { RepoUrlCacheService } from './repo-url-cache.service';
 
 export const SESSION_AVALIABILITY_FIX_FAILED = 'Session Availability Fix failed.';
 
@@ -57,7 +58,7 @@ export class PhaseService {
 
   public sessionData = STARTING_SESSION_DATA; // stores session data for the session
 
-  constructor(private githubService: GithubService, public logger: LoggingService) {}
+  constructor(private githubService: GithubService,  private repoUrlCacheService: RepoUrlCacheService, public logger: LoggingService) {}
 
   /**
    * Sets the current main repository and additional repos if any.
@@ -87,12 +88,7 @@ export class PhaseService {
     }
     this.setRepository(repo, this.otherRepos);
 
-    // Update autofill repository URL suggestions in localStorage
-    const suggestions: string[] = JSON.parse(window.localStorage.getItem('suggestions')) || [];
-    if (!suggestions.includes(repo.toString())) {
-      suggestions.push(repo.toString());
-      window.localStorage.setItem('suggestions', JSON.stringify(suggestions));
-    }
+    this.repoUrlCacheService.cache(repo.toString());
 
     this.repoChanged$.next(repo);
   }
