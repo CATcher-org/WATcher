@@ -61,9 +61,9 @@ export class HeaderComponent implements OnInit {
 
     this.auth.currentAuthState.subscribe((state) => {
       if (auth.isAuthenticated()) {
-        this.openChangeRepoDialog()
+        this.openChangeRepoDialog();
       }
-    })
+    });
     this.auth.repoSetState.subscribe((state) => {
       if (auth.isAuthenticated() && auth.isRepoSet()) {
         this.initializeRepoNameInTitle();
@@ -220,7 +220,7 @@ export class HeaderComponent implements OnInit {
       }
       const newRepo = Repo.of(res);
 
-      if(this.auth.isRepoSet()) {
+      if (this.auth.isRepoSet()) {
         this.changeRepositoryIfValid(newRepo, res);
       } else {
         this.auth.setupUserData();
