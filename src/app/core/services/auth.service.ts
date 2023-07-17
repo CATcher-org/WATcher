@@ -34,11 +34,10 @@ export enum AuthState {
 export class AuthService {
   authStateSource = new BehaviorSubject(AuthState.NotAuthenticated);
   currentAuthState = this.authStateSource.asObservable();
+  repoSetSource = new BehaviorSubject(false);
+  repoSetState = this.repoSetSource.asObservable();
   accessToken = new BehaviorSubject(undefined);
   private state: string;
-
-  sessionSetupStateSource = new BehaviorSubject(false);
-  sessionSetupState = this.sessionSetupStateSource.asObservable();
 
   ENABLE_POPUP_MESSAGE = 'Please enable pop-ups in your browser';
 
@@ -100,6 +99,10 @@ export class AuthService {
     return this.authStateSource.getValue() === AuthState.Authenticated;
   }
 
+  isRepoSet(): boolean {
+    return this.repoSetSource.getValue();
+  }
+
   changeAuthState(newAuthState: AuthState) {
     if (newAuthState === AuthState.Authenticated) {
       const sessionId = generateSessionId();
@@ -107,10 +110,6 @@ export class AuthService {
       this.logger.info(`AuthService: Successfully authenticated with session: ${sessionId}`);
     }
     this.authStateSource.next(newAuthState);
-  }
-
-  changeSessionSetupState(newSessionSetupState: boolean) {
-    this.sessionSetupStateSource.next(newSessionSetupState);
   }
 
   /**
@@ -150,8 +149,6 @@ export class AuthService {
   handleAuthSuccess() {
     this.setTitleWithPhaseDetail();
     this.router.navigateByUrl(Phase.issuesViewer);
-    this.changeSessionSetupState(false);
-    this.changeAuthState(AuthState.Authenticated);
   }
 
   /**
@@ -159,6 +156,7 @@ export class AuthService {
    */
   setupUserData(): void {
     this.phaseService.initializeCurrentRepository();
+    this.repoSetSource.next(true);
     const currentRepo = this.phaseService.currentRepo;
     this.githubService.isRepositoryPresent(currentRepo.owner, currentRepo.name)
       .pipe(
@@ -175,7 +173,6 @@ export class AuthService {
         },
         (error) => {
           this.changeAuthState(AuthState.NotAuthenticated);
-          this.changeSessionSetupState(false);
           this.errorHandlingService.handleError(error);
           this.logger.info(`AuthService: Completion of auth process failed with an error: ${error}`);
         }

@@ -42,7 +42,7 @@ export class ConfirmLoginComponent implements OnInit {
       .createUserModel(this.username)
       .subscribe(
         () => {
-          this.authService.changeSessionSetupState(true);
+          this.authService.changeAuthState(AuthState.Authenticated);
         },
         (error) => {
           this.authService.changeAuthState(AuthState.NotAuthenticated);

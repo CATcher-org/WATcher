@@ -15,7 +15,7 @@
     ({{ this.getPhaseDescription(phaseService.currentPhase) }})
   </span>
 
-  <div *ngIf="auth.isAuthenticated() && this.phaseService.sessionData.sessionRepo.length > 1">
+  <div *ngIf="auth.isAuthenticated() && auth.isRepoSet() && this.phaseService.sessionData.sessionRepo.length > 1">
     <button mat-button [matMenuTriggerFor]="menu"><mat-icon style="color: white">expand_more</mat-icon></button>
     <mat-menu #menu="matMenu">
       <button
