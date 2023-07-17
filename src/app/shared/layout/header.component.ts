@@ -59,6 +59,11 @@ export class HeaderComponent implements OnInit {
         this.prevUrl = e[0].urlAfterRedirects;
       });
 
+    this.auth.currentAuthState.subscribe((state) => {
+      if (auth.isAuthenticated()) {
+        this.openChangeRepoDialog()
+      }
+    })
     this.auth.repoSetState.subscribe((state) => {
       if (auth.isAuthenticated() && auth.isRepoSet()) {
         this.initializeRepoNameInTitle();
@@ -215,7 +220,11 @@ export class HeaderComponent implements OnInit {
       }
       const newRepo = Repo.of(res);
 
-      this.changeRepositoryIfValid(newRepo, res);
+      if(this.auth.isRepoSet()) {
+        this.changeRepositoryIfValid(newRepo, res);
+      } else {
+        this.auth.setupUserData();
+      }
     });
   }
 }
