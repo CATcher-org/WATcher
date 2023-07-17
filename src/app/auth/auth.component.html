@@ -7,7 +7,7 @@
   </mat-card>
 </div>
 
-<div *ngIf="(isUserAuthenticating() || isAwaitingOAuthUserConfirm())" class="login-page">
+<div *ngIf="isUserAuthenticating() || isAwaitingOAuthUserConfirm()" class="login-page">
   <mat-card class="login-card">
     <mat-card-header style="margin-bottom: 20px">
       <mat-card-title class="login-title"> Confirm Login Account </mat-card-title>

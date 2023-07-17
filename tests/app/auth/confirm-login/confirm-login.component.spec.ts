@@ -21,7 +21,7 @@ describe('ConfirmLoginComponent', () => {
   let fixture: ComponentFixture<ConfirmLoginComponent>;
 
   beforeEach(async(() => {
-    authService = jasmine.createSpyObj<AuthService>('AuthService', ['changeAuthState', 'changeSessionSetupState']);
+    authService = jasmine.createSpyObj<AuthService>('AuthService', ['changeAuthState']);
     logger = jasmine.createSpyObj<LoggingService>('LoggingService', ['info']);
     userService = jasmine.createSpyObj<UserService>('UserService', ['createUserModel']);
     errorHandlingService = jasmine.createSpyObj<ErrorHandlingService>('ErrorHandlingService', ['handleError']);
@@ -50,9 +50,8 @@ describe('ConfirmLoginComponent', () => {
 
     component.completeLoginProcess();
 
-    expect(authService.changeAuthState).toHaveBeenCalled();
     expect(logger.info).toHaveBeenCalled();
     expect(userService.createUserModel).toHaveBeenCalled();
-    expect(authService.changeSessionSetupState).toHaveBeenCalled();
+    expect(authService.changeAuthState).toHaveBeenCalledTimes(2);
   });
 });
