@@ -37,11 +37,14 @@
 }
 
 .mat-chip {
+  height: auto;
+  line-height: 1.1em;
   position: inherit;
   border-radius: 6px;
   font-size: 12px;
   padding: 11px 7px;
   min-height: 16px;
+  max-height: 42px;
   margin: 0px;
   top: 50%;
 }
