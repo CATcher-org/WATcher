@@ -13,8 +13,10 @@
       <input #input matInput placeholder="Find labels" />
     </mat-form-field>
 
+    <button mat-button (click)="removeAllSelection()">Remove all</button>
+
     <div class="scroll-container">
-      <mat-selection-list [(ngModel)]="selectedLabelNames" (selectionChange)="selectedLabels.next(selectedLabelNames)">
+      <mat-selection-list [(ngModel)]="selectedLabelNames" (selectionChange)="updateSelection()">
         <mat-list-option
           #option
           *ngFor="let label of allLabels"
