@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Profile } from '../../core/models/profile.model';
 import { AuthService } from '../../core/services/auth.service';
-import { ErrorHandlingService } from 'src/app/core/services/error-handling.service';
+import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 
