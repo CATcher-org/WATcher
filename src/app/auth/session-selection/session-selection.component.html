@@ -6,7 +6,12 @@
   <form [formGroup]="repoForm" (ngSubmit)="setupSession()">
     <mat-card-content>
       <mat-form-field class="login-field">
-        <input matInput placeholder="Repository Location (Org/Repo)" formControlName="repo" required />
+        <input matInput placeholder="Repository Location (Org/Repo)" formControlName="repo" required [matAutocomplete]="auto" />
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let suggestion of filteredSuggestions | async" [value]="suggestion">
+            {{ suggestion }}
+          </mat-option>
+        </mat-autocomplete>
       </mat-form-field>
 
       <mat-card-actions>

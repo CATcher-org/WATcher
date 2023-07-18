@@ -36,3 +36,9 @@
   overflow-x: auto;
   /* white-space: nowrap; */
 }
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
