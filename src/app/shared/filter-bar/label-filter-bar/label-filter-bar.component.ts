@@ -1,5 +1,5 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { MatListOption } from '@angular/material/list';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatListOption, MatSelectionList } from '@angular/material/list';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { LabelService } from '../../../core/services/label.service';
 import { LoggingService } from '../../../core/services/logging.service';
@@ -17,6 +17,7 @@ export type simplifiedLabel = {
 export class LabelFilterBarComponent implements OnInit, OnDestroy {
   @Input() selectedLabels: BehaviorSubject<string[]>;
   @Input() hiddenLabels: BehaviorSubject<Set<string>>;
+  @ViewChild(MatSelectionList) matSelectionList;
 
   allLabels: simplifiedLabel[];
   selectedLabelNames: string[] = [];
@@ -92,5 +93,14 @@ export class LabelFilterBarComponent implements OnInit, OnDestroy {
 
   filter(filter: string, target: string): boolean {
     return !target.toLowerCase().includes(filter.toLowerCase());
+  }
+
+  updateSelection(): void {
+    this.selectedLabels.next(this.selectedLabelNames);
+  }
+
+  removeAllSelection(): void {
+    this.matSelectionList.deselectAll();
+    this.updateSelection();
   }
 }
