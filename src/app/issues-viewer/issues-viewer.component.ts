@@ -36,7 +36,10 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     public issueService: IssueService,
     public milestoneService: MilestoneService
   ) {
-    this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => this.initialize());
+    this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => {
+      this.issueService.reset(false);
+      this.initialize();
+    });
   }
 
   ngOnInit() {
@@ -68,7 +71,6 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
 
     // Fetch issues
-    this.issueService.reset(false);
     this.issueService.reloadAllIssues();
   }
 
