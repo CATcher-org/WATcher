@@ -38,12 +38,11 @@
 
 .mat-chip {
   height: auto;
-  padding: 4px 8px !important;
+  padding: 5.5px 7px;
   line-height: 1.1em;
   position: inherit;
   border-radius: 6px;
   font-size: 12px;
-  padding: 11px 7px;
   min-height: 16px;
   max-height: 42px;
   margin: 0px;
