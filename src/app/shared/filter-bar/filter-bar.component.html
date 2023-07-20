@@ -13,6 +13,7 @@
           <mat-option value="all">All</mat-option>
           <mat-option value="open">Open</mat-option>
           <mat-option value="closed">Closed</mat-option>
+          <mat-option value="merged" *ngIf="isFilterIssue()">Merged</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="standard">
