@@ -80,6 +80,9 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.views$?.value?.forEach((v) => (v.retrieveFilterable().filter = filterValue));
   }
 
+  /**
+   * Changes status to a valid, default value when an incompatible combination of type and status is encountered.
+   */
   checkValidCombination() {
     if (this.dropdownFilter.status === 'merged' && this.dropdownFilter.type === 'issue') {
       this.dropdownFilter.status = 'all';
