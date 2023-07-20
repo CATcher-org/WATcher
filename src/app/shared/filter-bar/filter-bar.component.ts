@@ -80,6 +80,12 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.views$?.value?.forEach((v) => (v.retrieveFilterable().filter = filterValue));
   }
 
+  checkValidCombination() {
+    if (this.dropdownFilter.status === 'merged' && this.dropdownFilter.type === 'issue') {
+      this.dropdownFilter.status = 'all';
+    }
+  }
+
   /**
    * Signals to IssuesDataTable that a change has occurred in dropdown filter.
    */
@@ -90,7 +96,7 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * Checks if program is filtering by type issue.
    */
-  isFilterIssue() {
+  isNotFilterIssue() {
     return this.dropdownFilter.type != 'issue';
   }
 
