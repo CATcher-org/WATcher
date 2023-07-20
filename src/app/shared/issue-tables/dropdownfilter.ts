@@ -33,7 +33,7 @@ export function applyDropdownFilter(dropdownFilter: DropdownFilter): (a: Issue) 
       // there is apparently also a status called 'all' based on github api
       ret = ret && issue.state === 'CLOSED';
     } else if (dropdownFilter.status === 'merged') {
-      ret = ret && issue.state === 'MERGED'
+      ret = ret && issue.state === 'MERGED';
     }
 
     if (dropdownFilter.type === 'issue') {

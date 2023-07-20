@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { ConfirmLoginComponent } from '../../../../src/app/auth/confirm-login/confirm-login.component';
@@ -31,7 +31,7 @@ describe('ConfirmLoginComponent', () => {
   let component: ConfirmLoginComponent;
   let fixture: ComponentFixture<ConfirmLoginComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     authService = jasmine.createSpyObj<AuthService>('AuthService', ['changeAuthState', 'setTitleWithPhaseDetail', 'startOAuthProcess']);
     phaseService = jasmine.createSpyObj<PhaseService>('PhaseService', ['initializeCurrentRepository', 'currentRepo']);
     logger = jasmine.createSpyObj<LoggingService>('LoggingService', ['info']);
