@@ -1,9 +1,16 @@
 <h1 mat-dialog-title class="change-repo-form-title">Change repository</h1>
 <div mat-dialog-content>
-  <mat-form-field appearance="fill">
-    <mat-label>Repository Location (Org/Repo)</mat-label>
-    <input matInput [(ngModel)]="this.repoName" />
-  </mat-form-field>
+  <form (ngSubmit)="onYesClick()">
+    <mat-form-field appearance="fill">
+      <mat-label>Repository Location (Org/Repo)</mat-label>
+      <input matInput [(ngModel)]="this.repoName" [formControl]="repoChangeForm" [matAutocomplete]="auto" />
+      <mat-autocomplete #auto="matAutocomplete" >
+        <mat-option *ngFor="let suggestion of filteredSuggestions | async" [value]="suggestion">
+          {{ suggestion }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </form>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()" color="warn">Cancel</button>
