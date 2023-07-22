@@ -31,7 +31,7 @@ describe('ConfirmLoginComponent', () => {
   let component: ConfirmLoginComponent;
   let fixture: ComponentFixture<ConfirmLoginComponent>;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async(() => {
     authService = jasmine.createSpyObj<AuthService>('AuthService', ['changeAuthState', 'setTitleWithPhaseDetail', 'startOAuthProcess']);
     phaseService = jasmine.createSpyObj<PhaseService>('PhaseService', ['initializeCurrentRepository', 'currentRepo']);
     logger = jasmine.createSpyObj<LoggingService>('LoggingService', ['info']);
