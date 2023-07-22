@@ -57,3 +57,9 @@
 mat-list-option {
   width: max-content;
 }
+
+.no-labels {
+  /* Chosen to look similar to button above. */
+  padding: 0 16px;
+  font-size: 14px;
+}
