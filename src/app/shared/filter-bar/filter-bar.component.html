@@ -39,7 +39,16 @@
       </mat-form-field>
       <mat-form-field appearance="standard">
         <mat-label>Milestone</mat-label>
-        <mat-select #milestoneSelectorRef [(value)]="this.dropdownFilter.milestones" (selectionChange)="applyDropdownFilter()" multiple>
+        <mat-select
+          #milestoneSelectorRef
+          [(value)]="this.dropdownFilter.milestones"
+          (selectionChange)="applyDropdownFilter()"
+          [disabled]="this.milestoneService.hasNoMilestones"
+          multiple
+        >
+          <mat-select-trigger *ngIf="this.milestoneService.hasNoMilestones">
+            <span>No Milestones</span>
+          </mat-select-trigger>
           <mat-option *ngFor="let milestone of this.milestoneService.milestones" [value]="milestone.number">
             {{ milestone.title }}
           </mat-option>

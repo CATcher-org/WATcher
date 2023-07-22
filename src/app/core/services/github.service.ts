@@ -9,19 +9,15 @@ import {
   FetchIssue,
   FetchIssueQuery,
   FetchIssues,
-  FetchIssuesByTeam,
-  FetchIssuesByTeamQuery,
   FetchIssuesQuery,
   FetchPullRequests,
   FetchPullRequestsQuery
 } from '../../../../graphql/graphql-types';
 import { AppConfig } from '../../../environments/environment';
 import { getNumberOfPages } from '../../shared/lib/github-paginator-parser';
-import { IssueComment } from '../models/comment.model';
 import { GithubUser } from '../models/github-user.model';
 import { IssueLastModifiedManagerModel } from '../models/github/cache-manager/issue-last-modified-manager.model';
 import { IssuesCacheManager } from '../models/github/cache-manager/issues-cache-manager.model';
-import { GithubComment } from '../models/github/github-comment.model';
 import { GithubEvent } from '../models/github/github-event.model';
 import { GithubGraphqlIssue } from '../models/github/github-graphql.issue';
 import { GithubGraphqlIssueOrPr } from '../models/github/github-graphql.issue-or-pr';
@@ -104,37 +100,6 @@ export class GithubService {
   storePhaseDetails(phaseRepoOwner: string, repoName: string) {
     REPO = repoName;
     ORG_NAME = phaseRepoOwner;
-  }
-
-  /**
-   * Fetches an array of filtered GitHubIssues using GraphQL query for a given team.
-   *
-   * @param tutorial - The tutorial that the team belongs to.
-   * @param team - The team's designated name.
-   * @param issuesFilter - The issue filter.
-   * @returns An observable array of filtered GithubIssues
-   */
-  fetchIssuesGraphqlByTeam(tutorial: string, team: string, issuesFilter: RestGithubIssueFilter): Observable<Array<GithubIssue>> {
-    const graphqlFilter = issuesFilter.convertToGraphqlFilter();
-    return this.toFetchIssues(issuesFilter).pipe(
-      filter((toFetch) => toFetch),
-      flatMap(() => {
-        return this.fetchGraphqlList<FetchIssuesByTeamQuery, GithubGraphqlIssue>(
-          FetchIssuesByTeam,
-          {
-            owner: ORG_NAME,
-            name: REPO,
-            filter: {
-              ...graphqlFilter,
-              labels: [...(graphqlFilter.labels ? graphqlFilter.labels : []), team]
-            },
-            tutorial
-          },
-          (result) => result.data.repository.label.issues.edges,
-          GithubGraphqlIssue
-        );
-      })
-    );
   }
 
   /**
@@ -222,16 +187,6 @@ export class GithubService {
       }),
       catchError((err) => throwError('Failed to fetch repository data.'))
     );
-  }
-
-  /**
-   * Creates a repository in for the authenticated user location.
-   * @param name - Name of Repo to create.
-   * @return Observable<boolean> - That returns true if the repository has been successfully
-   *                                created.
-   */
-  createRepository(name: string): void {
-    octokit.repos.createForAuthenticatedUser({ name: name });
   }
 
   /**
@@ -324,24 +279,6 @@ export class GithubService {
   }
 
   /**
-   * Creates a label in the current repository.
-   * @param formattedLabelName - name of new label.
-   * @param labelColor - colour of new label.
-   */
-  createLabel(formattedLabelName: string, labelColor: string): void {
-    octokit.issues.createLabel({ owner: ORG_NAME, repo: REPO, name: formattedLabelName, color: labelColor });
-  }
-
-  /**
-   * Updates a label's information in the current repository.
-   * @param labelName - name of existing label
-   * @param labelColor - new color to be assigned to existing label.
-   */
-  updateLabel(labelName: string, labelColor: string): void {
-    octokit.issues.updateLabel({ owner: ORG_NAME, repo: REPO, name: labelName, current_name: labelName, color: labelColor });
-  }
-
-  /**
    * Checks if the given list of users are allowed to be assigned to an issue.
    * @param assignees - GitHub usernames to be checked
    */
@@ -374,75 +311,6 @@ export class GithubService {
         return response['data'];
       }),
       catchError((err) => throwError('Failed to fetch assignable users for repository'))
-    );
-  }
-
-  closeIssue(id: number): Observable<GithubIssue> {
-    return from(octokit.issues.update({ owner: ORG_NAME, repo: REPO, issue_number: id, state: 'closed' })).pipe(
-      map((response: GithubResponse<GithubIssue>) => {
-        this.issuesLastModifiedManager.set(id, response.headers['last-modified']);
-        return new GithubIssue(response.data);
-      })
-    );
-  }
-
-  createIssue(title: string, description: string, labels: string[]): Observable<GithubIssue> {
-    return from(octokit.issues.create({ owner: ORG_NAME, repo: REPO, title: title, body: description, labels: labels })).pipe(
-      map((response: GithubResponse<GithubIssue>) => {
-        return new GithubIssue(response.data);
-      })
-    );
-  }
-
-  createIssueComment(issueId: number, description: string): Observable<GithubComment> {
-    return from(octokit.issues.createComment({ owner: ORG_NAME, repo: REPO, issue_number: issueId, body: description })).pipe(
-      map((response: GithubResponse<GithubComment>) => {
-        return response.data;
-      })
-    );
-  }
-
-  updateIssue(id: number, title: string, description: string, labels: string[], assignees?: string[]): Observable<GithubIssue> {
-    return from(
-      octokit.issues.update({
-        owner: ORG_NAME,
-        repo: REPO,
-        issue_number: id,
-        title: title,
-        body: description,
-        labels: labels,
-        assignees: assignees
-      })
-    ).pipe(
-      map((response: GithubResponse<GithubIssue>) => {
-        this.issuesLastModifiedManager.set(id, response.headers['last-modified']);
-        return new GithubIssue(response.data);
-      }),
-      catchError((err) => {
-        return throwError(err);
-      })
-    );
-  }
-
-  updateIssueComment(issueComment: IssueComment): Observable<GithubComment> {
-    return from(
-      octokit.issues.updateComment({ owner: ORG_NAME, repo: REPO, comment_id: issueComment.id, body: issueComment.description })
-    ).pipe(
-      map((response: GithubResponse<GithubComment>) => {
-        return response.data;
-      })
-    );
-  }
-
-  uploadFile(filename: string, base64String: string): Observable<any> {
-    return from(
-      octokit.repos.createOrUpdateFile({
-        owner: ORG_NAME,
-        repo: REPO,
-        path: `files/${filename}`,
-        message: 'upload file',
-        content: base64String
-      })
     );
   }
 

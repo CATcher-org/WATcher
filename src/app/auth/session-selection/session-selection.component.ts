@@ -1,9 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { Profile } from '../../core/models/profile.model';
 import { AuthService, AuthState } from '../../core/services/auth.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { LoggingService } from '../../core/services/logging.service';
+import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 
 @Component({
   selector: 'app-session-selection',
@@ -15,6 +17,7 @@ export class SessionSelectionComponent implements OnInit {
   isSettingUpSession: boolean;
   profileForm: FormGroup;
   repoForm: FormGroup;
+  filteredSuggestions: Observable<string[]>;
 
   @Input() urlEncodedSessionName: string;
   @Input() urlEncodedRepo: string;
@@ -25,6 +28,7 @@ export class SessionSelectionComponent implements OnInit {
     private formBuilder: FormBuilder,
     private logger: LoggingService,
     private authService: AuthService,
+    private repoUrlCacheService: RepoUrlCacheService,
     private errorHandlingService: ErrorHandlingService
   ) {}
 
@@ -68,6 +72,8 @@ export class SessionSelectionComponent implements OnInit {
     if (repoOrg && repoName) {
       window.localStorage.setItem('org', repoOrg);
       window.localStorage.setItem('dataRepo', repoName);
+
+      this.repoUrlCacheService.cache(repoInformation);
     }
 
     this.logger.info(`SessionSelectionComponent: Selected Repository: ${repoInformation}`);
@@ -107,6 +113,8 @@ export class SessionSelectionComponent implements OnInit {
     this.repoForm = this.formBuilder.group({
       repo: ['', Validators.required]
     });
+
+    this.filteredSuggestions = this.repoUrlCacheService.getFilteredSuggestions(this.repoForm.get('repo'));
   }
 
   private autofillRepo() {
