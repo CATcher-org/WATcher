@@ -10,8 +10,9 @@
   display: flex;
   align-items: center;
   font-size: 12px;
-  text-align: left;
+  text-align: center;
   overflow: auto;
+  word-break: break-word;
 }
 
 .column-header .mat-card-title {
