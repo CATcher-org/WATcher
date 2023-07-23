@@ -99,7 +99,8 @@ export class LabelFilterBarComponent implements OnInit, OnDestroy {
     if (this.allLabels === undefined || this.allLabels.length === 0) {
       return true;
     }
-    return this.allLabels.every((label) => this.filter(filter, label.name));
+    const hasLabels: boolean = this.allLabels.some((label) => !this.filter(filter, label.name));
+    return !hasLabels;
   }
 
   updateSelection(): void {
