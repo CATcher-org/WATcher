@@ -64,8 +64,7 @@ div.column-header .mat-card-header {
   height: 6px;
   width: 100%;
   display: block;
-  background-image:
-    linear-gradient(to bottom, white 66%, transparent);
+  background-image: linear-gradient(to bottom, white 66%, transparent);
 }
 
 .scrollable-container::after {
@@ -77,8 +76,7 @@ div.column-header .mat-card-header {
   height: 6px;
   width: 100%;
   display: block;
-  background-image:
-    linear-gradient(to top, white 66%, transparent);
+  background-image: linear-gradient(to top, white 66%, transparent);
 }
 
 .scrollable-container-wrapper {
@@ -94,8 +92,7 @@ div.column-header .mat-card-header {
   left: 0;
   right: 0;
   height: 5px;
-  background-image:
-    radial-gradient(farthest-side at 50% 0, rgba(0,0,0, 0.5), transparent);
+  background-image: radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.5), transparent);
 }
 
 .scrollable-container-wrapper::after {
@@ -107,8 +104,7 @@ div.column-header .mat-card-header {
   left: 0;
   right: 0;
   height: 5px;
-  background-image:
-    radial-gradient(farthest-side at 50% 100%, rgba(0,0,0, 0.5), transparent);
+  background-image: radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.5), transparent);
 }
 
 .loading-spinner {

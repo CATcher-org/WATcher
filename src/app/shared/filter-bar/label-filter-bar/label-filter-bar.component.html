@@ -15,34 +15,35 @@
 
     <button mat-button (click)="removeAllSelection()">Remove all</button>
 
-    <div class="scroll-container">
-      <mat-selection-list [(ngModel)]="selectedLabelNames" (selectionChange)="updateSelection()">
-        <mat-list-option
-          #option
-          *ngFor="let label of allLabels"
-          [value]="label.name"
-          [selected]="selectedLabelNames.includes(label.name)"
-          class="list-option"
-          [class.hidden]="filter(input.value, label.name)"
-        >
-          <div class="flexbox-container">
-            <button mat-icon-button *ngIf="!hiddenLabelNames.has(label.name)" (click)="hide(label.name); $event.stopPropagation()">
-              <mat-icon>visibility</mat-icon>
-            </button>
-            <button mat-icon-button *ngIf="hiddenLabelNames.has(label.name)" (click)="show(label.name); $event.stopPropagation()">
-              <mat-icon>visibility_off</mat-icon>
-            </button>
-
-            <mat-chip
-              [ngStyle]="labelService.setLabelStyle(label.color)"
-              [disabled]="hiddenLabelNames.has(label.name)"
-              (click)="simulateClick(option); $event.stopPropagation()"
-            >
-              {{ label.name }}
-            </mat-chip>
-          </div>
-        </mat-list-option>
-      </mat-selection-list>
+    <div class="scroll-container-wrapper">
+      <div class="scroll-container">
+        <mat-selection-list [(ngModel)]="selectedLabelNames" (selectionChange)="updateSelection()">
+          <mat-list-option
+            #option
+            *ngFor="let label of allLabels"
+            [value]="label.name"
+            [selected]="selectedLabelNames.includes(label.name)"
+            class="list-option"
+            [class.hidden]="filter(input.value, label.name)"
+          >
+            <div class="flexbox-container">
+              <button mat-icon-button *ngIf="!hiddenLabelNames.has(label.name)" (click)="hide(label.name); $event.stopPropagation()">
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button mat-icon-button *ngIf="hiddenLabelNames.has(label.name)" (click)="show(label.name); $event.stopPropagation()">
+                <mat-icon>visibility_off</mat-icon>
+              </button>
+              <mat-chip
+                [ngStyle]="labelService.setLabelStyle(label.color)"
+                [disabled]="hiddenLabelNames.has(label.name)"
+                (click)="simulateClick(option); $event.stopPropagation()"
+              >
+                {{ label.name }}
+              </mat-chip>
+            </div>
+          </mat-list-option>
+        </mat-selection-list>
+      </div>
     </div>
   </div>
 </mat-menu>

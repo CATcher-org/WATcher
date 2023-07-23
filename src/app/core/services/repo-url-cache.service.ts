@@ -1,12 +1,11 @@
-import { Injectable } from "@angular/core";
-import { AbstractControl } from "@angular/forms";
-import { Observable } from "rxjs";
+import { Injectable } from '@angular/core';
+import { AbstractControl } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-
 export class RepoUrlCacheService {
   static readonly KEY_NAME = 'suggestions';
 
@@ -26,10 +25,9 @@ export class RepoUrlCacheService {
 
   getFilteredSuggestions(control: AbstractControl): Observable<string[]> {
     // Ref: https://v10.material.angular.io/components/autocomplete/overview
-    return control.valueChanges
-      .pipe(
-        startWith(''),
-        map(value => this.suggestions.filter(suggestion => suggestion.toLowerCase().includes(value.toLowerCase())))
-      );
+    return control.valueChanges.pipe(
+      startWith(''),
+      map((value) => this.suggestions.filter((suggestion) => suggestion.toLowerCase().includes(value.toLowerCase())))
+    );
   }
 }
