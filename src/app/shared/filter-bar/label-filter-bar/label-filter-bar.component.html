@@ -15,6 +15,7 @@
 
     <button mat-button (click)="removeAllSelection()">Remove all</button>
 
+    <div *ngIf="!hasLabels(input.value)" class="no-labels">No Labels Found!</div>
     <div class="scroll-container-wrapper">
       <div class="scroll-container">
         <mat-selection-list [(ngModel)]="selectedLabelNames" (selectionChange)="updateSelection()">
