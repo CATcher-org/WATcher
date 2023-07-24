@@ -58,7 +58,7 @@ export class PhaseService {
 
   public sessionData = STARTING_SESSION_DATA; // stores session data for the session
 
-  constructor(private githubService: GithubService,  private repoUrlCacheService: RepoUrlCacheService, public logger: LoggingService) {}
+  constructor(private githubService: GithubService, private repoUrlCacheService: RepoUrlCacheService, public logger: LoggingService) {}
 
   /**
    * Sets the current main repository and additional repos if any.
