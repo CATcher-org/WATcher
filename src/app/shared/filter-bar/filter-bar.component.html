@@ -9,7 +9,7 @@
     <div class="dropdown-filters">
       <mat-form-field appearance="standard">
         <mat-label>Status</mat-label>
-        <mat-select [(value)]="this.dropdownFilter.status" (selectionChange)="applyDropdownFilter()">
+        <mat-select [(value)]="this.dropdownFilter.status" (selectionChange)="updateTypePairing(); applyDropdownFilter()">
           <mat-option value="all">All</mat-option>
           <mat-option value="open">Open</mat-option>
           <mat-option value="closed">Closed</mat-option>
@@ -18,7 +18,7 @@
       </mat-form-field>
       <mat-form-field appearance="standard">
         <mat-label>Type</mat-label>
-        <mat-select [(value)]="this.dropdownFilter.type" (selectionChange)="checkValidCombination(); applyDropdownFilter()">
+        <mat-select [(value)]="this.dropdownFilter.type" (selectionChange)="updateStatusPairing(); applyDropdownFilter()">
           <mat-option value="all">All</mat-option>
           <mat-option value="issue">Issue</mat-option>
           <mat-option value="pullrequest">Pull Request</mat-option>
