@@ -4,7 +4,7 @@
     <mat-form-field appearance="fill">
       <mat-label>Repository Location (Org/Repo)</mat-label>
       <input matInput [(ngModel)]="this.repoName" [formControl]="repoChangeForm" [matAutocomplete]="auto" />
-      <mat-autocomplete #auto="matAutocomplete" >
+      <mat-autocomplete #auto="matAutocomplete">
         <mat-option *ngFor="let suggestion of filteredSuggestions | async" [value]="suggestion">
           {{ suggestion }}
         </mat-option>

@@ -95,6 +95,13 @@ export class LabelFilterBarComponent implements OnInit, OnDestroy {
     return !target.toLowerCase().includes(filter.toLowerCase());
   }
 
+  hasLabels(filter: string): boolean {
+    if (this.allLabels === undefined || this.allLabels.length === 0) {
+      return false;
+    }
+    return this.allLabels.some((label) => !this.filter(filter, label.name));
+  }
+
   updateSelection(): void {
     this.selectedLabels.next(this.selectedLabelNames);
   }
