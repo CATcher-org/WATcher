@@ -40,7 +40,7 @@
                 [disabled]="hiddenLabelNames.has(label.name)"
                 (click)="simulateClick(option); $event.stopPropagation()"
               >
-                {{ label.name }}
+                {{ label.formattedName }}
               </mat-chip>
             </div>
           </mat-list-option>

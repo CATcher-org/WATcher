@@ -25,6 +25,6 @@ export class Label implements SimpleLabel {
  * Represents a simplified label with name and color
  */
 export type SimpleLabel = {
-  name: string;
+  formattedName: string;
   color: string;
 };
