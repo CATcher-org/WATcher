@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable, of, Subscription, timer } from 'rxjs';
 import { catchError, exhaustMap, finalize, map } from 'rxjs/operators';
-import { Label, SimplifiedLabel } from '../models/label.model';
+import { Label, SimpleLabel } from '../models/label.model';
 import { GithubService } from './github.service';
 
 /* The threshold to decide if color is dark or light.
@@ -25,10 +25,10 @@ export class LabelService {
   static readonly POLL_INTERVAL = 5000; // 5 seconds
 
   labels: Label[];
-  simplifiedLabels: SimplifiedLabel[];
+  simpleLabels: SimpleLabel[];
 
   private labelsPollSubscription: Subscription;
-  private labelsSubject = new BehaviorSubject<SimplifiedLabel[]>([]);
+  private labelsSubject = new BehaviorSubject<SimpleLabel[]>([]);
 
   constructor(private githubService: GithubService) {}
 
@@ -47,7 +47,7 @@ export class LabelService {
         })
       )
       .subscribe(() => {
-        this.labelsSubject.next(this.simplifiedLabels);
+        this.labelsSubject.next(this.simpleLabels);
       });
   }
 
@@ -58,7 +58,7 @@ export class LabelService {
     }
   }
 
-  connect(): Observable<SimplifiedLabel[]> {
+  connect(): Observable<SimpleLabel[]> {
     return this.labelsSubject.asObservable();
   }
 
@@ -69,13 +69,8 @@ export class LabelService {
     return this.githubService.fetchAllLabels().pipe(
       map((response) => {
         this.labels = this.parseLabelData(response);
-        this.simplifiedLabels = this.labels.map((label) => {
-          return {
-            name: label.formattedName,
-            color: label.color
-          };
-        });
-        this.labelsSubject.next(this.simplifiedLabels);
+        this.simpleLabels = this.labels;
+        this.labelsSubject.next(this.simpleLabels);
         return response;
       })
     );
@@ -138,7 +133,7 @@ export class LabelService {
 
   reset() {
     this.labels = undefined;
-    this.simplifiedLabels = undefined;
+    this.simpleLabels = undefined;
     this.stopPollLabels();
   }
 }

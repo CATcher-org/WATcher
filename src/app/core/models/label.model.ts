@@ -1,7 +1,7 @@
 /**
  * Represents a label and its attributes.
  */
-export class Label {
+export class Label implements SimpleLabel {
   readonly category: string;
   readonly name: string;
   readonly formattedName: string; // 'category'.'name' (e.g. severity.Low) if a category exists or 'name' if the category does not exist.
@@ -24,7 +24,7 @@ export class Label {
 /**
  * Represents a simplified label with name and color
  */
-export type SimplifiedLabel = {
+export type SimpleLabel = {
   name: string;
   color: string;
 };

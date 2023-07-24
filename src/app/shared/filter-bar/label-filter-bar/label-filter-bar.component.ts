@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { MatListOption } from '@angular/material/list';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatListOption, MatSelectionList } from '@angular/material/list';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { SimplifiedLabel } from '../../../core/models/label.model';
+import { SimpleLabel } from '../../../core/models/label.model';
 import { LabelService } from '../../../core/services/label.service';
 import { LoggingService } from '../../../core/services/logging.service';
 
@@ -13,8 +13,10 @@ import { LoggingService } from '../../../core/services/logging.service';
 export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() selectedLabels: BehaviorSubject<string[]>;
   @Input() hiddenLabels: BehaviorSubject<Set<string>>;
+  @ViewChild(MatSelectionList) matSelectionList;
 
-  labels$: Observable<SimplifiedLabel[]>;
+  labels$: Observable<SimpleLabel[]>;
+  allLabels: SimpleLabel[];
   selectedLabelNames: string[] = [];
   hiddenLabelNames: Set<string> = new Set();
   loaded = false;
@@ -31,6 +33,9 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
     setTimeout(() => {
       this.load();
       this.labels$ = this.labelService.connect();
+      this.labels$.subscribe((labels) => {
+        this.allLabels = labels;
+      });
     });
   }
 
@@ -85,5 +90,21 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
 
   filter(filter: string, target: string): boolean {
     return !target.toLowerCase().includes(filter.toLowerCase());
+  }
+
+  hasLabels(filter: string): boolean {
+    if (this.allLabels === undefined || this.allLabels.length === 0) {
+      return false;
+    }
+    return this.allLabels.some((label) => !this.filter(filter, label.name));
+  }
+
+  updateSelection(): void {
+    this.selectedLabels.next(this.selectedLabelNames);
+  }
+
+  removeAllSelection(): void {
+    this.matSelectionList.deselectAll();
+    this.updateSelection();
   }
 }
