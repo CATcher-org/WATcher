@@ -48,7 +48,6 @@ export function AuthServiceFactory(
     phaseService,
     githubEventService,
     titleService,
-    errorHandlingService,
     logger
     );
 }

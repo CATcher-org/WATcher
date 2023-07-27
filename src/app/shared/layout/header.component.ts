@@ -64,8 +64,8 @@ export class HeaderComponent implements OnInit {
         this.openChangeRepoDialog();
       }
     });
-    this.auth.repoSetState.subscribe((state) => {
-      if (auth.isAuthenticated() && auth.isRepoSet()) {
+    this.phaseService.repoSetState.subscribe((state) => {
+      if (auth.isAuthenticated() && phaseService.isRepoSet()) {
         this.initializeRepoNameInTitle();
       }
     });
@@ -220,10 +220,10 @@ export class HeaderComponent implements OnInit {
       }
       const newRepo = Repo.of(res);
 
-      if (this.auth.isRepoSet()) {
+      if (this.phaseService.isRepoSet()) {
         this.changeRepositoryIfValid(newRepo, res);
       } else {
-        this.auth.setupUserData();
+        this.auth.setRepo();
       }
     });
   }

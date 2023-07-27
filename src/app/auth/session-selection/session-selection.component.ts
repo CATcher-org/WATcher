@@ -78,7 +78,7 @@ export class SessionSelectionComponent implements OnInit {
 
     this.logger.info(`SessionSelectionComponent: Selected Repository: ${repoInformation}`);
 
-    this.authService.setupUserData();
+    this.authService.setRepo();
 
     this.isSettingUpSession = false;
   }
