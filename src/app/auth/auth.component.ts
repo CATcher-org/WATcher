@@ -135,7 +135,7 @@ export class AuthComponent implements OnInit, OnDestroy {
   }
 
   isRepoSet(): boolean {
-    return !(this.phaseService.currentRepo === undefined);
+    return this.phaseService.isRepoSet();
   }
 
   get currentSessionOrg(): string {
