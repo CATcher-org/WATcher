@@ -134,6 +134,10 @@ export class AuthComponent implements OnInit, OnDestroy {
     return this.authState === AuthState.ConfirmOAuthUser;
   }
 
+  isUserAuthenticated(): boolean {
+    return this.authState === AuthState.Authenticated;
+  }
+
   isRepoSet(): boolean {
     return this.phaseService.isRepoSet();
   }
