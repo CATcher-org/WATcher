@@ -8,7 +8,6 @@ import { AppConfig } from '../../../environments/environment';
 import { generateSessionId } from '../../shared/lib/session';
 import { uuid } from '../../shared/lib/uuid';
 import { Phase } from '../models/phase.model';
-import { ErrorHandlingService } from './error-handling.service';
 import { GithubService } from './github.service';
 import { GithubEventService } from './githubevent.service';
 import { IssueService } from './issue.service';
@@ -34,8 +33,6 @@ export enum AuthState {
 export class AuthService {
   authStateSource = new BehaviorSubject(AuthState.NotAuthenticated);
   currentAuthState = this.authStateSource.asObservable();
-  repoSetSource = new BehaviorSubject(false);
-  repoSetState = this.repoSetSource.asObservable();
   accessToken = new BehaviorSubject(undefined);
   private state: string;
 
@@ -50,7 +47,6 @@ export class AuthService {
     private phaseService: PhaseService,
     private githubEventService: GithubEventService,
     private titleService: Title,
-    private errorHandlingService: ErrorHandlingService,
     private logger: LoggingService
     ) {}
 
@@ -99,10 +95,6 @@ export class AuthService {
     return this.authStateSource.getValue() === AuthState.Authenticated;
   }
 
-  isRepoSet(): boolean {
-    return this.repoSetSource.getValue();
-  }
-
   changeAuthState(newAuthState: AuthState) {
     if (newAuthState === AuthState.Authenticated) {
       const sessionId = generateSessionId();
@@ -144,19 +136,18 @@ export class AuthService {
   }
 
   /**
-   * Handles the clean up required after authentication and setting up of user data is completed.
+   * Handles the clean up required after authentication and setting up of repository is completed.
    */
-  handleAuthSuccess() {
+  handleSetRepoSuccess() {
     this.setTitleWithPhaseDetail();
     this.router.navigateByUrl(Phase.issuesViewer);
   }
 
   /**
-   * Setup user data after authentication.
+   * Setup repository after authentication.
    */
-  setupUserData(): void {
+  setRepo(): void {
     this.phaseService.initializeCurrentRepository();
-    this.repoSetSource.next(true);
     const currentRepo = this.phaseService.currentRepo;
     this.githubService.isRepositoryPresent(currentRepo.owner, currentRepo.name)
       .pipe(
@@ -169,15 +160,10 @@ export class AuthService {
       )
       .subscribe(
         () => {
-          this.handleAuthSuccess();
-        },
-        (error) => {
-          this.changeAuthState(AuthState.NotAuthenticated);
-          this.errorHandlingService.handleError(error);
-          this.logger.info(`AuthService: Completion of auth process failed with an error: ${error}`);
+          this.handleSetRepoSuccess();
         }
       );
-    this.handleAuthSuccess();
+    this.handleSetRepoSuccess();
   }
 
   /**

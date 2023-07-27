@@ -45,6 +45,9 @@ export class PhaseService {
   public currentRepo: Repo; // current or main repository of current phase
   public otherRepos: Repo[]; // more repositories relevant to this phase
 
+  repoSetSource = new BehaviorSubject(false);
+  repoSetState = this.repoSetSource.asObservable();
+
   /**
    * Expose an observable to track changes to currentRepo
    *
@@ -58,7 +61,10 @@ export class PhaseService {
 
   public sessionData = STARTING_SESSION_DATA; // stores session data for the session
 
-  constructor(private githubService: GithubService, private repoUrlCacheService: RepoUrlCacheService, public logger: LoggingService) {}
+  constructor(
+    private githubService: GithubService,
+    private repoUrlCacheService: RepoUrlCacheService,
+    public logger: LoggingService) {}
 
   /**
    * Sets the current main repository and additional repos if any.
@@ -132,6 +138,11 @@ export class PhaseService {
     }
     this.logger.info(`PhaseService: Repo is ${repo}`);
     this.setRepository(repo);
+    this.repoSetSource.next(true);
+  }
+
+  isRepoSet(): boolean {
+    return this.repoSetSource.getValue();
   }
 
   /**
