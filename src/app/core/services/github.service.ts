@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { ApolloQueryResult } from 'apollo-client';
 import { DocumentNode } from 'graphql';
-import { BehaviorSubject, forkJoin, from, Observable, of, throwError, zip } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, merge, Observable, of, throwError } from 'rxjs';
 import { catchError, filter, flatMap, map, throwIfEmpty } from 'rxjs/operators';
 import {
   FetchIssue,
@@ -138,7 +138,7 @@ export class GithubService {
     );
 
     // Concatenate both streams together.
-    return zip(issueObs, prObs).pipe(map((x) => x[0].concat(x[1])));
+    return merge(issueObs, prObs);
   }
 
   /**
@@ -526,6 +526,7 @@ export class GithubService {
         behaviorSubject.next(accumulatedResults);
         if (edges.length < maxResultsCount || !nextCursor) {
           // No more queries to perform.
+          behaviorSubject.complete();
           return;
         }
 
@@ -535,13 +536,7 @@ export class GithubService {
     }
 
     const initialCursor = null;
-    const observer = async () => {
-      await queryWith(initialCursor);
-      behaviorSubject.next(accumulatedResults);
-      behaviorSubject.complete();
-    };
-
-    observer();
+    queryWith(initialCursor);
 
     return behaviorSubject.asObservable();
   }

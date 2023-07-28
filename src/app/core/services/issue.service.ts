@@ -133,10 +133,10 @@ export class IssueService {
         return of([]);
     }
 
+    const fetchedIssueIds: Array<number> = [];
+
     return issuesAPICallsByFilter.pipe(
       map((issuesByFilter: []) => {
-        const fetchedIssueIds: Array<Number> = [];
-
         // Take each issue and put it in next in issues$
         for (const issue of issuesByFilter) {
           fetchedIssueIds.push(this.createIssueModel(issue).id);
