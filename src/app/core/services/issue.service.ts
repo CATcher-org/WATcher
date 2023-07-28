@@ -133,7 +133,7 @@ export class IssueService {
         return of([]);
     }
 
-    const fetchedIssueIds: Array<number> = [];
+    const fetchedIssueIds: number[] = [];
 
     return issuesAPICallsByFilter.pipe(
       map((issuesByFilter: []) => {
@@ -143,7 +143,7 @@ export class IssueService {
           this.createAndSaveIssueModel(issue);
         }
 
-        const outdatedIssueIds: Array<Number> = this.getOutdatedIssueIds(fetchedIssueIds);
+        const outdatedIssueIds: number[] = this.getOutdatedIssueIds(fetchedIssueIds);
         this.deleteIssuesFromLocalStore(outdatedIssueIds);
 
         if (this.issues === undefined) {
@@ -160,7 +160,7 @@ export class IssueService {
     return true;
   }
 
-  private deleteIssuesFromLocalStore(ids: Array<Number>): void {
+  private deleteIssuesFromLocalStore(ids: number[]): void {
     ids.forEach((id: number) => {
       this.getIssue(id).subscribe((issue) => this.deleteFromLocalStore(issue));
     });
@@ -170,7 +170,7 @@ export class IssueService {
    * Returns an array of outdated issue ids by comparing the ids of the recently
    * fetched issues with the current issue ids in the local store
    */
-  private getOutdatedIssueIds(fetchedIssueIds: Array<Number>): Array<Number> {
+  private getOutdatedIssueIds(fetchedIssueIds: number[]): number[] {
     /*
       Ignore for first fetch or ignore if there is no fetch result
 
@@ -182,7 +182,7 @@ export class IssueService {
       return [];
     }
 
-    const fetchedIssueIdsSet = new Set<Number>(fetchedIssueIds);
+    const fetchedIssueIdsSet = new Set<number>(fetchedIssueIds);
 
     const result = Object.keys(this.issues)
       .map((x) => +x)

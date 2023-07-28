@@ -62,7 +62,7 @@ export class GithubService {
 
   private issuesCacheManager = new IssuesCacheManager();
   private issuesLastModifiedManager = new IssueLastModifiedManagerModel();
-  private issueQueryRefs = new Map<Number, QueryRef<FetchIssueQuery>>();
+  private issueQueryRefs = new Map<number, QueryRef<FetchIssueQuery>>();
 
   constructor(private errorHandlingService: ErrorHandlingService, private apollo: Apollo, private logger: LoggingService) {}
 
