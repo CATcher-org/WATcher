@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
 import { Profile } from '../../core/models/profile.model';
 import { AuthService, AuthState } from '../../core/services/auth.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { LoggingService } from '../../core/services/logging.service';
+import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 
 @Component({
   selector: 'app-session-selection',
@@ -17,7 +17,6 @@ export class SessionSelectionComponent implements OnInit {
   isSettingUpSession: boolean;
   profileForm: FormGroup;
   repoForm: FormGroup;
-  suggestions: string[];
   filteredSuggestions: Observable<string[]>;
 
   @Input() urlEncodedSessionName: string;
@@ -29,6 +28,7 @@ export class SessionSelectionComponent implements OnInit {
     private formBuilder: FormBuilder,
     private logger: LoggingService,
     private authService: AuthService,
+    private repoUrlCacheService: RepoUrlCacheService,
     private errorHandlingService: ErrorHandlingService
   ) {}
 
@@ -73,11 +73,7 @@ export class SessionSelectionComponent implements OnInit {
       window.localStorage.setItem('org', repoOrg);
       window.localStorage.setItem('dataRepo', repoName);
 
-      // Update autofill repository URL suggestions in localStorage
-      if (!this.suggestions.includes(repoInformation)) {
-        this.suggestions.push(repoInformation);
-        window.localStorage.setItem('suggestions', JSON.stringify(this.suggestions));
-      }
+      this.repoUrlCacheService.cache(repoInformation);
     }
 
     this.logger.info(`SessionSelectionComponent: Selected Repository: ${repoInformation}`);
@@ -117,13 +113,8 @@ export class SessionSelectionComponent implements OnInit {
     this.repoForm = this.formBuilder.group({
       repo: ['', Validators.required]
     });
-    this.suggestions = JSON.parse(window.localStorage.getItem('suggestions')) || [];
-    // Ref: https://v10.material.angular.io/components/autocomplete/overview
-    this.filteredSuggestions = this.repoForm.get('repo').valueChanges
-      .pipe(
-        startWith(''),
-        map(value => this.suggestions.filter(suggestion => suggestion.toLowerCase().includes(value.toLowerCase())))
-      );
+
+    this.filteredSuggestions = this.repoUrlCacheService.getFilteredSuggestions(this.repoForm.get('repo'));
   }
 
   private autofillRepo() {

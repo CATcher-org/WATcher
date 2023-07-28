@@ -81,10 +81,35 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
+   * Changes type to a valid, default value when an incompatible combination of type and status is encountered.
+   */
+  updateTypePairing() {
+    if (this.dropdownFilter.status === 'merged') {
+      this.dropdownFilter.type = 'pullrequest';
+    }
+  }
+
+  /**
+   * Changes status to a valid, default value when an incompatible combination of type and status is encountered.
+   */
+  updateStatusPairing() {
+    if (this.dropdownFilter.status === 'merged' && this.dropdownFilter.type === 'issue') {
+      this.dropdownFilter.status = 'all';
+    }
+  }
+
+  /**
    * Signals to IssuesDataTable that a change has occurred in dropdown filter.
    */
   applyDropdownFilter() {
     this.views$?.value?.forEach((v) => (v.retrieveFilterable().dropdownFilter = this.dropdownFilter));
+  }
+
+  /**
+   * Checks if program is filtering by type issue.
+   */
+  isNotFilterIssue() {
+    return this.dropdownFilter.type !== 'issue';
   }
 
   /**
