@@ -513,7 +513,6 @@ export class GithubService {
 
     let accumulatedResults: ApolloQueryResult<T>[] = [];
     const behaviorSubject: BehaviorSubject<ApolloQueryResult<T>[]> = new BehaviorSubject(accumulatedResults);
-    const observable = behaviorSubject.asObservable();
 
     async function queryWith(cursor: string): Promise<void> {
       const graphqlQuery = apollo.watchQuery<T>({ query, variables: { ...variables, cursor } });
@@ -544,6 +543,6 @@ export class GithubService {
 
     observer();
 
-    return observable;
+    return behaviorSubject.asObservable();
   }
 }
