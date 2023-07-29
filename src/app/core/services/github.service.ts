@@ -544,8 +544,7 @@ export class GithubService {
       });
     }
 
-    const initialCursor = null;
-    queryWith(initialCursor);
+    queryWith(null);
 
     return behaviorSubject.asObservable();
   }
