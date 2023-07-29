@@ -498,15 +498,20 @@ export class GithubService {
    * Returns an observable that will continually emit the currently accumulated results, until a page that has less
    * than 100 items is found, after which it performs a final emit with the full results array, and completes.
    *
+   * If `shouldAccumulate` is false, the observable will emit only the latest result, it will still complete on the
+   * same condition.
+   *
    * @callback pluckEdges - A function that returns a list of edges in a ApolloQueryResult.
    * @params query - The query to be performed.
    * @params variables - The variables for the query.
-   * @returns an async function that accepts a GraphQL query for paginated data and any additional variables to that query
+   * @params shouldAccumulate - Whether the observable should accumulate the results.
+   * @returns an observable
    */
   private withPagination<T>(
     pluckEdges: (results: ApolloQueryResult<T>) => Array<any>,
     query: DocumentNode,
-    variables: { [key: string]: any } = {}
+    variables: { [key: string]: any } = {},
+    shouldAccumulate: boolean = true
   ): Observable<ApolloQueryResult<T>[]> {
     const maxResultsCount = 100;
     const apollo = this.apollo;
@@ -522,8 +527,12 @@ export class GithubService {
         const edges = pluckEdges(results);
         const nextCursor = edges.length === 0 ? null : edges[edges.length - 1].cursor;
 
-        accumulatedResults = accumulatedResults.concat(intermediate);
-        behaviorSubject.next(accumulatedResults);
+        if (shouldAccumulate) {
+          accumulatedResults = accumulatedResults.concat(intermediate);
+          behaviorSubject.next(accumulatedResults);
+        } else {
+          behaviorSubject.next(intermediate);
+        }
         if (edges.length < maxResultsCount || !nextCursor) {
           // No more queries to perform.
           behaviorSubject.complete();
