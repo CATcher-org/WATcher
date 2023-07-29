@@ -142,6 +142,7 @@ export class AuthService {
    */
   handleSetRepoSuccess() {
     this.setTitleWithPhaseDetail();
+    console.log("ROUTING");
     this.router.navigateByUrl(Phase.issuesViewer);
   }
 

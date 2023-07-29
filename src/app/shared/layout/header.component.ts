@@ -13,6 +13,7 @@ import { GithubEventService } from '../../core/services/githubevent.service';
 import { IssueService } from '../../core/services/issue.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { PhaseDescription, PhaseService } from '../../core/services/phase.service';
+import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 import { UserService } from '../../core/services/user.service';
 
 const ISSUE_TRACKER_URL = 'https://github.com/CATcher-org/WATcher/issues';
@@ -46,6 +47,7 @@ export class HeaderComponent implements OnInit {
     private location: Location,
     private githubEventService: GithubEventService,
     private issueService: IssueService,
+    private repoUrlCacheService: RepoUrlCacheService,
     private errorHandlingService: ErrorHandlingService,
     private githubService: GithubService,
     private dialogService: DialogService
@@ -223,7 +225,26 @@ export class HeaderComponent implements OnInit {
       if (this.phaseService.isRepoSet()) {
         this.changeRepositoryIfValid(newRepo, res);
       } else {
-        this.auth.setRepo();
+        /**
+         * From session-selection.component.ts
+         *
+         * Persist repo information in local browser storage
+         * To retrieve after authentication redirects back to WATcher
+         *
+         * Since localStorage::setItem with an undefined value can result in
+         * the subsequent value being stored as a string being 'undefined', check
+         * if undefined before storing it. Let's reset the items before setting them.
+         */
+        window.localStorage.removeItem('org');
+        window.localStorage.removeItem('dataRepo');
+
+        if (newRepo) {
+          window.localStorage.setItem('org', newRepo.owner);
+          window.localStorage.setItem('dataRepo', newRepo.name);
+
+          this.repoUrlCacheService.cache(newRepo.toString());
+        }
+        this.auth.setRepo().subscribe();
       }
     });
   }
