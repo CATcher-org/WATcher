@@ -126,7 +126,7 @@ export class PhaseService {
   /**
    * Retrieves the repository url from local storage and sets to current repository.
    */
-  initializeCurrentRepository() {
+  async initializeCurrentRepository() {
     const org = window.localStorage.getItem('org');
     const repoName = window.localStorage.getItem('dataRepo');
     this.logger.info(`Phase Service: received initial org (${org}) and initial name (${repoName})`);
@@ -135,6 +135,10 @@ export class PhaseService {
       repo = Repo.ofEmptyRepo();
     } else {
       repo = new Repo(org, repoName);
+    }
+    const isValidRepository = await this.githubService.isRepositoryPresent(repo.owner, repo.name).toPromise();
+    if (!isValidRepository) {
+      throw new Error('Invalid repository name. Please check your organisation and repository name.');
     }
     this.logger.info(`PhaseService: Repo is ${repo}`);
     this.setRepository(repo);

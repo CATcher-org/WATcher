@@ -78,9 +78,12 @@ export class SessionSelectionComponent implements OnInit {
 
     this.logger.info(`SessionSelectionComponent: Selected Repository: ${repoInformation}`);
 
-    this.authService.setRepo();
-
-    this.isSettingUpSession = false;
+    this.authService.setRepo()
+      .subscribe(
+        (res) => {
+          this.isSettingUpSession = false;            
+        }
+      );
   }
 
   /**

@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { AppConfig } from '../../../environments/environment';
 import { generateSessionId } from '../../shared/lib/session';
 import { uuid } from '../../shared/lib/uuid';
 import { Phase } from '../models/phase.model';
+import { ErrorHandlingService } from './error-handling.service';
 import { GithubService } from './github.service';
 import { GithubEventService } from './githubevent.service';
 import { IssueService } from './issue.service';
@@ -47,6 +48,7 @@ export class AuthService {
     private phaseService: PhaseService,
     private githubEventService: GithubEventService,
     private titleService: Title,
+    private errorHandlingService: ErrorHandlingService,
     private logger: LoggingService
     ) {}
 
@@ -146,25 +148,23 @@ export class AuthService {
   /**
    * Setup repository after authentication.
    */
-  setRepo(): void {
-    this.phaseService.initializeCurrentRepository();
-    const currentRepo = this.phaseService.currentRepo;
-    this.githubService.isRepositoryPresent(currentRepo.owner, currentRepo.name)
+  setRepo(): Observable<boolean> {
+    return from(this.phaseService.initializeCurrentRepository())
       .pipe(
-        mergeMap((isValidRepository) => {
-          if (!isValidRepository) {
-            return new Observable();
+        map(() => {
+          if(!this.phaseService.currentRepo) {
+            return false;
           }
-          return this.githubEventService.setLatestChangeEvent();
-        })
-      )
-      .subscribe(
-        () => {
+          this.githubEventService.setLatestChangeEvent();
           this.handleSetRepoSuccess();
-        }
+          return true;
+        }),
+        catchError((error) => {
+          this.errorHandlingService.handleError(error);
+          return of(false);
+        })
       );
-    this.handleSetRepoSuccess();
-  }
+  };
 
   /**
    * Will redirect to GitHub OAuth page
