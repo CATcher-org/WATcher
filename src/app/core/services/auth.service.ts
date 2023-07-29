@@ -152,7 +152,7 @@ export class AuthService {
     return from(this.phaseService.initializeCurrentRepository())
       .pipe(
         map(() => {
-          if(!this.phaseService.currentRepo) {
+          if (!this.phaseService.currentRepo) {
             return false;
           }
           this.githubEventService.setLatestChangeEvent();
@@ -164,7 +164,7 @@ export class AuthService {
           return of(false);
         })
       );
-  };
+  }
 
   /**
    * Will redirect to GitHub OAuth page

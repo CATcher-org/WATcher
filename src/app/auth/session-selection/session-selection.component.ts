@@ -81,7 +81,7 @@ export class SessionSelectionComponent implements OnInit {
     this.authService.setRepo()
       .subscribe(
         (res) => {
-          this.isSettingUpSession = false;            
+          this.isSettingUpSession = false;
         }
       );
   }
