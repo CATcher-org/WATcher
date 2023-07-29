@@ -483,7 +483,7 @@ export class GithubService {
     pluckEdges: (results: ApolloQueryResult<T>) => Array<any>,
     Model: new (data) => M
   ): Observable<Array<M>> {
-    return this.withPagination<T>(pluckEdges, query, variables).pipe(
+    return this.withPagination<T>(pluckEdges, query, variables, false).pipe(
       map((results: ApolloQueryResult<T>[]) => {
         const issues = results.reduce((accumulated, current) => accumulated.concat(pluckEdges(current)), []);
         return issues.map((issue) => new Model(issue.node));
