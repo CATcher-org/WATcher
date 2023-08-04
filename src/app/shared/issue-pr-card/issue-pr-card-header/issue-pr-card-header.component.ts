@@ -18,13 +18,17 @@ export class IssuePrCardHeaderComponent {
   getOcticon() {
     const type = this.issue.issueOrPr;
     const state = this.issue.state;
+    const stateReason = this.issue.stateReason;
 
     switch (true) {
       case type === 'Issue' && state === 'OPEN': {
         return 'issue-opened';
       }
-      case type === 'Issue' && state === 'CLOSED': {
+      case type === 'Issue' && state === 'CLOSED' && stateReason === 'COMPLETED': {
         return 'issue-closed';
+      }
+      case type === 'Issue' && state === 'CLOSED' && stateReason === 'NOT_PLANNED': {
+        return 'issue-draft';
       }
       case type === 'PullRequest' && state === 'OPEN': {
         return 'git-pull-request';
@@ -47,6 +51,8 @@ export class IssuePrCardHeaderComponent {
       return 'green';
     } else if (this.issue.issueOrPr === 'PullRequest' && this.issue.state === 'CLOSED') {
       return 'red';
+    } else if (this.issue.issueOrPr === 'Issue' && this.issue.stateReason === 'NOT_PLANNED') {
+      return 'gray';
     } else {
       return 'purple';
     }

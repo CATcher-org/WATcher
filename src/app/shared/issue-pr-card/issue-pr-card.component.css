@@ -23,6 +23,10 @@
   border-left: 2.4px solid red;
 }
 
+.border-gray {
+  border-left: 2.4px solid gray;
+}
+
 .mat-card-content {
   display: flex;
   align-items: center;
