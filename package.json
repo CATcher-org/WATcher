@@ -70,7 +70,7 @@
     "@graphql-codegen/typescript-document-nodes": "1.17.7",
     "@graphql-codegen/typescript-operations": "^1.18.4",
     "@graphql-codegen/typescript-resolvers": "^1.20.0",
-    "@octokit/graphql-schema": "^8.24.0",
+    "@octokit/graphql-schema": "^10.74.0",
     "@types/jasmine": "^3.8.2",
     "@types/jasminewd2": "2.0.8",
     "@types/node": "^14.17.6",
