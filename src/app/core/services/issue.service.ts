@@ -76,7 +76,7 @@ export class IssueService {
   getLatestIssue(id: number): Observable<Issue> {
     return this.githubService.fetchIssueGraphql(id).pipe(
       map((response: GithubIssue) => {
-        this.createAndSaveIssueModel(response);
+        this.createAndSaveIssueModels([response]);
         return this.issues[id];
       }),
       catchError((err) => {
@@ -96,13 +96,21 @@ export class IssueService {
 
   /**
    * This function will update the issue's state of the application. This function needs to be called whenever a issue is added/updated.
+   *
+   * @params issuesToUpdate - An array of issues to update the state of the application with.
+   * @params shouldEmit - Whether the updated issues should be emitted to issues$.
    */
-  updateLocalStore(issueToUpdate: Issue) {
-    this.issues = {
-      ...this.issues,
-      [issueToUpdate.id]: issueToUpdate
-    };
-    this.issues$.next(Object.values(this.issues));
+  updateLocalStore(issuesToUpdate: Issue[], shouldEmit: boolean = true) {
+    const newIssues = issuesToUpdate.reduce((obj, issue) => {
+      obj[issue.id] = issue;
+      return obj;
+    }, {});
+
+    this.issues = { ...this.issues, ...newIssues };
+
+    if (shouldEmit) {
+      this.issues$.next(Object.values(this.issues));
+    }
   }
 
   reset(resetSessionId: boolean) {
@@ -135,16 +143,15 @@ export class IssueService {
         return of([]);
     }
 
-    // const issuesAPICallsByFilter = filters.map(filter => this.githubService.fetchIssuesGraphql(filter));
     return forkJoin(issuesAPICallsByFilter).pipe(
-      map((issuesByFilter: [][]) => {
+      map((issuesByFilter: GithubIssue[][]) => {
         const fetchedIssueIds: Array<Number> = [];
 
         // Take each issue and put it in next in issues$
-        for (const issues of issuesByFilter) {
+        for (const githubIssues of issuesByFilter) {
+          const issues = this.createAndSaveIssueModels(githubIssues);
           for (const issue of issues) {
-            fetchedIssueIds.push(this.createIssueModel(issue).id);
-            this.createAndSaveIssueModel(issue);
+            fetchedIssueIds.push(issue.id);
           }
         }
 
@@ -156,10 +163,16 @@ export class IssueService {
     );
   }
 
-  private createAndSaveIssueModel(githubIssue: GithubIssue): boolean {
-    const issue = this.createIssueModel(githubIssue);
-    this.updateLocalStore(issue);
-    return true;
+  private createAndSaveIssueModels(githubIssues: GithubIssue[], shouldEmit: boolean = true): Issue[] {
+    const issues: Issue[] = [];
+
+    for (const githubIssue of githubIssues) {
+      const issue = this.createIssueModel(githubIssue);
+      issues.push(issue);
+    }
+    this.updateLocalStore(issues, shouldEmit);
+
+    return issues;
   }
 
   private deleteIssuesFromLocalStore(ids: Array<Number>): void {
