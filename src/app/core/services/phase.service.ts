@@ -123,7 +123,7 @@ export class PhaseService {
   initializeCurrentRepository() {
     const org = window.localStorage.getItem('org');
     const repoName = window.localStorage.getItem('dataRepo');
-    this.logger.info(`Phase Service: received initial org (${org}) and initial name (${repoName})`);
+    this.logger.info(`PhaseService: received initial org (${org}) and initial name (${repoName})`);
     let repo: Repo;
     if (!org || !repoName) {
       repo = Repo.ofEmptyRepo();
