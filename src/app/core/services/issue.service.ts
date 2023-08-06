@@ -86,15 +86,6 @@ export class IssueService {
   }
 
   /**
-   * This function will update the issue's state of the application. This function needs to be called whenever a issue is deleted.
-   */
-  deleteFromLocalStore(issueToDelete: Issue) {
-    const { [issueToDelete.id]: issueToRemove, ...withoutIssueToRemove } = this.issues;
-    this.issues = withoutIssueToRemove;
-    this.issues$.next(Object.values(this.issues));
-  }
-
-  /**
    * This function will update the issue's state of the application. This function needs to be called whenever a issue is added/updated.
    *
    * @params issuesToUpdate - An array of issues to update the state of the application with.
@@ -145,7 +136,7 @@ export class IssueService {
 
     return forkJoin(issuesAPICallsByFilter).pipe(
       map((issuesByFilter: GithubIssue[][]) => {
-        const fetchedIssueIds: Array<Number> = [];
+        const fetchedIssueIds: number[] = [];
 
         // Take each issue and put it in next in issues$
         for (const githubIssues of issuesByFilter) {
@@ -155,7 +146,7 @@ export class IssueService {
           }
         }
 
-        const outdatedIssueIds: Array<Number> = this.getOutdatedIssueIds(fetchedIssueIds);
+        const outdatedIssueIds: number[] = this.getOutdatedIssueIds(fetchedIssueIds);
         this.deleteIssuesFromLocalStore(outdatedIssueIds);
 
         return Object.values(this.issues);
@@ -175,17 +166,24 @@ export class IssueService {
     return issues;
   }
 
-  private deleteIssuesFromLocalStore(ids: Array<Number>): void {
-    ids.forEach((id: number) => {
-      this.getIssue(id).subscribe((issue) => this.deleteFromLocalStore(issue));
-    });
+  private deleteIssuesFromLocalStore(ids: number[], shouldEmit: boolean = true): void {
+    const withoutIssuesToRemove = { ...this.issues };
+    for (const id of ids) {
+      delete withoutIssuesToRemove[id];
+    }
+
+    this.issues = withoutIssuesToRemove;
+
+    if (shouldEmit) {
+      this.issues$.next(Object.values(this.issues));
+    }
   }
 
   /**
    * Returns an array of outdated issue ids by comparing the ids of the recently
    * fetched issues with the current issue ids in the local store
    */
-  private getOutdatedIssueIds(fetchedIssueIds: Array<Number>): Array<Number> {
+  private getOutdatedIssueIds(fetchedIssueIds: number[]): number[] {
     /*
       Ignore for first fetch or ignore if there is no fetch result
 
