@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { ApolloQueryResult } from 'apollo-client';
 import { DocumentNode } from 'graphql';
-import { forkJoin, from, Observable, of, throwError, zip } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, merge, Observable, of, throwError } from 'rxjs';
 import { catchError, filter, flatMap, map, throwIfEmpty } from 'rxjs/operators';
 import {
   FetchIssue,
@@ -62,7 +62,7 @@ export class GithubService {
 
   private issuesCacheManager = new IssuesCacheManager();
   private issuesLastModifiedManager = new IssueLastModifiedManagerModel();
-  private issueQueryRefs = new Map<Number, QueryRef<FetchIssueQuery>>();
+  private issueQueryRefs = new Map<number, QueryRef<FetchIssueQuery>>();
 
   constructor(private errorHandlingService: ErrorHandlingService, private apollo: Apollo, private logger: LoggingService) {}
 
@@ -138,7 +138,7 @@ export class GithubService {
     );
 
     // Concatenate both streams together.
-    return zip(issueObs, prObs).pipe(map((x) => x[0].concat(x[1])));
+    return merge(issueObs, prObs);
   }
 
   /**
@@ -483,8 +483,8 @@ export class GithubService {
     pluckEdges: (results: ApolloQueryResult<T>) => Array<any>,
     Model: new (data) => M
   ): Observable<Array<M>> {
-    return from(this.withPagination<T>(pluckEdges)(query, variables)).pipe(
-      map((results: Array<ApolloQueryResult<T>>) => {
+    return this.withPagination<T>(pluckEdges, query, variables, false).pipe(
+      map((results: ApolloQueryResult<T>[]) => {
         const issues = results.reduce((accumulated, current) => accumulated.concat(pluckEdges(current)), []);
         return issues.map((issue) => new Model(issue.node));
       }),
@@ -495,32 +495,57 @@ export class GithubService {
   }
 
   /**
-   * Returns an async function that will accept a GraphQL query that requests for paginated items.
-   * Said function will recursively query for all subsequent pages until a page that has less than 100 items is found,
-   * then return all queried pages in an array.
+   * Returns an observable that will continually emit the currently accumulated results, until a page that has less
+   * than 100 items is found, after which it performs a final emit with the full results array, and completes.
+   *
+   * If `shouldAccumulate` is false, the observable will emit only the latest result, it will still complete on the
+   * same condition.
    *
    * @callback pluckEdges - A function that returns a list of edges in a ApolloQueryResult.
-   * @returns an async function that accepts a GraphQL query for paginated data and any additional variables to that query
+   * @params query - The query to be performed.
+   * @params variables - The variables for the query.
+   * @params shouldAccumulate - Whether the observable should accumulate the results.
+   * @returns an observable
    */
-  private withPagination<T>(pluckEdges: (results: ApolloQueryResult<T>) => Array<any>) {
-    return async (query: DocumentNode, variables: { [key: string]: any } = {}): Promise<Array<ApolloQueryResult<T>>> => {
-      const maxResultsCount = 100;
-      const cursor = variables.cursor || null;
-      const graphqlQuery = this.apollo.watchQuery<T>({ query, variables: { ...variables, cursor } });
-      return graphqlQuery.refetch().then(async (results: ApolloQueryResult<T>) => {
+  private withPagination<T>(
+    pluckEdges: (results: ApolloQueryResult<T>) => Array<any>,
+    query: DocumentNode,
+    variables: { [key: string]: any } = {},
+    shouldAccumulate: boolean = true
+  ): Observable<ApolloQueryResult<T>[]> {
+    const maxResultsCount = 100;
+    const apollo = this.apollo;
+
+    let accumulatedResults: ApolloQueryResult<T>[] = [];
+    const behaviorSubject: BehaviorSubject<ApolloQueryResult<T>[]> = new BehaviorSubject(accumulatedResults);
+
+    async function queryWith(cursor: string): Promise<void> {
+      const graphqlQuery = apollo.watchQuery<T>({ query, variables: { ...variables, cursor } });
+
+      await graphqlQuery.refetch().then(async (results: ApolloQueryResult<T>) => {
         const intermediate = Array.isArray(results) ? results : [results];
         const edges = pluckEdges(results);
         const nextCursor = edges.length === 0 ? null : edges[edges.length - 1].cursor;
 
-        if (edges.length < maxResultsCount || !nextCursor) {
-          return intermediate;
+        if (shouldAccumulate) {
+          accumulatedResults = accumulatedResults.concat(intermediate);
+          behaviorSubject.next(accumulatedResults);
+        } else {
+          behaviorSubject.next(intermediate);
         }
-        const nextResults = await this.withPagination<T>(pluckEdges)(query, {
-          ...variables,
-          cursor: nextCursor
-        });
-        return intermediate.concat(nextResults);
+        if (edges.length < maxResultsCount || !nextCursor) {
+          // No more queries to perform.
+          behaviorSubject.complete();
+          return;
+        }
+
+        // Use a chain of await to ensure that all recursive queries are completed before `complete` is called.
+        await queryWith(nextCursor);
       });
-    };
+    }
+
+    queryWith(null);
+
+    return behaviorSubject.asObservable();
   }
 }
