@@ -92,12 +92,11 @@ export class IssueService {
    * @params shouldEmit - Whether the updated issues should be emitted to issues$.
    */
   updateLocalStore(issuesToUpdate: Issue[], shouldEmit: boolean = true) {
-    const newIssues = issuesToUpdate.reduce((obj, issue) => {
-      obj[issue.id] = issue;
-      return obj;
-    }, {});
-
-    this.issues = { ...this.issues, ...newIssues };
+    const newIssues = { ...this.issues };
+    issuesToUpdate.forEach((issue) => {
+      newIssues[issue.id] = issue;
+    });
+    this.issues = newIssues;
 
     if (shouldEmit) {
       this.issues$.next(Object.values(this.issues));
