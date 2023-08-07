@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, EMPTY, forkJoin, Observable, of, Subscription, throwError, timer } from 'rxjs';
-import { catchError, exhaustMap, finalize, flatMap, map } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, Observable, of, Subscription, timer } from 'rxjs';
+import { catchError, exhaustMap, finalize, map } from 'rxjs/operators';
 import RestGithubIssueFilter from '../models/github/github-issue-filter.model';
 import { GithubIssue } from '../models/github/github-issue.model';
 import { Issue, Issues, IssuesFilter } from '../models/issue.model';
@@ -113,42 +113,40 @@ export class IssueService {
     this.issues$.next(new Array<Issue>());
 
     this.stopPollIssues();
-    this.isLoading.complete();
-    this.isLoading = new BehaviorSubject<boolean>(false);
   }
 
   private initializeData(): Observable<Issue[]> {
-    const issuesAPICallsByFilter: Array<Observable<Array<GithubIssue>>> = [];
+    let issuesAPICallsByFilter: Observable<Array<GithubIssue>>;
 
     switch (IssuesFilter[this.phaseService.currentPhase][this.userService.currentUser.role]) {
       case 'FILTER_BY_CREATOR':
-        issuesAPICallsByFilter.push(
-          this.githubService.fetchIssuesGraphql(new RestGithubIssueFilter({ creator: this.userService.currentUser.loginId }))
+        issuesAPICallsByFilter = this.githubService.fetchIssuesGraphql(
+          new RestGithubIssueFilter({ creator: this.userService.currentUser.loginId })
         );
         break;
       case 'NO_FILTER':
-        issuesAPICallsByFilter.push(this.githubService.fetchIssuesGraphql(new RestGithubIssueFilter({})));
+        issuesAPICallsByFilter = this.githubService.fetchIssuesGraphql(new RestGithubIssueFilter({}));
         break;
       case 'NO_ACCESS':
       default:
         return of([]);
     }
 
-    return forkJoin(issuesAPICallsByFilter).pipe(
-      map((issuesByFilter: GithubIssue[][]) => {
-        const fetchedIssueIds: number[] = [];
+    const fetchedIssueIds: number[] = [];
 
-        // Take each issue and put it in next in issues$
-        for (const githubIssues of issuesByFilter) {
-          const issues = this.createAndSaveIssueModels(githubIssues);
-          for (const issue of issues) {
-            fetchedIssueIds.push(issue.id);
-          }
+    return issuesAPICallsByFilter.pipe(
+      map((githubIssues: GithubIssue[]) => {
+        const issues = this.createAndSaveIssueModels(githubIssues);
+        for (const issue of issues) {
+          fetchedIssueIds.push(issue.id);
         }
 
         const outdatedIssueIds: number[] = this.getOutdatedIssueIds(fetchedIssueIds);
         this.deleteIssuesFromLocalStore(outdatedIssueIds);
 
+        if (this.issues === undefined) {
+          return [];
+        }
         return Object.values(this.issues);
       })
     );
@@ -195,7 +193,7 @@ export class IssueService {
       return [];
     }
 
-    const fetchedIssueIdsSet = new Set<Number>(fetchedIssueIds);
+    const fetchedIssueIdsSet = new Set<number>(fetchedIssueIds);
 
     const result = Object.keys(this.issues)
       .map((x) => +x)
