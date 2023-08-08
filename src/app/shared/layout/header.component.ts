@@ -1,7 +1,8 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router, RoutesRecognized } from '@angular/router';
-import { filter, pairwise } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { filter, pairwise, switchMap } from 'rxjs/operators';
 import { AppConfig } from '../../../environments/environment';
 import { Phase } from '../../core/models/phase.model';
 import { Repo } from '../../core/models/repo.model';
@@ -29,6 +30,8 @@ export class HeaderComponent implements OnInit {
   TUTORIAL_LABEL = '+label:tutorial.';
   TEAM_LABEL = '+label:team.';
   EXCLUDE_DUPLICATE = '+-label:duplicate'; // exclude duplicate issues
+
+  public isLoading$: Observable<boolean>;
 
   // Messages for the modal popup window upon logging out
   private readonly logOutDialogMessages = ['Do you wish to log out?'];
@@ -71,6 +74,8 @@ export class HeaderComponent implements OnInit {
         this.initializeRepoNameInTitle();
       }
     });
+
+    this.isLoading$ = this.issueService.isLoading.asObservable();
   }
 
   ngOnInit() {}
