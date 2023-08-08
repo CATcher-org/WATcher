@@ -35,7 +35,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     public phaseService: PhaseService,
     public githubService: GithubService,
     public issueService: IssueService,
-    public milestoneService: MilestoneService,
+    public milestoneService: MilestoneService
   ) {
     this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => {
       this.issueService.reset(false);

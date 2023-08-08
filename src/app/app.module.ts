@@ -18,6 +18,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserConfirmationComponent } from './core/guards/user-confirmation/user-confirmation.component';
 import { AuthService } from './core/services/auth.service';
 import { ErrorHandlingService } from './core/services/error-handling.service';
+import { ErrorMessageService } from './core/services/error-message.service';
 import { AuthServiceFactory } from './core/services/factories/factory.auth.service';
 import { GithubServiceFactory } from './core/services/factories/factory.github.service';
 import { IssueServiceFactory } from './core/services/factories/factory.issue.service';
@@ -74,7 +75,8 @@ import { SharedModule } from './shared/shared.module';
     {
       provide: ErrorHandler,
       useClass: ErrorHandlingService
-    }
+    },
+    ErrorMessageService
   ],
   bootstrap: [AppComponent]
 })
