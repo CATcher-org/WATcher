@@ -4,6 +4,9 @@ import { Injectable } from '@angular/core';
     providedIn: 'root'
 })
 
+/**
+ * Contains all error message prompts to user.
+ */
 export class ErrorMessageService {
     public static repositoryNotPresentMessage() {
         return 'Failed to fetch repository data. Please provide repository name in the format Org/Repository.';
