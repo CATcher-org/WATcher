@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Phase } from '../models/phase.model';
 import { Repo } from '../models/repo.model';
 import { SessionData } from '../models/session.model';
+import { ErrorMessageService } from './error-message.service';
 import { GithubService } from './github.service';
 import { LoggingService } from './logging.service';
 import { RepoUrlCacheService } from './repo-url-cache.service';
@@ -103,7 +104,7 @@ export class PhaseService {
     const isValidRepository = await this.githubService.isRepositoryPresent(repo.owner, repo.name).toPromise();
     if (!isValidRepository) {
       this.isChangingRepo.next(false);
-      throw new Error('Invalid repository name. Please check your organisation and repository name.');
+      throw new Error(ErrorMessageService.repositoryNotPresentMessage());
     }
 
     this.changeCurrentRepository(repo);

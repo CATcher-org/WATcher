@@ -2,6 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, View
 import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
 import { Repo } from '../core/models/repo.model';
+import { ErrorMessageService } from '../core/services/error-message.service';
 import { GithubService } from '../core/services/github.service';
 import { IssueService } from '../core/services/issue.service';
 import { MilestoneService } from '../core/services/milestone.service';
@@ -34,7 +35,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     public phaseService: PhaseService,
     public githubService: GithubService,
     public issueService: IssueService,
-    public milestoneService: MilestoneService
+    public milestoneService: MilestoneService,
   ) {
     this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => {
       this.issueService.reset(false);
@@ -61,7 +62,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   private initialize() {
     this.checkIfValidRepository().subscribe((isValidRepository) => {
       if (!isValidRepository) {
-        throw new Error('Invalid repository name. Please provide repository name in the format Org/Repository.');
+        throw new Error(ErrorMessageService.repositoryNotPresentMessage());
       }
     });
 

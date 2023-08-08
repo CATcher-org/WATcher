@@ -6,6 +6,7 @@ import { AuthService, AuthState } from '../../core/services/auth.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
+import { GithubService } from './../../core/services/github.service';
 
 @Component({
   selector: 'app-session-selection',
@@ -29,7 +30,8 @@ export class SessionSelectionComponent implements OnInit {
     private logger: LoggingService,
     private authService: AuthService,
     private repoUrlCacheService: RepoUrlCacheService,
-    private errorHandlingService: ErrorHandlingService
+    private errorHandlingService: ErrorHandlingService,
+    private githubService: GithubService
   ) {}
 
   ngOnInit() {
@@ -79,6 +81,7 @@ export class SessionSelectionComponent implements OnInit {
     this.logger.info(`SessionSelectionComponent: Selected Repository: ${repoInformation}`);
 
     try {
+      this.githubService.isRepositoryPresent(repoOrg, repoName);
       this.authService.startOAuthProcess();
     } catch (error) {
       this.errorHandlingService.handleError(error);

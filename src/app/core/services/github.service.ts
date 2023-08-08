@@ -27,13 +27,13 @@ import { GithubResponse } from '../models/github/github-response.model';
 import { GithubRelease } from '../models/github/github.release';
 import { SessionData } from '../models/session.model';
 import { ERRORCODE_NOT_FOUND, ErrorHandlingService } from './error-handling.service';
+import { ErrorMessageService } from './error-message.service';
 import { LoggingService } from './logging.service';
 
 const { Octokit } = require('@octokit/rest');
 
 const WATCHER_ORG = 'WATcher-org';
 const WATCHER_REPO = 'WATcher';
-const UNABLE_TO_OPEN_IN_BROWSER = 'Unable to open this issue in Browser';
 
 /** Owner of Repository to watch */
 let ORG_NAME = ''; // repoOrg
@@ -185,7 +185,7 @@ export class GithubService {
       catchError((err) => {
         return of(false);
       }),
-      catchError((err) => throwError('Failed to fetch repository data.'))
+      catchError((err) => throwError(ErrorMessageService.repositoryNotPresentMessage()))
     );
   }
 
@@ -241,7 +241,7 @@ export class GithubService {
         this.issuesLastModifiedManager.set(id, response.headers['last-modified']);
         return true;
       }),
-      catchError((err) => throwError('Failed to fetch issue.'))
+      catchError((err) => throwError(ErrorMessageService.unableToFetchIssuesMessage()))
     );
   }
 
@@ -258,7 +258,7 @@ export class GithubService {
       map((response) => {
         return response['data'];
       }),
-      catchError((err) => throwError('Failed to fetch milestones.'))
+      catchError((err) => throwError(ErrorMessageService.unableToFetchMilestoneMessage()))
     );
   }
 
@@ -274,7 +274,7 @@ export class GithubService {
       map((response) => {
         return response['data'];
       }),
-      catchError((err) => throwError('Failed to fetch labels.'))
+      catchError((err) => throwError(ErrorMessageService.unableToFetchLabelsMessage()))
     );
   }
 
@@ -293,7 +293,7 @@ export class GithubService {
       map((assignables: string[]) =>
         assignees.forEach((assignee) => {
           if (!assignables.includes(assignee)) {
-            throw new Error(`Cannot assign ${assignee} to the issue. Please check if ${assignee} is authorized.`);
+            throw new Error(ErrorMessageService.usersUnassignableMessage(assignee));
           }
         })
       )
@@ -310,7 +310,7 @@ export class GithubService {
       map((response) => {
         return response['data'];
       }),
-      catchError((err) => throwError('Failed to fetch assignable users for repository'))
+      catchError((err) => throwError(ErrorMessageService.unableToFetchUsersMessage()))
     );
   }
 
@@ -319,7 +319,7 @@ export class GithubService {
       map((response) => {
         return response['data'];
       }),
-      catchError((err) => throwError('Failed to fetch issue events for repository'))
+      catchError((err) => throwError(ErrorMessageService.unableToFetchEventsMessage()))
     );
   }
 
@@ -330,7 +330,7 @@ export class GithubService {
         repo: REPO,
         page: pageNumber
       })
-    ).pipe(catchError((err) => throwError('Failed to fetch activity events for repository')));
+    ).pipe(catchError((err) => throwError(ErrorMessageService.unableToFetchActivityEventsMessage())));
   }
 
   /**
@@ -367,7 +367,7 @@ export class GithubService {
       map((rawData) => {
         return { data: atob(rawData['data']['content']) };
       }),
-      catchError((err) => throwError('Failed to fetch data file.'))
+      catchError((err) => throwError(ErrorMessageService.unableToFetchDataFileMessage()))
     );
   }
 
@@ -380,7 +380,7 @@ export class GithubService {
       octokit.repos.getLatestRelease({ owner: WATCHER_ORG, repo: WATCHER_REPO, headers: GithubService.IF_NONE_MATCH_EMPTY })
     ).pipe(
       map((res) => res['data']),
-      catchError((err) => throwError('Failed to fetch latest release.'))
+      catchError((err) => throwError(ErrorMessageService.unableToFetchLatestReleaseMessage()))
     );
   }
 
@@ -393,7 +393,7 @@ export class GithubService {
       octokit.repos.getContents({ owner: MOD_ORG, repo: DATA_REPO, path: 'settings.json', headers: GithubService.IF_NONE_MATCH_EMPTY })
     ).pipe(
       map((rawData) => JSON.parse(atob(rawData['data']['content']))),
-      catchError((err) => throwError('Failed to fetch settings file.'))
+      catchError((err) => throwError(ErrorMessageService.unableToFetchSettingsFileMessage()))
     );
   }
 
@@ -402,7 +402,7 @@ export class GithubService {
       map((response) => {
         return response['data'];
       }),
-      catchError((err) => throwError('Failed to fetch authenticated user.'))
+      catchError((err) => throwError(ErrorMessageService.unableToFetchAuthenticatedUsersMessage()))
     );
   }
 
@@ -414,7 +414,7 @@ export class GithubService {
     if (id) {
       window.open('https://github.com/'.concat(this.getRepoURL()).concat('/issues/').concat(String(id)));
     } else {
-      this.errorHandlingService.handleError(new Error(UNABLE_TO_OPEN_IN_BROWSER));
+      this.errorHandlingService.handleError(new Error(ErrorMessageService.unableToOpenInBrowserMessage()));
     }
     event.stopPropagation();
   }

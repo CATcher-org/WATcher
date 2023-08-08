@@ -1,3 +1,5 @@
+import { ErrorMessageService } from "../services/error-message.service";
+
 /**
  * Represents a repository.
  * Repository url is owner/name.
@@ -16,7 +18,7 @@ export class Repo {
   public static of(repoUrl: string) {
     const repoUrlSplit = repoUrl.split('/');
     if (repoUrlSplit.length !== 2) {
-      throw new Error('Invalid repository name. Please provide repository name in the format Org/Repository Name.');
+      throw new Error(ErrorMessageService.repositoryNotPresentMessage());
     }
     return new Repo(repoUrlSplit[0], repoUrlSplit[1]);
   }
