@@ -63,19 +63,26 @@
   >
     <mat-icon>open_in_new</mat-icon>
   </button>
-  <button
-    *ngIf="auth.isAuthenticated() && phaseService.isRepoSet() && isReloadButtonShown() && !this.isReloadButtonDisabled"
-    mat-button
-    matTooltip="Synchronize with Github data"
-    (click)="reload()"
-  >
-    Sync
-    <mat-icon>refresh</mat-icon>
-  </button>
-  <div class="sync-spinner" *ngIf="auth.isAuthenticated() && isReloadButtonShown() && this.isReloadButtonDisabled">
-    <span style="font-size: 14px; margin-right: 7px">Sync</span>
+
+  <div class="sync-spinner" *ngIf="auth.isAuthenticated() && (this.isLoading$ | async); else notLoading">
     <mat-spinner class="white-spinner" [diameter]="20"></mat-spinner>
   </div>
+
+  <ng-template #notLoading>
+    <button
+      *ngIf="auth.isAuthenticated() && phaseService.isRepoSet() && isReloadButtonShown() && !this.isReloadButtonDisabled"
+      mat-button
+      matTooltip="Synchronize with Github data"
+      (click)="reload()"
+    >
+      Sync
+      <mat-icon>refresh</mat-icon>
+    </button>
+    <div class="sync-spinner" *ngIf="auth.isAuthenticated() && isReloadButtonShown() && this.isReloadButtonDisabled">
+      <span style="font-size: 14px; margin-right: 7px">Sync</span>
+      <mat-spinner class="white-spinner" [diameter]="20"></mat-spinner>
+    </div>
+  </ng-template>
 
   <button *ngIf="auth.isAuthenticated()" mat-button matTooltip="Log out" (click)="openLogOutDialog(); $event.stopPropagation()">
     ({{ userService.currentUser.loginId }})
