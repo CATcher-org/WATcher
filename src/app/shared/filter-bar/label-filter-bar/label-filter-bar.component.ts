@@ -1,25 +1,22 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatListOption, MatSelectionList } from '@angular/material/list';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { SimpleLabel } from '../../../core/models/label.model';
 import { LabelService } from '../../../core/services/label.service';
 import { LoggingService } from '../../../core/services/logging.service';
-
-export type simplifiedLabel = {
-  name: string;
-  color: string;
-};
 
 @Component({
   selector: 'app-label-filter-bar',
   templateUrl: './label-filter-bar.component.html',
   styleUrls: ['./label-filter-bar.component.css']
 })
-export class LabelFilterBarComponent implements OnInit, OnDestroy {
+export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() selectedLabels: BehaviorSubject<string[]>;
   @Input() hiddenLabels: BehaviorSubject<Set<string>>;
   @ViewChild(MatSelectionList) matSelectionList;
 
-  allLabels: simplifiedLabel[];
+  labels$: Observable<SimpleLabel[]>;
+  allLabels: SimpleLabel[];
   selectedLabelNames: string[] = [];
   hiddenLabelNames: Set<string> = new Set();
   loaded = false;
@@ -30,7 +27,16 @@ export class LabelFilterBarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loaded = false;
-    this.load();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.load();
+      this.labels$ = this.labelService.connect();
+      this.labels$.subscribe((labels) => {
+        this.allLabels = labels;
+      });
+    });
   }
 
   ngOnDestroy(): void {
@@ -70,25 +76,16 @@ export class LabelFilterBarComponent implements OnInit, OnDestroy {
 
   /** loads in the labels in the repository */
   public load() {
+    this.labelService.startPollLabels();
     this.labelSubscription = this.labelService.fetchLabels().subscribe(
       (response) => {
         this.logger.debug('LabelFilterBarComponent: Fetched labels from Github');
       },
       (err) => {},
       () => {
-        this.initialize();
+        this.loaded = true;
       }
     );
-  }
-
-  private initialize() {
-    this.allLabels = this.labelService.labels.map((label) => {
-      return {
-        name: label.getFormattedName(),
-        color: label.color
-      };
-    });
-    this.loaded = true;
   }
 
   filter(filter: string, target: string): boolean {
@@ -99,7 +96,7 @@ export class LabelFilterBarComponent implements OnInit, OnDestroy {
     if (this.allLabels === undefined || this.allLabels.length === 0) {
       return false;
     }
-    return this.allLabels.some((label) => !this.filter(filter, label.name));
+    return this.allLabels.some((label) => !this.filter(filter, label.formattedName));
   }
 
   updateSelection(): void {

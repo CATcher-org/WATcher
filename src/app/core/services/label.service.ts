@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Label } from '../models/label.model';
+import { BehaviorSubject, EMPTY, Observable, of, Subscription, timer } from 'rxjs';
+import { catchError, exhaustMap, finalize, map } from 'rxjs/operators';
+import { Label, SimpleLabel } from '../models/label.model';
 import { GithubService } from './github.service';
 
 /* The threshold to decide if color is dark or light.
@@ -22,9 +22,45 @@ const COLOR_WHITE = 'ffffff'; // Light color for text with dark background
  * from the GitHub repository for the WATcher application.
  */
 export class LabelService {
+  static readonly POLL_INTERVAL = 5000; // 5 seconds
+
   labels: Label[];
+  simpleLabels: SimpleLabel[];
+
+  private labelsPollSubscription: Subscription;
+  private labelsSubject = new BehaviorSubject<SimpleLabel[]>([]);
 
   constructor(private githubService: GithubService) {}
+
+  startPollLabels() {
+    if (this.labelsPollSubscription) {
+      return;
+    }
+    this.labelsPollSubscription = timer(0, LabelService.POLL_INTERVAL)
+      .pipe(
+        exhaustMap(() => {
+          return this.fetchLabels().pipe(
+            catchError(() => {
+              return EMPTY;
+            })
+          );
+        })
+      )
+      .subscribe(() => {
+        this.labelsSubject.next(this.simpleLabels);
+      });
+  }
+
+  stopPollLabels() {
+    if (this.labelsPollSubscription) {
+      this.labelsPollSubscription.unsubscribe();
+      this.labelsPollSubscription = undefined;
+    }
+  }
+
+  connect(): Observable<SimpleLabel[]> {
+    return this.labelsSubject.asObservable();
+  }
 
   /**
    * Fetch labels from Github.
@@ -33,6 +69,8 @@ export class LabelService {
     return this.githubService.fetchAllLabels().pipe(
       map((response) => {
         this.labels = this.parseLabelData(response);
+        this.simpleLabels = this.labels;
+        this.labelsSubject.next(this.simpleLabels);
         return response;
       })
     );
@@ -91,5 +129,11 @@ export class LabelService {
     };
 
     return styles;
+  }
+
+  reset() {
+    this.labels = undefined;
+    this.simpleLabels = undefined;
+    this.stopPollLabels();
   }
 }
