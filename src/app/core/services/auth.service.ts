@@ -125,7 +125,7 @@ export class AuthService {
   startOAuthProcess() {
     this.logger.info('AuthService: Starting authentication');
     // Available OAuth scopes https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps#available-scopes
-    const githubRepoPermission = 'public_repo';
+    const githubRepoPermission = 'repo';
     this.changeAuthState(AuthState.AwaitingAuthentication);
 
     this.generateStateString();

@@ -12,6 +12,7 @@ import { ErrorHandlingService } from '../../core/services/error-handling.service
 import { GithubService } from '../../core/services/github.service';
 import { GithubEventService } from '../../core/services/githubevent.service';
 import { IssueService } from '../../core/services/issue.service';
+import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { PhaseDescription, PhaseService } from '../../core/services/phase.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
@@ -51,6 +52,7 @@ export class HeaderComponent implements OnInit {
     private githubEventService: GithubEventService,
     private issueService: IssueService,
     private repoUrlCacheService: RepoUrlCacheService,
+    private labelService: LabelService,
     private errorHandlingService: ErrorHandlingService,
     private githubService: GithubService,
     private dialogService: DialogService
@@ -97,6 +99,7 @@ export class HeaderComponent implements OnInit {
     // Remove current phase issues and load selected phase issues.
     this.githubService.reset();
     this.issueService.reset(false);
+    this.labelService.reset();
     this.reload();
 
     // Route app to new phase.
@@ -164,6 +167,13 @@ export class HeaderComponent implements OnInit {
       (success) => success,
       (error) => {
         this.errorHandlingService.handleError(error, () => this.githubEventService.reloadPage());
+      }
+    );
+
+    this.labelService.fetchLabels().subscribe(
+      (success) => success,
+      (error) => {
+        this.errorHandlingService.handleError(error, () => this.labelService.fetchLabels());
       }
     );
 
