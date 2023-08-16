@@ -7,6 +7,7 @@ import { ErrorHandlingService } from '../error-handling.service';
 import { GithubService } from '../github.service';
 import { GithubEventService } from '../githubevent.service';
 import { IssueService } from '../issue.service';
+import { LabelService } from '../label.service';
 import { LoggingService } from '../logging.service';
 // import { MockAuthService } from '../mocks/mock.auth.service';
 import { PhaseService } from '../phase.service';
@@ -32,6 +33,7 @@ export function AuthServiceFactory(
   //     githubService,
   //     userService,
   //     issueService,
+  //     labelService,
   //     phaseService,
   //     githubEventService,
   //     titleService,
