@@ -71,6 +71,7 @@ import { SharedModule } from './shared/shared.module';
         GithubService,
         UserService,
         IssueService,
+        LabelService,
         PhaseService,
         GithubEventService,
         Title,

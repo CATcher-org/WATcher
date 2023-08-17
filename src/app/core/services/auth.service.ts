@@ -12,6 +12,7 @@ import { ErrorHandlingService } from './error-handling.service';
 import { GithubService } from './github.service';
 import { GithubEventService } from './githubevent.service';
 import { IssueService } from './issue.service';
+import { LabelService } from './label.service';
 import { LoggingService } from './logging.service';
 import { PhaseService } from './phase.service';
 import { UserService } from './user.service';
@@ -45,6 +46,7 @@ export class AuthService {
     private githubService: GithubService,
     private userService: UserService,
     private issueService: IssueService,
+    private labelService: LabelService,
     private phaseService: PhaseService,
     private githubEventService: GithubEventService,
     private titleService: Title,
@@ -71,6 +73,7 @@ export class AuthService {
     this.githubService.reset();
     this.userService.reset();
     this.issueService.reset(true);
+    this.labelService.reset();
     this.phaseService.reset();
     this.githubEventService.reset();
     this.logger.reset();
