@@ -20,28 +20,26 @@ export class IssuePrCardHeaderComponent {
     const state = this.issue.state;
     const stateReason = this.issue.stateReason;
 
-    switch (true) {
-      case type === 'Issue' && state === 'OPEN': {
+    if (type === 'Issue') {
+      if (state === 'OPEN') {
         return 'issue-opened';
+      } else if (state === 'CLOSED') {
+        if (stateReason === 'COMPLETED') {
+          return 'issue-closed';
+        } else if (stateReason === 'NOT_PLANNED') {
+          return 'issue-draft';
+        }
       }
-      case type === 'Issue' && state === 'CLOSED' && stateReason === 'COMPLETED': {
-        return 'issue-closed';
-      }
-      case type === 'Issue' && state === 'CLOSED' && stateReason === 'NOT_PLANNED': {
-        return 'issue-draft';
-      }
-      case type === 'PullRequest' && state === 'OPEN': {
+    } else if (type === 'PullRequest') {
+      if (state === 'OPEN') {
         return 'git-pull-request';
-      }
-      case type === 'PullRequest' && state === 'CLOSED': {
+      } else if (state === 'CLOSED') {
         return 'git-pull-request-closed';
-      }
-      case type === 'PullRequest' && state === 'MERGED': {
+      } else if (state === 'MERGED') {
         return 'git-merge';
       }
-      default: {
-        return 'circle'; // unknown type and state
-      }
+    } else {
+      return 'circle'; // unknown type and state
     }
   }
 
