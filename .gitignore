@@ -51,4 +51,4 @@ profiles.json
 Thumbs.db
 
 # graphql types
-graphql/graphql-types.ts
+# graphql/graphql-types.ts
