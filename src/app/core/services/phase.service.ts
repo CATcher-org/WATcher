@@ -135,13 +135,6 @@ export class PhaseService {
   }
 
   /**
-   * Checks if the necessary repository is available. TODO: Future to use to verify setRepository.
-   */
-  verifySessionAvailability(): Observable<boolean> {
-    return this.githubService.isRepositoryPresent(this.currentRepo.owner, this.currentRepo.name);
-  }
-
-  /**
    * Changes phase and updates Phase Service's properties.
    * @param phase New phase
    */
