@@ -18,7 +18,7 @@ export class IssuePrCardHeaderComponent {
   getOcticon() {
     const type = this.issue.issueOrPr;
     const state = this.issue.state;
-    console.log(this.issue)
+
     switch (true) {
       case type === 'Issue' && state === 'OPEN': {
         return 'issue-opened';
