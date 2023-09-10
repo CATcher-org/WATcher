@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Profile } from '../../core/models/profile.model';
-import { AuthService, AuthState } from '../../core/services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
@@ -78,13 +78,12 @@ export class SessionSelectionComponent implements OnInit {
 
     this.logger.info(`SessionSelectionComponent: Selected Repository: ${repoInformation}`);
 
-    try {
-      this.authService.startOAuthProcess();
-    } catch (error) {
-      this.errorHandlingService.handleError(error);
-      this.authService.changeAuthState(AuthState.NotAuthenticated);
-      this.isSettingUpSession = false;
-    }
+    this.authService.setRepo()
+      .subscribe(
+        (res) => {
+          this.isSettingUpSession = false;
+        }
+      );
   }
 
   /**

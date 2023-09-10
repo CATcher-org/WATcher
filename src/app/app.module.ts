@@ -75,7 +75,9 @@ import { SharedModule } from './shared/shared.module';
         PhaseService,
         GithubEventService,
         Title,
-        LoggingService]
+        ErrorHandlingService,
+        LoggingService
+      ]
     },
     {
       provide: IssueService,

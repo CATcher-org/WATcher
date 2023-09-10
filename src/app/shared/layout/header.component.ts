@@ -64,8 +64,8 @@ export class HeaderComponent implements OnInit {
         this.prevUrl = e[0].urlAfterRedirects;
       });
 
-    this.auth.currentAuthState.subscribe((authState) => {
-      if (auth.isAuthenticated()) {
+    this.phaseService.repoSetState.subscribe((state) => {
+      if (auth.isAuthenticated() && phaseService.isRepoSet()) {
         this.initializeRepoNameInTitle();
       }
     });
