@@ -148,6 +148,8 @@ export class GithubService {
    * @returns Observable<boolean> that returns true if there are pages that do not exist in the cache model.
    */
   private toFetchIssues(filter: RestGithubIssueFilter): Observable<boolean> {
+    const pageFetchLimit = 100;
+
     let responseInFirstPage: GithubResponse<GithubIssue[]>;
     return this.getIssuesAPICall(filter, 1).pipe(
       map((response: GithubResponse<GithubIssue[]>) => {
@@ -156,6 +158,9 @@ export class GithubService {
       }),
       flatMap((numOfPages: number) => {
         const apiCalls: Observable<GithubResponse<GithubIssue[]>>[] = [];
+        if (numOfPages > pageFetchLimit) {
+          throw new Error(`Repository has too many pages (${numOfPages}), not supported.`);
+        }
         for (let i = 2; i <= numOfPages; i++) {
           apiCalls.push(this.getIssuesAPICall(filter, i));
         }
