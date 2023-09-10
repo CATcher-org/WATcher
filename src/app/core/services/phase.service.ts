@@ -45,6 +45,9 @@ export class PhaseService {
   public currentRepo: Repo; // current or main repository of current phase
   public otherRepos: Repo[]; // more repositories relevant to this phase
 
+  repoSetSource = new BehaviorSubject(false);
+  repoSetState = this.repoSetSource.asObservable();
+
   /**
    * Expose an observable to track changes to currentRepo
    *
@@ -58,7 +61,10 @@ export class PhaseService {
 
   public sessionData = STARTING_SESSION_DATA; // stores session data for the session
 
-  constructor(private githubService: GithubService, private repoUrlCacheService: RepoUrlCacheService, public logger: LoggingService) {}
+  constructor(
+    private githubService: GithubService,
+    private repoUrlCacheService: RepoUrlCacheService,
+    public logger: LoggingService) {}
 
   /**
    * Sets the current main repository and additional repos if any.
@@ -120,7 +126,7 @@ export class PhaseService {
   /**
    * Retrieves the repository url from local storage and sets to current repository.
    */
-  initializeCurrentRepository() {
+  async initializeCurrentRepository() {
     const org = window.localStorage.getItem('org');
     const repoName = window.localStorage.getItem('dataRepo');
     this.logger.info(`Phase Service: received initial org (${org}) and initial name (${repoName})`);
@@ -130,15 +136,17 @@ export class PhaseService {
     } else {
       repo = new Repo(org, repoName);
     }
+    const isValidRepository = await this.githubService.isRepositoryPresent(repo.owner, repo.name).toPromise();
+    if (!isValidRepository) {
+      throw new Error('Invalid repository name. Please check your organisation and repository name.');
+    }
     this.logger.info(`PhaseService: Repo is ${repo}`);
     this.setRepository(repo);
+    this.repoSetSource.next(true);
   }
 
-  /**
-   * Checks if the necessary repository is available. TODO: Future to use to verify setRepository.
-   */
-  verifySessionAvailability(): Observable<boolean> {
-    return this.githubService.isRepositoryPresent(this.currentRepo.owner, this.currentRepo.name);
+  isRepoSet(): boolean {
+    return this.repoSetSource.getValue();
   }
 
   /**
