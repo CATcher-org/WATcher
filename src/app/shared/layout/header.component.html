@@ -39,9 +39,9 @@
 
   <div *ngIf="auth.isAuthenticated() && phaseService.isRepoSet()">
     <span id="phase-descriptor" style="margin-left: 10px">
-      {{ this.currentRepo }}
+      {{ this.currentRepo || "No Repository Set"}}
     </span>
-    <button mat-button matTooltip="Change Repository" (click)="this.openChangeRepoDialog()">
+    <button mat-button matTooltip="{{ phaseService.isRepoSet() ? 'Change Repository' : 'Select Repository'}}" (click)="this.openChangeRepoDialog()">
       <mat-icon>edit</mat-icon>
     </button>
   </div>

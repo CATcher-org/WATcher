@@ -90,7 +90,7 @@ export class PhaseService {
 
     if (this.currentPhase === Phase.issuesViewer) {
       /** Adds past repositories to phase */
-      this.otherRepos.push(this.currentRepo);
+      (this.otherRepos || []).push(this.currentRepo);
     }
     this.setRepository(repo, this.otherRepos);
 

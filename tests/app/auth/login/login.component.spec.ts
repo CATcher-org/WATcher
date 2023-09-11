@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { LoginComponent } from '../../../../src/app/auth/login/login.component';
 import { AuthService } from '../../../../src/app/core/services/auth.service';
 import { ErrorHandlingService } from '../../../../src/app/core/services/error-handling.service';
@@ -11,7 +11,7 @@ describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     authService = jasmine.createSpyObj<AuthService>('AuthService', ['startOAuthProcess']);
     logger = jasmine.createSpyObj<LoggingService>('LoggingService', ['info']);
     errorHandlingService = jasmine.createSpyObj<ErrorHandlingService>('ErrorHandlingService', ['handleError']);
