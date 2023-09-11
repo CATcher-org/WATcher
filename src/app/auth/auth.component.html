@@ -27,3 +27,8 @@
     </div>
   </mat-card>
 </div>
+
+<div *ngIf="isUserAuthenticated() && !isRepoSet()" class="login-page">
+  <app-session-selection [urlEncodedSessionName]="this.urlEncodedSessionName" [urlEncodedRepo]="this.urlEncodedRepo">
+  </app-session-selection>
+</div>

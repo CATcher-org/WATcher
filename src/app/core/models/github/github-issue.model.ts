@@ -27,6 +27,7 @@ export class GithubIssue {
   };
   comments?: Array<GithubComment>;
   issueOrPr?: string;
+  isDraft: boolean;
 
   constructor(githubIssue: {}) {
     Object.assign(this, githubIssue);

@@ -37,7 +37,7 @@
 
   <span style="flex: 1 1 auto"></span>
 
-  <div *ngIf="auth.isAuthenticated()">
+  <div *ngIf="auth.isAuthenticated() && phaseService.isRepoSet()">
     <span id="phase-descriptor" style="margin-left: 10px">
       {{ this.currentRepo || "No Repository Set"}}
     </span>
@@ -70,7 +70,7 @@
 
   <ng-template #notLoading>
     <button
-    *ngIf="auth.isAuthenticated() && phaseService.isRepoSet() && isReloadButtonShown() && !this.isReloadButtonDisabled"
+      *ngIf="auth.isAuthenticated() && phaseService.isRepoSet() && isReloadButtonShown() && !this.isReloadButtonDisabled"
       mat-button
       matTooltip="Synchronize with Github data"
       (click)="reload()"

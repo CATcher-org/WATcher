@@ -71,6 +71,7 @@ export class HeaderComponent implements OnInit {
         this.openChangeRepoDialog();
       }
     });
+
     this.phaseService.repoSetState.subscribe((state) => {
       if (auth.isAuthenticated() && phaseService.isRepoSet()) {
         this.initializeRepoNameInTitle();
@@ -219,6 +220,9 @@ export class HeaderComponent implements OnInit {
    * Change repository viewed on Issue Dashboard, if a valid repository is provided.
    */
   changeRepositoryIfValid(repo: Repo, newRepoString: string) {
+    if (newRepoString === this.currentRepo) {
+      return;
+    }
     this.phaseService
       .changeRepositoryIfValid(repo)
       .then(() => {
