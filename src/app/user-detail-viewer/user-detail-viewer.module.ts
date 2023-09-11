@@ -9,6 +9,7 @@ import { DiffstatComponent } from './diffstat/diffstat.component';
 import { ProfileDetailsComponent } from './profile-details/profile-details.component';
 import { ProfileIconComponent } from './profile-icon/profile-icon.component';
 import { ProfileListComponent } from './profile-list/profile-list.component';
+import { ProfileSummaryComponent } from './profile-summary/profile-summary.component';
 import { DateRangeDialogComponent } from './query-range/query-range.component';
 import { UserDetailViewerRoutingModule } from './user-detail-viewer-routing.module';
 import { UserDetailViewerComponent } from './user-detail-viewer.component';
@@ -29,7 +30,8 @@ import { UserDetailViewerComponent } from './user-detail-viewer.component';
     ProfileListComponent,
     DiffstatComponent,
     CommitListComponent,
-    DateRangeDialogComponent
+    DateRangeDialogComponent,
+    ProfileSummaryComponent
   ]
 })
 export class UserDetailViewerModule {}
