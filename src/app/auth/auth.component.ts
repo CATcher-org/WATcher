@@ -134,6 +134,14 @@ export class AuthComponent implements OnInit, OnDestroy {
     return this.authState === AuthState.ConfirmOAuthUser;
   }
 
+  isUserAuthenticated(): boolean {
+    return this.authState === AuthState.Authenticated;
+  }
+
+  isRepoSet(): boolean {
+    return this.phaseService.isRepoSet();
+  }
+
   get currentSessionOrg(): string {
     if (!this.sessionInformation) {
       // Retrieve org details of session information from local storage

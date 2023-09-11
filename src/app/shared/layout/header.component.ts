@@ -64,8 +64,8 @@ export class HeaderComponent implements OnInit {
         this.prevUrl = e[0].urlAfterRedirects;
       });
 
-    this.auth.currentAuthState.subscribe((authState) => {
-      if (auth.isAuthenticated()) {
+    this.phaseService.repoSetState.subscribe((state) => {
+      if (auth.isAuthenticated() && phaseService.isRepoSet()) {
         this.initializeRepoNameInTitle();
       }
     });
@@ -212,6 +212,9 @@ export class HeaderComponent implements OnInit {
    * Change repository viewed on Issue Dashboard, if a valid repository is provided.
    */
   changeRepositoryIfValid(repo: Repo, newRepoString: string) {
+    if (newRepoString === this.currentRepo) {
+      return;
+    }
     this.phaseService
       .changeRepositoryIfValid(repo)
       .then(() => {
