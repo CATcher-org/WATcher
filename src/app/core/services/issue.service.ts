@@ -91,7 +91,7 @@ export class IssueService {
    * @params issuesToUpdate - An array of issues to update the state of the application with.
    * @params shouldEmit - Whether the updated issues should be emitted to issues$.
    */
-  updateLocalStore(issuesToUpdate: Issue[], shouldEmit: boolean = true) {
+  private updateLocalStore(issuesToUpdate: Issue[], shouldEmit: boolean = true) {
     const newIssues = { ...this.issues };
     issuesToUpdate.forEach((issue) => {
       newIssues[issue.id] = issue;
