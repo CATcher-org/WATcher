@@ -89,18 +89,15 @@ export class IssueService {
    * This function will update the issue's state of the application. This function needs to be called whenever a issue is added/updated.
    *
    * @params issuesToUpdate - An array of issues to update the state of the application with.
-   * @params shouldEmit - Whether the updated issues should be emitted to issues$.
    */
-  private updateLocalStore(issuesToUpdate: Issue[], shouldEmit: boolean = true) {
+  private updateLocalStore(issuesToUpdate: Issue[]) {
     const newIssues = { ...this.issues };
     issuesToUpdate.forEach((issue) => {
       newIssues[issue.id] = issue;
     });
     this.issues = newIssues;
 
-    if (shouldEmit) {
-      this.issues$.next(Object.values(this.issues));
-    }
+    this.issues$.next(Object.values(this.issues));
   }
 
   reset(resetSessionId: boolean) {
@@ -151,19 +148,19 @@ export class IssueService {
     );
   }
 
-  private createAndSaveIssueModels(githubIssues: GithubIssue[], shouldEmit: boolean = true): Issue[] {
+  private createAndSaveIssueModels(githubIssues: GithubIssue[]): Issue[] {
     const issues: Issue[] = [];
 
     for (const githubIssue of githubIssues) {
       const issue = this.createIssueModel(githubIssue);
       issues.push(issue);
     }
-    this.updateLocalStore(issues, shouldEmit);
+    this.updateLocalStore(issues);
 
     return issues;
   }
 
-  private deleteIssuesFromLocalStore(ids: number[], shouldEmit: boolean = true): void {
+  private deleteIssuesFromLocalStore(ids: number[]): void {
     const withoutIssuesToRemove = { ...this.issues };
     for (const id of ids) {
       delete withoutIssuesToRemove[id];
@@ -171,9 +168,7 @@ export class IssueService {
 
     this.issues = withoutIssuesToRemove;
 
-    if (shouldEmit) {
-      this.issues$.next(Object.values(this.issues));
-    }
+    this.issues$.next(Object.values(this.issues));
   }
 
   /**
