@@ -8,7 +8,7 @@ import { ErrorHandlingService } from '../services/error-handling.service';
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate, CanLoad {
-  NOT_LOGIN_ERROR: Error = new Error('Login required');
+  NOT_AUTHENTICATED_ERROR: Error = new Error('Login required');
 
   constructor(private auth: AuthService, private router: Router, private errorHandlingService: ErrorHandlingService) {}
 
@@ -17,7 +17,7 @@ export class AuthGuard implements CanActivate, CanLoad {
       return true;
     } else {
       this.router.navigate(['']);
-      this.errorHandlingService.handleError(this.NOT_LOGIN_ERROR);
+      this.errorHandlingService.handleError(this.NOT_AUTHENTICATED_ERROR);
       return false;
     }
   }
@@ -27,7 +27,7 @@ export class AuthGuard implements CanActivate, CanLoad {
       return true;
     } else {
       this.router.navigate(['']);
-      this.errorHandlingService.handleError(this.NOT_LOGIN_ERROR);
+      this.errorHandlingService.handleError(this.NOT_AUTHENTICATED_ERROR);
       return false;
     }
   }

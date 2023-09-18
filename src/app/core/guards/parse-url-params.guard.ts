@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlSegment } from '@angular/router';
+import { Phase } from '../models/phase.model';
 import { CacheRepoFromUrlService } from '../services/cache-repo-from-url.service';
 
 @Injectable({
@@ -15,7 +16,7 @@ export class ParseUrlParamsGuard implements CanActivate {
 
     this.cache.repoLocation = repoLocation;
 
-    this.router.navigate(['issuesViewer']);
+    this.router.navigateByUrl(Phase.issuesViewer);
     return false;
   }
 }
