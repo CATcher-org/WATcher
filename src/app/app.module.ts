@@ -17,6 +17,7 @@ import { AppComponent } from './app.component';
 import { AuthModule } from './auth/auth.module';
 import { UserConfirmationComponent } from './core/guards/user-confirmation/user-confirmation.component';
 import { AuthService } from './core/services/auth.service';
+import { CacheRepoFromUrlService } from './core/services/cache-repo-from-url.service';
 import { ErrorHandlingService } from './core/services/error-handling.service';
 import { AuthServiceFactory } from './core/services/factories/factory.auth.service';
 import { GithubServiceFactory } from './core/services/factories/factory.github.service';
@@ -87,7 +88,8 @@ import { SharedModule } from './shared/shared.module';
     {
       provide: ErrorHandler,
       useClass: ErrorHandlingService
-    }
+    },
+    CacheRepoFromUrlService
   ],
   bootstrap: [AppComponent]
 })
