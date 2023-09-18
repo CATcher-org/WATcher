@@ -3,9 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Profile } from '../../core/models/profile.model';
 import { AuthService } from '../../core/services/auth.service';
+import { CacheRepoFromUrlService } from '../../core/services/cache-repo-from-url.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { LoggingService } from '../../core/services/logging.service';
-import { CacheRepoFromUrlService } from '../../core/services/cache-repo-from-url.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 
 @Component({
@@ -118,6 +118,8 @@ export class SessionSelectionComponent implements OnInit {
     const repoLocation = this.cacheRepoFromUrlService.repoLocation || this.urlEncodedRepo;
     this.repoForm.get('repo').setValue(repoLocation);
 
-    if (this.cacheRepoFromUrlService.hasRepoLocation()) this.setupSession();
+    if (this.cacheRepoFromUrlService.hasRepoLocation()) {
+      this.setupSession();
+    }
   }
 }
