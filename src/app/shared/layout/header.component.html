@@ -37,11 +37,11 @@
 
   <span style="flex: 1 1 auto"></span>
 
-  <div *ngIf="auth.isAuthenticated()">
+  <div *ngIf="auth.isAuthenticated() && phaseService.isRepoSet()">
     <span id="phase-descriptor" style="margin-left: 10px">
-      {{ this.currentRepo }}
+      {{ this.currentRepo || "No Repository Set"}}
     </span>
-    <button mat-button matTooltip="Change Repository" (click)="this.openChangeRepoDialog()">
+    <button mat-button matTooltip="{{ phaseService.isRepoSet() ? 'Change Repository' : 'Select Repository'}}" (click)="this.openChangeRepoDialog()">
       <mat-icon>edit</mat-icon>
     </button>
   </div>
@@ -56,7 +56,7 @@
   </button>
 
   <button
-    *ngIf="auth.isAuthenticated() && isOpenUrlButtonShown()"
+    *ngIf="auth.isAuthenticated() && phaseService.isRepoSet()&& isOpenUrlButtonShown()"
     mat-button
     matTooltip="View current page on GitHub"
     (click)="viewBrowser()"
@@ -70,7 +70,7 @@
 
   <ng-template #notLoading>
     <button
-      *ngIf="auth.isAuthenticated() && isReloadButtonShown() && !this.isReloadButtonDisabled"
+      *ngIf="auth.isAuthenticated() && phaseService.isRepoSet() && isReloadButtonShown() && !this.isReloadButtonDisabled"
       mat-button
       matTooltip="Synchronize with Github data"
       (click)="reload()"
