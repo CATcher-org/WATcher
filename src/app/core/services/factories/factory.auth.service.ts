@@ -3,6 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 // import { AppConfig } from '../../../../environments/environment';
 import { AuthService } from '../auth.service';
+import { ErrorHandlingService } from '../error-handling.service';
 import { GithubService } from '../github.service';
 import { GithubEventService } from '../githubevent.service';
 import { IssueService } from '../issue.service';
@@ -22,6 +23,7 @@ export function AuthServiceFactory(
   phaseService: PhaseService,
   githubEventService: GithubEventService,
   titleService: Title,
+  errorHandlingService: ErrorHandlingService,
   logger: LoggingService
 ) {
   // TODO: Write Mocks
@@ -39,7 +41,6 @@ export function AuthServiceFactory(
   //     logger
   //   );
   // }
-  console.log(logger);
   return new AuthService(
     router,
     ngZone,
@@ -50,5 +51,7 @@ export function AuthServiceFactory(
     phaseService,
     githubEventService,
     titleService,
-    logger);
+    errorHandlingService,
+    logger
+  );
 }

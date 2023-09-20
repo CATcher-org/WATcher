@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, EMPTY, Observable, of, Subscription, timer } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subscription, throwError, timer } from 'rxjs';
 import { catchError, exhaustMap, finalize, map } from 'rxjs/operators';
 import RestGithubIssueFilter from '../models/github/github-issue-filter.model';
 import { GithubIssue } from '../models/github/github-issue.model';
@@ -43,9 +43,7 @@ export class IssueService {
         .pipe(
           exhaustMap(() => {
             return this.reloadAllIssues().pipe(
-              catchError(() => {
-                return EMPTY;
-              }),
+              catchError((err) => throwError(err)),
               finalize(() => this.isLoading.next(false))
             );
           })

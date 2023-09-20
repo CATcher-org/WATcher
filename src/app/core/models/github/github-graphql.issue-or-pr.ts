@@ -20,7 +20,8 @@ export class GithubGraphqlIssueOrPr extends GithubIssue {
       },
       assignees: flattenEdges(issue.assignees.edges),
       labels: flattenEdges(issue.labels.edges),
-      milestone: issue.milestone ? issue.milestone : null
+      milestone: issue.milestone ? issue.milestone : null,
+      isDraft: issue.isDraft
     });
   }
 }

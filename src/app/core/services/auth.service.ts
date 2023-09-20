@@ -2,10 +2,13 @@ import { Injectable } from '@angular/core';
 import { NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { AppConfig } from '../../../environments/environment';
 import { generateSessionId } from '../../shared/lib/session';
 import { uuid } from '../../shared/lib/uuid';
+import { Phase } from '../models/phase.model';
+import { ErrorHandlingService } from './error-handling.service';
 import { GithubService } from './github.service';
 import { GithubEventService } from './githubevent.service';
 import { IssueService } from './issue.service';
@@ -47,6 +50,7 @@ export class AuthService {
     private phaseService: PhaseService,
     private githubEventService: GithubEventService,
     private titleService: Title,
+    private errorHandlingService: ErrorHandlingService,
     private logger: LoggingService
   ) {}
 
@@ -134,6 +138,34 @@ export class AuthService {
       )
     );
     this.logger.info(`AuthService: Redirecting for Github authentication`);
+  }
+
+  /**
+   * Handles the clean up required after authentication and setting up of repository is completed.
+   */
+  handleSetRepoSuccess() {
+    this.setTitleWithPhaseDetail();
+    this.router.navigateByUrl(Phase.issuesViewer);
+  }
+
+  /**
+   * Setup repository after authentication.
+   */
+  setRepo(): Observable<boolean> {
+    return from(this.phaseService.initializeCurrentRepository()).pipe(
+      map(() => {
+        if (!this.phaseService.currentRepo) {
+          return false;
+        }
+        this.githubEventService.setLatestChangeEvent();
+        this.handleSetRepoSuccess();
+        return true;
+      }),
+      catchError((error) => {
+        this.errorHandlingService.handleError(error);
+        return of(false);
+      })
+    );
   }
 
   /**

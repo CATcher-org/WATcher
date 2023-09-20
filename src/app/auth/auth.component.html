@@ -1,13 +1,16 @@
 <div *ngIf="isUserNotAuthenticated()" class="login-page">
-  <app-session-selection [urlEncodedSessionName]="this.urlEncodedSessionName" [urlEncodedRepo]="this.urlEncodedRepo">
-  </app-session-selection>
+  <mat-card class="login-card">
+    <mat-card-header style="margin-bottom: 20px">
+      <mat-card-title class="login-title"> WATcher </mat-card-title>
+    </mat-card-header>
+    <app-auth-login></app-auth-login>
+  </mat-card>
 </div>
 
 <div *ngIf="isUserAuthenticating() || isAwaitingOAuthUserConfirm()" class="login-page">
   <mat-card class="login-card">
     <mat-card-header style="margin-bottom: 20px">
       <mat-card-title class="login-title"> Confirm Login Account </mat-card-title>
-      <mat-card-subtitle> Session on {{ currentSessionOrg }} </mat-card-subtitle>
     </mat-card-header>
 
     <div style="position: absolute; top: 15px; left: 15px">
@@ -23,4 +26,9 @@
       <mat-spinner [diameter]="47"></mat-spinner>
     </div>
   </mat-card>
+</div>
+
+<div *ngIf="isUserAuthenticated() && !isRepoSet()" class="login-page">
+  <app-session-selection [urlEncodedSessionName]="this.urlEncodedSessionName" [urlEncodedRepo]="this.urlEncodedRepo">
+  </app-session-selection>
 </div>

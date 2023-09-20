@@ -22,6 +22,7 @@ export class Issue {
   stateReason: string;
   issueOrPr: string;
   author: string;
+  isDraft: boolean;
 
   /** Depending on the phase, assignees attribute can be derived from Github's assignee feature OR from the Github's issue description */
   assignees?: string[];
@@ -88,6 +89,7 @@ export class Issue {
     this.issueOrPr = githubIssue.issueOrPr;
     this.author = githubIssue.user.login;
     // this.githubIssue = githubIssue;
+    this.isDraft = githubIssue.isDraft;
 
     this.assignees = githubIssue.assignees.map((assignee) => assignee.login);
     this.githubLabels = githubIssue.labels;

@@ -5,6 +5,7 @@ query FetchPullRequests($owner: String!, $name: String!, $cursor: String) {
         cursor
         node {
           ...pullrequest
+          isDraft
           labels(first: 100) {
             edges {
               node {
