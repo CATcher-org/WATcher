@@ -13,7 +13,8 @@ export class Repo {
   }
 
   /** Creates a new Repo from one repository url. */
-  public static of(repoUrl: string) {
+  public static of(fullRepoUrl: string) {
+    const repoUrl = this.getRepoUrl(fullRepoUrl);
     const repoUrlSplit = repoUrl.split('/');
     if (repoUrlSplit.length !== 2) {
       throw new Error('Invalid repository name. Please provide repository name in the format Org/Repository Name.');
@@ -45,6 +46,11 @@ export class Repo {
     }
 
     return false;
+  }
+
+  /** Gets org/repo from full http url */
+  private static getRepoUrl(sessionInformation: string) {
+    return sessionInformation.split('/').slice(-2).join('/');
   }
 }
 

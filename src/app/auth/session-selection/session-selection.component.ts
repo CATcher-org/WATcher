@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Profile } from '../../core/models/profile.model';
+import { Repo } from '../../core/models/repo.model';
 import { AuthService } from '../../core/services/auth.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { LoggingService } from '../../core/services/logging.service';
@@ -53,9 +54,9 @@ export class SessionSelectionComponent implements OnInit {
       return;
     }
     this.isSettingUpSession = true;
-    const repoInformation: string = this.repoForm.get('repo').value;
-    const repoOrg: string = this.getOrgDetails(repoInformation);
-    const repoName: string = this.getDataRepoDetails(repoInformation);
+    const repoFormValue: string = this.repoForm.get('repo').value;
+
+    const newRepo = Repo.of(repoFormValue);
 
     /**
      * Persist repo information in local browser storage
@@ -69,37 +70,18 @@ export class SessionSelectionComponent implements OnInit {
     window.localStorage.removeItem('org');
     window.localStorage.removeItem('dataRepo');
 
-    if (repoOrg && repoName) {
-      window.localStorage.setItem('org', repoOrg);
-      window.localStorage.setItem('dataRepo', repoName);
+    if (newRepo) {
+      window.localStorage.setItem('org', newRepo.owner);
+      window.localStorage.setItem('dataRepo', newRepo.name);
 
-      this.repoUrlCacheService.cache(repoInformation);
+      this.repoUrlCacheService.cache(newRepo.toString());
     }
 
-    this.logger.info(`SessionSelectionComponent: Selected Repository: ${repoInformation}`);
+    this.logger.info(`SessionSelectionComponent: Selected Repository: ${newRepo.toString()}`);
 
-    this.authService.setRepo()
-      .subscribe(
-        (res) => {
-          this.isSettingUpSession = false;
-        }
-      );
-  }
-
-  /**
-   * Extracts the Organization Details from the input sessionInformation.
-   * @param sessionInformation - string in the format of 'orgName/dataRepo'
-   */
-  private getOrgDetails(sessionInformation: string) {
-    return sessionInformation.split('/')[0];
-  }
-
-  /**
-   * Extracts the Data Repository Details from the input sessionInformation.
-   * @param sessionInformation - string in the format of 'orgName/dataRepo'
-   */
-  private getDataRepoDetails(sessionInformation: string) {
-    return sessionInformation.split('/')[1];
+    this.authService.setRepo().subscribe((res) => {
+      this.isSettingUpSession = false;
+    });
   }
 
   private initProfileForm() {
