@@ -35,6 +35,11 @@ export class Repo {
     return false;
   }
 
+  /** Gets org/repo from full http url */
+  private static getRepoUrl(sessionInformation: string) {
+    return sessionInformation.split('/').slice(-2).join('/');
+  }
+
   /** String representation of a Repo. */
   public toString(): string {
     return this.owner + '/' + this.name;
@@ -46,11 +51,6 @@ export class Repo {
     }
 
     return false;
-  }
-
-  /** Gets org/repo from full http url */
-  private static getRepoUrl(sessionInformation: string) {
-    return sessionInformation.split('/').slice(-2).join('/');
   }
 }
 
