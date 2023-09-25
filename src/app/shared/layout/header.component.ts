@@ -229,7 +229,10 @@ export class HeaderComponent implements OnInit {
         this.auth.setTitleWithPhaseDetail();
         this.currentRepo = newRepoString;
       })
-      .catch((error) => this.errorHandlingService.handleError(error));
+      .catch((error) => {
+        this.openChangeRepoDialog();
+        this.errorHandlingService.handleError(error);
+      });
   }
 
   openChangeRepoDialog() {
