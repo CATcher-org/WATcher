@@ -5,6 +5,7 @@ import { Repo } from '../core/models/repo.model';
 import { ErrorMessageService } from '../core/services/error-message.service';
 import { GithubService } from '../core/services/github.service';
 import { IssueService } from '../core/services/issue.service';
+import { LabelService } from '../core/services/label.service';
 import { MilestoneService } from '../core/services/milestone.service';
 import { PhaseService } from '../core/services/phase.service';
 import { TABLE_COLUMNS } from '../shared/issue-tables/issue-tables-columns';
@@ -35,10 +36,12 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     public phaseService: PhaseService,
     public githubService: GithubService,
     public issueService: IssueService,
+    public labelService: LabelService,
     public milestoneService: MilestoneService
   ) {
     this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => {
       this.issueService.reset(false);
+      this.labelService.reset();
       this.initialize();
     });
   }

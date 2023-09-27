@@ -1,4 +1,4 @@
-<h1 mat-dialog-title class="change-repo-form-title">Change repository</h1>
+<h1 mat-dialog-title class="change-repo-form-title">{{ data.repoName ? 'Change repository' : 'Select repository' }}</h1>
 <div mat-dialog-content>
   <form (ngSubmit)="onYesClick()">
     <mat-form-field appearance="fill">
@@ -14,5 +14,5 @@
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()" color="warn">Cancel</button>
-  <button mat-button (click)="onYesClick()" color="primary">Change Repo</button>
+  <button mat-button (click)="onYesClick()" color="primary">{{ data.repoName ? 'Change Repo' : 'Select Repo' }}</button>
 </div>

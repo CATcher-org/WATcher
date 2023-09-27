@@ -12,7 +12,6 @@ import { LoggingService } from '../core/services/logging.service';
 import { PhaseService } from '../core/services/phase.service';
 import { UserService } from '../core/services/user.service';
 
-
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
@@ -132,6 +131,14 @@ export class AuthComponent implements OnInit, OnDestroy {
 
   isAwaitingOAuthUserConfirm(): boolean {
     return this.authState === AuthState.ConfirmOAuthUser;
+  }
+
+  isUserAuthenticated(): boolean {
+    return this.authState === AuthState.Authenticated;
+  }
+
+  isRepoSet(): boolean {
+    return this.phaseService.isRepoSet();
   }
 
   get currentSessionOrg(): string {

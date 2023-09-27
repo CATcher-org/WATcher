@@ -16,12 +16,13 @@
     <button mat-button (click)="removeAllSelection()">Remove all</button>
 
     <div *ngIf="!hasLabels(input.value)" class="no-labels">No Labels Found!</div>
+
     <div class="scroll-container-wrapper">
       <div class="scroll-container">
         <mat-selection-list [(ngModel)]="selectedLabelNames" (selectionChange)="updateSelection()">
           <mat-list-option
             #option
-            *ngFor="let label of allLabels"
+            *ngFor="let label of this.labels$ | async"
             [value]="label.name"
             [selected]="selectedLabelNames.includes(label.name)"
             class="list-option"
@@ -39,7 +40,7 @@
                 [disabled]="hiddenLabelNames.has(label.name)"
                 (click)="simulateClick(option); $event.stopPropagation()"
               >
-                {{ label.name }}
+                {{ label.formattedName }}
               </mat-chip>
             </div>
           </mat-list-option>

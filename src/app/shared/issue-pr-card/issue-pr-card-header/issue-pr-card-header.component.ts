@@ -27,6 +27,9 @@ export class IssuePrCardHeaderComponent {
         return 'issue-closed';
       }
       case type === 'PullRequest' && state === 'OPEN': {
+        if (this.issue.isDraft) {
+          return 'git-pull-request-draft';
+        }
         return 'git-pull-request';
       }
       case type === 'PullRequest' && state === 'CLOSED': {
@@ -43,6 +46,9 @@ export class IssuePrCardHeaderComponent {
 
   /** Returns status color for issue */
   getIssueOpenOrCloseColor() {
+    if (this.issue.isDraft) {
+      return 'grey';
+    }
     if (this.issue.state === 'OPEN') {
       return 'green';
     } else if (this.issue.issueOrPr === 'PullRequest' && this.issue.state === 'CLOSED') {
