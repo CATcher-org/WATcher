@@ -7,7 +7,6 @@ import { AppConfig } from '../../../environments/environment';
 import { Phase } from '../../core/models/phase.model';
 import { Repo } from '../../core/models/repo.model';
 import { AuthService } from '../../core/services/auth.service';
-import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { GithubService } from '../../core/services/github.service';
@@ -16,6 +15,7 @@ import { IssueService } from '../../core/services/issue.service';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { PhaseDescription, PhaseService } from '../../core/services/phase.service';
+import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 import { UserService } from '../../core/services/user.service';
 

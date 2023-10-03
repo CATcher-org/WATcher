@@ -3,9 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Profile } from '../../core/models/profile.model';
 import { AuthService } from '../../core/services/auth.service';
-import { CacheRepoFromUrlService } from '../../core/services/cache-repo-from-url.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { LoggingService } from '../../core/services/logging.service';
+import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 
 @Component({
@@ -30,7 +30,7 @@ export class SessionSelectionComponent implements OnInit {
     private authService: AuthService,
     private repoUrlCacheService: RepoUrlCacheService,
     private errorHandlingService: ErrorHandlingService,
-    private cacheRepoFromUrlService: CacheRepoFromUrlService
+    private repoSessionStorageService: RepoSessionStorageService
   ) {}
 
   ngOnInit() {
@@ -79,9 +79,12 @@ export class SessionSelectionComponent implements OnInit {
 
     this.logger.info(`SessionSelectionComponent: Selected Repository: ${repoInformation}`);
 
-    this.authService.setRepo().subscribe((res) => {
-      this.isSettingUpSession = false;
-    });
+    this.authService.setRepo()
+      .subscribe(
+        (res) => {
+          this.isSettingUpSession = false;
+        }
+      );
   }
 
   /**
@@ -115,10 +118,10 @@ export class SessionSelectionComponent implements OnInit {
   }
 
   private autofillRepo() {
-    const repoLocation = this.cacheRepoFromUrlService.repoLocation || this.urlEncodedRepo;
+    const repoLocation = this.repoSessionStorageService.repoLocation || this.urlEncodedRepo;
     this.repoForm.get('repo').setValue(repoLocation);
 
-    if (this.cacheRepoFromUrlService.hasRepoLocation()) {
+    if (this.repoSessionStorageService.hasRepoLocation()) {
       this.setupSession();
     }
   }
