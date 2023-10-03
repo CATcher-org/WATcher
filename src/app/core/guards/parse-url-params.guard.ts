@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlSegment } from '@angular/router';
 import { Phase } from '../models/phase.model';
-import { CacheRepoFromUrlService } from '../services/cache-repo-from-url.service';
+import { RepoSessionStorageService } from '../services/repo-session-storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ParseUrlParamsGuard implements CanActivate {
-  constructor(private router: Router, private cache: CacheRepoFromUrlService) {}
+  constructor(private router: Router, private cache: RepoSessionStorageService) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     const org = route.params['org'];

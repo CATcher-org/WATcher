@@ -7,7 +7,7 @@ import { AppConfig } from '../../../environments/environment';
 import { Phase } from '../../core/models/phase.model';
 import { Repo } from '../../core/models/repo.model';
 import { AuthService } from '../../core/services/auth.service';
-import { CacheRepoFromUrlService } from '../../core/services/cache-repo-from-url.service';
+import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { GithubService } from '../../core/services/github.service';
@@ -57,7 +57,7 @@ export class HeaderComponent implements OnInit {
     private errorHandlingService: ErrorHandlingService,
     private githubService: GithubService,
     private dialogService: DialogService,
-    private cacheRepoFromUrlService: CacheRepoFromUrlService
+    private repoSessionStorageService: RepoSessionStorageService
   ) {
     router.events
       .pipe(
@@ -68,8 +68,8 @@ export class HeaderComponent implements OnInit {
         this.prevUrl = e[0].urlAfterRedirects;
       });
 
-    this.auth.currentAuthState.subscribe((state) => {
-      if (auth.isAuthenticated() && !cacheRepoFromUrlService.hasRepoLocation()) {
+    this.auth.currentAuthState.subscribe(() => {
+      if (auth.isAuthenticated() && !repoSessionStorageService.hasRepoLocation()) {
         this.openChangeRepoDialog();
       }
     });
