@@ -17,7 +17,7 @@ export class ConfirmLoginComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private errorHandlingService: ErrorHandlingService,
-    private logger: LoggingService,
+    private logger: LoggingService
   ) {}
 
   ngOnInit() {}
@@ -27,28 +27,21 @@ export class ConfirmLoginComponent implements OnInit {
     window.location.reload();
   }
 
-  logIntoAnotherAccount() {
-    this.logger.info('ConfirmLoginComponent: Logging into another account');
-    this.authService.startOAuthProcess();
-  }
-
   /**
    * Will complete the process of logging in the given user.
    */
   completeLoginProcess(): void {
     this.authService.changeAuthState(AuthState.AwaitingAuthentication);
     this.logger.info(`ConfirmLoginComponent: Completing login process`);
-    this.userService
-      .createUserModel(this.username)
-      .subscribe(
-        () => {
-          this.authService.changeAuthState(AuthState.Authenticated);
-        },
-        (error) => {
-          this.authService.changeAuthState(AuthState.NotAuthenticated);
-          this.errorHandlingService.handleError(error);
-          this.logger.info(`ConfirmLoginComponent: Completion of login process failed with an error: ${error}`);
-        }
-      );
+    this.userService.createUserModel(this.username).subscribe(
+      () => {
+        this.authService.changeAuthState(AuthState.Authenticated);
+      },
+      (error) => {
+        this.authService.changeAuthState(AuthState.NotAuthenticated);
+        this.errorHandlingService.handleError(error);
+        this.logger.info(`ConfirmLoginComponent: Completion of login process failed with an error: ${error}`);
+      }
+    );
   }
 }

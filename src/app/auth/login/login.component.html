@@ -1,4 +1,9 @@
-<button mat-stroked-button class="login-button" color="primary" (click)="startLoginProcess()">
+<button mat-stroked-button class="login-button" color="primary" (click)="startOnlyPublicLoginProcess()">
   <span class="logo"> <img class="github-logo" src="./assets/images/github-logo.png" alt="github-logo" /> </span>
-  <span> Login </span>
+  <span> Login (only public repo)</span>
+</button>
+
+<button mat-stroked-button class="login-button" color="accent" (click)="startAllAccessLoginProcess()">
+  <span class="logo"> <img class="github-logo" src="./assets/images/github-logo.png" alt="github-logo" /> </span>
+  <span> Login (allow all access)</span>
 </button>
