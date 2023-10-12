@@ -11,11 +11,11 @@ import { LoggingService } from '../../core/services/logging.service';
 export class LoginComponent {
   constructor(private authService: AuthService, private errorHandlingService: ErrorHandlingService, private logger: LoggingService) {}
 
-  startOnlyPublicLoginProcess() {
+  startPublicOnlyLoginProcess() {
     this.startLoginProcess(false);
   }
 
-  startAllAccessLoginProcess() {
+  startIncludePrivateLoginProcess() {
     this.startLoginProcess(true);
   }
 
