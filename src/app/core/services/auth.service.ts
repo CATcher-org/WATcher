@@ -125,12 +125,12 @@ export class AuthService {
   /**
    * Will start the Github OAuth web flow process.
    */
-  startOAuthProcess(privateConsent: boolean) {
+  startOAuthProcess(hasPrivateConsent: boolean) {
     this.logger.info('AuthService: Starting authentication');
     // Available OAuth scopes https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps#available-scopes
     let permissionLevel = 'public-repo';
 
-    if (privateConsent) {
+    if (hasPrivateConsent) {
       // grants WATcher access to private repos if user allows
       permissionLevel = 'repo';
     }

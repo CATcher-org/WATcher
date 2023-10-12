@@ -19,10 +19,10 @@ export class LoginComponent {
     this.startLoginProcess(true);
   }
 
-  startLoginProcess(privateConsent: boolean) {
+  startLoginProcess(hasPrivateConsent: boolean) {
     this.logger.info('LoginComponent: Beginning login process');
     try {
-      this.authService.startOAuthProcess(privateConsent);
+      this.authService.startOAuthProcess(hasPrivateConsent);
     } catch (error) {
       this.authService.changeAuthState(AuthState.NotAuthenticated);
       this.errorHandlingService.handleError(error);
