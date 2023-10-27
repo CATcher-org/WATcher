@@ -74,7 +74,7 @@ export class IssueService {
   getLatestIssue(id: number): Observable<Issue> {
     return this.githubService.fetchIssueGraphql(id).pipe(
       map((response: GithubIssue) => {
-        this.createAndSaveIssueModel(response);
+        this.createAndSaveIssueModels([response]);
         return this.issues[id];
       }),
       catchError((err) => {
@@ -84,22 +84,17 @@ export class IssueService {
   }
 
   /**
-   * This function will update the issue's state of the application. This function needs to be called whenever a issue is deleted.
-   */
-  deleteFromLocalStore(issueToDelete: Issue) {
-    const { [issueToDelete.id]: issueToRemove, ...withoutIssueToRemove } = this.issues;
-    this.issues = withoutIssueToRemove;
-    this.issues$.next(Object.values(this.issues));
-  }
-
-  /**
    * This function will update the issue's state of the application. This function needs to be called whenever a issue is added/updated.
+   *
+   * @params issuesToUpdate - An array of issues to update the state of the application with.
    */
-  updateLocalStore(issueToUpdate: Issue) {
-    this.issues = {
-      ...this.issues,
-      [issueToUpdate.id]: issueToUpdate
-    };
+  private updateLocalStore(issuesToUpdate: Issue[]) {
+    const newIssues = { ...this.issues };
+    issuesToUpdate.forEach((issue) => {
+      newIssues[issue.id] = issue;
+    });
+    this.issues = newIssues;
+
     this.issues$.next(Object.values(this.issues));
   }
 
@@ -134,11 +129,10 @@ export class IssueService {
     const fetchedIssueIds: number[] = [];
 
     return issuesAPICallsByFilter.pipe(
-      map((issuesByFilter: []) => {
-        // Take each issue and put it in next in issues$
-        for (const issue of issuesByFilter) {
-          fetchedIssueIds.push(this.createIssueModel(issue).id);
-          this.createAndSaveIssueModel(issue);
+      map((githubIssues: GithubIssue[]) => {
+        const issues = this.createAndSaveIssueModels(githubIssues);
+        for (const issue of issues) {
+          fetchedIssueIds.push(issue.id);
         }
 
         const outdatedIssueIds: number[] = this.getOutdatedIssueIds(fetchedIssueIds);
@@ -152,16 +146,27 @@ export class IssueService {
     );
   }
 
-  private createAndSaveIssueModel(githubIssue: GithubIssue): boolean {
-    const issue = this.createIssueModel(githubIssue);
-    this.updateLocalStore(issue);
-    return true;
+  private createAndSaveIssueModels(githubIssues: GithubIssue[]): Issue[] {
+    const issues: Issue[] = [];
+
+    for (const githubIssue of githubIssues) {
+      const issue = this.createIssueModel(githubIssue);
+      issues.push(issue);
+    }
+    this.updateLocalStore(issues);
+
+    return issues;
   }
 
   private deleteIssuesFromLocalStore(ids: number[]): void {
-    ids.forEach((id: number) => {
-      this.getIssue(id).subscribe((issue) => this.deleteFromLocalStore(issue));
-    });
+    const withoutIssuesToRemove = { ...this.issues };
+    for (const id of ids) {
+      delete withoutIssuesToRemove[id];
+    }
+
+    this.issues = withoutIssuesToRemove;
+
+    this.issues$.next(Object.values(this.issues));
   }
 
   /**
