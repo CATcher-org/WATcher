@@ -218,6 +218,7 @@ export class HeaderComponent implements OnInit {
 
   /**
    * Change repository viewed on Issue Dashboard, if a valid repository is provided.
+   * Re-open dialog to prompt for another repository if an invalid one is provided.
    */
   changeRepositoryIfValid(repo: Repo, newRepoString: string) {
     if (newRepoString === this.currentRepo) {
@@ -229,7 +230,10 @@ export class HeaderComponent implements OnInit {
         this.auth.setTitleWithPhaseDetail();
         this.currentRepo = newRepoString;
       })
-      .catch((error) => this.errorHandlingService.handleError(error));
+      .catch((error) => {
+        this.openChangeRepoDialog();
+        this.errorHandlingService.handleError(error);
+      });
   }
 
   openChangeRepoDialog() {
