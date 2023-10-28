@@ -6,6 +6,7 @@
   align-items: center;
   height: 100%;
   min-height: 87.9vh;
+  gap: 2px;
 }
 
 ::ng-deep .mat-card-header-text {

@@ -8,18 +8,21 @@ import { LoggingService } from '../../core/services/logging.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-
 export class LoginComponent {
-  constructor(
-    private authService: AuthService,
-    private errorHandlingService: ErrorHandlingService,
-    private logger: LoggingService
-  ) {}
+  constructor(private authService: AuthService, private errorHandlingService: ErrorHandlingService, private logger: LoggingService) {}
 
-  startLoginProcess() {
+  startPublicOnlyLoginProcess() {
+    this.startLoginProcess(false);
+  }
+
+  startIncludePrivateLoginProcess() {
+    this.startLoginProcess(true);
+  }
+
+  startLoginProcess(hasPrivateConsent: boolean) {
     this.logger.info('LoginComponent: Beginning login process');
     try {
-      this.authService.startOAuthProcess();
+      this.authService.startOAuthProcess(hasPrivateConsent);
     } catch (error) {
       this.authService.changeAuthState(AuthState.NotAuthenticated);
       this.errorHandlingService.handleError(error);

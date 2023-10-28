@@ -52,7 +52,7 @@ export class AuthService {
     private titleService: Title,
     private errorHandlingService: ErrorHandlingService,
     private logger: LoggingService
-    ) {}
+  ) {}
 
   /**
    * Will store the OAuth token.
@@ -125,10 +125,18 @@ export class AuthService {
   /**
    * Will start the Github OAuth web flow process.
    */
-  startOAuthProcess() {
+  startOAuthProcess(hasPrivateConsent: boolean) {
     this.logger.info('AuthService: Starting authentication');
     // Available OAuth scopes https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps#available-scopes
-    const githubRepoPermission = 'repo';
+    let permissionLevel = 'public-repo';
+
+    if (hasPrivateConsent) {
+      // grants WATcher access to private repos if user allows
+      permissionLevel = 'repo';
+    }
+
+    const githubRepoPermission = permissionLevel; // don't allow changes after logging ins
+
     this.changeAuthState(AuthState.AwaitingAuthentication);
 
     this.generateStateString();
@@ -152,21 +160,20 @@ export class AuthService {
    * Setup repository after authentication.
    */
   setRepo(): Observable<boolean> {
-    return from(this.phaseService.initializeCurrentRepository())
-      .pipe(
-        map(() => {
-          if (!this.phaseService.currentRepo) {
-            return false;
-          }
-          this.githubEventService.setLatestChangeEvent();
-          this.handleSetRepoSuccess();
-          return true;
-        }),
-        catchError((error) => {
-          this.errorHandlingService.handleError(error);
-          return of(false);
-        })
-      );
+    return from(this.phaseService.initializeCurrentRepository()).pipe(
+      map(() => {
+        if (!this.phaseService.currentRepo) {
+          return false;
+        }
+        this.githubEventService.setLatestChangeEvent();
+        this.handleSetRepoSuccess();
+        return true;
+      }),
+      catchError((error) => {
+        this.errorHandlingService.handleError(error);
+        return of(false);
+      })
+    );
   }
 
   /**
