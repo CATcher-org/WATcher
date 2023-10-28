@@ -5,6 +5,7 @@ import { Profile } from '../../core/models/profile.model';
 import { AuthService } from '../../core/services/auth.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { LoggingService } from '../../core/services/logging.service';
+import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 
 @Component({
@@ -13,7 +14,6 @@ import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service'
   styleUrls: ['./session-selection.component.css', '../auth.component.css']
 })
 export class SessionSelectionComponent implements OnInit {
-  // isSettingUpSession is used to indicate whether WATcher is in the midst of setting up the session.
   isSettingUpSession: boolean;
   profileForm: FormGroup;
   repoForm: FormGroup;
@@ -29,7 +29,8 @@ export class SessionSelectionComponent implements OnInit {
     private logger: LoggingService,
     private authService: AuthService,
     private repoUrlCacheService: RepoUrlCacheService,
-    private errorHandlingService: ErrorHandlingService
+    private errorHandlingService: ErrorHandlingService,
+    private repoSessionStorageService: RepoSessionStorageService
   ) {}
 
   ngOnInit() {
@@ -117,6 +118,11 @@ export class SessionSelectionComponent implements OnInit {
   }
 
   private autofillRepo() {
-    this.repoForm.get('repo').setValue(this.urlEncodedRepo);
+    const repoLocation = this.repoSessionStorageService.repoLocation || this.urlEncodedRepo;
+    this.repoForm.get('repo').setValue(repoLocation);
+
+    if (this.repoSessionStorageService.hasRepoLocation()) {
+      this.setupSession();
+    }
   }
 }

@@ -15,6 +15,7 @@ import { IssueService } from '../../core/services/issue.service';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { PhaseDescription, PhaseService } from '../../core/services/phase.service';
+import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 import { UserService } from '../../core/services/user.service';
 
@@ -55,7 +56,8 @@ export class HeaderComponent implements OnInit {
     private labelService: LabelService,
     private errorHandlingService: ErrorHandlingService,
     private githubService: GithubService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private repoSessionStorageService: RepoSessionStorageService
   ) {
     router.events
       .pipe(
@@ -66,8 +68,8 @@ export class HeaderComponent implements OnInit {
         this.prevUrl = e[0].urlAfterRedirects;
       });
 
-    this.auth.currentAuthState.subscribe((state) => {
-      if (auth.isAuthenticated()) {
+    this.auth.currentAuthState.subscribe(() => {
+      if (auth.isAuthenticated() && !repoSessionStorageService.hasRepoLocation()) {
         this.openChangeRepoDialog();
       }
     });
