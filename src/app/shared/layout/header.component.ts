@@ -248,7 +248,7 @@ export class HeaderComponent implements OnInit {
       const newRepo = Repo.of(res);
 
       if (this.phaseService.isRepoSet()) {
-        this.changeRepositoryIfValid(newRepo, res);
+        this.changeRepositoryIfValid(newRepo, newRepo.toString());
       } else {
         /**
          * From session-selection.component.ts

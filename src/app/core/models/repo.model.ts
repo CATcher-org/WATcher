@@ -13,10 +13,13 @@ export class Repo {
   }
 
   /** Creates a new Repo from one repository url. */
-  public static of(repoUrl: string) {
+  public static of(repoUrlInput: string) {
+    const repoUrl = this.getRepoUrl(repoUrlInput);
     const repoUrlSplit = repoUrl.split('/');
     if (repoUrlSplit.length !== 2) {
-      throw new Error('Invalid repository name. Please provide repository name in the format Org/Repository Name.');
+      throw new Error(
+        'Invalid repository name. Please provide Github repository URL or the repository name in the format Org/Repository Name.'
+      );
     }
     return new Repo(repoUrlSplit[0], repoUrlSplit[1]);
   }
@@ -32,6 +35,13 @@ export class Repo {
     }
 
     return false;
+  }
+
+  /** Gets org/repo from full http url */
+  private static getRepoUrl(sessionInformation: string) {
+    const lastChar = sessionInformation.charAt(sessionInformation.length - 1);
+    const formattedInput = lastChar === '/' ? sessionInformation.slice(0, -1) : sessionInformation;
+    return formattedInput.split('/').slice(-2).join('/');
   }
 
   /** String representation of a Repo. */
