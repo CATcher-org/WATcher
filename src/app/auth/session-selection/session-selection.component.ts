@@ -2,9 +2,11 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Profile } from '../../core/models/profile.model';
+import { Repo } from '../../core/models/repo.model';
 import { AuthService } from '../../core/services/auth.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { LoggingService } from '../../core/services/logging.service';
+import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 import { GithubService } from './../../core/services/github.service';
 
@@ -14,7 +16,6 @@ import { GithubService } from './../../core/services/github.service';
   styleUrls: ['./session-selection.component.css', '../auth.component.css']
 })
 export class SessionSelectionComponent implements OnInit {
-  // isSettingUpSession is used to indicate whether WATcher is in the midst of setting up the session.
   isSettingUpSession: boolean;
   profileForm: FormGroup;
   repoForm: FormGroup;
@@ -31,7 +32,8 @@ export class SessionSelectionComponent implements OnInit {
     private authService: AuthService,
     private repoUrlCacheService: RepoUrlCacheService,
     private errorHandlingService: ErrorHandlingService,
-    private githubService: GithubService
+    private githubService: GithubService,
+    private repoSessionStorageService: RepoSessionStorageService
   ) {}
 
   ngOnInit() {
@@ -55,9 +57,9 @@ export class SessionSelectionComponent implements OnInit {
       return;
     }
     this.isSettingUpSession = true;
-    const repoInformation: string = this.repoForm.get('repo').value;
-    const repoOrg: string = this.getOrgDetails(repoInformation);
-    const repoName: string = this.getDataRepoDetails(repoInformation);
+    const repoFormValue: string = this.repoForm.get('repo').value;
+
+    const newRepo = Repo.of(repoFormValue);
 
     /**
      * Persist repo information in local browser storage
@@ -71,14 +73,14 @@ export class SessionSelectionComponent implements OnInit {
     window.localStorage.removeItem('org');
     window.localStorage.removeItem('dataRepo');
 
-    if (repoOrg && repoName) {
-      window.localStorage.setItem('org', repoOrg);
-      window.localStorage.setItem('dataRepo', repoName);
+    if (newRepo) {
+      window.localStorage.setItem('org', newRepo.owner);
+      window.localStorage.setItem('dataRepo', newRepo.name);
 
-      this.repoUrlCacheService.cache(repoInformation);
+      this.repoUrlCacheService.cache(newRepo.toString());
     }
 
-    this.logger.info(`SessionSelectionComponent: Selected Repository: ${repoInformation}`);
+    this.logger.info(`SessionSelectionComponent: Selected Repository: ${newRepo.toString()}`);
 
     this.authService.setRepo().subscribe((res) => {
       this.isSettingUpSession = false;
@@ -116,6 +118,11 @@ export class SessionSelectionComponent implements OnInit {
   }
 
   private autofillRepo() {
-    this.repoForm.get('repo').setValue(this.urlEncodedRepo);
+    const repoLocation = this.repoSessionStorageService.repoLocation || this.urlEncodedRepo;
+    this.repoForm.get('repo').setValue(repoLocation);
+
+    if (this.repoSessionStorageService.hasRepoLocation()) {
+      this.setupSession();
+    }
   }
 }

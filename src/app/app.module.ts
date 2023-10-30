@@ -28,6 +28,7 @@ import { IssueService } from './core/services/issue.service';
 import { LabelService } from './core/services/label.service';
 import { LoggingService } from './core/services/logging.service';
 import { PhaseService } from './core/services/phase.service';
+import { RepoSessionStorageService } from './core/services/repo-session-storage.service';
 import { SessionFixConfirmationComponent } from './core/services/session-fix-confirmation/session-fix-confirmation.component';
 import { UserService } from './core/services/user.service';
 import { IssuesViewerModule } from './issues-viewer/issues-viewer.module';
@@ -89,7 +90,8 @@ import { SharedModule } from './shared/shared.module';
       provide: ErrorHandler,
       useClass: ErrorHandlingService
     },
-    ErrorMessageService
+    ErrorMessageService,
+    RepoSessionStorageService
   ],
   bootstrap: [AppComponent]
 })

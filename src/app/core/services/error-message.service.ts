@@ -9,7 +9,7 @@ import { Injectable } from '@angular/core';
  */
 export class ErrorMessageService {
     public static repositoryNotPresentMessage() {
-        return 'Failed to fetch repository data. Please provide repository name in the format Org/Repository.';
+        return 'Invalid repository name. Please provide Github repository URL or the repository name in the format Org/Repository Name.';
     }
 
     public static unableToFetchIssuesMessage() {

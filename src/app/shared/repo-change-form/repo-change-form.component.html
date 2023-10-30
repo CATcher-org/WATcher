@@ -2,7 +2,7 @@
 <div mat-dialog-content>
   <form (ngSubmit)="onYesClick()">
     <mat-form-field appearance="fill">
-      <mat-label>Repository Location (Org/Repo)</mat-label>
+      <mat-label>Repository Location (Github Link or Org/Repo)</mat-label>
       <input matInput [(ngModel)]="this.repoName" [formControl]="repoChangeForm" [matAutocomplete]="auto" />
       <mat-autocomplete #auto="matAutocomplete">
         <mat-option *ngFor="let suggestion of filteredSuggestions | async" [value]="suggestion">
