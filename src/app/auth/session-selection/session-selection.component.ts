@@ -4,11 +4,9 @@ import { Observable } from 'rxjs';
 import { Profile } from '../../core/models/profile.model';
 import { Repo } from '../../core/models/repo.model';
 import { AuthService } from '../../core/services/auth.service';
-import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
-import { GithubService } from './../../core/services/github.service';
 
 @Component({
   selector: 'app-session-selection',
@@ -31,8 +29,6 @@ export class SessionSelectionComponent implements OnInit {
     private logger: LoggingService,
     private authService: AuthService,
     private repoUrlCacheService: RepoUrlCacheService,
-    private errorHandlingService: ErrorHandlingService,
-    private githubService: GithubService,
     private repoSessionStorageService: RepoSessionStorageService
   ) {}
 
@@ -85,22 +81,6 @@ export class SessionSelectionComponent implements OnInit {
     this.authService.setRepo().subscribe((res) => {
       this.isSettingUpSession = false;
     });
-  }
-
-  /**
-   * Extracts the Organization Details from the input sessionInformation.
-   * @param sessionInformation - string in the format of 'orgName/dataRepo'
-   */
-  private getOrgDetails(sessionInformation: string) {
-    return sessionInformation.split('/')[0];
-  }
-
-  /**
-   * Extracts the Data Repository Details from the input sessionInformation.
-   * @param sessionInformation - string in the format of 'orgName/dataRepo'
-   */
-  private getDataRepoDetails(sessionInformation: string) {
-    return sessionInformation.split('/')[1];
   }
 
   private initProfileForm() {

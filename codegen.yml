@@ -1,7 +1,7 @@
 overwrite: true
 schema:
-  - 'graphql/schema/github-schema.ts'
-  - 'graphql/schema/schema-extension.graphql'
+  - "graphql/schema/github-schema.ts"
+  - "graphql/schema/schema-extension.graphql"
 documents:
   - graphql/fragments/*.graphql
   - graphql/queries/*.graphql
@@ -9,8 +9,8 @@ documents:
 generates:
   graphql/graphql-types.ts:
     plugins:
-      - 'typescript'
-      - 'typescript-operations'
-      - 'typescript-document-nodes'
-      - 'typescript-resolvers'
-      - 'fragment-matcher'
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-document-nodes"
+      - "typescript-resolvers"
+      - "fragment-matcher"
