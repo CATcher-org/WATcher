@@ -27,11 +27,6 @@ export class ConfirmLoginComponent implements OnInit {
     window.location.reload();
   }
 
-  logIntoAnotherAccount() {
-    this.logger.info('ConfirmLoginComponent: Logging into another account');
-    this.authService.startOAuthProcess();
-  }
-
   /**
    * Will complete the process of logging in the given user.
    */
