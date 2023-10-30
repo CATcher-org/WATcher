@@ -83,20 +83,7 @@ export class SessionSelectionComponent implements OnInit {
     this.authService.setRepo().subscribe((res) => {
       this.isSettingUpSession = false;
     });
-  }
-
-  /**
-   * Extracts the Organization Details from the input sessionInformation.
-   * @param sessionInformation - string in the format of 'orgName/dataRepo'
-   */
-  private getOrgDetails(sessionInformation: string) {
-    return sessionInformation.split('/')[0];
-  }
-
-    this.authService.setRepo().subscribe((res) => {
-      this.isSettingUpSession = false;
-    });
-  }
+ }
 
   private initProfileForm() {
     this.profileForm = this.formBuilder.group({
