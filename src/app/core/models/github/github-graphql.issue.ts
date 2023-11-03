@@ -13,6 +13,7 @@ export class GithubGraphqlIssue extends GithubIssue {
       url: String(issue.url),
       title: issue.title,
       state: issue.state,
+      stateReason: issue.stateReason,
       user: {
         login: issue.author.login
       },

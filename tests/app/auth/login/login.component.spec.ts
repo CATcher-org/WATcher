@@ -11,24 +11,26 @@ describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
 
-  beforeEach(waitForAsync(() => {
-    authService = jasmine.createSpyObj<AuthService>('AuthService', ['startOAuthProcess']);
-    logger = jasmine.createSpyObj<LoggingService>('LoggingService', ['info']);
-    errorHandlingService = jasmine.createSpyObj<ErrorHandlingService>('ErrorHandlingService', ['handleError']);
+  beforeEach(
+    waitForAsync(() => {
+      authService = jasmine.createSpyObj<AuthService>('AuthService', ['startOAuthProcess']);
+      logger = jasmine.createSpyObj<LoggingService>('LoggingService', ['info']);
+      errorHandlingService = jasmine.createSpyObj<ErrorHandlingService>('ErrorHandlingService', ['handleError']);
 
-    TestBed.configureTestingModule({
-      providers: [
-        { provide: AuthService, useValue: authService },
-        { provide: LoggingService, useValue: logger },
-        { provide: ErrorHandlingService, useValue: errorHandlingService }
-      ],
-      declarations: [LoginComponent]
-    }).compileComponents();
+      TestBed.configureTestingModule({
+        providers: [
+          { provide: AuthService, useValue: authService },
+          { provide: LoggingService, useValue: logger },
+          { provide: ErrorHandlingService, useValue: errorHandlingService }
+        ],
+        declarations: [LoginComponent]
+      }).compileComponents();
 
-    fixture = TestBed.createComponent(LoginComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  }));
+      fixture = TestBed.createComponent(LoginComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    })
+  );
 
   it('should create', () => {
     expect(component).toBeTruthy();

@@ -1,4 +1,4 @@
-import { IssueState } from '../../../../../graphql/graphql-types';
+import { IssueState, IssueStateReason } from '../../../../../graphql/graphql-types';
 import { GithubComment } from './github-comment.model';
 import { GithubLabel } from './github-label.model';
 
@@ -12,6 +12,7 @@ export class GithubIssue {
   created_at: string;
   labels: Array<GithubLabel>;
   state: IssueState;
+  stateReason: IssueStateReason;
   title: string;
   updated_at: string;
   closed_at: string;

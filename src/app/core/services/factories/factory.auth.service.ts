@@ -41,7 +41,6 @@ export function AuthServiceFactory(
   //     logger
   //   );
   // }
-  console.log(logger);
   return new AuthService(
     router,
     ngZone,
@@ -54,5 +53,5 @@ export function AuthServiceFactory(
     titleService,
     errorHandlingService,
     logger
-    );
+  );
 }

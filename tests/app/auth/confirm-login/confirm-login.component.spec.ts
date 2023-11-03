@@ -21,26 +21,28 @@ describe('ConfirmLoginComponent', () => {
   let component: ConfirmLoginComponent;
   let fixture: ComponentFixture<ConfirmLoginComponent>;
 
-  beforeEach(waitForAsync(() => {
-    authService = jasmine.createSpyObj<AuthService>('AuthService', ['changeAuthState']);
-    logger = jasmine.createSpyObj<LoggingService>('LoggingService', ['info']);
-    userService = jasmine.createSpyObj<UserService>('UserService', ['createUserModel']);
-    errorHandlingService = jasmine.createSpyObj<ErrorHandlingService>('ErrorHandlingService', ['handleError']);
+  beforeEach(
+    waitForAsync(() => {
+      authService = jasmine.createSpyObj<AuthService>('AuthService', ['changeAuthState']);
+      logger = jasmine.createSpyObj<LoggingService>('LoggingService', ['info']);
+      userService = jasmine.createSpyObj<UserService>('UserService', ['createUserModel']);
+      errorHandlingService = jasmine.createSpyObj<ErrorHandlingService>('ErrorHandlingService', ['handleError']);
 
-    TestBed.configureTestingModule({
-      providers: [
-        { provide: AuthService, useValue: authService },
-        { provide: LoggingService, useValue: logger },
-        { provide: UserService, useValue: userService },
-        { provide: ErrorHandlingService, useValue: errorHandlingService }
-      ],
-      declarations: [ConfirmLoginComponent]
-    }).compileComponents();
+      TestBed.configureTestingModule({
+        providers: [
+          { provide: AuthService, useValue: authService },
+          { provide: LoggingService, useValue: logger },
+          { provide: UserService, useValue: userService },
+          { provide: ErrorHandlingService, useValue: errorHandlingService }
+        ],
+        declarations: [ConfirmLoginComponent]
+      }).compileComponents();
 
-    fixture = TestBed.createComponent(ConfirmLoginComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  }));
+      fixture = TestBed.createComponent(ConfirmLoginComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    })
+  );
 
   it('should create', () => {
     expect(component).toBeTruthy();
