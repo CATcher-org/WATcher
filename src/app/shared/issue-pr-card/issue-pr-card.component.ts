@@ -31,6 +31,8 @@ export class IssuePrCardComponent {
       return 'border-green';
     } else if (this.issue.issueOrPr === 'PullRequest' && this.issue.state === 'CLOSED') {
       return 'border-red';
+    } else if (this.issue.issueOrPr === 'Issue' && this.issue.stateReason === 'NOT_PLANNED') {
+      return 'border-gray';
     } else {
       return 'border-purple';
     }

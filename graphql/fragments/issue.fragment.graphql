@@ -4,6 +4,7 @@ fragment issue on Issue {
   title
   body
   state
+  stateReason
   createdAt
   updatedAt
   url
