@@ -19,6 +19,7 @@ export class Issue {
   closed_at: string;
   milestone: Milestone;
   state: string;
+  stateReason: string;
   issueOrPr: string;
   author: string;
   isDraft: boolean;
@@ -84,6 +85,7 @@ export class Issue {
     // githubIssue without milestone will be set to default milestone
     this.milestone = githubIssue.milestone ? new Milestone(githubIssue.milestone) : Milestone.DefaultMilestone;
     this.state = githubIssue.state;
+    this.stateReason = githubIssue.stateReason;
     this.issueOrPr = githubIssue.issueOrPr;
     this.author = githubIssue.user.login;
     // this.githubIssue = githubIssue;

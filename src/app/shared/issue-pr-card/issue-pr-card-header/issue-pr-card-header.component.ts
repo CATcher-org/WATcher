@@ -18,29 +18,31 @@ export class IssuePrCardHeaderComponent {
   getOcticon() {
     const type = this.issue.issueOrPr;
     const state = this.issue.state;
+    const stateReason = this.issue.stateReason;
 
-    switch (true) {
-      case type === 'Issue' && state === 'OPEN': {
+    if (type === 'Issue') {
+      if (state === 'OPEN') {
         return 'issue-opened';
+      } else if (state === 'CLOSED') {
+        if (stateReason === 'COMPLETED') {
+          return 'issue-closed';
+        } else if (stateReason === 'NOT_PLANNED') {
+          return 'issue-draft';
+        }
       }
-      case type === 'Issue' && state === 'CLOSED': {
-        return 'issue-closed';
-      }
-      case type === 'PullRequest' && state === 'OPEN': {
+    } else if (type === 'PullRequest') {
+      if (state === 'OPEN') {
         if (this.issue.isDraft) {
           return 'git-pull-request-draft';
         }
         return 'git-pull-request';
-      }
-      case type === 'PullRequest' && state === 'CLOSED': {
+      } else if (state === 'CLOSED') {
         return 'git-pull-request-closed';
-      }
-      case type === 'PullRequest' && state === 'MERGED': {
+      } else if (state === 'MERGED') {
         return 'git-merge';
       }
-      default: {
-        return 'circle'; // unknown type and state
-      }
+    } else {
+      return 'circle'; // unknown type and state
     }
   }
 
@@ -53,6 +55,8 @@ export class IssuePrCardHeaderComponent {
       return 'green';
     } else if (this.issue.issueOrPr === 'PullRequest' && this.issue.state === 'CLOSED') {
       return 'red';
+    } else if (this.issue.issueOrPr === 'Issue' && this.issue.stateReason === 'NOT_PLANNED') {
+      return 'gray';
     } else {
       return 'purple';
     }
