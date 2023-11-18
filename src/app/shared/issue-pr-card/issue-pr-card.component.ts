@@ -24,11 +24,12 @@ export class IssuePrCardComponent {
 
   /** Returns CSS class for border color */
   getIssueOpenOrCloseColorCSSClass() {
-    if (this.issue.isDraft) {
-      return 'grey';
-    }
     if (this.issue.state === 'OPEN') {
-      return 'border-green';
+      if (this.issue.isDraft) {
+        return 'grey';
+      } else {
+        return 'border-green';
+      }
     } else if (this.issue.issueOrPr === 'PullRequest' && this.issue.state === 'CLOSED') {
       return 'border-red';
     } else if (this.issue.issueOrPr === 'Issue' && this.issue.stateReason === 'NOT_PLANNED') {

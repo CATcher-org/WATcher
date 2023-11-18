@@ -48,11 +48,12 @@ export class IssuePrCardHeaderComponent {
 
   /** Returns status color for issue */
   getIssueOpenOrCloseColor() {
-    if (this.issue.isDraft) {
-      return 'grey';
-    }
     if (this.issue.state === 'OPEN') {
-      return 'green';
+      if (this.issue.isDraft) {
+        return 'grey';
+      } else {
+        return 'green';
+      }
     } else if (this.issue.issueOrPr === 'PullRequest' && this.issue.state === 'CLOSED') {
       return 'red';
     } else if (this.issue.issueOrPr === 'Issue' && this.issue.stateReason === 'NOT_PLANNED') {
