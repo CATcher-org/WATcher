@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { Profile } from '../../core/models/profile.model';
 import { Repo } from '../../core/models/repo.model';
 import { AuthService } from '../../core/services/auth.service';
-import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
@@ -30,7 +29,6 @@ export class SessionSelectionComponent implements OnInit {
     private logger: LoggingService,
     private authService: AuthService,
     private repoUrlCacheService: RepoUrlCacheService,
-    private errorHandlingService: ErrorHandlingService,
     private repoSessionStorageService: RepoSessionStorageService
   ) {}
 

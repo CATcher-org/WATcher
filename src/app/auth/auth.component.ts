@@ -7,11 +7,10 @@ import { GithubUser } from '../core/models/github-user.model';
 import { ApplicationService } from '../core/services/application.service';
 import { AuthService, AuthState } from '../core/services/auth.service';
 import { ErrorHandlingService } from '../core/services/error-handling.service';
+import { ErrorMessageService } from '../core/services/error-message.service';
 import { LoggingService } from '../core/services/logging.service';
 import { PhaseService } from '../core/services/phase.service';
 import { UserService } from '../core/services/user.service';
-
-const APPLICATION_VERSION_OUTDATED_ERROR = 'Please update to the latest version of WATcher.';
 
 @Component({
   selector: 'app-auth',
@@ -108,7 +107,7 @@ export class AuthComponent implements OnInit, OnDestroy {
     return this.appService.isApplicationOutdated().pipe(
       map((isOutdated: boolean) => {
         if (isOutdated) {
-          throw new Error(APPLICATION_VERSION_OUTDATED_ERROR);
+          throw new Error(ErrorMessageService.applicationVersionOutdatedMessage());
         }
       })
     );
