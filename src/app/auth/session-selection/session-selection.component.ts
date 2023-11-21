@@ -68,12 +68,12 @@ export class SessionSelectionComponent implements OnInit {
      * if undefined before storing it. Let's reset the items before setting them.
      */
 
-    window.localStorage.removeItem('org');
-    window.localStorage.removeItem('dataRepo');
+    window.localStorage.removeItem('WATcher:org');
+    window.localStorage.removeItem('WATcher:dataRepo');
 
     if (newRepo) {
-      window.localStorage.setItem('org', newRepo.owner);
-      window.localStorage.setItem('dataRepo', newRepo.name);
+      window.localStorage.setItem('WATcher:org', newRepo.owner);
+      window.localStorage.setItem('WATcher:dataRepo', newRepo.name);
 
       this.repoUrlCacheService.cache(newRepo.toString());
     }

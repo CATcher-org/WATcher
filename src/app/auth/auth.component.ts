@@ -145,7 +145,7 @@ export class AuthComponent implements OnInit, OnDestroy {
   get currentSessionOrg(): string {
     if (!this.sessionInformation) {
       // Retrieve org details of session information from local storage
-      return window.localStorage.getItem('org');
+      return window.localStorage.getItem('WATcher:org');
     }
     return this.getOrgDetails(this.sessionInformation);
   }
