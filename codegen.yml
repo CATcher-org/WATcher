@@ -2,6 +2,7 @@ overwrite: true
 schema:
   - 'graphql/schema/github-schema.ts'
   - 'graphql/schema/schema-extension.graphql'
+
 documents:
   - graphql/fragments/*.graphql
   - graphql/queries/*.graphql

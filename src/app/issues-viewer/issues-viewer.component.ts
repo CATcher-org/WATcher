@@ -2,6 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, View
 import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
 import { Repo } from '../core/models/repo.model';
+import { ErrorMessageService } from '../core/services/error-message.service';
 import { GithubService } from '../core/services/github.service';
 import { IssueService } from '../core/services/issue.service';
 import { LabelService } from '../core/services/label.service';
@@ -64,7 +65,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   private initialize() {
     this.checkIfValidRepository().subscribe((isValidRepository) => {
       if (!isValidRepository) {
-        throw new Error('Invalid repository name. Please provide repository name in the format Org/Repository.');
+        throw new Error(ErrorMessageService.repositoryNotPresentMessage());
       }
     });
 

@@ -1,4 +1,5 @@
 import { browser, by, element, ExpectedConditions } from 'protractor';
+import { ErrorMessageService } from './../../src/app/core/services/error-message.service';
 
 export class NewIssuePage {
   async enterNewIssueTitle(title: string) {
@@ -37,9 +38,9 @@ export class NewIssuePage {
    */
   async selectDropDownOption({ optionNumber, dropdownText }: { optionNumber?: number; dropdownText?: string }) {
     if (optionNumber != null && dropdownText != null) {
-      throw new Error('Supply either Dropdown option number or text, not both.');
+      throw new Error(ErrorMessageService.multipleDropdownOptionsErrorMessage());
     } else if (optionNumber == null && dropdownText == null) {
-      throw new Error('No Dropdown identification parameters supplied.');
+      throw new Error(ErrorMessageService.noDropdownOptionsErrorMessage());
     }
 
     await browser.wait(ExpectedConditions.presenceOf(element(by.className('mat-option'))));

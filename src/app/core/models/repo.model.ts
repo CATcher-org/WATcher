@@ -1,3 +1,5 @@
+import { ErrorMessageService } from '../services/error-message.service';
+
 /**
  * Represents a repository.
  * Repository url is owner/name.
@@ -17,9 +19,7 @@ export class Repo {
     const repoUrl = this.getRepoUrl(repoUrlInput);
     const repoUrlSplit = repoUrl.split('/');
     if (repoUrlSplit.length !== 2) {
-      throw new Error(
-        'Invalid repository name. Please provide Github repository URL or the repository name in the format Org/Repository Name.'
-      );
+      throw new Error(ErrorMessageService.repositoryNotPresentMessage());
     }
     return new Repo(repoUrlSplit[0], repoUrlSplit[1]);
   }
