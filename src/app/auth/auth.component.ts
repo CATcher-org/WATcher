@@ -11,6 +11,7 @@ import { ErrorMessageService } from '../core/services/error-message.service';
 import { LoggingService } from '../core/services/logging.service';
 import { PhaseService } from '../core/services/phase.service';
 import { UserService } from '../core/services/user.service';
+import { STORAGE_KEYS } from '../core/constants/storage-keys.constants';
 
 @Component({
   selector: 'app-auth',
@@ -144,7 +145,7 @@ export class AuthComponent implements OnInit, OnDestroy {
   get currentSessionOrg(): string {
     if (!this.sessionInformation) {
       // Retrieve org details of session information from local storage
-      return window.localStorage.getItem('WATcher:org');
+      return window.localStorage.getItem(STORAGE_KEYS.ORG);
     }
     return this.getOrgDetails(this.sessionInformation);
   }

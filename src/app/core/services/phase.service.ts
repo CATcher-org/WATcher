@@ -7,6 +7,7 @@ import { ErrorMessageService } from './error-message.service';
 import { GithubService } from './github.service';
 import { LoggingService } from './logging.service';
 import { RepoUrlCacheService } from './repo-url-cache.service';
+import { STORAGE_KEYS } from '../constants/storage-keys.constants';
 
 export const SESSION_AVALIABILITY_FIX_FAILED = 'Session Availability Fix failed.';
 
@@ -125,9 +126,9 @@ export class PhaseService {
    * Retrieves the repository url from local storage and sets to current repository.
    */
   async initializeCurrentRepository() {
-    const org = window.localStorage.getItem('WATcher:org');
-    const repoName = window.localStorage.getItem('WATcher:dataRepo');
-    this.logger.info(`Phase Service: received initial org (${org}) and initial name (${repoName})`);
+    const org = window.localStorage.getItem(STORAGE_KEYS.ORG);
+    const repoName = window.localStorage.getItem(STORAGE_KEYS.DATA_REPO);
+    this.logger.info(`PhaseService: received initial org (${org}) and initial name (${repoName})`);
     let repo: Repo;
     if (!org || !repoName) {
       repo = Repo.ofEmptyRepo();

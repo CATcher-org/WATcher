@@ -7,6 +7,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
+import { STORAGE_KEYS } from '../../core/constants/storage-keys.constants';
 
 @Component({
   selector: 'app-session-selection',
@@ -66,12 +67,12 @@ export class SessionSelectionComponent implements OnInit {
      * if undefined before storing it. Let's reset the items before setting them.
      */
 
-    window.localStorage.removeItem('WATcher:org');
-    window.localStorage.removeItem('WATcher:dataRepo');
+    window.localStorage.removeItem(STORAGE_KEYS.ORG);
+    window.localStorage.removeItem(STORAGE_KEYS.DATA_REPO);
 
     if (newRepo) {
-      window.localStorage.setItem('WATcher:org', newRepo.owner);
-      window.localStorage.setItem('WATcher:dataRepo', newRepo.name);
+      window.localStorage.setItem(STORAGE_KEYS.ORG, newRepo.owner);
+      window.localStorage.setItem(STORAGE_KEYS.DATA_REPO, newRepo.name);
 
       this.repoUrlCacheService.cache(newRepo.toString());
     }
