@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { filter, flatMap, map } from 'rxjs/operators';
 import { AppConfig } from '../../environments/environment';
+import { STORAGE_KEYS } from '../core/constants/storage-keys.constants';
 import { GithubUser } from '../core/models/github-user.model';
 import { ApplicationService } from '../core/services/application.service';
 import { AuthService, AuthState } from '../core/services/auth.service';
@@ -11,7 +12,6 @@ import { ErrorMessageService } from '../core/services/error-message.service';
 import { LoggingService } from '../core/services/logging.service';
 import { PhaseService } from '../core/services/phase.service';
 import { UserService } from '../core/services/user.service';
-import { STORAGE_KEYS } from '../core/constants/storage-keys.constants';
 
 @Component({
   selector: 'app-auth',

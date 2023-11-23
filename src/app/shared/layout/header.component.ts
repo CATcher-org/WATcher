@@ -4,6 +4,7 @@ import { Router, RoutesRecognized } from '@angular/router';
 import { Observable } from 'rxjs';
 import { filter, pairwise, switchMap } from 'rxjs/operators';
 import { AppConfig } from '../../../environments/environment';
+import { STORAGE_KEYS } from '../../core/constants/storage-keys.constants';
 import { Phase } from '../../core/models/phase.model';
 import { Repo } from '../../core/models/repo.model';
 import { AuthService } from '../../core/services/auth.service';
@@ -18,7 +19,6 @@ import { PhaseDescription, PhaseService } from '../../core/services/phase.servic
 import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 import { UserService } from '../../core/services/user.service';
-import { STORAGE_KEYS } from '../../core/constants/storage-keys.constants';
 
 const ISSUE_TRACKER_URL = 'https://github.com/CATcher-org/WATcher/issues';
 

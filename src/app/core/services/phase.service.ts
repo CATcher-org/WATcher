@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { STORAGE_KEYS } from '../constants/storage-keys.constants';
 import { Phase } from '../models/phase.model';
 import { Repo } from '../models/repo.model';
 import { SessionData } from '../models/session.model';
@@ -7,7 +8,6 @@ import { ErrorMessageService } from './error-message.service';
 import { GithubService } from './github.service';
 import { LoggingService } from './logging.service';
 import { RepoUrlCacheService } from './repo-url-cache.service';
-import { STORAGE_KEYS } from '../constants/storage-keys.constants';
 
 export const SESSION_AVALIABILITY_FIX_FAILED = 'Session Availability Fix failed.';
 

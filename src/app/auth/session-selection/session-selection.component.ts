@@ -1,13 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { STORAGE_KEYS } from '../../core/constants/storage-keys.constants';
 import { Profile } from '../../core/models/profile.model';
 import { Repo } from '../../core/models/repo.model';
 import { AuthService } from '../../core/services/auth.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
-import { STORAGE_KEYS } from '../../core/constants/storage-keys.constants';
 
 @Component({
   selector: 'app-session-selection',
