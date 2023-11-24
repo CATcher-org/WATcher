@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { STORAGE_KEYS } from '../../core/constants/storage-keys.constants';
 import { Profile } from '../../core/models/profile.model';
 import { Repo } from '../../core/models/repo.model';
 import { AuthService } from '../../core/services/auth.service';
@@ -66,12 +67,12 @@ export class SessionSelectionComponent implements OnInit {
      * if undefined before storing it. Let's reset the items before setting them.
      */
 
-    window.localStorage.removeItem('org');
-    window.localStorage.removeItem('dataRepo');
+    window.localStorage.removeItem(STORAGE_KEYS.ORG);
+    window.localStorage.removeItem(STORAGE_KEYS.DATA_REPO);
 
     if (newRepo) {
-      window.localStorage.setItem('org', newRepo.owner);
-      window.localStorage.setItem('dataRepo', newRepo.name);
+      window.localStorage.setItem(STORAGE_KEYS.ORG, newRepo.owner);
+      window.localStorage.setItem(STORAGE_KEYS.DATA_REPO, newRepo.name);
 
       this.repoUrlCacheService.cache(newRepo.toString());
     }
@@ -81,7 +82,7 @@ export class SessionSelectionComponent implements OnInit {
     this.authService.setRepo().subscribe((res) => {
       this.isSettingUpSession = false;
     });
- }
+  }
 
   private initProfileForm() {
     this.profileForm = this.formBuilder.group({

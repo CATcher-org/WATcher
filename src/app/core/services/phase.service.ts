@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { STORAGE_KEYS } from '../constants/storage-keys.constants';
 import { Phase } from '../models/phase.model';
 import { Repo } from '../models/repo.model';
 import { SessionData } from '../models/session.model';
@@ -125,8 +126,8 @@ export class PhaseService {
    * Retrieves the repository url from local storage and sets to current repository.
    */
   async initializeCurrentRepository() {
-    const org = window.localStorage.getItem('org');
-    const repoName = window.localStorage.getItem('dataRepo');
+    const org = window.localStorage.getItem(STORAGE_KEYS.ORG);
+    const repoName = window.localStorage.getItem(STORAGE_KEYS.DATA_REPO);
     this.logger.info(`PhaseService: received initial org (${org}) and initial name (${repoName})`);
     let repo: Repo;
     if (!org || !repoName) {

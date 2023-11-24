@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { filter, flatMap, map } from 'rxjs/operators';
 import { AppConfig } from '../../environments/environment';
+import { STORAGE_KEYS } from '../core/constants/storage-keys.constants';
 import { GithubUser } from '../core/models/github-user.model';
 import { ApplicationService } from '../core/services/application.service';
 import { AuthService, AuthState } from '../core/services/auth.service';
@@ -144,7 +145,7 @@ export class AuthComponent implements OnInit, OnDestroy {
   get currentSessionOrg(): string {
     if (!this.sessionInformation) {
       // Retrieve org details of session information from local storage
-      return window.localStorage.getItem('org');
+      return window.localStorage.getItem(STORAGE_KEYS.ORG);
     }
     return this.getOrgDetails(this.sessionInformation);
   }

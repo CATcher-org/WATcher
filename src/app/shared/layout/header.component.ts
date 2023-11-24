@@ -4,6 +4,7 @@ import { Router, RoutesRecognized } from '@angular/router';
 import { Observable } from 'rxjs';
 import { filter, pairwise, switchMap } from 'rxjs/operators';
 import { AppConfig } from '../../../environments/environment';
+import { STORAGE_KEYS } from '../../core/constants/storage-keys.constants';
 import { Phase } from '../../core/models/phase.model';
 import { Repo } from '../../core/models/repo.model';
 import { AuthService } from '../../core/services/auth.service';
@@ -260,12 +261,12 @@ export class HeaderComponent implements OnInit {
          * the subsequent value being stored as a string being 'undefined', check
          * if undefined before storing it. Let's reset the items before setting them.
          */
-        window.localStorage.removeItem('org');
-        window.localStorage.removeItem('dataRepo');
+        window.localStorage.removeItem(STORAGE_KEYS.ORG);
+        window.localStorage.removeItem(STORAGE_KEYS.DATA_REPO);
 
         if (newRepo) {
-          window.localStorage.setItem('org', newRepo.owner);
-          window.localStorage.setItem('dataRepo', newRepo.name);
+          window.localStorage.setItem(STORAGE_KEYS.ORG, newRepo.owner);
+          window.localStorage.setItem(STORAGE_KEYS.DATA_REPO, newRepo.name);
 
           this.repoUrlCacheService.cache(newRepo.toString());
         }
