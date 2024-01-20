@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { GithubUser } from '../core/models/github-user.model';
 import { Repo } from '../core/models/repo.model';
@@ -57,6 +57,10 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.repoChangeSubscription.unsubscribe();
     this.viewChange.unsubscribe();
+  }
+
+  private onUpdateHasIssues(hasIssues: boolean, card: CardViewComponent) {
+    card.element.nativeElement.hidden = !hasIssues;
   }
 
   /**
