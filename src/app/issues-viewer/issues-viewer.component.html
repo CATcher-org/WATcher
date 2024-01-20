@@ -17,7 +17,6 @@
         (updateHasIssues)="onUpdateHasIssues($event, card)"
       ></app-card-view>
       <app-card-view
-        *ngIf="filterbar.dropdownFilter.type !== 'pullrequest'"
         class="issue-table"
         #card
         [headers]="this.displayedColumns"
