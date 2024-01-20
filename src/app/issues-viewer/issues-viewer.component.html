@@ -16,7 +16,12 @@
         [sort]="filterbar.matSort"
         (updateHasIssues)="onUpdateHasIssues($event, card)"
       ></app-card-view>
-      <app-card-view class="issue-table" [headers]="this.displayedColumns" [sort]="filterbar.matSort"></app-card-view>
+      <app-card-view
+        *ngIf="filterbar.dropdownFilter.type !== 'pullrequest'"
+        class="issue-table"
+        [headers]="this.displayedColumns"
+        [sort]="filterbar.matSort"
+      ></app-card-view>
     </div>
   </ng-template>
 </div>
