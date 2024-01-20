@@ -30,8 +30,8 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   issues: IssuesDataTable;
   issues$: Observable<Issue[]>;
 
-  isLoading: boolean = true;
-  issueLength: number = 0;
+  isLoading = true;
+  issueLength = 0;
 
   constructor(public element: ElementRef, public issueService: IssueService) {}
 
