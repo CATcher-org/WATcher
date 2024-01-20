@@ -8,6 +8,7 @@ import { PhaseService } from '../../core/services/phase.service';
 import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../issue-tables/dropdownfilter';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
+import { getInitialDropdownFilter, storeDropdownFilter } from '../local-storage/filterStore';
 
 /**
  * This component is abstracted out filterbar used by both detailed-viewer page
@@ -24,7 +25,7 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   repoChangeSubscription: Subscription;
 
   /** Selected dropdown filter value */
-  dropdownFilter: DropdownFilter = DEFAULT_DROPDOWN_FILTER;
+  dropdownFilter: DropdownFilter = getInitialDropdownFilter();
 
   /** Selected label filters, instance passed into LabelChipBar to populate */
   labelFilter$ = new BehaviorSubject<string[]>([]);
@@ -102,6 +103,7 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
    * Signals to IssuesDataTable that a change has occurred in dropdown filter.
    */
   applyDropdownFilter() {
+    storeDropdownFilter(this.dropdownFilter);
     this.views$?.value?.forEach((v) => (v.retrieveFilterable().dropdownFilter = this.dropdownFilter));
   }
 
