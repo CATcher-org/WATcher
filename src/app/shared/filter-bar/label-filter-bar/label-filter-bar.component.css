@@ -23,8 +23,6 @@
   width: 100%;
   overflow-y: auto;
   position: relative;
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
 }
 
 /* Ref: https://css-scroll-shadows.vercel.app */
@@ -77,10 +75,6 @@
   right: 0;
   height: 5px;
   background-image: radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.7), transparent);
-}
-
-.scroll-container::-webkit-scrollbar {
-  display: none; /* Hide scrollbar for Chrome, Safari and Opera */
 }
 
 .flexbox-container {
