@@ -19,8 +19,10 @@
       <app-card-view
         *ngIf="filterbar.dropdownFilter.type !== 'pullrequest'"
         class="issue-table"
+        #card
         [headers]="this.displayedColumns"
         [sort]="filterbar.matSort"
+        (updateHasIssues)="onUpdateHasIssues($event, card)"
       ></app-card-view>
     </div>
   </ng-template>
