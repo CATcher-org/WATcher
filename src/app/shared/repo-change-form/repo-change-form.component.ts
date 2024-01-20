@@ -38,7 +38,6 @@ export class RepoChangeFormComponent implements OnInit {
   }
 
   onNoClick(): void {
-    console.log(this.keepFilters);
     this.dialogRef.close(false);
   }
 }

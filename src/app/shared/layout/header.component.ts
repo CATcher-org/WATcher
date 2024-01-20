@@ -244,10 +244,10 @@ export class HeaderComponent implements OnInit {
     const dialogRef = this.dialogService.openChangeRepoDialog(this.currentRepo);
 
     /**
-     * Event emits with [repoName, keepFilters]
-     * Keepfilters signals whether filters should be kept across repo changes
+     * dialogRef closes with [repoName, keepFilters] if confirmed, else with false
+     * keepFilters signals whether filters should be kept across repo changes
      */
-    dialogRef.afterClosed().subscribe((res: [string, boolean]) => {
+    dialogRef.afterClosed().subscribe((res) => {
       if (!res) {
         return;
       }
