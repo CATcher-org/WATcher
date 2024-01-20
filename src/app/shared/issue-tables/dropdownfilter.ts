@@ -23,6 +23,31 @@ export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
  * This module exports a single function applyDropDownFilter which is called by IssueList.
  * This functions returns a function to check if a issue matches a dropdownfilter
  */
+const STORED_FILTER_PROPERTIES = ['status', 'type', 'sort'];
+
+let currentDropdownFilter: DropdownFilter = { ...DEFAULT_DROPDOWN_FILTER };
+let initialDropdownFilter: DropdownFilter = { ...DEFAULT_DROPDOWN_FILTER };
+
+export function updateCurrentFilter(dropdownFilter: DropdownFilter) {
+  for (const property of STORED_FILTER_PROPERTIES) {
+    currentDropdownFilter[property] = dropdownFilter[property];
+  }
+}
+
+export function storeDropdownFilter() {
+  initialDropdownFilter = { ...currentDropdownFilter };
+  currentDropdownFilter = { ...DEFAULT_DROPDOWN_FILTER };
+}
+
+export function clearDropdownFilter() {
+  initialDropdownFilter = { ...DEFAULT_DROPDOWN_FILTER };
+  currentDropdownFilter = { ...DEFAULT_DROPDOWN_FILTER };
+}
+
+export function getInitialDropdownFilter(): DropdownFilter {
+  return initialDropdownFilter;
+}
+
 export function applyDropdownFilter(dropdownFilter: DropdownFilter): (a: Issue) => boolean {
   return (issue) => {
     let ret = true;

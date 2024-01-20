@@ -31,7 +31,7 @@ export class RepoChangeFormComponent implements OnInit {
   }
 
   onYesClick(): void {
-    this.dialogRef.close(this.repoName);
+    this.dialogRef.close([this.repoName, false]);
   }
 
   onNoClick(): void {

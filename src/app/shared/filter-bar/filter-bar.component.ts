@@ -5,10 +5,9 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
 import { PhaseService } from '../../core/services/phase.service';
-import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../issue-tables/dropdownfilter';
+import { DEFAULT_DROPDOWN_FILTER, DropdownFilter, getInitialDropdownFilter, updateCurrentFilter } from '../issue-tables/dropdownfilter';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
-import { getInitialDropdownFilter, storeDropdownFilter } from '../local-storage/filterStore';
 
 /**
  * This component is abstracted out filterbar used by both detailed-viewer page
@@ -103,7 +102,7 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
    * Signals to IssuesDataTable that a change has occurred in dropdown filter.
    */
   applyDropdownFilter() {
-    storeDropdownFilter(this.dropdownFilter);
+    updateCurrentFilter(this.dropdownFilter);
     this.views$?.value?.forEach((v) => (v.retrieveFilterable().dropdownFilter = this.dropdownFilter));
   }
 
