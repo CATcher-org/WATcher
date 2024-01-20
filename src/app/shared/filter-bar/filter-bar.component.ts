@@ -5,7 +5,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
 import { PhaseService } from '../../core/services/phase.service';
-import { DEFAULT_DROPDOWN_FILTER, DropdownFilter, getInitialDropdownFilter, updateCurrentFilter } from '../issue-tables/dropdownfilter';
+import { DropdownFilter, getInitialDropdownFilter, updateCurrentFilter } from '../issue-tables/dropdownfilter';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
 

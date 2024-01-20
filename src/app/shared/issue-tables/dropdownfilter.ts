@@ -18,15 +18,20 @@ export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
 };
 
 /**
- * This module serves to improve separation of concerns in IssuesDataTable.ts and IssueList.ts module by containing the logic for
- * applying dropdownFilter to the issues data table in this module.
- * This module exports a single function applyDropDownFilter which is called by IssueList.
- * This functions returns a function to check if a issue matches a dropdownfilter
+ * These filter properties are the ones of dropdownFilter that are stored when keep filters is selected
+ * when changing repos
  */
 const STORED_FILTER_PROPERTIES = ['status', 'type', 'sort'];
 
+/** This copy of the filter is constantly updated when a change in filter is detected */
 let currentDropdownFilter: DropdownFilter = { ...DEFAULT_DROPDOWN_FILTER };
+
+/** This is the initial dropdown filter applied when first viewing a new repo */
 let initialDropdownFilter: DropdownFilter = { ...DEFAULT_DROPDOWN_FILTER };
+
+/**
+ * The following logic is meant to facilitate storing and retrieving past filter selections when changing repos
+ */
 
 export function updateCurrentFilter(dropdownFilter: DropdownFilter) {
   for (const property of STORED_FILTER_PROPERTIES) {
@@ -39,7 +44,7 @@ export function storeDropdownFilter() {
   currentDropdownFilter = { ...DEFAULT_DROPDOWN_FILTER };
 }
 
-export function clearDropdownFilter() {
+export function clearDropdownFilters() {
   initialDropdownFilter = { ...DEFAULT_DROPDOWN_FILTER };
   currentDropdownFilter = { ...DEFAULT_DROPDOWN_FILTER };
 }
@@ -48,6 +53,12 @@ export function getInitialDropdownFilter(): DropdownFilter {
   return initialDropdownFilter;
 }
 
+/**
+ * This function serves to improve separation of concerns in IssuesDataTable.ts and IssueList.ts module by containing the logic for
+ * applying dropdownFilter to the issues data table in this module.
+ * This module exports a single function applyDropDownFilter which is called by IssueList.
+ * This functions returns a function to check if a issue matches a dropdownfilter
+ */
 export function applyDropdownFilter(dropdownFilter: DropdownFilter): (a: Issue) => boolean {
   return (issue) => {
     let ret = true;

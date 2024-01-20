@@ -19,7 +19,7 @@ import { PhaseDescription, PhaseService } from '../../core/services/phase.servic
 import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 import { UserService } from '../../core/services/user.service';
-import { clearDropdownFilter, storeDropdownFilter } from '../issue-tables/dropdownfilter';
+import { clearDropdownFilters, storeDropdownFilter } from '../issue-tables/dropdownfilter';
 
 const ISSUE_TRACKER_URL = 'https://github.com/CATcher-org/WATcher/issues';
 
@@ -243,16 +243,21 @@ export class HeaderComponent implements OnInit {
   openChangeRepoDialog() {
     const dialogRef = this.dialogService.openChangeRepoDialog(this.currentRepo);
 
-    dialogRef.afterClosed().subscribe((res) => {
+    /**
+     * Event emits with [repoName, keepFilters]
+     * Keepfilters signals whether filters should be kept across repo changes
+     */
+    dialogRef.afterClosed().subscribe((res: [string, boolean]) => {
       if (!res) {
         return;
       }
       const newRepo = Repo.of(res[0]);
+      const keepFilters = res[1];
 
-      if (res[1]) {
+      if (keepFilters) {
         storeDropdownFilter();
       } else {
-        clearDropdownFilter();
+        clearDropdownFilters();
       }
 
       if (this.phaseService.isRepoSet()) {
