@@ -28,7 +28,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   issues: IssuesDataTable;
   issues$: Observable<Issue[]>;
 
-  /** Caches for previous state of issues as they load, used in logic for updateHasIssues event */
+  /** Caches for previous state of issues as they load, used in logic for updateHiddenStatus */
   isLoading = true;
   issueLength = 0;
 
