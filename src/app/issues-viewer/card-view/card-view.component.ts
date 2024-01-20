@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -23,27 +23,28 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   @Input() filters?: any = undefined;
   @Input() sort?: MatSort = undefined;
 
-  @Output() updateHasIssues: EventEmitter<boolean> = new EventEmitter();
-
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   issues: IssuesDataTable;
   issues$: Observable<Issue[]>;
 
+  /** Caches for previous state of issues as they load, used in logic for updateHasIssues event */
   isLoading = true;
   issueLength = 0;
 
   constructor(public element: ElementRef, public issueService: IssueService) {}
 
-  emitHasIssuesEvent() {
-    this.updateHasIssues.emit(this.isLoading || this.issueLength > 0);
+  updateHiddenStatus() {
+    this.element.nativeElement.hidden = !this.isLoading && this.issueLength === 0;
   }
 
   ngOnInit() {
     this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.assignee, this.filters);
+
+    // Emit event when loading state changes
     this.issues.isLoading$.subscribe((isLoadingUpdate) => {
       this.isLoading = isLoadingUpdate;
-      this.emitHasIssuesEvent();
+      this.updateHiddenStatus();
     });
   }
 
@@ -51,9 +52,11 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
     setTimeout(() => {
       this.issues.loadIssues();
       this.issues$ = this.issues.connect();
+
+      // Emit event when issues change
       this.issues$.subscribe((issues) => {
         this.issueLength = issues.length;
-        this.emitHasIssuesEvent();
+        this.updateHiddenStatus();
       });
     });
   }

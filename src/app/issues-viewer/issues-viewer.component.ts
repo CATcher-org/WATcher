@@ -59,10 +59,6 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.viewChange.unsubscribe();
   }
 
-  private onUpdateHasIssues(hasIssues: boolean, card: CardViewComponent) {
-    card.element.nativeElement.hidden = !hasIssues;
-  }
-
   /**
    * Fetch and initialize all information from repository to populate Issue Dashboard.
    */
