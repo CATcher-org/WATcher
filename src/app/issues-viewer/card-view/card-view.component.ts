@@ -5,9 +5,9 @@ import { Observable } from 'rxjs';
 import { GithubUser } from '../../core/models/github-user.model';
 import { Issue } from '../../core/models/issue.model';
 import { IssueService } from '../../core/services/issue.service';
+import { getInitialDropdownFilter } from '../../shared/issue-tables/dropdownfilter';
 import { FilterableComponent, FilterableSource } from '../../shared/issue-tables/filterableTypes';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
-import { getInitialDropdownFilter } from '../../shared/issue-tables/dropdownfilter';
 
 @Component({
   selector: 'app-card-view',
