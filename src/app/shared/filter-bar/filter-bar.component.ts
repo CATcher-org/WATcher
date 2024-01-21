@@ -103,7 +103,9 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   applyDropdownFilter() {
     updateCurrentFilter(this.dropdownFilter);
-    this.views$?.value?.forEach((v) => (v.retrieveFilterable().dropdownFilter = this.dropdownFilter));
+    this.views$?.value?.forEach((v) => {
+      v.retrieveFilterable().dropdownFilter = this.dropdownFilter;
+    });
   }
 
   /**

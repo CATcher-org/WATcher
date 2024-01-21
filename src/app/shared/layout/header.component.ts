@@ -19,7 +19,7 @@ import { PhaseDescription, PhaseService } from '../../core/services/phase.servic
 import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 import { UserService } from '../../core/services/user.service';
-import { clearDropdownFilters, storeDropdownFilter } from '../issue-tables/dropdownfilter';
+import { clearDropdownFilter } from '../issue-tables/dropdownfilter';
 
 const ISSUE_TRACKER_URL = 'https://github.com/CATcher-org/WATcher/issues';
 
@@ -254,10 +254,8 @@ export class HeaderComponent implements OnInit {
       const newRepo = Repo.of(res[0]);
       const keepFilters = res[1];
 
-      if (keepFilters) {
-        storeDropdownFilter();
-      } else {
-        clearDropdownFilters();
+      if (!keepFilters) {
+        clearDropdownFilter();
       }
 
       if (this.phaseService.isRepoSet()) {

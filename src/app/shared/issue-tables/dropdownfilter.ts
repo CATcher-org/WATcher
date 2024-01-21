@@ -26,9 +26,6 @@ const STORED_FILTER_PROPERTIES = ['status', 'type', 'sort'];
 /** This copy of the filter is constantly updated when a change in filter is detected */
 let currentDropdownFilter: DropdownFilter = { ...DEFAULT_DROPDOWN_FILTER };
 
-/** This is the initial dropdown filter applied when first viewing a new repo */
-let initialDropdownFilter: DropdownFilter = { ...DEFAULT_DROPDOWN_FILTER };
-
 /**
  * The following logic is meant to facilitate storing and retrieving past filter selections when changing repos
  */
@@ -39,18 +36,12 @@ export function updateCurrentFilter(dropdownFilter: DropdownFilter) {
   }
 }
 
-export function storeDropdownFilter() {
-  initialDropdownFilter = { ...currentDropdownFilter };
-  currentDropdownFilter = { ...DEFAULT_DROPDOWN_FILTER };
-}
-
-export function clearDropdownFilters() {
-  initialDropdownFilter = { ...DEFAULT_DROPDOWN_FILTER };
+export function clearDropdownFilter() {
   currentDropdownFilter = { ...DEFAULT_DROPDOWN_FILTER };
 }
 
 export function getInitialDropdownFilter(): DropdownFilter {
-  return initialDropdownFilter;
+  return currentDropdownFilter;
 }
 
 /**

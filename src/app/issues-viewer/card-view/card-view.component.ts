@@ -7,6 +7,7 @@ import { Issue } from '../../core/models/issue.model';
 import { IssueService } from '../../core/services/issue.service';
 import { FilterableComponent, FilterableSource } from '../../shared/issue-tables/filterableTypes';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
+import { getInitialDropdownFilter } from '../../shared/issue-tables/dropdownfilter';
 
 @Component({
   selector: 'app-card-view',
@@ -32,6 +33,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
 
   ngOnInit() {
     this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.assignee, this.filters);
+    this.issues.dropdownFilter = getInitialDropdownFilter();
   }
 
   ngAfterViewInit(): void {
