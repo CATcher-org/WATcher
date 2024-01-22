@@ -23,7 +23,7 @@
           <mat-list-option
             #option
             *ngFor="let label of this.labels$ | async"
-            [value]="label.name"
+            [value]="label.formattedName"
             [selected]="selectedLabelNames.includes(label.name)"
             class="list-option"
             [class.hidden]="filter(input.value, label.name)"
