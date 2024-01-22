@@ -28,25 +28,13 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   issues: IssuesDataTable;
   issues$: Observable<Issue[]>;
 
-  /** Caches for previous state of issues as they load, used in logic for updateHasIsues */
   isLoading = true;
   issueLength = 0;
-  hasIssues = true;
 
   constructor(public element: ElementRef, public issueService: IssueService) {}
 
-  updateHasIssues() {
-    this.hasIssues = this.isLoading || this.issueLength > 0;
-  }
-
   ngOnInit() {
     this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.assignee, this.filters);
-
-    // Emit event when loading state changes
-    this.issues.isLoading$.subscribe((isLoadingUpdate) => {
-      this.isLoading = isLoadingUpdate;
-      this.updateHasIssues();
-    });
   }
 
   ngAfterViewInit(): void {
@@ -57,7 +45,11 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
       // Emit event when issues change
       this.issues$.subscribe((issues) => {
         this.issueLength = issues.length;
-        this.updateHasIssues();
+      });
+
+      // Emit event when loading state changes
+      this.issues.isLoading$.subscribe((isLoadingUpdate) => {
+        this.isLoading = isLoadingUpdate;
       });
     });
   }
