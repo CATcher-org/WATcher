@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -28,14 +28,15 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   issues: IssuesDataTable;
   issues$: Observable<Issue[]>;
 
-  /** Caches for previous state of issues as they load, used in logic for updateHiddenStatus */
+  /** Caches for previous state of issues as they load, used in logic for updateHasIsues */
   isLoading = true;
   issueLength = 0;
+  hasIssues = true;
 
   constructor(public element: ElementRef, public issueService: IssueService) {}
 
-  updateHiddenStatus() {
-    this.element.nativeElement.hidden = !this.isLoading && this.issueLength === 0;
+  updateHasIssues() {
+    this.hasIssues = this.isLoading || this.issueLength > 0;
   }
 
   ngOnInit() {
@@ -44,7 +45,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
     // Emit event when loading state changes
     this.issues.isLoading$.subscribe((isLoadingUpdate) => {
       this.isLoading = isLoadingUpdate;
-      this.updateHiddenStatus();
+      this.updateHasIssues();
     });
   }
 
@@ -56,7 +57,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
       // Emit event when issues change
       this.issues$.subscribe((issues) => {
         this.issueLength = issues.length;
-        this.updateHiddenStatus();
+        this.updateHasIssues();
       });
     });
   }
