@@ -7,7 +7,7 @@ import { MilestoneService } from '../../core/services/milestone.service';
 import { PhaseService } from '../../core/services/phase.service';
 import { DropdownFilter } from '../issue-tables/dropdownfilter';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
-import { FiltersStore } from '../issue-tables/filtersStore';
+import { FiltersStore } from '../issue-tables/FiltersStore';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
 
 /**
@@ -26,6 +26,9 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** Selected dropdown filter value */
   dropdownFilter: DropdownFilter = FiltersStore.getInitialDropdownFilter();
+
+  /** The initial search filter value, not updated when search filter is changed */
+  initialSearchFilter: string = FiltersStore.getInitialSearchFilter();
 
   /** Selected label filters, instance passed into LabelChipBar to populate */
   labelFilter$ = new BehaviorSubject<string[]>([]);
@@ -71,7 +74,7 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.sortChangeSubscription = this.matSort.sortChange.subscribe((sort: Sort) => {
       // No need to apply sort property as dropdownFilter.sort is already 2 way bound to the mat-select value
       this.dropdownFilter.sortDirection = sort.direction;
-      FiltersStore.updateCurrentFilter(this.dropdownFilter);
+      FiltersStore.updateDropdownFilter(this.dropdownFilter);
     });
   }
 
@@ -88,6 +91,7 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param filterValue
    */
   applyFilter(filterValue: string) {
+    FiltersStore.updateSearchFilter(filterValue);
     this.views$?.value?.forEach((v) => (v.retrieveFilterable().filter = filterValue));
   }
 
@@ -113,7 +117,7 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
    * Signals to IssuesDataTable that a change has occurred in dropdown filter.
    */
   applyDropdownFilter() {
-    FiltersStore.updateCurrentFilter(this.dropdownFilter);
+    FiltersStore.updateDropdownFilter(this.dropdownFilter);
     this.views$?.value?.forEach((v) => {
       v.retrieveFilterable().dropdownFilter = this.dropdownFilter;
     });

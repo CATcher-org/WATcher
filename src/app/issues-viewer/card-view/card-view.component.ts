@@ -6,7 +6,7 @@ import { GithubUser } from '../../core/models/github-user.model';
 import { Issue } from '../../core/models/issue.model';
 import { IssueService } from '../../core/services/issue.service';
 import { FilterableComponent, FilterableSource } from '../../shared/issue-tables/filterableTypes';
-import { FiltersStore } from '../../shared/issue-tables/filtersStore';
+import { FiltersStore } from '../../shared/issue-tables/FiltersStore';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
 
 @Component({
@@ -34,6 +34,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   ngOnInit() {
     this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.assignee, this.filters);
     this.issues.dropdownFilter = FiltersStore.getInitialDropdownFilter();
+    this.issues.filter = FiltersStore.getInitialSearchFilter();
   }
 
   ngAfterViewInit(): void {

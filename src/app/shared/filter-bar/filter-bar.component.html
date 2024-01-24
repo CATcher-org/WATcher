@@ -1,7 +1,7 @@
 <mat-grid-list cols="7" rowHeight="80px">
   <mat-grid-tile colspan="3">
     <mat-form-field class="search-bar">
-      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search" />
+      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search" value="{{ this.initialSearchFilter }}" />
     </mat-form-field>
   </mat-grid-tile>
 
