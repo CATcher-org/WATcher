@@ -7,8 +7,8 @@ import { MilestoneService } from '../../core/services/milestone.service';
 import { PhaseService } from '../../core/services/phase.service';
 import { DropdownFilter } from '../issue-tables/dropdownfilter';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
-import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
 import { FiltersStore } from '../issue-tables/filtersStore';
+import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
 
 /**
  * This component is abstracted out filterbar used by both detailed-viewer page

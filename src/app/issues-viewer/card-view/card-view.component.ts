@@ -6,8 +6,8 @@ import { GithubUser } from '../../core/models/github-user.model';
 import { Issue } from '../../core/models/issue.model';
 import { IssueService } from '../../core/services/issue.service';
 import { FilterableComponent, FilterableSource } from '../../shared/issue-tables/filterableTypes';
-import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
 import { FiltersStore } from '../../shared/issue-tables/filtersStore';
+import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
 
 @Component({
   selector: 'app-card-view',
