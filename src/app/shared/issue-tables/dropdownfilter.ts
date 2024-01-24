@@ -1,9 +1,11 @@
+import { SortDirection } from '@angular/material/sort';
 import { Issue } from '../../core/models/issue.model';
 
 export type DropdownFilter = {
   status: string;
   type: string;
   sort: string;
+  sortDirection: SortDirection;
   labels: string[];
   milestones: string[];
   hiddenLabels?: Set<string>;
@@ -13,36 +15,10 @@ export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
   status: 'all',
   type: 'all',
   sort: 'id',
+  sortDirection: 'desc',
   labels: [],
   milestones: []
 };
-
-/**
- * These filter properties are the ones of dropdownFilter that are stored when keep filters is selected
- * when changing repos
- */
-const STORED_FILTER_PROPERTIES = ['status', 'type', 'sort'];
-
-/** This copy of the filter is constantly updated when a change in filter is detected */
-let currentDropdownFilter: DropdownFilter = { ...DEFAULT_DROPDOWN_FILTER };
-
-/**
- * The following logic is meant to facilitate storing and retrieving past filter selections when changing repos
- */
-
-export function updateCurrentFilter(dropdownFilter: DropdownFilter) {
-  for (const property of STORED_FILTER_PROPERTIES) {
-    currentDropdownFilter[property] = dropdownFilter[property];
-  }
-}
-
-export function clearDropdownFilter() {
-  currentDropdownFilter = { ...DEFAULT_DROPDOWN_FILTER };
-}
-
-export function getInitialDropdownFilter(): DropdownFilter {
-  return currentDropdownFilter;
-}
 
 /**
  * This function serves to improve separation of concerns in IssuesDataTable.ts and IssueList.ts module by containing the logic for

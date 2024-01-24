@@ -8,7 +8,6 @@ export function getSortedData(sort: MatSort, data: Issue[]): Issue[] {
   }
 
   const direction: number = sort.direction === 'asc' ? 1 : -1;
-
   return data.sort((a, b) => {
     switch (sort.active) {
       case 'assignees':

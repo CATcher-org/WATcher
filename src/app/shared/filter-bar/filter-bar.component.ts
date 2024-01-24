@@ -1,13 +1,14 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChild } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
 import { PhaseService } from '../../core/services/phase.service';
-import { DropdownFilter, getInitialDropdownFilter, updateCurrentFilter } from '../issue-tables/dropdownfilter';
+import { DropdownFilter } from '../issue-tables/dropdownfilter';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
+import { FiltersStore } from '../issue-tables/filtersStore';
 
 /**
  * This component is abstracted out filterbar used by both detailed-viewer page
@@ -24,7 +25,7 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   repoChangeSubscription: Subscription;
 
   /** Selected dropdown filter value */
-  dropdownFilter: DropdownFilter = getInitialDropdownFilter();
+  dropdownFilter: DropdownFilter = FiltersStore.getInitialDropdownFilter();
 
   /** Selected label filters, instance passed into LabelChipBar to populate */
   labelFilter$ = new BehaviorSubject<string[]>([]);
@@ -36,6 +37,9 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** Milestone subscription */
   milestoneSubscription: Subscription;
+
+  /** Sort change subscription */
+  sortChangeSubscription: Subscription;
 
   /** One MatSort controls all IssueDataTables */
   @ViewChild(MatSort, { static: true }) matSort: MatSort;
@@ -63,6 +67,12 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
       this.dropdownFilter.hiddenLabels = labels;
       this.applyDropdownFilter();
     });
+
+    this.sortChangeSubscription = this.matSort.sortChange.subscribe((sort: Sort) => {
+      // No need to apply sort property as dropdownFilter.sort is already 2 way bound to the mat-select value
+      this.dropdownFilter.sortDirection = sort.direction;
+      FiltersStore.updateCurrentFilter(this.dropdownFilter);
+    });
   }
 
   ngOnDestroy(): void {
@@ -70,6 +80,7 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.hiddenLabelSubscription?.unsubscribe();
     this.milestoneSubscription.unsubscribe();
     this.repoChangeSubscription.unsubscribe();
+    this.sortChangeSubscription.unsubscribe();
   }
 
   /**
@@ -102,7 +113,7 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
    * Signals to IssuesDataTable that a change has occurred in dropdown filter.
    */
   applyDropdownFilter() {
-    updateCurrentFilter(this.dropdownFilter);
+    FiltersStore.updateCurrentFilter(this.dropdownFilter);
     this.views$?.value?.forEach((v) => {
       v.retrieveFilterable().dropdownFilter = this.dropdownFilter;
     });
@@ -119,7 +130,7 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
    * Fetch and initialize all information from repository to populate Issue Dashboard.
    */
   private initialize() {
-    // Fetch milestones and update dropdown filter
+    // Fetch milestones
     this.milestoneSubscription = this.milestoneService.fetchMilestones().subscribe(
       (response) => {
         this.logger.debug('IssuesViewerComponent: Fetched milestones from Github');

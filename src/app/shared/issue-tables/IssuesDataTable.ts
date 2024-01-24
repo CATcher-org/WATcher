@@ -61,7 +61,6 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
     const displayDataChanges = [this.issueService.issues$, page, sortChange, this.filterChange, this.dropdownFilterChange].filter(
       (x) => x !== undefined
     );
-
     this.issueService.startPollIssues();
     this.issueSubscription = merge(...displayDataChanges)
       .pipe(
