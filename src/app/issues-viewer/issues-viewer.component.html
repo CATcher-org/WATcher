@@ -10,11 +10,20 @@
       <app-card-view
         *ngFor="let assignee of assignees"
         class="issue-table"
+        #card
+        [ngStyle]="{ display: card.isLoading || card.issueLength > 0 ? 'initial' : 'none' }"
         [assignee]="assignee"
         [headers]="this.displayedColumns"
         [sort]="filterbar.matSort"
       ></app-card-view>
-      <app-card-view class="issue-table" [headers]="this.displayedColumns" [sort]="filterbar.matSort"></app-card-view>
+      <app-card-view
+        class="issue-table"
+        #card
+        [ngStyle]="{ display: card.isLoading || card.issueLength > 0 ? 'initial' : 'none' }"
+        [headers]="this.displayedColumns"
+        [sort]="filterbar.matSort"
+      >
+      </app-card-view>
     </div>
   </ng-template>
 </div>
