@@ -5,7 +5,6 @@ import { SimpleLabel } from '../../../core/models/label.model';
 import { LabelService } from '../../../core/services/label.service';
 import { LoggingService } from '../../../core/services/logging.service';
 import { FiltersStore } from '../../issue-tables/FiltersStore';
-import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-label-filter-bar',
