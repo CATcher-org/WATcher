@@ -1,6 +1,6 @@
 import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from './dropdownfilter';
 
-const STORED_FILTER_PROPERTIES = ['status', 'type', 'sort', 'sortDirection'];
+const STORED_FILTER_PROPERTIES = ['status', 'type', 'sort', 'sortDirection', 'labels', 'hiddenLabels'];
 
 /** This static class stores the filters applied for the purpose of saving filters across repo changes */
 export class FiltersStore {

@@ -4,6 +4,8 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { SimpleLabel } from '../../../core/models/label.model';
 import { LabelService } from '../../../core/services/label.service';
 import { LoggingService } from '../../../core/services/logging.service';
+import { FiltersStore } from '../../issue-tables/FiltersStore';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-label-filter-bar',
@@ -43,6 +45,28 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
     this.labelSubscription?.unsubscribe();
   }
 
+  /** Use initial labels from the FiltersStore to populate hidden and selected labels */
+  useInitialLabels(): void {
+    const { labels: initialSelectedLabels, hiddenLabels: initialHiddenLabels } = FiltersStore.getInitialDropdownFilter();
+    const allLabelsSet = new Set(this.allLabels.map((simpleLabel) => simpleLabel.formattedName));
+
+    // Update hidden labels with initial labels from FiltersStore
+    initialHiddenLabels.forEach((hiddenLabel) => {
+      if (allLabelsSet.has(hiddenLabel)) {
+        this.hiddenLabelNames.add(hiddenLabel);
+      }
+    });
+    this.hiddenLabels.next(this.hiddenLabelNames);
+
+    // Update selected labels with initial labels from FiltersStore
+    initialSelectedLabels.forEach((selectedLabel) => {
+      if (allLabelsSet.has(selectedLabel)) {
+        this.selectedLabelNames.push(selectedLabel);
+      }
+    });
+    this.updateSelection();
+  }
+
   hide(label: string): void {
     if (this.hiddenLabelNames.has(label)) {
       return;
@@ -80,6 +104,8 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
     this.labelSubscription = this.labelService.fetchLabels().subscribe(
       (response) => {
         this.logger.debug('LabelFilterBarComponent: Fetched labels from Github');
+        // Set timeout is used to prevent ExpressionChangedAfterItHasBeenChecked Error
+        setTimeout(() => this.useInitialLabels());
       },
       (err) => {},
       () => {

@@ -31,11 +31,11 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   initialSearchFilter: string = FiltersStore.getInitialSearchFilter();
 
   /** Selected label filters, instance passed into LabelChipBar to populate */
-  labelFilter$ = new BehaviorSubject<string[]>([]);
+  labelFilter$ = new BehaviorSubject<string[]>(FiltersStore.getInitialDropdownFilter().labels);
   labelFilterSubscription: Subscription;
 
   /** Selected label to hide */
-  hiddenLabels$ = new BehaviorSubject<Set<string>>(new Set());
+  hiddenLabels$ = new BehaviorSubject<Set<string>>(FiltersStore.getInitialDropdownFilter().hiddenLabels);
   hiddenLabelSubscription: Subscription;
 
   /** Milestone subscription */

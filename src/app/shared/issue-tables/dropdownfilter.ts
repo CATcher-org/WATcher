@@ -17,7 +17,8 @@ export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
   sort: 'id',
   sortDirection: 'desc',
   labels: [],
-  milestones: []
+  milestones: [],
+  hiddenLabels: new Set()
 };
 
 /**
