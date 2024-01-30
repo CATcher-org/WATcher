@@ -16,7 +16,7 @@
 
   <div class="scrollable-container-wrapper">
     <div class="scrollable-container">
-      <mat-table [dataSource]="this.githubEvents" matSort multiTemplateDataRows class="mat-elevation-z8">
+      <mat-table [dataSource]="this.githubEvents" matSort multiTemplateDataRows>
         <ng-container matColumnDef="date_start">
           <mat-header-cell *matHeaderCellDef mat-sort-header> Date </mat-header-cell>
           <mat-cell *matCellDef="let element">

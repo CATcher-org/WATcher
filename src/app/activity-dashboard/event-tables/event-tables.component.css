@@ -49,15 +49,14 @@
 
 /* ref: https://material.angular.io/components/table/examples#table-expandable-rows */
 .example-detail-row {
+  position: relative;
   min-height: 0;
 }
 
 .example-element-row:not(.example-expanded-row):hover {
-  background: whitesmoke;
-}
-
-.example-element-row:not(.example-expanded-row):active {
-  background: #efefef;
+  border: 3px solid rgba(0, 0, 0, 0.514);
+  border-radius: 3px;
+  color: #210749;
 }
 
 .example-element-row td {
