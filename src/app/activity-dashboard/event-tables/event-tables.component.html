@@ -1,7 +1,18 @@
 <div class="table-container">
-  <h1 *ngIf="this.actor !== undefined">
-    {{ this.actor.login }}
-  </h1>
+  <mat-card class="actor-card">
+    <div
+      mat-card-avatar
+      *ngIf="this.actor"
+      class="avatar-container"
+      [ngStyle]="{
+        background: 'url(' + this.actor.avatar_url + ')',
+        'background-size': '40px'
+      }"
+    ></div>
+    <mat-card-title class="actor-username">
+      {{ this.actor !== undefined ? this.actor.login : 'Unknown' }}
+    </mat-card-title>
+  </mat-card>
 
   <mat-table [dataSource]="this.githubEvents" matSort multiTemplateDataRows class="mat-elevation-z8">
     <ng-container matColumnDef="date_start">
@@ -60,7 +71,7 @@
       </mat-cell>
     </ng-container>
 
-    <mat-header-row *matHeaderRowDef="this.columnsToDisplay"></mat-header-row>>
+    <mat-header-row *matHeaderRowDef="this.columnsToDisplay"></mat-header-row>
     <mat-row
       *matRowDef="let element; columns: this.columnsToDisplay"
       class="example-element-row"

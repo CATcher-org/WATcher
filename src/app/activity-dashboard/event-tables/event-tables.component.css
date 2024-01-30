@@ -1,7 +1,25 @@
 .table-container {
-  min-width: 348px;
-  display: block;
-  width: 100%;
+  margin: 10px;
+  min-width: 400px;
+}
+
+.actor-card {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 1px;
+}
+
+.actor-username {
+  flex-grow: 1;
+  font-size: 15px;
+  margin: 0;
+  text-align: center;
+  word-break: break-word;
+}
+
+.avatar-container {
+  margin-right: 10px;
 }
 
 .mat-table {
