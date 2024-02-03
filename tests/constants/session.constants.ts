@@ -1,25 +1,23 @@
 import { Phase } from '../../src/app/core/models/phase.model';
-import { SessionData } from '../../src/app/core/models/session.model';
+import { Repo } from '../../src/app/core/models/repo.model';
+import { SessionData, SessionRepo } from '../../src/app/core/models/session.model';
 
-export const BUG_REPORTING_PHASE_SESSION_DATA: SessionData = {
-  openPhases: [Phase.phaseBugReporting],
-  [Phase.phaseBugReporting]: 'bugreporting',
-  [Phase.phaseTeamResponse]: 'pe-results',
-  [Phase.phaseTesterResponse]: 'testerresponse',
-  [Phase.phaseModeration]: 'pe-evaluation'
+export const WATCHER_REPO: Repo = Repo.of('CATcher-org/WATcher');
+
+const ISSUES_VIEWER_SESSION_REPO: SessionRepo = {
+  phase: Phase.issuesViewer,
+  repos: [WATCHER_REPO]
 };
 
-export const MODERATION_PHASE_SESSION_DATA: SessionData = {
-  ...BUG_REPORTING_PHASE_SESSION_DATA,
-  openPhases: [Phase.phaseModeration]
+const ACTIVITY_DASHBOARD_SESSION_REPO: SessionRepo = {
+  phase: Phase.activityDashboard,
+  repos: [WATCHER_REPO]
 };
 
-export const NO_OPEN_PHASES_SESSION_DATA: SessionData = {
-  ...BUG_REPORTING_PHASE_SESSION_DATA,
-  openPhases: []
+export const VALID_SESSION_DATA: SessionData = {
+  sessionRepo: [ISSUES_VIEWER_SESSION_REPO, ACTIVITY_DASHBOARD_SESSION_REPO]
 };
 
-export const MULTIPLE_OPEN_PHASES_SESSION_DATA: SessionData = {
-  ...BUG_REPORTING_PHASE_SESSION_DATA,
-  openPhases: [Phase.phaseBugReporting, Phase.phaseTeamResponse, Phase.phaseTesterResponse, Phase.phaseModeration]
+export const SESSION_DATA_WITH_INVALID_PHASE: SessionData = {
+  sessionRepo: [{ phase: 'invalidPhase' as Phase, repos: [WATCHER_REPO] }, ISSUES_VIEWER_SESSION_REPO, ACTIVITY_DASHBOARD_SESSION_REPO]
 };
