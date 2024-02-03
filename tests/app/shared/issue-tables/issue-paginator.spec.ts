@@ -1,7 +1,6 @@
 import { MatPaginator } from '@angular/material/paginator';
 import { Issue } from '../../../../src/app/core/models/issue.model';
 import { paginateData } from '../../../../src/app/shared/issue-tables/issue-paginator';
-import { TEAM_4 } from '../../../constants/data.constants';
 import {
   ISSUE_WITH_ASSIGNEES,
   ISSUE_WITH_EMPTY_DESCRIPTION,
@@ -13,14 +12,10 @@ describe('issue-paginator', () => {
   describe('paginateData()', () => {
     let dataSet_7: Issue[];
     let paginator: MatPaginator;
-    const dummyTeam = TEAM_4;
-    const mediumSeverityIssueWithResponse: Issue = Issue.createPhaseTeamResponseIssue(ISSUE_WITH_EMPTY_DESCRIPTION, dummyTeam);
-    const mediumSeverityIssueWithAssigneee: Issue = Issue.createPhaseTeamResponseIssue(ISSUE_WITH_ASSIGNEES, dummyTeam);
-    const lowSeverityFeatureFlawIssue: Issue = Issue.createPhaseTeamResponseIssue(ISSUE_WITH_EMPTY_DESCRIPTION_LOW_SEVERITY, dummyTeam);
-    const highSeverityDocumentationBugIssue: Issue = Issue.createPhaseTeamResponseIssue(
-      ISSUE_WITH_EMPTY_DESCRIPTION_HIGH_SEVERITY,
-      dummyTeam
-    );
+    const mediumSeverityIssueWithResponse: Issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
+    const mediumSeverityIssueWithAssigneee: Issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_ASSIGNEES);
+    const lowSeverityFeatureFlawIssue: Issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_EMPTY_DESCRIPTION_LOW_SEVERITY);
+    const highSeverityDocumentationBugIssue: Issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_EMPTY_DESCRIPTION_HIGH_SEVERITY);
 
     beforeEach(() => {
       dataSet_7 = [
