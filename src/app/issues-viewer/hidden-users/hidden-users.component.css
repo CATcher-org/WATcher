@@ -1,0 +1,51 @@
+.hidden-users {
+  margin: 8px;
+}
+
+.mat-card-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.mat-card {
+  margin: 8px 0px;
+}
+
+.mat-card-title {
+  font-size: 14px;
+  text-align: center;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.scrollable-container {
+  height: 67vh;
+  overflow: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  position: relative;
+}
+
+.scrollable-containers::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollable-container::before,
+.scrollable-container::after {
+  pointer-events: none;
+  content: '';
+  z-index: 2;
+  height: 6px;
+  width: 100%;
+  display: block;
+  background-image: linear-gradient(to bottom, white 66%, transparent);
+}
+
+.scrollable-container::before {
+  position: absolute;
+}
+
+.scrollable-container::after {
+  position: sticky;
+}

@@ -1,3 +1,19 @@
-<div>
-  <div *ngFor="let user of users">{{ user.login }}</div>
+<div *ngIf="users.length > 0" class="hidden-users">
+  <mat-card>Hidden users</mat-card>
+  <div class="scrollable-container">
+    <div *ngFor="let user of users">
+      <mat-card>
+        <mar-card-header class="mat-card-header">
+          <div
+            mat-card-avatar
+            [ngStyle]="{
+              background: 'url(' + user.avatar_url + ')',
+              'background-size': '40px'
+            }"
+          ></div>
+          <mat-card-title>{{ user.login }}</mat-card-title>
+        </mar-card-header>
+      </mat-card>
+    </div>
+  </div>
 </div>
