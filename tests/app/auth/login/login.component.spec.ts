@@ -53,7 +53,7 @@ describe('LoginComponent', () => {
   });
 
   it('should call authService.startOAuthProcess on startLoginProcess', () => {
-    const hasPrivateConsent: boolean = false;
+    const hasPrivateConsent = false;
 
     component.startLoginProcess(hasPrivateConsent);
 
@@ -62,8 +62,8 @@ describe('LoginComponent', () => {
   });
 
   it('should call authService.changeAuthState and errorHandlingService.handleError', () => {
-    const hasPrivateConsent: boolean = false;
-    const errorMessage: string = 'Error!';
+    const hasPrivateConsent = false;
+    const errorMessage = 'Error!';
 
     const error: Error = new Error(errorMessage);
     authServiceSpy.startOAuthProcess.and.throwError(error);
