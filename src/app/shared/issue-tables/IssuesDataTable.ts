@@ -93,7 +93,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
           if (this.sort !== undefined) {
             data = getSortedData(this.sort, data);
           }
-          data = applySearchFilter(this.filter, this.displayedColumn, this.issueService, data);
+          data = applySearchFilter(this.filter, this.displayedColumn, data);
           this.count = data.length;
 
           if (this.paginator !== undefined) {

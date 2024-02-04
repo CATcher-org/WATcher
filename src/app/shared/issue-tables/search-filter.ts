@@ -36,7 +36,7 @@ export function searchFilter(filter: string, displayedColumn: string[]): (a: Iss
   };
 }
 
-export function applySearchFilter(filter: string, displayedColumn: string[], issueService: IssueService, data: Issue[]): Issue[] {
+export function applySearchFilter(filter: string, displayedColumn: string[], data: Issue[]): Issue[] {
   const result = data.slice().filter(searchFilter(filter, displayedColumn));
   return result;
 }
