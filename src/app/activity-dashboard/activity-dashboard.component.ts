@@ -14,7 +14,7 @@ import { ACTION_BUTTONS, EventTablesComponent } from './event-tables/event-table
 })
 export class ActivityDashboardComponent implements OnInit {
   readonly displayedColumns = [TABLE_COLUMNS.DATE_START, TABLE_COLUMNS.ISSUE_COUNT, TABLE_COLUMNS.PR_COUNT, TABLE_COLUMNS.COMMENT_COUNT];
-  readonly expandedColumns = [EXPANDED_TABLE_COLUMNS.ID, EXPANDED_TABLE_COLUMNS.TITLE, EXPANDED_TABLE_COLUMNS.DATE];
+  readonly expandedColumns = [EXPANDED_TABLE_COLUMNS.TITLE, EXPANDED_TABLE_COLUMNS.DATE];
   readonly actionButtons: ACTION_BUTTONS[] = [ACTION_BUTTONS.VIEW_IN_WEB];
 
   startMinDate: Date;
