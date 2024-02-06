@@ -1,15 +1,23 @@
 .hidden-users {
   margin: 8px;
+  min-width: 180px;
+  max-width: 300px;
 }
 
 .mat-card-header {
   display: flex;
   flex-direction: row;
   align-items: center;
+  width: 100%;
 }
 
 .mat-card {
   margin: 8px 0px;
+  height: 40px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mat-card-title {
@@ -17,6 +25,8 @@
   text-align: center;
   margin: 0;
   flex-grow: 1;
+  margin: 2px;
+  word-break: break-word;
 }
 
 .scrollable-container {
