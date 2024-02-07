@@ -17,7 +17,3 @@ const ACTIVITY_DASHBOARD_SESSION_REPO: SessionRepo = {
 export const VALID_SESSION_DATA: SessionData = {
   sessionRepo: [ISSUES_VIEWER_SESSION_REPO, ACTIVITY_DASHBOARD_SESSION_REPO]
 };
-
-export const SESSION_DATA_WITH_INVALID_PHASE: SessionData = {
-  sessionRepo: [{ phase: 'invalidPhase' as Phase, repos: [WATCHER_REPO] }, ISSUES_VIEWER_SESSION_REPO, ACTIVITY_DASHBOARD_SESSION_REPO]
-};
