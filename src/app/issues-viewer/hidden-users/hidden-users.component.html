@@ -1,5 +1,8 @@
 <div *ngIf="users.length > 0" class="hidden-users">
-  <mat-card>Hidden users</mat-card>
+  <mat-card>
+    <mat-card-title>Hidden users</mat-card-title>
+    <div class="row-count">{{ users.length }}</div>
+  </mat-card>
   <div class="scrollable-container">
     <div *ngFor="let user of users">
       <mat-card>
@@ -8,7 +11,7 @@
             mat-card-avatar
             [ngStyle]="{
               background: 'url(' + user.avatar_url + ')',
-              'background-size': '40px'
+              'background-size': '30px'
             }"
           ></div>
           <mat-card-title>{{ user.login }}</mat-card-title>
