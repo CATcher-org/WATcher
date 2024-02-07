@@ -36,7 +36,7 @@ describe('LoginComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call startLoginProcess with false in startPublicOnlyLoginProcess', () => {
+  it('startPublicOnlyLoginProcess should call startLoginProcess with false', () => {
     spyOn(component, 'startLoginProcess');
 
     component.startPublicOnlyLoginProcess();
@@ -44,7 +44,7 @@ describe('LoginComponent', () => {
     expect(component.startLoginProcess).toHaveBeenCalledWith(false);
   });
 
-  it('should call startLoginProcess with true in startIncludePrivateLoginProcess', () => {
+  it('startIncludePrivateLoginProcess should call startLoginProcess with true', () => {
     spyOn(component, 'startLoginProcess');
 
     component.startIncludePrivateLoginProcess();
@@ -61,7 +61,7 @@ describe('LoginComponent', () => {
     expect(loggingServiceSpy.info).toHaveBeenCalledWith('LoginComponent: Beginning login process');
   });
 
-  it('should call authService.changeAuthState and errorHandlingService.handleError', () => {
+  it('should call error handling methods when error is thrown', () => {
     const hasPrivateConsent = false;
     const errorMessage = 'Error!';
 
