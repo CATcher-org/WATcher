@@ -21,19 +21,19 @@ describe('Session Model', () => {
     });
 
     it('should throw error on session data with invalid session', () => {
-      of({ ...VALID_SESSION_DATA, sessionRepo: null })
+      of({ sessionRepo: null })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
           error: (err) => expect(err).toEqual(new Error(SESSION_DATA_MISSING_FIELDS))
         });
-      of({ ...VALID_SESSION_DATA, sessionRepo: [] })
+      of({ sessionRepo: [] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
           error: (err) => expect(err).toEqual(new Error(SESSION_DATA_MISSING_FIELDS))
         });
-      of({ ...VALID_SESSION_DATA, sessionRepo: 'repo' })
+      of({ sessionRepo: 'repo' })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
@@ -42,7 +42,7 @@ describe('Session Model', () => {
     });
 
     it('should throw error on session with invalid phases', () => {
-      of({ ...VALID_SESSION_DATA, sessionRepo: [{ phase: 'invalidPhase' as Phase, repos: [WATCHER_REPO] }] })
+      of({ sessionRepo: [{ phase: 'invalidPhase' as Phase, repos: [WATCHER_REPO] }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
@@ -51,25 +51,25 @@ describe('Session Model', () => {
     });
 
     it('should throw error on session data with invalid repo', () => {
-      of({ ...VALID_SESSION_DATA, sessionRepo: [{ phase: Phase.issuesViewer, repo: undefined }] })
+      of({ sessionRepo: [{ phase: Phase.issuesViewer, repo: undefined }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
           error: (err) => expect(err).toEqual(new Error(OPENED_PHASE_REPO_UNDEFINED))
         });
-      of({ ...VALID_SESSION_DATA, sessionRepo: [{ phase: Phase.issuesViewer, repo: null }] })
+      of({ sessionRepo: [{ phase: Phase.issuesViewer, repo: null }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
           error: (err) => expect(err).toEqual(new Error(OPENED_PHASE_REPO_UNDEFINED))
         });
-      of({ ...VALID_SESSION_DATA, sessionRepo: [{ phase: Phase.issuesViewer, repo: '' }] })
+      of({ sessionRepo: [{ phase: Phase.issuesViewer, repo: '' }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
           error: (err) => expect(err).toEqual(new Error(OPENED_PHASE_REPO_UNDEFINED))
         });
-      of({ ...VALID_SESSION_DATA, sessionRepo: [{ phase: Phase.issuesViewer, repo: [] }] })
+      of({ sessionRepo: [{ phase: Phase.issuesViewer, repo: [] }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
