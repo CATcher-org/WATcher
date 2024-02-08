@@ -1,0 +1,4 @@
+.event-tables-wrapper {
+  display: flex;
+  overflow-x: auto;
+}
