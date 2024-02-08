@@ -79,6 +79,38 @@ export const ISSUE_WITH_EMPTY_DESCRIPTION = new GithubIssue({
   user: USER_ANUBHAV_DETAILS
 });
 
+export const ISSUE_UPDATED_EARLIER = new GithubIssue({
+  id: '000000001',
+  number: 1,
+  assignees: [],
+  comments: [],
+  body: '',
+  created_at: '2020-09-02T16:19:02Z',
+  labels: [GITHUB_LABEL_TEAM_LABEL, GITHUB_LABEL_TUTORIAL_LABEL, GITHUB_LABEL_FUNCTIONALITY_BUG, GITHUB_LABEL_MEDIUM_SEVERITY],
+  state: IssueState.Open,
+  stateReason: IssueStateReason.Reopened,
+  title: 'App starts to lag when given large amount of input',
+  updated_at: '2020-09-03T13:37:32Z',
+  url: 'https://api.github.com/repos/CATcher-org/pe-results/issues/93',
+  user: USER_ANUBHAV_DETAILS
+});
+
+export const ISSUE_UPDATED_LATER = new GithubIssue({
+  id: '000000002',
+  number: 2,
+  assignees: [],
+  comments: [],
+  body: '',
+  created_at: '2020-10-02T16:19:02Z',
+  labels: [GITHUB_LABEL_TEAM_LABEL, GITHUB_LABEL_TUTORIAL_LABEL, GITHUB_LABEL_FUNCTIONALITY_BUG, GITHUB_LABEL_MEDIUM_SEVERITY],
+  state: IssueState.Open,
+  stateReason: IssueStateReason.Reopened,
+  title: 'App starts to lag when given large amount of input',
+  updated_at: '2020-10-22T13:37:32Z',
+  url: 'https://api.github.com/repos/CATcher-org/pe-results/issues/94',
+  user: USER_ANUBHAV_DETAILS
+});
+
 export const ISSUE_WITH_EMPTY_DESCRIPTION_LOW_SEVERITY = new GithubIssue({
   id: '384830567',
   number: 130,
