@@ -1,13 +1,13 @@
+import { Apollo, ApolloModule } from 'apollo-angular';
+import { HttpLink, HttpLinkModule } from 'apollo-angular/http';
+import { InMemoryCache, IntrospectionFragmentMatcher, ApolloLink } from '@apollo/client/core';
+import { setContext } from '@apollo/client/link/context';
 import { HttpClientModule } from '@angular/common/http';
 import { ErrorHandler, NgModule, NgZone } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
-import { Apollo, ApolloModule } from 'apollo-angular';
-import { HttpLink, HttpLinkModule } from 'apollo-angular-link-http';
-import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
-import { ApolloLink } from 'apollo-link';
-import { setContext } from 'apollo-link-context';
+
 import 'reflect-metadata';
 import graphqlTypes from '../../graphql/graphql-types';
 import '../polyfills';
