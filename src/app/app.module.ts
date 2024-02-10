@@ -1,12 +1,12 @@
-import { Apollo } from 'apollo-angular';
-import { HttpLink } from 'apollo-angular/http';
-import { InMemoryCache, ApolloLink, PossibleTypesMap } from '@apollo/client/core';
-import { setContext } from '@apollo/client/link/context';
 import { HttpClientModule } from '@angular/common/http';
 import { ErrorHandler, NgModule, NgZone } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
+import { ApolloLink, InMemoryCache, PossibleTypesMap } from '@apollo/client/core';
+import { setContext } from '@apollo/client/link/context';
+import { Apollo } from 'apollo-angular';
+import { HttpLink } from 'apollo-angular/http';
 
 import 'reflect-metadata';
 import graphqlTypes from '../../graphql/graphql-types';
