@@ -1,13 +1,13 @@
 import { of } from 'rxjs';
+import { Phase } from '../../../../src/app/core/models/phase.model';
 import {
   assertSessionDataIntegrity,
-  NO_ACCESSIBLE_PHASES,
   NO_VALID_OPEN_PHASES,
   OPENED_PHASE_REPO_UNDEFINED,
-  SESSION_DATA_MISSING_OPENPHASES_KEY,
+  SESSION_DATA_MISSING_FIELDS,
   SESSION_DATA_UNAVAILABLE
 } from '../../../../src/app/core/models/session.model';
-import { BUG_REPORTING_PHASE_SESSION_DATA } from '../../../constants/session.constants';
+import { VALID_SESSION_DATA, WATCHER_REPO } from '../../../constants/session.constants';
 
 describe('Session Model', () => {
   describe('assertSessionDataIntegrity()', () => {
@@ -20,26 +20,29 @@ describe('Session Model', () => {
         });
     });
 
-    it('should throw error on session data with missing crucial values', () => {
-      of({ dummyKey: undefined })
+    it('should throw error on session data with invalid session', () => {
+      of({ sessionRepo: null })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
-          error: (err) => expect(err).toEqual(new Error(SESSION_DATA_MISSING_OPENPHASES_KEY))
+          error: (err) => expect(err).toEqual(new Error(SESSION_DATA_MISSING_FIELDS))
         });
-    });
-
-    it('should throw error on session with no open phases', () => {
-      of(NO_OPEN_PHASES_SESSION_DATA)
+      of({ sessionRepo: [] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
-          error: (err) => expect(err).toEqual(new Error(NO_ACCESSIBLE_PHASES))
+          error: (err) => expect(err).toEqual(new Error(SESSION_DATA_MISSING_FIELDS))
+        });
+      of({ sessionRepo: 'repo' })
+        .pipe(assertSessionDataIntegrity())
+        .subscribe({
+          next: () => fail(),
+          error: (err) => expect(err).toEqual(new Error(SESSION_DATA_MISSING_FIELDS))
         });
     });
 
-    it('should throw error on session data with invalid open phases', () => {
-      of({ ...BUG_REPORTING_PHASE_SESSION_DATA, openPhases: ['unknownPhase'] })
+    it('should throw error on session with invalid phases', () => {
+      of({ sessionRepo: [{ phase: 'invalidPhase' as Phase, repos: [WATCHER_REPO] }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
@@ -47,20 +50,26 @@ describe('Session Model', () => {
         });
     });
 
-    it('should throw error on session data with undefined repo for open phase', () => {
-      of({ ...BUG_REPORTING_PHASE_SESSION_DATA, phaseBugReporting: undefined })
+    it('should throw error on session data with invalid repo', () => {
+      of({ sessionRepo: [{ phase: Phase.issuesViewer, repo: undefined }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
           error: (err) => expect(err).toEqual(new Error(OPENED_PHASE_REPO_UNDEFINED))
         });
-      of({ ...BUG_REPORTING_PHASE_SESSION_DATA, phaseBugReporting: null })
+      of({ sessionRepo: [{ phase: Phase.issuesViewer, repo: null }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
           error: (err) => expect(err).toEqual(new Error(OPENED_PHASE_REPO_UNDEFINED))
         });
-      of({ ...BUG_REPORTING_PHASE_SESSION_DATA, phaseBugReporting: '' })
+      of({ sessionRepo: [{ phase: Phase.issuesViewer, repo: '' }] })
+        .pipe(assertSessionDataIntegrity())
+        .subscribe({
+          next: () => fail(),
+          error: (err) => expect(err).toEqual(new Error(OPENED_PHASE_REPO_UNDEFINED))
+        });
+      of({ sessionRepo: [{ phase: Phase.issuesViewer, repo: [] }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
@@ -68,19 +77,10 @@ describe('Session Model', () => {
         });
     });
 
-    it('should not throw error if session data contains repo information of unopened phases', () => {
-      of(BUG_REPORTING_PHASE_SESSION_DATA)
+    it('should pass for valid session data', () => {
+      of(VALID_SESSION_DATA)
         .pipe(assertSessionDataIntegrity())
-        .subscribe({
-          next: (el) => expect(el).toEqual(BUG_REPORTING_PHASE_SESSION_DATA),
-          error: () => fail()
-        });
-    });
-
-    it('should pass valid session data', () => {
-      of(BUG_REPORTING_PHASE_SESSION_DATA)
-        .pipe(assertSessionDataIntegrity())
-        .subscribe((el) => expect(el).toEqual(BUG_REPORTING_PHASE_SESSION_DATA));
+        .subscribe((el) => expect(el).toEqual(VALID_SESSION_DATA));
     });
   });
 });

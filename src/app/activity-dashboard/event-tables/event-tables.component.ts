@@ -1,12 +1,16 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { GithubUser } from '../../core/models/github-user.model';
+import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { GithubEventService } from '../../core/services/githubevent.service';
 import { LoggingService } from '../../core/services/logging.service';
+import { EventWeekDetailsComponent } from '../event-week-details/event-week-details.component';
 import { EventWeek } from '../event-week.model';
 import { GithubEventDataTable } from './GithubEventDataTable';
+import { NoEventsError } from './no-events-error.model';
 
 export enum ACTION_BUTTONS {
   VIEW_IN_WEB,
@@ -16,14 +20,7 @@ export enum ACTION_BUTTONS {
 @Component({
   selector: 'app-event-tables',
   templateUrl: './event-tables.component.html',
-  styleUrls: ['./event-tables.component.css'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
-    ])
-  ]
+  styleUrls: ['./event-tables.component.css']
 })
 
 /**
@@ -44,10 +41,12 @@ export class EventTablesComponent implements OnInit, AfterViewInit {
 
   public readonly action_buttons = ACTION_BUTTONS;
 
-  /** The expanded row */
-  expandedElement: EventWeek | null;
-
-  constructor(public githubEventService: GithubEventService, private logger: LoggingService) {}
+  constructor(
+    public githubEventService: GithubEventService,
+    public dialog: MatDialog,
+    private logger: LoggingService,
+    private errorHandling: ErrorHandlingService
+  ) {}
 
   ngOnInit() {
     this.githubEvents = new GithubEventDataTable(this.githubEventService, this.logger, this.sort, this.paginator, this.actor, this.filters);
@@ -90,11 +89,18 @@ export class EventTablesComponent implements OnInit, AfterViewInit {
     // window.open('https://github.com/', '_blank');
   }
 
-  /** Show individual GithubEvents of EventWeek. */
-  showExpandedDetails(element: EventWeek) {
-    if (element.events.length > 0) {
-      this.expandedElement = this.expandedElement === element ? null : element;
+  /** Opens dialog to show the event details of the selected week. */
+  openDialog(eventWeek: EventWeek) {
+    if (eventWeek.events.length <= 0) {
+      this.errorHandling.handleError(new NoEventsError());
+      return;
     }
+    this.dialog.open(EventWeekDetailsComponent, {
+      data: {
+        eventWeek,
+        expandedColumnsToDisplay: this.expandedColumnsToDisplay
+      }
+    });
   }
 
   /** Returns color string of cell. Shade darkens with magnitude of number. */

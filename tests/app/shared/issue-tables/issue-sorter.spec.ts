@@ -1,20 +1,29 @@
 import { MatSort } from '@angular/material/sort';
 import { Issue } from '../../../../src/app/core/models/issue.model';
 import { getSortedData } from '../../../../src/app/shared/issue-tables/issue-sorter';
-import { TEAM_4 } from '../../../constants/data.constants';
-import { ISSUE_PENDING_MODERATION, ISSUE_WITH_ASSIGNEES, ISSUE_WITH_EMPTY_DESCRIPTION } from '../../../constants/githubissue.constants';
+import {
+  ISSUE_UPDATED_EARLIER,
+  ISSUE_UPDATED_LATER,
+  ISSUE_WITH_ASSIGNEES,
+  ISSUE_WITH_EMPTY_DESCRIPTION
+} from '../../../constants/githubissue.constants';
 
 describe('issuer-sorter', () => {
   describe('getSortedData()', () => {
-    const dummyTeam = TEAM_4;
-    const dummyIssue: Issue = Issue.createPhaseTeamResponseIssue(ISSUE_WITH_EMPTY_DESCRIPTION, dummyTeam);
-    const otherDummyIssue: Issue = Issue.createPhaseTeamResponseIssue(ISSUE_WITH_ASSIGNEES, dummyTeam);
+    const dummyIssue: Issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
+    const otherDummyIssue: Issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_ASSIGNEES);
     const issuesList: Issue[] = [dummyIssue, otherDummyIssue];
 
-    const moderationIssue: Issue = Issue.createPhaseModerationIssue(ISSUE_WITH_EMPTY_DESCRIPTION, dummyTeam);
-    const otherModerationIssue: Issue = Issue.createPhaseModerationIssue(ISSUE_PENDING_MODERATION, dummyTeam);
-    const todoIssuesList: Issue[] = [moderationIssue, otherModerationIssue];
+    const issueUpdatedEarlier: Issue = Issue.createPhaseBugReportingIssue(ISSUE_UPDATED_EARLIER);
+    const issueUpdatedLater: Issue = Issue.createPhaseBugReportingIssue(ISSUE_UPDATED_LATER);
+    const issuesWithDifferentUpdatedDate: Issue[] = [issueUpdatedEarlier, issueUpdatedLater];
+
     const matSort: MatSort = new MatSort();
+
+    it('should return the same data if sort.active is not set', () => {
+      const sortedData = getSortedData(matSort, issuesList);
+      expect(sortedData).toEqual(issuesList);
+    });
 
     it('sorts issues based on their assignees correctly', () => {
       matSort.active = 'assignees';
@@ -38,7 +47,7 @@ describe('issuer-sorter', () => {
       assertOrder(sortedIssuesByTitleDesc, otherDummyIssue, dummyIssue);
     });
 
-    it('sorts issues based on their integer fields correctly', () => {
+    it('sorts issues based on their id fields correctly', () => {
       matSort.active = 'id';
       matSort.direction = 'asc';
       const sortedIssuedByIdAsc = getSortedData(matSort, issuesList);
@@ -49,15 +58,16 @@ describe('issuer-sorter', () => {
       assertOrder(sortedIssuedByIdDesc, dummyIssue, otherDummyIssue);
     });
 
-    it('sorts issues based on their todos left correctly', () => {
-      matSort.active = 'Todo Remaining';
+    it('sorts issues based on their updated date fields correctly', () => {
+      matSort.active = 'date';
       matSort.direction = 'asc';
-      const sortedIssuesByTodoAsc = getSortedData(matSort, todoIssuesList);
-      assertOrder(sortedIssuesByTodoAsc, otherModerationIssue, moderationIssue);
+
+      const sortedIssuedByDateAsc = getSortedData(matSort, issuesWithDifferentUpdatedDate);
+      assertOrder(sortedIssuedByDateAsc, issueUpdatedEarlier, issueUpdatedLater);
 
       matSort.direction = 'desc';
-      const sortedIssuesByTodoDesc = getSortedData(matSort, todoIssuesList);
-      assertOrder(sortedIssuesByTodoDesc, moderationIssue, otherModerationIssue);
+      const sortedIssuedByDateDesc = getSortedData(matSort, issuesWithDifferentUpdatedDate);
+      assertOrder(sortedIssuedByDateDesc, issueUpdatedLater, issueUpdatedEarlier);
     });
   });
 });
