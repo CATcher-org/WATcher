@@ -1,6 +1,6 @@
-import { Apollo, ApolloModule } from 'apollo-angular';
-import { HttpLink, HttpLinkModule } from 'apollo-angular/http';
-import { InMemoryCache, IntrospectionFragmentMatcher, ApolloLink } from '@apollo/client/core';
+import { Apollo } from 'apollo-angular';
+import { HttpLink } from 'apollo-angular/http';
+import { InMemoryCache, ApolloLink, PossibleTypesMap } from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
 import { HttpClientModule } from '@angular/common/http';
 import { ErrorHandler, NgModule, NgZone } from '@angular/core';
@@ -54,9 +54,7 @@ import { SharedModule } from './shared/shared.module';
     ActivityDashboardModule,
     SharedModule,
     HttpClientModule,
-    AppRoutingModule,
-    ApolloModule,
-    HttpLinkModule
+    AppRoutingModule
   ],
   providers: [
     {
@@ -117,10 +115,14 @@ export class AppModule {
       return { headers: { Authorization: `Token ${this.authService.accessToken.getValue()}` } };
     });
     const link = ApolloLink.from([log, basic, auth, this.httpLink.create({ uri: URI })]);
-    const fragmentMatcher = new IntrospectionFragmentMatcher({
-      introspectionQueryResultData: graphqlTypes
+    const possibleTypes: PossibleTypesMap = {};
+
+    graphqlTypes.__schema.types.forEach((type: any) => {
+      if (type.kind === 'UNION' || type.kind === 'INTERFACE') {
+        possibleTypes[type.name] = type.possibleTypes.map((possibleType: any) => possibleType.name);
+      }
     });
-    const cache = new InMemoryCache({ fragmentMatcher });
+    const cache = new InMemoryCache({ possibleTypes });
     this.apollo.create({
       link: link,
       cache: cache
