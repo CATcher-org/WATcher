@@ -26,7 +26,7 @@
             [value]="label.formattedName"
             [selected]="selectedLabelNames.includes(label.formattedName)"
             class="list-option"
-            [class.hidden]="filter(input.value, label.name)"
+            [class.hidden]="filter(input.value, label.formattedName)"
           >
             <div class="flexbox-container">
               <button

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Label } from '../../../core/models/label.model';
+import { GithubLabel } from '../../../core/models/github/github-label.model';
 import { LabelService } from '../../../core/services/label.service';
 
 @Component({
@@ -8,7 +8,7 @@ import { LabelService } from '../../../core/services/label.service';
   styleUrls: ['./issue-pr-card-labels.component.css']
 })
 export class IssuePrCardLabelsComponent {
-  @Input() labels: Label[];
-  @Input() labelSet: Set<Label>;
+  @Input() labels: GithubLabel[];
+  @Input() labelSet: Set<string>;
   constructor(public labelService: LabelService) {}
 }
