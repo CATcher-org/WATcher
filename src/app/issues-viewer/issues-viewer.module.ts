@@ -3,12 +3,13 @@ import { FilterBarModule } from '../shared/filter-bar/filter-bar.module';
 import { IssuesPrCardModule } from '../shared/issue-pr-card/issue-pr-card.module';
 import { SharedModule } from '../shared/shared.module';
 import { CardViewComponent } from './card-view/card-view.component';
+import { HiddenUsersComponent } from './hidden-users/hidden-users.component';
 import { IssuesViewerRoutingModule } from './issues-viewer-routing.module';
 import { IssuesViewerComponent } from './issues-viewer.component';
 
 @NgModule({
   imports: [FilterBarModule, IssuesViewerRoutingModule, IssuesPrCardModule, SharedModule],
-  declarations: [IssuesViewerComponent, CardViewComponent],
+  declarations: [IssuesViewerComponent, CardViewComponent, HiddenUsersComponent],
   exports: [IssuesViewerComponent, CardViewComponent]
 })
 export class IssuesViewerModule {}
