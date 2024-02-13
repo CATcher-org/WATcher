@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>Event Week Details</h2>
+<mat-dialog-content class="mat-typography">
+  <mat-table [dataSource]="data.eventWeek.events">
+    <ng-container matColumnDef="{{ expandableColumn }}" *ngFor="let expandableColumn of data.expandedColumnsToDisplay">
+      <mat-header-cell *matHeaderCellDef>{{ expandableColumn }}</mat-header-cell>
+      <mat-cell *matCellDef="let property">
+        {{ property[expandableColumn] }}
+      </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="data.expandedColumnsToDisplay"></mat-header-row>
+    <mat-row *matRowDef="let property; columns: data.expandedColumnsToDisplay"></mat-row>
+  </mat-table>
+</mat-dialog-content>

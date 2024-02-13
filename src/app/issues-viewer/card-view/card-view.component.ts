@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -31,6 +31,8 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   isLoading = true;
   issueLength = 0;
 
+  @Output() issueLengthChange: EventEmitter<Number> = new EventEmitter<Number>();
+
   constructor(public element: ElementRef, public issueService: IssueService) {}
 
   ngOnInit() {
@@ -45,6 +47,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
       // Emit event when issues change
       this.issues$.subscribe((issues) => {
         this.issueLength = issues.length;
+        this.issueLengthChange.emit(this.issueLength);
       });
 
       // Emit event when loading state changes

@@ -1,75 +1,67 @@
 <div class="table-container">
-  <h1 *ngIf="this.actor !== undefined">
-    {{ this.actor.login }}
-  </h1>
+  <mat-card class="actor-card">
+    <div
+      mat-card-avatar
+      *ngIf="this.actor"
+      class="avatar-container"
+      [ngStyle]="{
+        background: 'url(' + this.actor.avatar_url + ')',
+        'background-size': '40px'
+      }"
+    ></div>
+    <mat-card-title class="actor-username">
+      {{ this.actor !== undefined ? this.actor.login : 'Unknown' }}
+    </mat-card-title>
+  </mat-card>
 
-  <mat-table [dataSource]="this.githubEvents" matSort multiTemplateDataRows class="mat-elevation-z8">
-    <ng-container matColumnDef="date_start">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Date </mat-header-cell>
-      <mat-cell *matCellDef="let element">
-        <span (click)="$event.stopPropagation()" style="cursor: default">
-          {{ element.date_start }}
-        </span>
-      </mat-cell>
-    </ng-container>
+  <div class="scrollable-container-wrapper">
+    <div class="scrollable-container">
+      <mat-table [dataSource]="this.githubEvents" matSort multiTemplateDataRows>
+        <ng-container matColumnDef="date_start">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Date </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <span (click)="$event.stopPropagation()" style="cursor: default">
+              {{ element.date_start }}
+            </span>
+          </mat-cell>
+        </ng-container>
 
-    <ng-container matColumnDef="issue_count">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Issue # </mat-header-cell>
-      <mat-cell *matCellDef="let element" [ngClass]="colorCell(element.issue_count)">
-        <span (click)="$event.stopPropagation()" style="cursor: default">
-          {{ element.issue_count }}
-        </span>
-      </mat-cell>
-    </ng-container>
+        <ng-container matColumnDef="issue_count">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Issue # </mat-header-cell>
+          <mat-cell *matCellDef="let element" [ngClass]="colorCell(element.issue_count)">
+            <span (click)="$event.stopPropagation()" style="cursor: default">
+              {{ element.issue_count }}
+            </span>
+          </mat-cell>
+        </ng-container>
 
-    <ng-container matColumnDef="pr_count">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> PR # </mat-header-cell>
-      <mat-cell *matCellDef="let element" [ngClass]="colorCell(element.pr_count)">
-        <span (click)="$event.stopPropagation()" style="cursor: default">
-          {{ element.pr_count }}
-        </span>
-      </mat-cell>
-    </ng-container>
+        <ng-container matColumnDef="pr_count">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> PR # </mat-header-cell>
+          <mat-cell *matCellDef="let element" [ngClass]="colorCell(element.pr_count)">
+            <span (click)="$event.stopPropagation()" style="cursor: default">
+              {{ element.pr_count }}
+            </span>
+          </mat-cell>
+        </ng-container>
 
-    <ng-container matColumnDef="comment_count">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Comment # </mat-header-cell>
-      <mat-cell *matCellDef="let element" [ngClass]="colorCell(element.comment_count)">
-        <span (click)="$event.stopPropagation()" style="cursor: default">
-          {{ element.comment_count }}
-        </span>
-      </mat-cell>
-    </ng-container>
+        <ng-container matColumnDef="comment_count">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Comment # </mat-header-cell>
+          <mat-cell *matCellDef="let element" [ngClass]="colorCell(element.comment_count)">
+            <span (click)="$event.stopPropagation()" style="cursor: default">
+              {{ element.comment_count }}
+            </span>
+          </mat-cell>
+        </ng-container>
 
-    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns 
-  ref: https://material.angular.io/components/table/examples#table-expandable-rows -->
-
-    <ng-container matColumnDef="expandedDetail">
-      <mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
-        <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-          <mat-table [dataSource]="element.events">
-            <ng-container matColumnDef="{{ expandableColumn }}" *ngFor="let expandableColumn of expandedColumnsToDisplay">
-              <mat-header-cell *matHeaderCellDef>{{ expandableColumn }}</mat-header-cell>
-              <mat-cell *matCellDef="let property">
-                {{ property[expandableColumn] }}
-              </mat-cell>
-            </ng-container>
-            <mat-header-row *matHeaderRowDef="expandedColumnsToDisplay"></mat-header-row>
-            <mat-row *matRowDef="let property; columns: expandedColumnsToDisplay"></mat-row>
-          </mat-table>
-        </div>
-      </mat-cell>
-    </ng-container>
-
-    <mat-header-row *matHeaderRowDef="this.columnsToDisplay"></mat-header-row>>
-    <mat-row
-      *matRowDef="let element; columns: this.columnsToDisplay"
-      class="example-element-row"
-      [class.example-expanded-row]="expandedElement === element"
-      (click)="showExpandedDetails(element)"
-    ></mat-row>
-
-    <mat-row *matRowDef="let row; columns: ['expandedDetail']" style="cursor: pointer" class="example-detail-row"></mat-row>
-  </mat-table>
+        <mat-header-row *matHeaderRowDef="this.columnsToDisplay"></mat-header-row>
+        <mat-row
+          *matRowDef="let eventWeek; columns: this.columnsToDisplay"
+          class="example-element-row"
+          (click)="openDialog(eventWeek)"
+        ></mat-row>
+      </mat-table>
+    </div>
+  </div>
 
   <mat-card *ngIf="this.githubEvents.isLoading$ | async" style="display: flex; justify-content: center; align-items: center">
     <mat-progress-spinner color="primary" mode="indeterminate" diameter="50" strokeWidth="5"></mat-progress-spinner>
