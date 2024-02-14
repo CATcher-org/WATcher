@@ -33,14 +33,15 @@ export enum AuthState {
  * updating the application state with regards to authentication.
  */
 export class AuthService {
+  private static readonly DEFAULT_HAS_PRIVATE_PERMISSION = true;
+  private static readonly SESSION_NEXT_KEY = 'next';
+
   authStateSource = new BehaviorSubject(AuthState.NotAuthenticated);
   currentAuthState = this.authStateSource.asObservable();
   accessToken = new BehaviorSubject(undefined);
   private state: string;
 
   ENABLE_POPUP_MESSAGE = 'Please enable pop-ups in your browser';
-  private static readonly DEFAULT_HAS_PRIVATE_PERMISSION = true;
-  private static readonly SESSION_NEXT_KEY = 'next';
 
   constructor(
     private router: Router,
