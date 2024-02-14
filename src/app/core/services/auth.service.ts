@@ -3,7 +3,7 @@ import { NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, RouterStateSnapshot } from '@angular/router';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 import { AppConfig } from '../../../environments/environment';
 import { generateSessionId } from '../../shared/lib/session';
 import { uuid } from '../../shared/lib/uuid';
@@ -114,6 +114,29 @@ export class AuthService {
   }
 
   /**
+   * Redirect to the URL indicating the next route.
+   */
+  redirectToNext() {
+    const next = sessionStorage.getItem(AuthService.SESSION_NEXT_KEY);
+    this.phaseService
+      .setupFromUrl(next)
+      .pipe(
+        mergeMap(() => this.setRepo()),
+        catchError((err) => {
+          this.logger.info(`AuthService: Failed to redirect to next URL with error: ${err}`);
+          this.errorHandlingService.handleError(err);
+          this.clearNext();
+          return of(false);
+        })
+      )
+      .subscribe((isSetupSuccesssful) => {
+        if (isSetupSuccesssful) {
+          this.router.navigateByUrl(next);
+        }
+      });
+  }
+
+  /**
    * Will store the OAuth token.
    */
   storeOAuthAccessToken(token: string) {
@@ -210,9 +233,13 @@ export class AuthService {
   /**
    * Handles the clean up required after authentication and setting up of repository is completed.
    */
-  handleSetRepoSuccess() {
+  handleSetRepoSuccess(repoName: string) {
     this.setTitleWithPhaseDetail();
-    this.router.navigateByUrl(Phase.issuesViewer);
+    this.router.navigate([Phase.issuesViewer], {
+      queryParams: {
+        [PhaseService.REPO_QUERY_PARAM_KEY]: repoName
+      }
+    });
   }
 
   /**
@@ -225,7 +252,7 @@ export class AuthService {
           return false;
         }
         this.githubEventService.setLatestChangeEvent();
-        this.handleSetRepoSuccess();
+        this.handleSetRepoSuccess(this.phaseService.currentRepo.toString());
         return true;
       }),
       catchError((error) => {

@@ -49,7 +49,9 @@ export class AuthComponent implements OnInit, OnDestroy {
       this.router.navigate([this.phaseService.currentPhase]);
       return;
     }
-    this.initAccessTokenSubscription();
+    if (!this.authService.hasNext()) {
+      this.initAccessTokenSubscription();
+    }
     this.initAuthStateSubscription();
     this.createProfileFromUrlQueryParams();
     this.getRepoFromUrlQueryParams();
@@ -184,9 +186,7 @@ export class AuthComponent implements OnInit, OnDestroy {
       .subscribe((user: GithubUser) => {
         this.ngZone.run(() => {
           this.currentUserName = user.login;
-          if (!this.authService.hasNext()) {
-            this.authService.changeAuthState(AuthState.ConfirmOAuthUser);
-          }
+          this.authService.changeAuthState(AuthState.ConfirmOAuthUser);
         });
       });
   }
