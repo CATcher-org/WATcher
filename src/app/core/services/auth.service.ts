@@ -257,6 +257,7 @@ export class AuthService {
       }),
       catchError((error) => {
         this.errorHandlingService.handleError(error);
+        this.clearNext();
         return of(false);
       })
     );
