@@ -71,7 +71,18 @@ export class HeaderComponent implements OnInit {
 
     this.auth.currentAuthState.subscribe(() => {
       if (auth.isAuthenticated() && !repoSessionStorageService.hasRepoLocation()) {
-        this.openChangeRepoDialog();
+        if (!this.auth.hasNext()) {
+          this.openChangeRepoDialog();
+        } else {
+          // modify this to redirect to correct destination
+          const newRepo = Repo.of('nknguyenhc/quack-nkn');
+          if (newRepo) {
+            window.localStorage.setItem(STORAGE_KEYS.ORG, newRepo.owner);
+            window.localStorage.setItem(STORAGE_KEYS.DATA_REPO, newRepo.name);
+            this.repoUrlCacheService.cache(newRepo.toString());
+          }
+          this.auth.setRepo();
+        }
       }
     });
 

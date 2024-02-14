@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { Router, RouterStateSnapshot } from '@angular/router';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AppConfig } from '../../../environments/environment';
@@ -39,6 +39,8 @@ export class AuthService {
   private state: string;
 
   ENABLE_POPUP_MESSAGE = 'Please enable pop-ups in your browser';
+  private static readonly DEFAULT_HAS_PRIVATE_PERMISSION = true;
+  private static readonly SESSION_NEXT_KEY = 'next';
 
   constructor(
     private router: Router,
@@ -53,6 +55,62 @@ export class AuthService {
     private errorHandlingService: ErrorHandlingService,
     private logger: LoggingService
   ) {}
+
+  /**
+   * Stores the data about the next route in the session storage.
+   */
+  storeNext(next: RouterStateSnapshot) {
+    sessionStorage.setItem(AuthService.SESSION_NEXT_KEY, next.url);
+  }
+
+  /**
+   * Checks if there is a next route to be redirected to after login,
+   * by checking the session storage.
+   */
+  hasNext(): boolean {
+    return sessionStorage.getItem(AuthService.SESSION_NEXT_KEY) !== null;
+  }
+
+  /**
+   * Checks if there is a next route to be redirected to after login,
+   * and start OAuth process automatically if there is.
+   */
+  startOAuthIfHasNext() {
+    if (this.hasNext()) {
+      this.logger.info(`AuthService: Start OAuth because there is a next route`);
+      this.startOAuthProcess(AuthService.DEFAULT_HAS_PRIVATE_PERMISSION);
+    }
+  }
+
+  /**
+   * Checks if there is a next route to be redirected to after login,
+   * and complete the login process if there is.
+   * Assuming that user has authenticated on Github, and the app is awaiting confirmation.
+   */
+  completeLoginIfHasNext(username: string) {
+    if (!this.hasNext()) {
+      return;
+    }
+    this.logger.info(`AuthService: Automatically complete login because there is a next route`);
+    this.changeAuthState(AuthState.AwaitingAuthentication);
+    this.userService.createUserModel(username).subscribe(
+      () => {
+        this.changeAuthState(AuthState.Authenticated);
+      },
+      (err) => {
+        this.changeAuthState(AuthState.NotAuthenticated);
+        this.errorHandlingService.handleError(err);
+        this.logger.info(`AuthService: Automatic completion of login failed with an error: ${err}`);
+      }
+    );
+  }
+
+  /**
+   * Clears the next route from the session storage.
+   */
+  clearNext() {
+    sessionStorage.removeItem(AuthService.SESSION_NEXT_KEY);
+  }
 
   /**
    * Will store the OAuth token.

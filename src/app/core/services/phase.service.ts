@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { STORAGE_KEYS } from '../constants/storage-keys.constants';
 import { Phase } from '../models/phase.model';
@@ -63,7 +64,12 @@ export class PhaseService {
 
   public sessionData = STARTING_SESSION_DATA; // stores session data for the session
 
-  constructor(private githubService: GithubService, private repoUrlCacheService: RepoUrlCacheService, public logger: LoggingService) {}
+  constructor(
+    private githubService: GithubService,
+    private repoUrlCacheService: RepoUrlCacheService,
+    public logger: LoggingService,
+    private router: Router
+  ) {}
 
   /**
    * Sets the current main repository and additional repos if any.
@@ -78,6 +84,11 @@ export class PhaseService {
     this.sessionData.sessionRepo.find((x) => x.phase === this.currentPhase).repos = this.getRepository();
     this.githubService.storePhaseDetails(this.currentRepo.owner, this.currentRepo.name);
     localStorage.setItem('sessionData', JSON.stringify(this.sessionData));
+    this.router.navigate(['issuesViewer'], {
+      queryParams: {
+        repo: repo.toString()
+      }
+    });
   }
 
   /**
