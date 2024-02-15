@@ -2,12 +2,12 @@
  * Represents a label and its attributes.
  */
 export class Label implements SimpleLabel {
-  readonly formattedName: string;
+  readonly name: string;
   color: string;
   definition?: string;
 
   constructor(label: { name: string; color: string; definition?: string }) {
-    this.formattedName = label.name;
+    this.name = label.name;
     this.color = label.color;
     this.definition = label.definition;
   }
@@ -17,6 +17,6 @@ export class Label implements SimpleLabel {
  * Represents a simplified label with name and color
  */
 export type SimpleLabel = {
-  formattedName: string;
+  name: string;
   color: string;
 };

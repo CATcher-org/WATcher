@@ -96,7 +96,7 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
     if (this.allLabels === undefined || this.allLabels.length === 0) {
       return false;
     }
-    return this.allLabels.some((label) => !this.filter(filter, label.formattedName));
+    return this.allLabels.some((label) => !this.filter(filter, label.name));
   }
 
   updateSelection(): void {
