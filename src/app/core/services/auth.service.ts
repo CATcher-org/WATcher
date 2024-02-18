@@ -33,7 +33,7 @@ export enum AuthState {
  * updating the application state with regards to authentication.
  */
 export class AuthService {
-  private static readonly DEFAULT_HAS_PRIVATE_PERMISSION = true;
+  private static readonly DEFAULT_HAS_PRIVATE_PERMISSION = false;
   private static readonly SESSION_NEXT_KEY = 'next';
 
   authStateSource = new BehaviorSubject(AuthState.NotAuthenticated);

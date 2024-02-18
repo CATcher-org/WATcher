@@ -49,9 +49,7 @@ export class AuthComponent implements OnInit, OnDestroy {
       this.router.navigate([this.phaseService.currentPhase]);
       return;
     }
-    if (!this.authService.hasNext()) {
-      this.initAccessTokenSubscription();
-    }
+    this.initAccessTokenSubscription();
     this.initAuthStateSubscription();
     this.createProfileFromUrlQueryParams();
     this.getRepoFromUrlQueryParams();
@@ -60,11 +58,7 @@ export class AuthComponent implements OnInit, OnDestroy {
       this.authService.changeAuthState(AuthState.AwaitingAuthentication);
       // this.restoreOrgDetailsFromLocalStorage();
       this.logger.info('AuthComponent: Obtained authorisation code from Github');
-      this.fetchAccessToken(oauthCode, state).then((isFetchSuccessful) => {
-        if (isFetchSuccessful) {
-          this.authService.completeLoginIfHasNext(this.currentUserName);
-        }
-      });
+      this.fetchAccessToken(oauthCode, state);
       return;
     }
     this.authService.startOAuthIfHasNext();
@@ -74,9 +68,8 @@ export class AuthComponent implements OnInit, OnDestroy {
    * Will fetch the access token from GitHub.
    * @param oauthCode - The authorisation code obtained from GitHub.
    * @param state - The state returned from GitHub.
-   * @returns A Promise containing a boolean indicating whether the fetch was successful.
    */
-  async fetchAccessToken(oauthCode: string, state: string): Promise<boolean> {
+  async fetchAccessToken(oauthCode: string, state: string) {
     if (!this.authService.isReturnedStateSame(state)) {
       this.logger.info(`AuthComponent: Received incorrect state ${state}, continue waiting for correct state`);
       return new Promise((res) => res(false));
@@ -85,7 +78,7 @@ export class AuthComponent implements OnInit, OnDestroy {
     this.logger.info(`AuthComponent: Retrieving access token from Github`);
 
     const accessTokenUrl = `${AppConfig.accessTokenUrl}/${oauthCode}/client_id/${AppConfig.clientId}`;
-    return fetch(accessTokenUrl)
+    fetch(accessTokenUrl)
       .then((res) => res.json())
       .then((data) => {
         if (data.error) {
@@ -94,12 +87,10 @@ export class AuthComponent implements OnInit, OnDestroy {
         this.authService.storeOAuthAccessToken(data.token);
         this.logger.info(`AuthComponent: Sucessfully obtained access token`);
       })
-      .then(() => true)
       .catch((err) => {
         this.logger.info(`AuthComponent: Error in data fetched from access token URL: ${err}`);
         this.errorHandlingService.handleError(err);
         this.authService.changeAuthState(AuthState.NotAuthenticated);
-        return false;
       });
   }
 
@@ -186,7 +177,11 @@ export class AuthComponent implements OnInit, OnDestroy {
       .subscribe((user: GithubUser) => {
         this.ngZone.run(() => {
           this.currentUserName = user.login;
-          this.authService.changeAuthState(AuthState.ConfirmOAuthUser);
+          if (this.authService.hasNext()) {
+            this.authService.completeLoginIfHasNext(this.currentUserName);
+          } else {
+            this.authService.changeAuthState(AuthState.ConfirmOAuthUser);
+          }
         });
       });
   }
