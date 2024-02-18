@@ -69,10 +69,10 @@ export class AuthComponent implements OnInit, OnDestroy {
    * @param oauthCode - The authorisation code obtained from GitHub.
    * @param state - The state returned from GitHub.
    */
-  async fetchAccessToken(oauthCode: string, state: string) {
+  fetchAccessToken(oauthCode: string, state: string) {
     if (!this.authService.isReturnedStateSame(state)) {
       this.logger.info(`AuthComponent: Received incorrect state ${state}, continue waiting for correct state`);
-      return new Promise((res) => res(false));
+      return;
     }
 
     this.logger.info(`AuthComponent: Retrieving access token from Github`);
