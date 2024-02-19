@@ -10,7 +10,7 @@ on:
 
 jobs:
   fetch_from_upstream:
-    if: ${{ github.repository == 'CATcher-org/WATcher' }}
+    if: ${{ github.repository == 'MadLamprey/WATcher' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -19,15 +19,14 @@ jobs:
       - name: Checkout Upstream
         uses: actions/checkout@v2
         with:
-          repository: CATcher-org/WATcher-staging
-          ref: master
-          token: ${{ secrets.STAGING_TOKEN }}
+          ref: deploy
+          token: ${{ secrets.DEPLOY_TOKEN }}
           fetch-depth: 0
       - name: Merge Upstream
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git remote add upstream https://github.com/CATcher-org/WATcher.git 
+          git remote add upstream https://github.com/MadLamprey/WATcher.git 
           git fetch upstream
           git merge upstream/master --allow-unrelated-histories
           git push origin master -f
