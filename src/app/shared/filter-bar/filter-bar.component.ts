@@ -2,10 +2,10 @@ import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChil
 import { MatSelect } from '@angular/material/select';
 import { MatSort } from '@angular/material/sort';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { FiltersService } from '../../core/services/filters.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
 import { PhaseService } from '../../core/services/phase.service';
-import { FiltersService } from '../../core/services/filters.service';
 import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../issue-tables/dropdownfilter';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';

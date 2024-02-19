@@ -2,9 +2,9 @@ import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@
 import { MatListOption, MatSelectionList } from '@angular/material/list';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { SimpleLabel } from '../../../core/models/label.model';
+import { FiltersService } from '../../../core/services/filters.service';
 import { LabelService } from '../../../core/services/label.service';
 import { LoggingService } from '../../../core/services/logging.service';
-import { FiltersService } from '../../../core/services/filters.service';
 
 @Component({
   selector: 'app-label-filter-bar',
