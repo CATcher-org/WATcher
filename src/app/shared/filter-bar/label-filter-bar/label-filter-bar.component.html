@@ -23,32 +23,24 @@
           <mat-list-option
             #option
             *ngFor="let label of this.labels$ | async"
-            [value]="label.formattedName"
-            [selected]="selectedLabelNames.includes(label.formattedName)"
+            [value]="label.name"
+            [selected]="selectedLabelNames.includes(label.name)"
             class="list-option"
             [class.hidden]="filter(input.value, label.name)"
           >
             <div class="flexbox-container">
-              <button
-                mat-icon-button
-                *ngIf="!hiddenLabelNames.has(label.formattedName)"
-                (click)="hide(label.formattedName); $event.stopPropagation()"
-              >
+              <button mat-icon-button *ngIf="!hiddenLabelNames.has(label.name)" (click)="hide(label.name); $event.stopPropagation()">
                 <mat-icon>visibility</mat-icon>
               </button>
-              <button
-                mat-icon-button
-                *ngIf="hiddenLabelNames.has(label.formattedName)"
-                (click)="show(label.formattedName); $event.stopPropagation()"
-              >
+              <button mat-icon-button *ngIf="hiddenLabelNames.has(label.name)" (click)="show(label.name); $event.stopPropagation()">
                 <mat-icon>visibility_off</mat-icon>
               </button>
               <mat-chip
                 [ngStyle]="labelService.setLabelStyle(label.color)"
-                [disabled]="hiddenLabelNames.has(label.formattedName)"
+                [disabled]="hiddenLabelNames.has(label.name)"
                 (click)="simulateClick(option); $event.stopPropagation()"
               >
-                {{ label.formattedName }}
+                {{ label.name }}
               </mat-chip>
             </div>
           </mat-list-option>
