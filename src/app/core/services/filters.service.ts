@@ -13,6 +13,10 @@ import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../../shared/issue-tabl
 export class FiltersService {
   public dropdownFilter$ = new BehaviorSubject<DropdownFilter>(DEFAULT_DROPDOWN_FILTER);
 
+  clearFilters(): void {
+    this.dropdownFilter$.next(DEFAULT_DROPDOWN_FILTER);
+  }
+
   updateSelectedLabels(newSelectedLabels: string[]): void {
     this.dropdownFilter$.next({
       ...this.dropdownFilter$.value,

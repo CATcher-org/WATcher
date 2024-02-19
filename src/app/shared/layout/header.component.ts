@@ -10,6 +10,7 @@ import { Repo } from '../../core/models/repo.model';
 import { AuthService } from '../../core/services/auth.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
+import { FiltersService } from '../../core/services/filters.service';
 import { GithubService } from '../../core/services/github.service';
 import { GithubEventService } from '../../core/services/githubevent.service';
 import { IssueService } from '../../core/services/issue.service';
@@ -58,7 +59,8 @@ export class HeaderComponent implements OnInit {
     private errorHandlingService: ErrorHandlingService,
     private githubService: GithubService,
     private dialogService: DialogService,
-    private repoSessionStorageService: RepoSessionStorageService
+    private repoSessionStorageService: RepoSessionStorageService,
+    private filtersService: FiltersService
   ) {
     router.events
       .pipe(
@@ -227,6 +229,9 @@ export class HeaderComponent implements OnInit {
     if (newRepoString === this.currentRepo) {
       return;
     }
+
+    this.filtersService.clearFilters();
+
     this.phaseService
       .changeRepositoryIfValid(repo)
       .then(() => {
