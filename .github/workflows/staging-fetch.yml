@@ -28,5 +28,5 @@ jobs:
           git config user.email github-actions@github.com
           git remote add upstream https://github.com/MadLamprey/WATcher.git 
           git fetch upstream
-          git merge upstream/master --allow-unrelated-histories
-          git push origin master -f
+          git merge upstream/main --allow-unrelated-histories
+          git push origin main -f
