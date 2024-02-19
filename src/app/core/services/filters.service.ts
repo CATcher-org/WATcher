@@ -31,6 +31,7 @@ export class FiltersService {
     const newDropdownFilter: DropdownFilter = { ...this.dropdownFilter$.value, type: newType };
     this.dropdownFilter$.next(this.updateStatusPairing(newDropdownFilter));
   }
+
   /**
    * Changes type to a valid, default value when an incompatible combination of type and status is encountered.
    */
