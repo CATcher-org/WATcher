@@ -47,9 +47,9 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     public milestoneService: MilestoneService,
+    public filtersService: FiltersService,
     private phaseService: PhaseService,
-    private logger: LoggingService,
-    private filtersService: FiltersService
+    private logger: LoggingService
   ) {
     this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => this.initialize());
   }
@@ -78,24 +78,6 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   applyFilter(filterValue: string) {
     this.views$?.value?.forEach((v) => (v.retrieveFilterable().filter = filterValue));
-  }
-
-  /**
-   * Changes type to a valid, default value when an incompatible combination of type and status is encountered.
-   */
-  updateTypePairing() {
-    if (this.dropdownFilter.status === 'merged') {
-      this.dropdownFilter.type = 'pullrequest';
-    }
-  }
-
-  /**
-   * Changes status to a valid, default value when an incompatible combination of type and status is encountered.
-   */
-  updateStatusPairing() {
-    if (this.dropdownFilter.status === 'merged' && this.dropdownFilter.type === 'issue') {
-      this.dropdownFilter.status = 'all';
-    }
   }
 
   /**
