@@ -5,6 +5,11 @@ import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../../shared/issue-tabl
 @Injectable({
   providedIn: 'root'
 })
+
+/**
+ * Responsible for centralising filters
+ * Filters are subscribed to and emitted from this service
+ */
 export class FiltersService {
   public dropdownFilter$ = new BehaviorSubject<DropdownFilter>(DEFAULT_DROPDOWN_FILTER);
 
