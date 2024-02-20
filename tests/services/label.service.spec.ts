@@ -1,9 +1,34 @@
+import { of } from 'rxjs';
 import { Label } from '../../src/app/core/models/label.model';
+import { GithubService } from '../../src/app/core/services/github.service';
 import { LabelService } from '../../src/app/core/services/label.service';
 import * as LabelConstant from '../constants/label.constants';
 
 let labelService: LabelService;
 let labelList: Label[];
+let githubServiceSpy: jasmine.SpyObj<GithubService>;
+
+describe('LabelService: fetchLabels()', () => {
+  beforeEach(() => {
+    githubServiceSpy = jasmine.createSpyObj('GithubService', ['fetchAllLabels']);
+    labelService = new LabelService(githubServiceSpy);
+  });
+
+  it('should fetch labels successfully', () => {
+    const mockLabels = LabelConstant.SEVERITY_LABELS;
+    const parsedLabels = labelService.parseLabelData(mockLabels);
+
+    githubServiceSpy.fetchAllLabels.and.returnValue(of(mockLabels));
+
+    labelService.fetchLabels().subscribe((response) => {
+      expect(response).toEqual(mockLabels);
+      expect(labelService.labels).toEqual(parsedLabels);
+      expect(labelService.simpleLabels).toEqual(parsedLabels);
+    });
+
+    expect(githubServiceSpy.fetchAllLabels).toHaveBeenCalled();
+  });
+});
 
 describe('LabelService: parseLabelData()', () => {
   beforeAll(() => {
