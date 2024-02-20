@@ -33,7 +33,7 @@ export enum AuthState {
  * updating the application state with regards to authentication.
  */
 export class AuthService {
-  private static readonly DEFAULT_HAS_PRIVATE_PERMISSION = false;
+  private static readonly DEFAULT_HAS_PERMISSION_TO_PRIVATE_REPOS = false;
   private static readonly SESSION_NEXT_KEY = 'next';
 
   authStateSource = new BehaviorSubject(AuthState.NotAuthenticated);
@@ -79,7 +79,7 @@ export class AuthService {
   startOAuthIfHasNext() {
     if (this.hasNext()) {
       this.logger.info(`AuthService: Start OAuth because there is a next route`);
-      this.startOAuthProcess(AuthService.DEFAULT_HAS_PRIVATE_PERMISSION);
+      this.startOAuthProcess(AuthService.DEFAULT_HAS_PERMISSION_TO_PRIVATE_REPOS);
     }
   }
 
