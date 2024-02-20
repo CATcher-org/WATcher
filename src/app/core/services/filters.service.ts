@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, pipe } from 'rxjs';
 import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../../shared/issue-tables/dropdownfilter';
 
 @Injectable({
@@ -13,32 +13,21 @@ import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../../shared/issue-tabl
 export class FiltersService {
   public dropdownFilter$ = new BehaviorSubject<DropdownFilter>(DEFAULT_DROPDOWN_FILTER);
 
+  private _validateFilter = pipe(this.updateStatusPairing, this.updateTypePairing);
+
   clearFilters(): void {
     this.dropdownFilter$.next(DEFAULT_DROPDOWN_FILTER);
   }
 
-  updateSelectedLabels(newSelectedLabels: string[]): void {
-    this.dropdownFilter$.next({
+  updateFilters(newFilters: Partial<DropdownFilter>): void {
+    let nextDropdownFilter: DropdownFilter = {
       ...this.dropdownFilter$.value,
-      labels: newSelectedLabels
-    });
-  }
+      ...newFilters
+    };
 
-  updateHiddenLabels(newHiddenLabels: Set<string>): void {
-    this.dropdownFilter$.next({
-      ...this.dropdownFilter$.value,
-      hiddenLabels: newHiddenLabels
-    });
-  }
+    nextDropdownFilter = this._validateFilter(nextDropdownFilter);
 
-  updateStatus(newStatus: string): void {
-    const newDropdownFilter: DropdownFilter = { ...this.dropdownFilter$.value, status: newStatus };
-    this.dropdownFilter$.next(this.updateTypePairing(newDropdownFilter));
-  }
-
-  updateType(newType: string): void {
-    const newDropdownFilter: DropdownFilter = { ...this.dropdownFilter$.value, type: newType };
-    this.dropdownFilter$.next(this.updateStatusPairing(newDropdownFilter));
+    this.dropdownFilter$.next(nextDropdownFilter);
   }
 
   /**

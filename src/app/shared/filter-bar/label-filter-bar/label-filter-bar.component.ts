@@ -48,7 +48,7 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     this.hiddenLabelNames.add(label);
-    this.filtersService.updateHiddenLabels(this.hiddenLabelNames);
+    this.filtersService.updateFilters({ hiddenLabels: this.hiddenLabelNames });
   }
 
   /** Show labels that were hidden */
@@ -57,7 +57,7 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
       return;
     }
     this.hiddenLabelNames.delete(label);
-    this.filtersService.updateHiddenLabels(this.hiddenLabelNames);
+    this.filtersService.updateFilters({ hiddenLabels: this.hiddenLabelNames });
   }
 
   /**
@@ -99,7 +99,7 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   updateSelection(): void {
-    this.filtersService.updateSelectedLabels(this.selectedLabelNames);
+    this.filtersService.updateFilters({ labels: this.selectedLabelNames });
   }
 
   removeAllSelection(): void {
