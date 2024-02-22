@@ -30,9 +30,6 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Milestone subscription */
   milestoneSubscription: Subscription;
 
-  /** One MatSort controls all IssueDataTables */
-  @ViewChild(MatSort, { static: true }) matSort: MatSort;
-
   @ViewChild(LabelFilterBarComponent, { static: true }) labelFilterBar: LabelFilterBarComponent;
 
   @ViewChild('milestoneSelectorRef', { static: false }) milestoneSelectorRef: MatSelect;

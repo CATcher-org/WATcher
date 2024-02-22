@@ -1,9 +1,10 @@
+import { Sort } from '@angular/material/sort';
 import { Issue } from '../../core/models/issue.model';
 
 export type DropdownFilter = {
   status: string;
   type: string;
-  sort: string;
+  sort: Sort;
   labels: string[];
   milestones: string[];
   hiddenLabels?: Set<string>;
@@ -12,7 +13,7 @@ export type DropdownFilter = {
 export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
   status: 'all',
   type: 'all',
-  sort: 'id',
+  sort: { active: 'id', direction: 'asc' },
   labels: [],
   milestones: []
 };

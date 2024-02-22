@@ -1,8 +1,8 @@
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import * as moment from 'moment';
 import { Issue } from '../../core/models/issue.model';
 
-export function getSortedData(sort: MatSort, data: Issue[]): Issue[] {
+export function getSortedData(sort: Sort, data: Issue[]): Issue[] {
   if (!sort.active) {
     return data;
   }

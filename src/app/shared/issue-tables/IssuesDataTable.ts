@@ -24,7 +24,6 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
 
   constructor(
     private issueService: IssueService,
-    private sort: MatSort,
     private paginator: MatPaginator,
     private displayedColumn: string[],
     private assignee?: GithubUser,
@@ -47,18 +46,12 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
   }
 
   loadIssues() {
-    // If no pagination and sorting
-    let sortChange;
-    if (this.sort !== undefined) {
-      sortChange = this.sort.sortChange;
-    }
-
     let page;
     if (this.paginator !== undefined) {
       page = this.paginator.page;
     }
 
-    const displayDataChanges = [this.issueService.issues$, page, sortChange, this.filterChange, this.dropdownFilterChange].filter(
+    const displayDataChanges = [this.issueService.issues$, page, this.filterChange, this.dropdownFilterChange].filter(
       (x) => x !== undefined
     );
 
@@ -69,6 +62,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
         map(() => {
           let data = <Issue[]>Object.values(this.issueService.issues$.getValue()).reverse();
           if (this.defaultFilter) {
+            console.log(this.defaultFilter);
             data = data.filter(this.defaultFilter);
           }
           // Filter by assignee of issue
@@ -90,9 +84,8 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
           // Dropdown Filters
           data = data.filter(applyDropdownFilter(this.dropdownFilter));
 
-          if (this.sort !== undefined) {
-            data = getSortedData(this.sort, data);
-          }
+          data = getSortedData(this.dropdownFilter.sort, data);
+
           data = applySearchFilter(this.filter, this.displayedColumn, this.issueService, data);
           this.count = data.length;
 
