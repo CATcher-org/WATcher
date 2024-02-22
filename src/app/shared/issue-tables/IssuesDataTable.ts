@@ -61,7 +61,6 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
         map(() => {
           let data = <Issue[]>Object.values(this.issueService.issues$.getValue()).reverse();
           if (this.defaultFilter) {
-            console.log(this.defaultFilter);
             data = data.filter(this.defaultFilter);
           }
           // Filter by assignee of issue

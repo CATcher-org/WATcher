@@ -1,4 +1,4 @@
-import { MatSort, Sort } from '@angular/material/sort';
+import { Sort } from '@angular/material/sort';
 import * as moment from 'moment';
 import { Issue } from '../../core/models/issue.model';
 
