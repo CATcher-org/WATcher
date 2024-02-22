@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChild } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { FiltersService } from '../../core/services/filters.service';
 import { LoggingService } from '../../core/services/logging.service';
@@ -26,14 +26,6 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** Selected dropdown filter value */
   dropdownFilter: DropdownFilter = DEFAULT_DROPDOWN_FILTER;
-
-  /** Selected label filters, instance passed into LabelChipBar to populate */
-  labelFilter$ = new BehaviorSubject<string[]>([]);
-  labelFilterSubscription: Subscription;
-
-  /** Selected label to hide */
-  hiddenLabels$ = new BehaviorSubject<Set<string>>(new Set());
-  hiddenLabelSubscription: Subscription;
 
   /** Milestone subscription */
   milestoneSubscription: Subscription;
@@ -66,8 +58,6 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.labelFilterSubscription?.unsubscribe();
-    this.hiddenLabelSubscription?.unsubscribe();
     this.milestoneSubscription.unsubscribe();
     this.repoChangeSubscription.unsubscribe();
   }

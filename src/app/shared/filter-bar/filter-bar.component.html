@@ -26,7 +26,7 @@
       </mat-form-field>
       <mat-form-field appearance="standard" matSort [matSortDisableClear]="true">
         <mat-label>Sort</mat-label>
-        <mat-select [(value)]="this.dropdownFilter.sort" (selectionChange)="applyDropdownFilter()">
+        <mat-select [(value)]="this.dropdownFilter.sort">
           <mat-option value="id">
             <span mat-sort-header="id">ID</span>
           </mat-option>
