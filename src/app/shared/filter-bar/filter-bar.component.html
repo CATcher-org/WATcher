@@ -9,7 +9,7 @@
     <div class="dropdown-filters">
       <mat-form-field appearance="standard">
         <mat-label>Status</mat-label>
-        <mat-select [(value)]="this.dropdownFilter.status" (selectionChange)="updateTypePairing(); applyDropdownFilter()">
+        <mat-select [value]="this.dropdownFilter.status" (selectionChange)="this.filtersService.updateFilters({ status: $event.value })">
           <mat-option value="all">All</mat-option>
           <mat-option value="open">Open</mat-option>
           <mat-option value="closed">Closed</mat-option>
@@ -18,7 +18,7 @@
       </mat-form-field>
       <mat-form-field appearance="standard">
         <mat-label>Type</mat-label>
-        <mat-select [(value)]="this.dropdownFilter.type" (selectionChange)="updateStatusPairing(); applyDropdownFilter()">
+        <mat-select [value]="this.dropdownFilter.type" (selectionChange)="this.filtersService.updateFilters({ type: $event.value })">
           <mat-option value="all">All</mat-option>
           <mat-option value="issue">Issue</mat-option>
           <mat-option value="pullrequest">Pull Request</mat-option>
@@ -59,6 +59,6 @@
   </mat-grid-tile>
 
   <mat-grid-tile class="label-filter-grid-tile" colspan="1">
-    <app-label-filter-bar [selectedLabels]="this.labelFilter$" [hiddenLabels]="this.hiddenLabels$"></app-label-filter-bar>
+    <app-label-filter-bar></app-label-filter-bar>
   </mat-grid-tile>
 </mat-grid-list>
