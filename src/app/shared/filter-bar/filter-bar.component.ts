@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChild } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
-import { MatSort, Sort } from '@angular/material/sort';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { FiltersService } from '../../core/services/filters.service';
 import { LoggingService } from '../../core/services/logging.service';

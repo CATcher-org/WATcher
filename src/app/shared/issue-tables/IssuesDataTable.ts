@@ -1,6 +1,5 @@
 import { DataSource } from '@angular/cdk/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GithubUser } from '../../core/models/github-user.model';

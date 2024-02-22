@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatListOption, MatSelectionList } from '@angular/material/list';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { SimpleLabel } from '../../../core/models/label.model';
 import { FiltersService } from '../../../core/services/filters.service';
 import { LabelService } from '../../../core/services/label.service';
