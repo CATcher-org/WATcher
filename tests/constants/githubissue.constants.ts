@@ -30,22 +30,19 @@ const randomISODate: (startDate?: Date, endDate?: Date) => string = (
 };
 
 const USER_ANUBHAV_DETAILS = {
-  login: USER_ANUBHAV.loginId,
-  avatar_url: 'https://avatars1.githubusercontent.com/u/35621759?v=4',
-  url: 'https://api.github.com/users/anubh-v'
+  login: USER_ANUBHAV.loginId
 };
 
-const USER_ANUBHAV_ASSIGNEE_DETAILS = {
-  login: USER_ANUBHAV.loginId,
-  id: 35621759,
-  url: 'https://api.github.com/users/anubh-v'
+const MILESTONE_ONE = {
+  number: '1',
+  title: 'Milestone 1',
+  state: 'Open'
 };
 
 export const ISSUE_WITH_EMPTY_DESCRIPTION = new GithubIssue({
   id: '574085971',
   number: 92,
   assignees: [],
-  comments: [],
   body: '',
   created_at: '2020-03-02T16:19:02Z',
   labels: [GITHUB_LABEL_TEAM_LABEL, GITHUB_LABEL_TUTORIAL_LABEL, GITHUB_LABEL_FUNCTIONALITY_BUG, GITHUB_LABEL_MEDIUM_SEVERITY],
@@ -53,15 +50,19 @@ export const ISSUE_WITH_EMPTY_DESCRIPTION = new GithubIssue({
   stateReason: IssueStateReason.Reopened,
   title: 'App starts to lag when given large amount of input',
   updated_at: '2020-03-13T13:37:32Z',
+  closed_at: '',
   url: 'https://api.github.com/repos/CATcher-org/pe-results/issues/92',
-  user: USER_ANUBHAV_DETAILS
+  user: USER_ANUBHAV_DETAILS,
+  milestone: MILESTONE_ONE,
+  comments: [],
+  issueOrPr: 'Issue',
+  isDraft: false
 });
 
 export const ISSUE_UPDATED_EARLIER = new GithubIssue({
   id: '000000001',
   number: 1,
   assignees: [],
-  comments: [],
   body: '',
   created_at: '2020-09-02T16:19:02Z',
   labels: [GITHUB_LABEL_TEAM_LABEL, GITHUB_LABEL_TUTORIAL_LABEL, GITHUB_LABEL_FUNCTIONALITY_BUG, GITHUB_LABEL_MEDIUM_SEVERITY],
@@ -69,15 +70,19 @@ export const ISSUE_UPDATED_EARLIER = new GithubIssue({
   stateReason: IssueStateReason.Reopened,
   title: 'App starts to lag when given large amount of input',
   updated_at: '2020-09-03T13:37:32Z',
+  closed_at: '',
   url: 'https://api.github.com/repos/CATcher-org/pe-results/issues/93',
-  user: USER_ANUBHAV_DETAILS
+  user: USER_ANUBHAV_DETAILS,
+  milestone: MILESTONE_ONE,
+  comments: [],
+  issueOrPr: 'Issue',
+  isDraft: false
 });
 
 export const ISSUE_UPDATED_LATER = new GithubIssue({
   id: '000000002',
   number: 2,
   assignees: [],
-  comments: [],
   body: '',
   created_at: '2020-10-02T16:19:02Z',
   labels: [GITHUB_LABEL_TEAM_LABEL, GITHUB_LABEL_TUTORIAL_LABEL, GITHUB_LABEL_FUNCTIONALITY_BUG, GITHUB_LABEL_MEDIUM_SEVERITY],
@@ -85,15 +90,19 @@ export const ISSUE_UPDATED_LATER = new GithubIssue({
   stateReason: IssueStateReason.Reopened,
   title: 'App starts to lag when given large amount of input',
   updated_at: '2020-10-22T13:37:32Z',
+  closed_at: '',
   url: 'https://api.github.com/repos/CATcher-org/pe-results/issues/94',
-  user: USER_ANUBHAV_DETAILS
+  user: USER_ANUBHAV_DETAILS,
+  milestone: MILESTONE_ONE,
+  comments: [],
+  issueOrPr: 'Issue',
+  isDraft: false
 });
 
 export const ISSUE_WITH_EMPTY_DESCRIPTION_LOW_SEVERITY = new GithubIssue({
   id: '384830567',
   number: 130,
   assignees: [],
-  comments: [],
   body: '',
   created_at: '2020-03-02T16:19:02Z',
   labels: [GITHUB_LABEL_TEAM_LABEL, GITHUB_LABEL_TUTORIAL_LABEL, GITHUB_LABEL_FEATURE_FLAW, GITHUB_LABEL_LOW_SEVERITY],
@@ -101,15 +110,19 @@ export const ISSUE_WITH_EMPTY_DESCRIPTION_LOW_SEVERITY = new GithubIssue({
   stateReason: IssueStateReason.Reopened,
   title: 'App is sometimes slow',
   updated_at: '2020-03-13T13:37:32Z',
+  closed_at: '',
   url: 'https://api.github.com/repos/CATcher-org/pe-results/issues/130',
-  user: USER_ANUBHAV_DETAILS
+  user: USER_ANUBHAV_DETAILS,
+  milestone: MILESTONE_ONE,
+  comments: [],
+  issueOrPr: 'Issue',
+  isDraft: false
 });
 
 export const ISSUE_WITH_EMPTY_DESCRIPTION_HIGH_SEVERITY = new GithubIssue({
   id: '573957398',
   number: 32,
   assignees: [],
-  comments: [],
   body: '',
   created_at: '2010-03-12T19:12:02Z',
   labels: [GITHUB_LABEL_TEAM_LABEL, GITHUB_LABEL_TUTORIAL_LABEL, GITHUB_LABEL_DOCUMENTATION_BUG, GITHUB_LABEL_HIGH_SEVERITY],
@@ -117,14 +130,19 @@ export const ISSUE_WITH_EMPTY_DESCRIPTION_HIGH_SEVERITY = new GithubIssue({
   stateReason: IssueStateReason.Reopened,
   title: 'Too many typos',
   updated_at: '2012-03-12T19:12:02Z',
+  closed_at: '',
   url: 'https://api.github.com/repos/CATcher-org/pe-results/issues/130',
-  user: USER_ANUBHAV_DETAILS
+  user: USER_ANUBHAV_DETAILS,
+  milestone: MILESTONE_ONE,
+  comments: [],
+  issueOrPr: 'Issue',
+  isDraft: false
 });
 
 export const ISSUE_WITH_ASSIGNEES = new GithubIssue({
   id: '551732011',
   number: 91,
-  assignees: [USER_ANUBHAV_ASSIGNEE_DETAILS],
+  assignees: [USER_ANUBHAV_DETAILS],
   body: 'Screen freezes every few minutes',
   created_at: '2020-01-18T07:01:45Z',
   labels: [GITHUB_LABEL_TEAM_LABEL, GITHUB_LABEL_TUTORIAL_LABEL, GITHUB_LABEL_FUNCTIONALITY_BUG, GITHUB_LABEL_MEDIUM_SEVERITY],
@@ -132,9 +150,13 @@ export const ISSUE_WITH_ASSIGNEES = new GithubIssue({
   stateReason: IssueStateReason.Reopened,
   title: 'Screen freezes',
   updated_at: '2020-03-02T12:50:02Z',
+  closed_at: '',
   url: 'https://api.github.com/repos/CATcher-org/pe-results/issues/91',
   user: USER_ANUBHAV_DETAILS,
-  comments: [EMPTY_TEAM_RESPONSE]
+  milestone: MILESTONE_ONE,
+  comments: [EMPTY_TEAM_RESPONSE],
+  issueOrPr: 'Issue',
+  isDraft: false
 });
 
 export const generateIssueWithRandomData: () => GithubIssue = () => {
