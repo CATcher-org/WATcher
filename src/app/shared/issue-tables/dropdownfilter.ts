@@ -48,5 +48,5 @@ export function applyDropdownFilter(dropdownFilter: DropdownFilter, data: Issue[
 
     return ret && dropdownFilter.labels.every((label) => issue.labels.includes(label));
   });
-  return getSortedData(dropdownFilter.sort, data);
+  return getSortedData(dropdownFilter.sort, filteredData);
 }
