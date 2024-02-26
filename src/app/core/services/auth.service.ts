@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { Router, RouterStateSnapshot } from '@angular/router';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 import { AppConfig } from '../../../environments/environment';
 import { generateSessionId } from '../../shared/lib/session';
 import { uuid } from '../../shared/lib/uuid';
@@ -33,6 +33,9 @@ export enum AuthState {
  * updating the application state with regards to authentication.
  */
 export class AuthService {
+  private static readonly DEFAULT_NO_PERMISSION_TO_PRIVATE_REPOS = false;
+  private static readonly SESSION_NEXT_KEY = 'next';
+
   authStateSource = new BehaviorSubject(AuthState.NotAuthenticated);
   currentAuthState = this.authStateSource.asObservable();
   accessToken = new BehaviorSubject(undefined);
@@ -53,6 +56,85 @@ export class AuthService {
     private errorHandlingService: ErrorHandlingService,
     private logger: LoggingService
   ) {}
+
+  /**
+   * Stores the data about the next route in the session storage.
+   */
+  storeNext(next: RouterStateSnapshot) {
+    sessionStorage.setItem(AuthService.SESSION_NEXT_KEY, next.url);
+  }
+
+  /**
+   * Checks if there is a next route to be redirected to after login,
+   * by checking the session storage.
+   */
+  hasNext(): boolean {
+    return sessionStorage.getItem(AuthService.SESSION_NEXT_KEY) !== null;
+  }
+
+  /**
+   * Checks if there is a next route to be redirected to after login,
+   * and start OAuth process automatically if there is.
+   */
+  startOAuthIfHasNext() {
+    if (this.hasNext()) {
+      this.logger.info(`AuthService: Start OAuth because there is a next route`);
+      this.startOAuthProcess(AuthService.DEFAULT_NO_PERMISSION_TO_PRIVATE_REPOS);
+    }
+  }
+
+  /**
+   * Checks if there is a next route to be redirected to after login,
+   * and complete the login process if there is.
+   * Assuming that user has authenticated on Github, and the app is awaiting confirmation.
+   */
+  completeLoginIfHasNext(username: string) {
+    if (!this.hasNext()) {
+      return;
+    }
+    this.logger.info(`AuthService: Automatically complete login because there is a next route`);
+    this.changeAuthState(AuthState.AwaitingAuthentication);
+    this.userService.createUserModel(username).subscribe(
+      () => {
+        this.changeAuthState(AuthState.Authenticated);
+      },
+      (err) => {
+        this.changeAuthState(AuthState.NotAuthenticated);
+        this.errorHandlingService.handleError(err);
+        this.logger.info(`AuthService: Automatic completion of login failed with an error: ${err}`);
+      }
+    );
+  }
+
+  /**
+   * Clears the next route from the session storage.
+   */
+  clearNext() {
+    sessionStorage.removeItem(AuthService.SESSION_NEXT_KEY);
+  }
+
+  /**
+   * Redirect to the URL indicating the next route.
+   */
+  redirectToNext() {
+    const next = sessionStorage.getItem(AuthService.SESSION_NEXT_KEY);
+    this.phaseService
+      .setupFromUrl(next)
+      .pipe(
+        mergeMap(() => this.setRepo()),
+        catchError((err) => {
+          this.logger.info(`AuthService: Failed to redirect to next URL with error: ${err}`);
+          this.errorHandlingService.handleError(err);
+          this.clearNext();
+          return of(false);
+        })
+      )
+      .subscribe((isSetupSuccesssful) => {
+        if (isSetupSuccesssful) {
+          this.router.navigateByUrl(next);
+        }
+      });
+  }
 
   /**
    * Will store the OAuth token.
@@ -151,9 +233,13 @@ export class AuthService {
   /**
    * Handles the clean up required after authentication and setting up of repository is completed.
    */
-  handleSetRepoSuccess() {
+  handleSetRepoSuccess(repoName: string) {
     this.setTitleWithPhaseDetail();
-    this.router.navigateByUrl(Phase.issuesViewer);
+    this.router.navigate([Phase.issuesViewer], {
+      queryParams: {
+        [PhaseService.REPO_QUERY_PARAM_KEY]: repoName
+      }
+    });
   }
 
   /**
@@ -166,11 +252,12 @@ export class AuthService {
           return false;
         }
         this.githubEventService.setLatestChangeEvent();
-        this.handleSetRepoSuccess();
+        this.handleSetRepoSuccess(this.phaseService.currentRepo.toString());
         return true;
       }),
       catchError((error) => {
         this.errorHandlingService.handleError(error);
+        this.clearNext();
         return of(false);
       })
     );

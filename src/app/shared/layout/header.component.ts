@@ -73,7 +73,11 @@ export class HeaderComponent implements OnInit {
 
     this.auth.currentAuthState.subscribe(() => {
       if (auth.isAuthenticated() && !repoSessionStorageService.hasRepoLocation()) {
-        this.openChangeRepoDialog();
+        if (!this.auth.hasNext()) {
+          this.openChangeRepoDialog();
+        } else {
+          this.auth.redirectToNext();
+        }
       }
     });
 
