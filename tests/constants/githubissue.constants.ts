@@ -33,7 +33,7 @@ const USER_ANUBHAV_DETAILS = {
   login: USER_ANUBHAV.loginId
 };
 
-const MILESTONE_ONE = {
+export const MILESTONE_ONE = {
   number: '1',
   title: 'Milestone 1',
   state: 'Open'
@@ -51,6 +51,26 @@ export const ISSUE_WITH_EMPTY_DESCRIPTION = new GithubIssue({
   title: 'App starts to lag when given large amount of input',
   updated_at: '2020-03-13T13:37:32Z',
   closed_at: '',
+  url: 'https://api.github.com/repos/CATcher-org/pe-results/issues/92',
+  user: USER_ANUBHAV_DETAILS,
+  milestone: MILESTONE_ONE,
+  comments: [],
+  issueOrPr: 'Issue',
+  isDraft: false
+});
+
+export const CLOSED_ISSUE_WITH_EMPTY_DESCRIPTION = new GithubIssue({
+  id: '574085971',
+  number: 92,
+  assignees: [],
+  body: '',
+  created_at: '2020-03-02T16:19:02Z',
+  labels: [GITHUB_LABEL_TEAM_LABEL, GITHUB_LABEL_TUTORIAL_LABEL, GITHUB_LABEL_FUNCTIONALITY_BUG, GITHUB_LABEL_MEDIUM_SEVERITY],
+  state: IssueState.Closed,
+  stateReason: IssueStateReason.Completed,
+  title: 'App starts to lag when given large amount of input',
+  updated_at: '2020-03-13T13:37:32Z',
+  closed_at: '2020-03-22T15:37:32Z',
   url: 'https://api.github.com/repos/CATcher-org/pe-results/issues/92',
   user: USER_ANUBHAV_DETAILS,
   milestone: MILESTONE_ONE,
@@ -134,6 +154,25 @@ export const ISSUE_WITH_EMPTY_DESCRIPTION_HIGH_SEVERITY = new GithubIssue({
   url: 'https://api.github.com/repos/CATcher-org/pe-results/issues/130',
   user: USER_ANUBHAV_DETAILS,
   milestone: MILESTONE_ONE,
+  comments: [],
+  issueOrPr: 'Issue',
+  isDraft: false
+});
+
+export const ISSUE_WITHOUT_MILESTONE = new GithubIssue({
+  id: '573957398',
+  number: 32,
+  assignees: [],
+  body: '',
+  created_at: '2010-03-12T19:12:02Z',
+  labels: [GITHUB_LABEL_TEAM_LABEL, GITHUB_LABEL_TUTORIAL_LABEL, GITHUB_LABEL_DOCUMENTATION_BUG, GITHUB_LABEL_HIGH_SEVERITY],
+  state: IssueState.Open,
+  stateReason: IssueStateReason.Reopened,
+  title: 'Too many typos',
+  updated_at: '2012-03-12T19:12:02Z',
+  closed_at: '',
+  url: 'https://api.github.com/repos/CATcher-org/pe-results/issues/130',
+  user: USER_ANUBHAV_DETAILS,
   comments: [],
   issueOrPr: 'Issue',
   isDraft: false
