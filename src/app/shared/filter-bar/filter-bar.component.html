@@ -47,8 +47,8 @@
         <mat-label>Milestone</mat-label>
         <mat-select
           #milestoneSelectorRef
-          [(value)]="this.filter.milestones"
-          (selectionChange)="applyFilter()"
+          [value]="this.filter.milestones"
+          (selectionChange)="this.filtersService.updateFilters({ milestones: $event.value })"
           [disabled]="this.milestoneService.hasNoMilestones"
           multiple
         >
