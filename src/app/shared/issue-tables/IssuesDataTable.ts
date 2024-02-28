@@ -13,9 +13,7 @@ import { applySearchFilter } from './search-filter';
 
 export class IssuesDataTable extends DataSource<Issue> implements FilterableSource {
   public count = 0;
-  private filterChange = new BehaviorSubject('');
   private dropdownFilterChange = new BehaviorSubject(DEFAULT_DROPDOWN_FILTER);
-  private teamFilterChange = new BehaviorSubject('');
   private issuesSubject = new BehaviorSubject<Issue[]>([]);
   private issueSubscription: Subscription;
 
@@ -37,8 +35,6 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
 
   disconnect() {
     this.dropdownFilterChange.complete();
-    this.filterChange.complete();
-    this.teamFilterChange.complete();
     this.issuesSubject.complete();
     this.issueSubscription.unsubscribe();
     this.issueService.stopPollIssues();
@@ -50,9 +46,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
       page = this.paginator.page;
     }
 
-    const displayDataChanges = [this.issueService.issues$, page, this.filterChange, this.dropdownFilterChange].filter(
-      (x) => x !== undefined
-    );
+    const displayDataChanges = [this.issueService.issues$, page, this.dropdownFilterChange].filter((x) => x !== undefined);
 
     this.issueService.startPollIssues();
     this.issueSubscription = merge(...displayDataChanges)
@@ -97,14 +91,6 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
       .subscribe((issues) => {
         this.issuesSubject.next(issues);
       });
-  }
-
-  get filter(): string {
-    return this.filterChange.value;
-  }
-
-  set filter(filter: string) {
-    this.filterChange.next(filter);
   }
 
   get dropdownFilter(): DropdownFilter {

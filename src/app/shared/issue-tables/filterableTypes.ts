@@ -11,7 +11,6 @@ import { DropdownFilter } from './dropdownfilter';
  * and applies the filter when these variables are changed.
  */
 export interface FilterableSource {
-  filter: string;
   dropdownFilter: DropdownFilter;
 }
 
