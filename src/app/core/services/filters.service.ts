@@ -44,7 +44,7 @@ export class FiltersService {
     };
 
     nextDropdownFilter = this._validateFilter(nextDropdownFilter);
-    console.log(nextDropdownFilter);
+
     this.filter$.next(nextDropdownFilter);
   }
 
