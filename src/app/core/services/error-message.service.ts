@@ -12,6 +12,10 @@ export class ErrorMessageService {
     return 'Invalid repository name. Please provide Github repository URL or the repository name in the format Org/Repository Name.';
   }
 
+  public static invalidUrlMessage() {
+    return 'URL is invalid, or repository does not exist, please indicate the repository you wish to view to continue.';
+  }
+
   public static unableToFetchIssuesMessage() {
     return 'Failed to fetch issue.';
   }
