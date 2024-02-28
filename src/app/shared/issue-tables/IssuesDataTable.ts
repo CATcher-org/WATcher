@@ -8,8 +8,8 @@ import { IssueService } from '../../core/services/issue.service';
 import { applyDropdownFilter, DEFAULT_DROPDOWN_FILTER, DropdownFilter } from './dropdownfilter';
 import { FilterableSource } from './filterableTypes';
 import { paginateData } from './issue-paginator';
-import { applySearchFilter } from './search-filter';
 import { applySort } from './issue-sorter';
+import { applySearchFilter } from './search-filter';
 
 export class IssuesDataTable extends DataSource<Issue> implements FilterableSource {
   public count = 0;
@@ -83,10 +83,10 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
           // Dropdown Filters
           data = applyDropdownFilter(this.dropdownFilter, data);
 
-          data = applySort(this.dropdownFilter.sort, data);
-
           data = applySearchFilter(this.filter, this.displayedColumn, this.issueService, data);
           this.count = data.length;
+
+          data = applySort(this.dropdownFilter.sort, data);
 
           if (this.paginator !== undefined) {
             data = paginateData(this.paginator, data);
