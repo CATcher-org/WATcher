@@ -21,7 +21,6 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   @Input() headers: string[];
   @Input() assignee?: GithubUser = undefined;
   @Input() filters?: any = undefined;
-  @Input() sort?: MatSort = undefined;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
@@ -36,7 +35,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   constructor(public element: ElementRef, public issueService: IssueService) {}
 
   ngOnInit() {
-    this.issues = new IssuesDataTable(this.issueService, this.sort, this.paginator, this.headers, this.assignee, this.filters);
+    this.issues = new IssuesDataTable(this.issueService, this.paginator, this.headers, this.assignee, this.filters);
   }
 
   ngAfterViewInit(): void {

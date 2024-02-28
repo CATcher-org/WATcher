@@ -24,9 +24,14 @@
           <mat-option value="pullrequest">Pull Request</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="standard" matSort [matSortDisableClear]="true">
+      <mat-form-field
+        appearance="standard"
+        matSort
+        [matSortDisableClear]="true"
+        (matSortChange)="this.filtersService.updateFilters({ sort: $event })"
+      >
         <mat-label>Sort</mat-label>
-        <mat-select [(value)]="this.dropdownFilter.sort" (selectionChange)="applyDropdownFilter()">
+        <mat-select [value]="this.dropdownFilter.sort.active">
           <mat-option value="id">
             <span mat-sort-header="id">ID</span>
           </mat-option>
