@@ -1,6 +1,5 @@
 import { Sort } from '@angular/material/sort';
 import { Issue } from '../../core/models/issue.model';
-import { getSortedData } from './issue-sorter';
 
 export type DropdownFilter = {
   status: string;
@@ -48,5 +47,5 @@ export function applyDropdownFilter(dropdownFilter: DropdownFilter, data: Issue[
 
     return ret && dropdownFilter.labels.every((label) => issue.labels.includes(label));
   });
-  return getSortedData(dropdownFilter.sort, filteredData);
+  return filteredData;
 }

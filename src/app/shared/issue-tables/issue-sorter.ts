@@ -2,7 +2,7 @@ import { Sort } from '@angular/material/sort';
 import * as moment from 'moment';
 import { Issue } from '../../core/models/issue.model';
 
-export function getSortedData(sort: Sort, data: Issue[]): Issue[] {
+export function applySort(sort: Sort, data: Issue[]): Issue[] {
   if (!sort.active) {
     return data;
   }
