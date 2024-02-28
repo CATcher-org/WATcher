@@ -83,7 +83,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
           // Dropdown Filters
           data = applyDropdownFilter(this.dropdownFilter, data);
 
-          data = applySearchFilter(this.filter, this.displayedColumn, this.issueService, data);
+          data = applySearchFilter(this.dropdownFilter.title, this.displayedColumn, this.issueService, data);
           this.count = data.length;
 
           data = applySort(this.dropdownFilter.sort, data);
