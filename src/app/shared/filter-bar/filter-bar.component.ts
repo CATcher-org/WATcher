@@ -59,14 +59,6 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Signals to IssuesDataTable that a change has occurred in filter.
-   * @param filterValue
-   */
-  applyFilter(filterValue: string) {
-    this.views$?.value?.forEach((v) => (v.retrieveFilterable().filter = filterValue));
-  }
-
-  /**
    * Signals to IssuesDataTable that a change has occurred in dropdown filter.
    */
   applyDropdownFilter() {
