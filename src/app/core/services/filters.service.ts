@@ -1,39 +1,57 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, pipe } from 'rxjs';
-import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../../shared/issue-tables/dropdownfilter';
+import { Sort } from '@angular/material/sort';
+
+export type Filter = {
+  title: string;
+  status: string;
+  type: string;
+  sort: Sort;
+  labels: string[];
+  milestones: string[];
+  hiddenLabels?: Set<string>;
+};
+
+export const DEFAULT_FILTER: Filter = {
+  title: '',
+  status: 'all',
+  type: 'all',
+  sort: { active: 'id', direction: 'asc' },
+  labels: [],
+  milestones: []
+};
 
 @Injectable({
   providedIn: 'root'
 })
-
 /**
  * Responsible for centralising filters
  * Filters are subscribed to and emitted from this service
  */
 export class FiltersService {
-  public dropdownFilter$ = new BehaviorSubject<DropdownFilter>(DEFAULT_DROPDOWN_FILTER);
+  public filter$ = new BehaviorSubject<Filter>(DEFAULT_FILTER);
 
   private _validateFilter = pipe(this.updateStatusPairing, this.updateTypePairing);
 
   clearFilters(): void {
-    this.dropdownFilter$.next(DEFAULT_DROPDOWN_FILTER);
+    this.filter$.next(DEFAULT_FILTER);
   }
 
-  updateFilters(newFilters: Partial<DropdownFilter>): void {
-    let nextDropdownFilter: DropdownFilter = {
-      ...this.dropdownFilter$.value,
+  updateFilters(newFilters: Partial<Filter>): void {
+    let nextDropdownFilter: Filter = {
+      ...this.filter$.value,
       ...newFilters
     };
 
     nextDropdownFilter = this._validateFilter(nextDropdownFilter);
-
-    this.dropdownFilter$.next(nextDropdownFilter);
+    console.log(nextDropdownFilter);
+    this.filter$.next(nextDropdownFilter);
   }
 
   /**
    * Changes type to a valid, default value when an incompatible combination of type and status is encountered.
    */
-  updateTypePairing(dropdownFilter: DropdownFilter): DropdownFilter {
+  updateTypePairing(dropdownFilter: Filter): Filter {
     if (dropdownFilter.status === 'merged') {
       dropdownFilter.type = 'pullrequest';
     }
@@ -43,7 +61,7 @@ export class FiltersService {
   /**
    * Changes status to a valid, default value when an incompatible combination of type and status is encountered.
    */
-  updateStatusPairing(dropdownFilter: DropdownFilter): DropdownFilter {
+  updateStatusPairing(dropdownFilter: Filter): Filter {
     if (dropdownFilter.status === 'merged' && dropdownFilter.type === 'issue') {
       dropdownFilter.status = 'all';
     }

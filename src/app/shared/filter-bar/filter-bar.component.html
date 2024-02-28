@@ -9,7 +9,7 @@
     <div class="dropdown-filters">
       <mat-form-field appearance="standard">
         <mat-label>Status</mat-label>
-        <mat-select [value]="this.dropdownFilter.status" (selectionChange)="this.filtersService.updateFilters({ status: $event.value })">
+        <mat-select [value]="this.filter.status" (selectionChange)="this.filtersService.updateFilters({ status: $event.value })">
           <mat-option value="all">All</mat-option>
           <mat-option value="open">Open</mat-option>
           <mat-option value="closed">Closed</mat-option>
@@ -18,7 +18,7 @@
       </mat-form-field>
       <mat-form-field appearance="standard">
         <mat-label>Type</mat-label>
-        <mat-select [value]="this.dropdownFilter.type" (selectionChange)="this.filtersService.updateFilters({ type: $event.value })">
+        <mat-select [value]="this.filter.type" (selectionChange)="this.filtersService.updateFilters({ type: $event.value })">
           <mat-option value="all">All</mat-option>
           <mat-option value="issue">Issue</mat-option>
           <mat-option value="pullrequest">Pull Request</mat-option>
@@ -31,7 +31,7 @@
         (matSortChange)="this.filtersService.updateFilters({ sort: $event })"
       >
         <mat-label>Sort</mat-label>
-        <mat-select [value]="this.dropdownFilter.sort.active">
+        <mat-select [value]="this.filter.sort.active">
           <mat-option value="id">
             <span mat-sort-header="id">ID</span>
           </mat-option>
@@ -47,8 +47,8 @@
         <mat-label>Milestone</mat-label>
         <mat-select
           #milestoneSelectorRef
-          [(value)]="this.dropdownFilter.milestones"
-          (selectionChange)="applyDropdownFilter()"
+          [(value)]="this.filter.milestones"
+          (selectionChange)="applyFilter()"
           [disabled]="this.milestoneService.hasNoMilestones"
           multiple
         >
