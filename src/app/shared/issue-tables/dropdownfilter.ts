@@ -1,5 +1,5 @@
-import { Filter } from '../../core/services/filters.service';
 import { Issue } from '../../core/models/issue.model';
+import { Filter } from '../../core/services/filters.service';
 
 /**
  * This module serves to improve separation of concerns in IssuesDataTable.ts and IssueList.ts module by containing the logic for

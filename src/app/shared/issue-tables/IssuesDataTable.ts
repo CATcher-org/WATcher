@@ -4,13 +4,13 @@ import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GithubUser } from '../../core/models/github-user.model';
 import { Issue } from '../../core/models/issue.model';
+import { DEFAULT_FILTER, Filter } from '../../core/services/filters.service';
 import { IssueService } from '../../core/services/issue.service';
 import { applyDropdownFilter } from './dropdownfilter';
 import { FilterableSource } from './filterableTypes';
 import { paginateData } from './issue-paginator';
 import { applySort } from './issue-sorter';
 import { applySearchFilter } from './search-filter';
-import { DEFAULT_FILTER, Filter } from '../../core/services/filters.service';
 
 export class IssuesDataTable extends DataSource<Issue> implements FilterableSource {
   public count = 0;

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, pipe } from 'rxjs';
 import { Sort } from '@angular/material/sort';
+import { BehaviorSubject, pipe } from 'rxjs';
 
 export type Filter = {
   title: string;
