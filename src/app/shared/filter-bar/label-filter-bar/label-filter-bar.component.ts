@@ -1,7 +1,8 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatListOption, MatSelectionList } from '@angular/material/list';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { SimpleLabel } from '../../../core/models/label.model';
+import { FiltersService } from '../../../core/services/filters.service';
 import { LabelService } from '../../../core/services/label.service';
 import { LoggingService } from '../../../core/services/logging.service';
 
@@ -11,8 +12,6 @@ import { LoggingService } from '../../../core/services/logging.service';
   styleUrls: ['./label-filter-bar.component.css']
 })
 export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
-  @Input() selectedLabels: BehaviorSubject<string[]>;
-  @Input() hiddenLabels: BehaviorSubject<Set<string>>;
   @ViewChild(MatSelectionList) matSelectionList;
 
   labels$: Observable<SimpleLabel[]>;
@@ -23,7 +22,7 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
 
   labelSubscription: Subscription;
 
-  constructor(private labelService: LabelService, private logger: LoggingService) {}
+  constructor(private labelService: LabelService, private logger: LoggingService, private filtersService: FiltersService) {}
 
   ngOnInit() {
     this.loaded = false;
@@ -49,7 +48,7 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     this.hiddenLabelNames.add(label);
-    this.hiddenLabels.next(this.hiddenLabelNames);
+    this.filtersService.updateFilters({ hiddenLabels: this.hiddenLabelNames });
   }
 
   /** Show labels that were hidden */
@@ -58,7 +57,7 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
       return;
     }
     this.hiddenLabelNames.delete(label);
-    this.hiddenLabels.next(this.hiddenLabelNames);
+    this.filtersService.updateFilters({ hiddenLabels: this.hiddenLabelNames });
   }
 
   /**
@@ -71,7 +70,7 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
       return;
     }
     el.toggle();
-    this.selectedLabels.next(this.selectedLabelNames);
+    this.updateSelection();
   }
 
   /** loads in the labels in the repository */
@@ -96,11 +95,11 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
     if (this.allLabels === undefined || this.allLabels.length === 0) {
       return false;
     }
-    return this.allLabels.some((label) => !this.filter(filter, label.formattedName));
+    return this.allLabels.some((label) => !this.filter(filter, label.name));
   }
 
   updateSelection(): void {
-    this.selectedLabels.next(this.selectedLabelNames);
+    this.filtersService.updateFilters({ labels: this.selectedLabelNames });
   }
 
   removeAllSelection(): void {

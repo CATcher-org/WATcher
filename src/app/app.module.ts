@@ -29,7 +29,6 @@ import { LabelService } from './core/services/label.service';
 import { LoggingService } from './core/services/logging.service';
 import { PhaseService } from './core/services/phase.service';
 import { RepoSessionStorageService } from './core/services/repo-session-storage.service';
-import { SessionFixConfirmationComponent } from './core/services/session-fix-confirmation/session-fix-confirmation.component';
 import { UserService } from './core/services/user.service';
 import { IssuesViewerModule } from './issues-viewer/issues-viewer.module';
 import { LabelDefinitionPopupComponent } from './shared/label-definition-popup/label-definition-popup.component';
@@ -38,14 +37,7 @@ import { RepoChangeFormComponent } from './shared/repo-change-form/repo-change-f
 import { SharedModule } from './shared/shared.module';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HeaderComponent,
-    UserConfirmationComponent,
-    LabelDefinitionPopupComponent,
-    RepoChangeFormComponent,
-    SessionFixConfirmationComponent
-  ],
+  declarations: [AppComponent, HeaderComponent, UserConfirmationComponent, LabelDefinitionPopupComponent, RepoChangeFormComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

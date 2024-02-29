@@ -1,9 +1,10 @@
+import { Sort } from '@angular/material/sort';
 import { Issue } from '../../core/models/issue.model';
 
 export type DropdownFilter = {
   status: string;
   type: string;
-  sort: string;
+  sort: Sort;
   labels: string[];
   milestones: string[];
   hiddenLabels?: Set<string>;
@@ -12,7 +13,7 @@ export type DropdownFilter = {
 export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
   status: 'all',
   type: 'all',
-  sort: 'id',
+  sort: { active: 'id', direction: 'asc' },
   labels: [],
   milestones: []
 };
@@ -21,10 +22,10 @@ export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
  * This module serves to improve separation of concerns in IssuesDataTable.ts and IssueList.ts module by containing the logic for
  * applying dropdownFilter to the issues data table in this module.
  * This module exports a single function applyDropDownFilter which is called by IssueList.
- * This functions returns a function to check if a issue matches a dropdownfilter
+ * This functions returns the data passed in after all the filters of dropdownFilters are applied
  */
-export function applyDropdownFilter(dropdownFilter: DropdownFilter): (a: Issue) => boolean {
-  return (issue) => {
+export function applyDropdownFilter(dropdownFilter: DropdownFilter, data: Issue[]): Issue[] {
+  const filteredData: Issue[] = data.filter((issue) => {
     let ret = true;
 
     if (dropdownFilter.status === 'open') {
@@ -45,5 +46,6 @@ export function applyDropdownFilter(dropdownFilter: DropdownFilter): (a: Issue) 
     ret = ret && dropdownFilter.milestones.some((milestone) => issue.milestone.number === milestone);
 
     return ret && dropdownFilter.labels.every((label) => issue.labels.includes(label));
-  };
+  });
+  return filteredData;
 }

@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { Router } from '@angular/router';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { STORAGE_KEYS } from '../constants/storage-keys.constants';
 import { Phase } from '../models/phase.model';
 import { Repo } from '../models/repo.model';
@@ -43,6 +45,8 @@ export const STARTING_PHASE = Phase.issuesViewer;
  * A phase is terminology from CATcher, in WATcher it refers to a feature of WATcher.
  */
 export class PhaseService {
+  public static readonly REPO_QUERY_PARAM_KEY = 'repo';
+
   public currentPhase: Phase = STARTING_PHASE;
   public currentRepo: Repo; // current or main repository of current phase
   public otherRepos: Repo[]; // more repositories relevant to this phase
@@ -63,7 +67,12 @@ export class PhaseService {
 
   public sessionData = STARTING_SESSION_DATA; // stores session data for the session
 
-  constructor(private githubService: GithubService, private repoUrlCacheService: RepoUrlCacheService, public logger: LoggingService) {}
+  constructor(
+    private githubService: GithubService,
+    private repoUrlCacheService: RepoUrlCacheService,
+    public logger: LoggingService,
+    private router: Router
+  ) {}
 
   /**
    * Sets the current main repository and additional repos if any.
@@ -78,6 +87,11 @@ export class PhaseService {
     this.sessionData.sessionRepo.find((x) => x.phase === this.currentPhase).repos = this.getRepository();
     this.githubService.storePhaseDetails(this.currentRepo.owner, this.currentRepo.name);
     localStorage.setItem('sessionData', JSON.stringify(this.sessionData));
+    this.router.navigate(['issuesViewer'], {
+      queryParams: {
+        [PhaseService.REPO_QUERY_PARAM_KEY]: repo.toString()
+      }
+    });
   }
 
   /**
@@ -142,6 +156,43 @@ export class PhaseService {
     this.logger.info(`PhaseService: Repo is ${repo}`);
     this.setRepository(repo);
     this.repoSetSource.next(true);
+  }
+
+  /**
+   * Set items in the local storage corresponding to the next URL.
+   * This includes checking if the phase is valid, and if the repo is of the correct format.
+   * @param url The partial URL without the host, e.g. `/issuesViewer?repo=CATcher%2FWATcher.
+   */
+  setupFromUrl(url: string): Observable<void> {
+    return of(this.getPhaseAndRepoFromUrl(url)).pipe(
+      map(([phaseName, repoName]) => {
+        if (!this.isPhaseAllowed(phaseName)) {
+          throw new Error(ErrorMessageService.invalidUrlMessage());
+        }
+
+        if (repoName === null) {
+          throw new Error(ErrorMessageService.invalidUrlMessage());
+        }
+
+        const newRepo = Repo.of(repoName);
+        if (newRepo) {
+          window.localStorage.setItem(STORAGE_KEYS.ORG, newRepo.owner);
+          window.localStorage.setItem(STORAGE_KEYS.DATA_REPO, newRepo.name);
+          this.repoUrlCacheService.cache(newRepo.toString());
+        }
+      })
+    );
+  }
+
+  getPhaseAndRepoFromUrl(url: string): [string, string] {
+    const urlObject = new URL(`${location.protocol}//${location.host}${url}`);
+    const pathname = urlObject.pathname;
+    const reponame = urlObject.searchParams.get(PhaseService.REPO_QUERY_PARAM_KEY);
+    return [pathname, reponame];
+  }
+
+  isPhaseAllowed(phaseName: string) {
+    return phaseName === '/' + Phase.issuesViewer;
   }
 
   isRepoSet(): boolean {
