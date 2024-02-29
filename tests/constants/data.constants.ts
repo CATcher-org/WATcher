@@ -1,5 +1,3 @@
-import { DataFile } from '../../src/app/core/models/data-file.model';
-import { Team } from '../../src/app/core/models/team.model';
 import { UserRole } from '../../src/app/core/models/user.model';
 
 export const csvString =
@@ -56,38 +54,19 @@ export const jsonData = {
   'admins-allocation': { damithc: {}, geshuming: {} }
 };
 
-// These are objects representing some users and teams in jsonData
-export const TEAM_3 = new Team({
-  id: 'CS2103T-W12-3',
-  teamMembers: [
-    { loginId: 'JunWei96', role: UserRole.Student },
-    { loginId: '003-samuel', role: UserRole.Student },
-    { loginId: 'damithc', role: UserRole.Student },
-    { loginId: 'ptvrajsk', role: UserRole.Student }
-  ]
-});
-
-export const TEAM_4 = new Team({
-  id: 'CS2103T-W12-4',
-  teamMembers: [{ loginId: 'RonakLakhotia', role: UserRole.Student }]
-});
-
 export const USER_JUNWEI = {
   loginId: 'JunWei96',
-  role: UserRole.Student,
-  team: TEAM_3
+  role: UserRole.Student
 };
 
 export const USER_ANUBHAV = {
   loginId: 'anubh-v',
-  role: UserRole.Student,
-  team: TEAM_3
+  role: UserRole.Student
 };
 
 export const USER_Q = {
   loginId: 'q',
-  role: UserRole.Tutor,
-  allocatedTeams: [TEAM_4]
+  role: UserRole.Tutor
 };
 
 export const USER_SHUMING = {
@@ -98,24 +77,5 @@ export const USER_SHUMING = {
 
 export const USER_WITH_TWO_ROLES = {
   loginId: 'damithc',
-  role: UserRole.Admin,
-  allocatedTeams: []
-};
-
-export const dataFileTeamStructure: DataFile = {
-  teamStructure: new Map<string, Team>([
-    [
-      'CS2103T-W12-3',
-      new Team({
-        id: 'CS2103T-W12-3',
-        teamMembers: [
-          { loginId: 'JunWei96', role: UserRole.Student },
-          { loginId: '003-samuel', role: UserRole.Student },
-          { loginId: 'damithc', role: UserRole.Student },
-          { loginId: 'ptvrajsk', role: UserRole.Student }
-        ]
-      })
-    ],
-    ['CS2103T-W12-4', new Team({ id: 'CS2103T-W12-4', teamMembers: [{ loginId: 'RonakLakhotia', role: UserRole.Student }] })]
-  ])
+  role: UserRole.Admin
 };

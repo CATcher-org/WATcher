@@ -59,7 +59,9 @@ export class AuthComponent implements OnInit, OnDestroy {
       // this.restoreOrgDetailsFromLocalStorage();
       this.logger.info('AuthComponent: Obtained authorisation code from Github');
       this.fetchAccessToken(oauthCode, state);
+      return;
     }
+    this.authService.startOAuthIfHasNext();
   }
 
   /**
@@ -175,7 +177,11 @@ export class AuthComponent implements OnInit, OnDestroy {
       .subscribe((user: GithubUser) => {
         this.ngZone.run(() => {
           this.currentUserName = user.login;
-          this.authService.changeAuthState(AuthState.ConfirmOAuthUser);
+          if (this.authService.hasNext()) {
+            this.authService.completeLoginIfHasNext(this.currentUserName);
+          } else {
+            this.authService.changeAuthState(AuthState.ConfirmOAuthUser);
+          }
         });
       });
   }

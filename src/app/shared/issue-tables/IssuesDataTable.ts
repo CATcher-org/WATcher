@@ -1,6 +1,5 @@
 import { DataSource } from '@angular/cdk/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GithubUser } from '../../core/models/github-user.model';
@@ -9,7 +8,7 @@ import { IssueService } from '../../core/services/issue.service';
 import { applyDropdownFilter, DEFAULT_DROPDOWN_FILTER, DropdownFilter } from './dropdownfilter';
 import { FilterableSource } from './filterableTypes';
 import { paginateData } from './issue-paginator';
-import { getSortedData } from './issue-sorter';
+import { applySort } from './issue-sorter';
 import { applySearchFilter } from './search-filter';
 
 export class IssuesDataTable extends DataSource<Issue> implements FilterableSource {
@@ -24,7 +23,6 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
 
   constructor(
     private issueService: IssueService,
-    private sort: MatSort,
     private paginator: MatPaginator,
     private displayedColumn: string[],
     private assignee?: GithubUser,
@@ -47,18 +45,12 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
   }
 
   loadIssues() {
-    // If no pagination and sorting
-    let sortChange;
-    if (this.sort !== undefined) {
-      sortChange = this.sort.sortChange;
-    }
-
     let page;
     if (this.paginator !== undefined) {
       page = this.paginator.page;
     }
 
-    const displayDataChanges = [this.issueService.issues$, page, sortChange, this.filterChange, this.dropdownFilterChange].filter(
+    const displayDataChanges = [this.issueService.issues$, page, this.filterChange, this.dropdownFilterChange].filter(
       (x) => x !== undefined
     );
 
@@ -87,14 +79,14 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
               return issue.issueOrPr !== 'PullRequest' && issue.assignees.length === 0;
             });
           }
-          // Dropdown Filters
-          data = data.filter(applyDropdownFilter(this.dropdownFilter));
 
-          if (this.sort !== undefined) {
-            data = getSortedData(this.sort, data);
-          }
+          // Dropdown Filters
+          data = applyDropdownFilter(this.dropdownFilter, data);
+
           data = applySearchFilter(this.filter, this.displayedColumn, this.issueService, data);
           this.count = data.length;
+
+          data = applySort(this.dropdownFilter.sort, data);
 
           if (this.paginator !== undefined) {
             data = paginateData(this.paginator, data);

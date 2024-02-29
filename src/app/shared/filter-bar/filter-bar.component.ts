@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChild } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
-import { MatSort } from '@angular/material/sort';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { FiltersService } from '../../core/services/filters.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
 import { PhaseService } from '../../core/services/phase.service';
@@ -26,25 +26,19 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Selected dropdown filter value */
   dropdownFilter: DropdownFilter = DEFAULT_DROPDOWN_FILTER;
 
-  /** Selected label filters, instance passed into LabelChipBar to populate */
-  labelFilter$ = new BehaviorSubject<string[]>([]);
-  labelFilterSubscription: Subscription;
-
-  /** Selected label to hide */
-  hiddenLabels$ = new BehaviorSubject<Set<string>>(new Set());
-  hiddenLabelSubscription: Subscription;
-
   /** Milestone subscription */
   milestoneSubscription: Subscription;
-
-  /** One MatSort controls all IssueDataTables */
-  @ViewChild(MatSort, { static: true }) matSort: MatSort;
 
   @ViewChild(LabelFilterBarComponent, { static: true }) labelFilterBar: LabelFilterBarComponent;
 
   @ViewChild('milestoneSelectorRef', { static: false }) milestoneSelectorRef: MatSelect;
 
-  constructor(public milestoneService: MilestoneService, private phaseService: PhaseService, private logger: LoggingService) {
+  constructor(
+    public milestoneService: MilestoneService,
+    public filtersService: FiltersService,
+    private phaseService: PhaseService,
+    private logger: LoggingService
+  ) {
     this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => this.initialize());
   }
 
@@ -53,21 +47,13 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    /** Apply dropdown filter when LabelChipBar populates with label filters */
-    this.labelFilterSubscription = this.labelFilter$.subscribe((labels) => {
-      this.dropdownFilter.labels = labels;
-      this.applyDropdownFilter();
-    });
-
-    this.hiddenLabelSubscription = this.hiddenLabels$.subscribe((labels) => {
-      this.dropdownFilter.hiddenLabels = labels;
+    this.filtersService.dropdownFilter$.subscribe((dropdownFilter) => {
+      this.dropdownFilter = dropdownFilter;
       this.applyDropdownFilter();
     });
   }
 
   ngOnDestroy(): void {
-    this.labelFilterSubscription?.unsubscribe();
-    this.hiddenLabelSubscription?.unsubscribe();
     this.milestoneSubscription.unsubscribe();
     this.repoChangeSubscription.unsubscribe();
   }
@@ -78,24 +64,6 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   applyFilter(filterValue: string) {
     this.views$?.value?.forEach((v) => (v.retrieveFilterable().filter = filterValue));
-  }
-
-  /**
-   * Changes type to a valid, default value when an incompatible combination of type and status is encountered.
-   */
-  updateTypePairing() {
-    if (this.dropdownFilter.status === 'merged') {
-      this.dropdownFilter.type = 'pullrequest';
-    }
-  }
-
-  /**
-   * Changes status to a valid, default value when an incompatible combination of type and status is encountered.
-   */
-  updateStatusPairing() {
-    if (this.dropdownFilter.status === 'merged' && this.dropdownFilter.type === 'issue') {
-      this.dropdownFilter.status = 'all';
-    }
   }
 
   /**

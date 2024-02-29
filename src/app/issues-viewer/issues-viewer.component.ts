@@ -28,6 +28,9 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Users to show as columns */
   assignees: GithubUser[];
 
+  /** The list of users with 0 issues (hidden) */
+  hiddenAssignees: GithubUser[] = [];
+
   @ViewChildren(CardViewComponent) cardViews: QueryList<CardViewComponent>;
 
   views = new BehaviorSubject<QueryList<CardViewComponent>>(undefined);
@@ -71,6 +74,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Fetch assignees
     this.assignees = [];
+    this.hiddenAssignees = [];
 
     this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
 
@@ -89,5 +93,28 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     return this.githubService.isRepositoryPresent(currentRepo.owner, currentRepo.name);
+  }
+
+  /**
+   * Update the list of hidden user based on the new info.
+   * @param issueLength The number of issues assigned to this user.
+   * @param assignee The assignee.
+   */
+  updateHiddenUsers(issueLength: number, assignee: GithubUser) {
+    if (issueLength === 0) {
+      this.updateHiddenUser(assignee);
+    } else {
+      this.removeHiddenUser(assignee);
+    }
+  }
+
+  private updateHiddenUser(assignee: GithubUser) {
+    if (!this.hiddenAssignees.includes(assignee)) {
+      this.hiddenAssignees.push(assignee);
+    }
+  }
+
+  private removeHiddenUser(assignee: GithubUser) {
+    this.hiddenAssignees = this.hiddenAssignees.filter((user) => user !== assignee);
   }
 }
