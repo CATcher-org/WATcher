@@ -3,11 +3,11 @@ import { ErrorHandler, NgModule, NgZone } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
-import { Apollo, ApolloModule } from 'apollo-angular';
-import { HttpLink, HttpLinkModule } from 'apollo-angular-link-http';
-import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
-import { ApolloLink } from 'apollo-link';
-import { setContext } from 'apollo-link-context';
+import { ApolloLink, InMemoryCache, PossibleTypesMap } from '@apollo/client/core';
+import { setContext } from '@apollo/client/link/context';
+import { Apollo } from 'apollo-angular';
+import { HttpLink } from 'apollo-angular/http';
+
 import 'reflect-metadata';
 import graphqlTypes from '../../graphql/graphql-types';
 import '../polyfills';
@@ -46,9 +46,7 @@ import { SharedModule } from './shared/shared.module';
     ActivityDashboardModule,
     SharedModule,
     HttpClientModule,
-    AppRoutingModule,
-    ApolloModule,
-    HttpLinkModule
+    AppRoutingModule
   ],
   providers: [
     {
@@ -109,10 +107,14 @@ export class AppModule {
       return { headers: { Authorization: `Token ${this.authService.accessToken.getValue()}` } };
     });
     const link = ApolloLink.from([log, basic, auth, this.httpLink.create({ uri: URI })]);
-    const fragmentMatcher = new IntrospectionFragmentMatcher({
-      introspectionQueryResultData: graphqlTypes
+    const possibleTypes: PossibleTypesMap = {};
+
+    graphqlTypes.__schema.types.forEach((type: any) => {
+      if (type.kind === 'UNION' || type.kind === 'INTERFACE') {
+        possibleTypes[type.name] = type.possibleTypes.map((possibleType: any) => possibleType.name);
+      }
     });
-    const cache = new InMemoryCache({ fragmentMatcher });
+    const cache = new InMemoryCache({ possibleTypes });
     this.apollo.create({
       link: link,
       cache: cache
