@@ -7,8 +7,7 @@ name: Version Deployment
 
 on:
   push:
-    branches:
-      - 206-automatic-deployment
+    branches: deploy
 
 jobs:
   deploy_web:
@@ -28,7 +27,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm install
-          npm run deploy:web -- --repo=https://x-access-token:$GITHUB_TOKEN@github.com/Arif-Khalid/WATcher.git
+          npm run deploy:web -- --repo=https://x-access-token:$GITHUB_TOKEN@github.com/CATcher-org/WATcher.git
 
   draft_release:
     runs-on: ubuntu-latest
