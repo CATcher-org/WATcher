@@ -22,7 +22,6 @@ jobs:
           repository: CATcher-org/WATcher-staging
           ref: master
           token: ${{ secrets.STAGING_TOKEN }}
-          fetch-depth: 0
       - name: Merge Upstream
         run: |
           git config user.name github-actions
