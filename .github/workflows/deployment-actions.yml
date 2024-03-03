@@ -6,8 +6,9 @@
 name: Version Deployment
 
 on:
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  push:
+    branches:
+      - 206-automatic-deployment
 
 jobs:
   deploy_web:
@@ -27,7 +28,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm install
-          npm run deploy:web -- --repo=https://x-access-token:$GITHUB_TOKEN@github.com/CATcher-org/WATcher.git
+          npm run deploy:web -- --repo=https://x-access-token:$GITHUB_TOKEN@github.com/Arif-Khalid/WATcher.git
 
   draft_release:
     runs-on: ubuntu-latest
