@@ -34,19 +34,18 @@ export class FiltersService {
   private _validateFilter = pipe(this.updateStatusPairing, this.updateTypePairing);
 
   clearFilters(): void {
-    console.log('FILTERS CLEARED');
     this.filter$.next(DEFAULT_FILTER);
   }
 
   updateFilters(newFilters: Partial<Filter>): void {
-    let nextDropdownFilter: Filter = {
+    let nextFilter: Filter = {
       ...this.filter$.value,
       ...newFilters
     };
 
-    nextDropdownFilter = this._validateFilter(nextDropdownFilter);
+    nextFilter = this._validateFilter(nextFilter);
 
-    this.filter$.next(nextDropdownFilter);
+    this.filter$.next(nextFilter);
   }
 
   /**

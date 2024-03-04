@@ -38,11 +38,19 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     private phaseService: PhaseService,
     private logger: LoggingService
   ) {
-    this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => this.initialize());
+    this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => this.newRepoInitialize());
   }
 
   ngOnInit() {
-    this.initialize();
+    this.newRepoInitialize();
+
+    // One-time initializations
+    this.filtersService.filter$.subscribe((filter) => {
+      this.filter = filter;
+      this.applyFilter();
+    });
+
+    this.views$.subscribe(() => this.applyFilter());
   }
 
   ngOnDestroy(): void {
@@ -66,23 +74,17 @@ export class FilterBarComponent implements OnInit, OnDestroy {
 
   /**
    * Fetch and initialize all information from repository to populate Issue Dashboard.
+   * Re-called when repo has changed
    */
-  private initialize() {
+  private newRepoInitialize() {
     // Fetch milestones and update dropdown filter
     this.milestoneSubscription = this.milestoneService.fetchMilestones().subscribe(
       (response) => {
         this.logger.debug('IssuesViewerComponent: Fetched milestones from Github');
-        this.milestoneService.milestones.forEach((milestone) => this.filter.milestones.push(milestone.number));
+        this.filtersService.updateFilters({ milestones: this.milestoneService.milestones.map((milestone) => milestone.number) });
       },
       (err) => {},
       () => {}
     );
-
-    this.filtersService.filter$.subscribe((filter) => {
-      this.filter = filter;
-      this.applyFilter();
-    });
-
-    this.views$.subscribe(() => this.applyFilter());
   }
 }
