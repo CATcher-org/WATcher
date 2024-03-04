@@ -17,7 +17,7 @@ import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.com
   templateUrl: './filter-bar.component.html',
   styleUrls: ['./filter-bar.component.css']
 })
-export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
+export class FilterBarComponent implements OnInit, OnDestroy {
   @Input() views$: BehaviorSubject<QueryList<FilterableComponent>>;
 
   repoChangeSubscription: Subscription;
@@ -43,13 +43,6 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.initialize();
-  }
-
-  ngAfterViewInit(): void {
-    this.filtersService.filter$.subscribe((dropdownFilter) => {
-      this.filter = dropdownFilter;
-      this.applyFilter();
-    });
   }
 
   ngOnDestroy(): void {
@@ -84,5 +77,12 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
       (err) => {},
       () => {}
     );
+
+    this.filtersService.filter$.subscribe((filter) => {
+      this.filter = filter;
+      this.applyFilter();
+    });
+
+    this.views$.subscribe(() => this.applyFilter());
   }
 }

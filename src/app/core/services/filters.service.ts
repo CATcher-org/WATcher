@@ -34,6 +34,7 @@ export class FiltersService {
   private _validateFilter = pipe(this.updateStatusPairing, this.updateTypePairing);
 
   clearFilters(): void {
+    console.log('FILTERS CLEARED');
     this.filter$.next(DEFAULT_FILTER);
   }
 
@@ -51,20 +52,20 @@ export class FiltersService {
   /**
    * Changes type to a valid, default value when an incompatible combination of type and status is encountered.
    */
-  updateTypePairing(dropdownFilter: Filter): Filter {
-    if (dropdownFilter.status === 'merged') {
-      dropdownFilter.type = 'pullrequest';
+  updateTypePairing(filter: Filter): Filter {
+    if (filter.status === 'merged') {
+      filter.type = 'pullrequest';
     }
-    return dropdownFilter;
+    return filter;
   }
 
   /**
    * Changes status to a valid, default value when an incompatible combination of type and status is encountered.
    */
-  updateStatusPairing(dropdownFilter: Filter): Filter {
-    if (dropdownFilter.status === 'merged' && dropdownFilter.type === 'issue') {
-      dropdownFilter.status = 'all';
+  updateStatusPairing(filter: Filter): Filter {
+    if (filter.status === 'merged' && filter.type === 'issue') {
+      filter.status = 'all';
     }
-    return dropdownFilter;
+    return filter;
   }
 }
