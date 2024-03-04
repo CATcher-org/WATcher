@@ -13,3 +13,8 @@
 .mat-dialog-actions {
   justify-content: flex-end;
 }
+
+header {
+  display: flex;
+  justify-content: space-between;
+}
