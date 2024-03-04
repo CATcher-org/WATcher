@@ -88,15 +88,17 @@
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  width: calc(100% - 8px);
+  border-radius: 10px;
+  height: 40px;
+  padding: 0px 12px;
+  margin: 8px 4px;
+  box-sizing: border-box;
 }
 
 .input-field {
   width: calc(100% - (2 * 15px)); /* To account for left and right padding. */
   padding: 0 15px;
-}
-
-.list-option {
-  width: 100%;
 }
 
 .mat-chip {

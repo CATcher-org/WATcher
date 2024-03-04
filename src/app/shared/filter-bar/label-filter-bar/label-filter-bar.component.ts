@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatListOption, MatSelectionList } from '@angular/material/list';
+import { MatSelectionList } from '@angular/material/list';
 import { Observable, Subscription } from 'rxjs';
-import { SimpleLabel } from '../../../core/models/label.model';
+import { SimpleLabel, Label } from '../../../core/models/label.model';
 import { FiltersService } from '../../../core/services/filters.service';
 import { LabelService } from '../../../core/services/label.service';
 import { LoggingService } from '../../../core/services/logging.service';
@@ -16,7 +16,8 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
 
   labels$: Observable<SimpleLabel[]>;
   allLabels: SimpleLabel[];
-  selectedLabelNames: string[] = [];
+  selectedLabelNames: Set<string> = new Set<string>();
+  deselectedLabelNames: Set<string> = new Set<string>();
   hiddenLabelNames: Set<string> = new Set();
   loaded = false;
 
@@ -61,16 +62,34 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   /**
-   * chip as of the current project version consumes click events
-   * this method is used as an workaround the issue.
-   * https://github.com/angular/components/issues/19759
+   * Change label to the next state.
+   * Label has the following state rotation: default -> selected -> deselected.
+   * @param label The label to change state
    */
-  simulateClick(el: MatListOption): void {
-    if (el.disabled) {
-      return;
+  changeLabelState(label: SimpleLabel) {
+    if (this.selectedLabelNames.has(label.name)) {
+      this.selectedLabelNames.delete(label.name);
+      this.deselectedLabelNames.add(label.name);
+    } else if (this.deselectedLabelNames.has(label.name)) {
+      this.deselectedLabelNames.delete(label.name);
+    } else {
+      this.selectedLabelNames.add(label.name);
     }
-    el.toggle();
     this.updateSelection();
+  }
+
+  /**
+   * Returns the border color of the label.
+   * The border color represents the state of the label.
+   */
+  getBorderColor(label: SimpleLabel): string {
+    if (this.selectedLabelNames.has(label.name)) {
+      return '#2bfc2e';
+    } else if (this.deselectedLabelNames.has(label.name)) {
+      return '#ff0303';
+    } else {
+      return 'transparent';
+    }
   }
 
   /** loads in the labels in the repository */
@@ -99,7 +118,10 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   updateSelection(): void {
-    this.filtersService.updateFilters({ labels: this.selectedLabelNames });
+    this.filtersService.updateFilters({
+      labels: Array.from(this.selectedLabelNames),
+      deselectedLabels: this.deselectedLabelNames
+    });
   }
 
   removeAllSelection(): void {
