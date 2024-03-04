@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { BehaviorSubject, pipe } from 'rxjs';
+import { SimpleLabel } from '../models/label.model';
 
 export type Filter = {
   title: string;
@@ -9,7 +10,7 @@ export type Filter = {
   sort: Sort;
   labels: string[];
   milestones: string[];
-  hiddenLabels?: Set<string>;
+  hiddenLabels: Set<string>;
 };
 
 export const DEFAULT_FILTER: Filter = {
@@ -18,7 +19,8 @@ export const DEFAULT_FILTER: Filter = {
   type: 'all',
   sort: { active: 'id', direction: 'asc' },
   labels: [],
-  milestones: []
+  milestones: [],
+  hiddenLabels: new Set()
 };
 
 @Injectable({
@@ -48,6 +50,20 @@ export class FiltersService {
     this.filter$.next(nextFilter);
   }
 
+  sanitizeLabels(allLabels: SimpleLabel[]) {
+    const allLabelsSet = new Set(allLabels.map((label) => label.name));
+
+    const newHiddenLabels: Set<string> = new Set();
+    for (const hiddenLabel of this.filter$.value.hiddenLabels) {
+      if (allLabelsSet.has(hiddenLabel)) {
+        newHiddenLabels.add(hiddenLabel);
+      }
+    }
+
+    const newLabels = this.filter$.value.labels.filter((label) => allLabelsSet.has(label));
+
+    this.updateFilters({ labels: newLabels, hiddenLabels: newHiddenLabels });
+  }
   /**
    * Changes type to a valid, default value when an incompatible combination of type and status is encountered.
    */
