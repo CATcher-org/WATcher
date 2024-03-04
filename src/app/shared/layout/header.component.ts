@@ -229,12 +229,14 @@ export class HeaderComponent implements OnInit {
    * Change repository viewed on Issue Dashboard, if a valid repository is provided.
    * Re-open dialog to prompt for another repository if an invalid one is provided.
    */
-  changeRepositoryIfValid(repo: Repo, newRepoString: string) {
+  changeRepositoryIfValid(repo: Repo, newRepoString: string, keepFilters: boolean) {
     if (newRepoString === this.currentRepo) {
       return;
     }
 
-    this.filtersService.clearFilters();
+    if (!keepFilters) {
+      this.filtersService.clearFilters();
+    }
 
     this.phaseService
       .changeRepositoryIfValid(repo)
@@ -255,10 +257,10 @@ export class HeaderComponent implements OnInit {
       if (!res) {
         return;
       }
-      const newRepo = Repo.of(res);
+      const newRepo = Repo.of(res[0]);
 
       if (this.phaseService.isRepoSet()) {
-        this.changeRepositoryIfValid(newRepo, newRepo.toString());
+        this.changeRepositoryIfValid(newRepo, newRepo.toString(), res[1]);
       } else {
         /**
          * From session-selection.component.ts

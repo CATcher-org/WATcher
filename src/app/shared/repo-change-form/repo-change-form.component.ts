@@ -11,6 +11,7 @@ import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service'
 })
 export class RepoChangeFormComponent implements OnInit {
   public repoName: String;
+  public keepFilters: boolean;
   filteredSuggestions: Observable<string[]>;
   repoChangeForm = new FormControl();
 
@@ -31,7 +32,7 @@ export class RepoChangeFormComponent implements OnInit {
   }
 
   onYesClick(): void {
-    this.dialogRef.close(this.repoName);
+    this.dialogRef.close([this.repoName, this.keepFilters]);
   }
 
   onNoClick(): void {
