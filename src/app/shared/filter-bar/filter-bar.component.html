@@ -1,7 +1,12 @@
 <mat-grid-list cols="7" rowHeight="80px">
   <mat-grid-tile colspan="3">
     <mat-form-field class="search-bar">
-      <input matInput (keyup)="this.filtersService.updateFilters({ title: $event.target.value })" placeholder="Search" />
+      <input
+        matInput
+        value="{{ this.filtersService.filter$.value.title }}"
+        (keyup)="this.filtersService.updateFilters({ title: $event.target.value })"
+        placeholder="Search"
+      />
     </mat-form-field>
   </mat-grid-tile>
 
