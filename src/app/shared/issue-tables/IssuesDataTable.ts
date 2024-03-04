@@ -4,8 +4,9 @@ import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GithubUser } from '../../core/models/github-user.model';
 import { Issue } from '../../core/models/issue.model';
+import { DEFAULT_FILTER, Filter } from '../../core/services/filters.service';
 import { IssueService } from '../../core/services/issue.service';
-import { applyDropdownFilter, DEFAULT_DROPDOWN_FILTER, DropdownFilter } from './dropdownfilter';
+import { applyDropdownFilter } from './dropdownfilter';
 import { FilterableSource } from './filterableTypes';
 import { paginateData } from './issue-paginator';
 import { applySort } from './issue-sorter';
@@ -13,9 +14,7 @@ import { applySearchFilter } from './search-filter';
 
 export class IssuesDataTable extends DataSource<Issue> implements FilterableSource {
   public count = 0;
-  private filterChange = new BehaviorSubject('');
-  private dropdownFilterChange = new BehaviorSubject(DEFAULT_DROPDOWN_FILTER);
-  private teamFilterChange = new BehaviorSubject('');
+  private filterChange = new BehaviorSubject(DEFAULT_FILTER);
   private issuesSubject = new BehaviorSubject<Issue[]>([]);
   private issueSubscription: Subscription;
 
@@ -36,9 +35,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
   }
 
   disconnect() {
-    this.dropdownFilterChange.complete();
     this.filterChange.complete();
-    this.teamFilterChange.complete();
     this.issuesSubject.complete();
     this.issueSubscription.unsubscribe();
     this.issueService.stopPollIssues();
@@ -50,9 +47,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
       page = this.paginator.page;
     }
 
-    const displayDataChanges = [this.issueService.issues$, page, this.filterChange, this.dropdownFilterChange].filter(
-      (x) => x !== undefined
-    );
+    const displayDataChanges = [this.issueService.issues$, page, this.filterChange].filter((x) => x !== undefined);
 
     this.issueService.startPollIssues();
     this.issueSubscription = merge(...displayDataChanges)
@@ -80,13 +75,13 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
             });
           }
 
-          // Dropdown Filters
-          data = applyDropdownFilter(this.dropdownFilter, data);
+          // Apply Filters
+          data = applyDropdownFilter(this.filter, data);
 
-          data = applySearchFilter(this.filter, this.displayedColumn, this.issueService, data);
+          data = applySearchFilter(this.filter.title, this.displayedColumn, this.issueService, data);
           this.count = data.length;
 
-          data = applySort(this.dropdownFilter.sort, data);
+          data = applySort(this.filter.sort, data);
 
           if (this.paginator !== undefined) {
             data = paginateData(this.paginator, data);
@@ -99,19 +94,11 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
       });
   }
 
-  get filter(): string {
+  get filter(): Filter {
     return this.filterChange.value;
   }
 
-  set filter(filter: string) {
+  set filter(filter: Filter) {
     this.filterChange.next(filter);
-  }
-
-  get dropdownFilter(): DropdownFilter {
-    return this.dropdownFilterChange.value;
-  }
-
-  set dropdownFilter(filter: DropdownFilter) {
-    this.dropdownFilterChange.next(filter);
   }
 }
