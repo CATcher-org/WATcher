@@ -6,6 +6,7 @@ import { filter, pairwise, switchMap } from 'rxjs/operators';
 import { AppConfig } from '../../../environments/environment';
 import { STORAGE_KEYS } from '../../core/constants/storage-keys.constants';
 import { Phase } from '../../core/models/phase.model';
+import { RepoChangeResponse } from '../../core/models/repo-change-response.model';
 import { Repo } from '../../core/models/repo.model';
 import { AuthService } from '../../core/services/auth.service';
 import { DialogService } from '../../core/services/dialog.service';
@@ -20,7 +21,6 @@ import { PhaseDescription, PhaseService } from '../../core/services/phase.servic
 import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 import { UserService } from '../../core/services/user.service';
-import { RepoChangeResponse } from '../../core/models/repo-change-response.model';
 
 const ISSUE_TRACKER_URL = 'https://github.com/CATcher-org/WATcher/issues';
 
@@ -254,9 +254,8 @@ export class HeaderComponent implements OnInit {
   openChangeRepoDialog() {
     const dialogRef = this.dialogService.openChangeRepoDialog(this.currentRepo);
 
-    dialogRef.afterClosed().subscribe((res: RepoChangeResponse) => {
-      // res is undefined if user clicks away from change repo dialog
-      if (!res || !res.changeRepo) {
+    dialogRef.afterClosed().subscribe((res: RepoChangeResponse | null) => {
+      if (!res) {
         return;
       }
       const newRepo = Repo.of(res.repo);

@@ -2,8 +2,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 import { RepoChangeResponse } from '../../core/models/repo-change-response.model';
+import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 
 @Component({
   selector: 'app-repo-change-form',
@@ -35,18 +35,12 @@ export class RepoChangeFormComponent implements OnInit {
   onYesClick(): void {
     const response: RepoChangeResponse = {
       repo: this.repoName,
-      keepFilters: this.keepFilters,
-      changeRepo: true
+      keepFilters: this.keepFilters
     };
     this.dialogRef.close(response);
   }
 
   onNoClick(): void {
-    const response: RepoChangeResponse = {
-      repo: this.repoName,
-      keepFilters: this.keepFilters,
-      changeRepo: false
-    };
-    this.dialogRef.close(response);
+    this.dialogRef.close(null);
   }
 }

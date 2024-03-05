@@ -4,5 +4,4 @@
 export type RepoChangeResponse = {
   repo: string;
   keepFilters: boolean;
-  changeRepo: boolean;
 };
