@@ -2,8 +2,8 @@ import { of } from 'rxjs';
 import { View } from '../../../../src/app/core/models/view.model';
 import {
   assertSessionDataIntegrity,
-  NO_VALID_OPEN_PHASES,
-  OPENED_PHASE_REPO_UNDEFINED,
+  NO_VALID_OPEN_VIEWS,
+  OPENED_VIEW_REPO_UNDEFINED,
   SESSION_DATA_MISSING_FIELDS,
   SESSION_DATA_UNAVAILABLE
 } from '../../../../src/app/core/models/session.model';
@@ -46,7 +46,7 @@ describe('Session Model', () => {
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
-          error: (err) => expect(err).toEqual(new Error(NO_VALID_OPEN_PHASES))
+          error: (err) => expect(err).toEqual(new Error(NO_VALID_OPEN_VIEWS))
         });
     });
 
@@ -55,25 +55,25 @@ describe('Session Model', () => {
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
-          error: (err) => expect(err).toEqual(new Error(OPENED_PHASE_REPO_UNDEFINED))
+          error: (err) => expect(err).toEqual(new Error(OPENED_VIEW_REPO_UNDEFINED))
         });
       of({ sessionRepo: [{ view: View.issuesViewer, repo: null }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
-          error: (err) => expect(err).toEqual(new Error(OPENED_PHASE_REPO_UNDEFINED))
+          error: (err) => expect(err).toEqual(new Error(OPENED_VIEW_REPO_UNDEFINED))
         });
       of({ sessionRepo: [{ view: View.issuesViewer, repo: '' }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
-          error: (err) => expect(err).toEqual(new Error(OPENED_PHASE_REPO_UNDEFINED))
+          error: (err) => expect(err).toEqual(new Error(OPENED_VIEW_REPO_UNDEFINED))
         });
       of({ sessionRepo: [{ view: View.issuesViewer, repo: [] }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
-          error: (err) => expect(err).toEqual(new Error(OPENED_PHASE_REPO_UNDEFINED))
+          error: (err) => expect(err).toEqual(new Error(OPENED_VIEW_REPO_UNDEFINED))
         });
     });
 
