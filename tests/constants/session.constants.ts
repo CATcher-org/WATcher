@@ -1,4 +1,4 @@
-import { Phase } from '../../src/app/core/models/phase.model';
+import { View } from '../../src/app/core/models/view.model';
 import { Repo } from '../../src/app/core/models/repo.model';
 import { SessionData, SessionRepo } from '../../src/app/core/models/session.model';
 
@@ -6,12 +6,12 @@ export const WATCHER_REPO: Repo = Repo.of('CATcher-org/WATcher');
 export const CATCHER_REPO: Repo = Repo.of('CATcher-org/CATcher');
 
 const ISSUES_VIEWER_SESSION_REPO: SessionRepo = {
-  phase: Phase.issuesViewer,
+  view: View.issuesViewer,
   repos: [WATCHER_REPO]
 };
 
 const ACTIVITY_DASHBOARD_SESSION_REPO: SessionRepo = {
-  phase: Phase.activityDashboard,
+  view: View.activityDashboard,
   repos: [WATCHER_REPO]
 };
 

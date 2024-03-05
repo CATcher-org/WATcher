@@ -7,7 +7,7 @@ import { catchError, map, mergeMap } from 'rxjs/operators';
 import { AppConfig } from '../../../environments/environment';
 import { generateSessionId } from '../../shared/lib/session';
 import { uuid } from '../../shared/lib/uuid';
-import { Phase } from '../models/phase.model';
+import { View } from '../models/view.model';
 import { ErrorHandlingService } from './error-handling.service';
 import { GithubService } from './github.service';
 import { GithubEventService } from './githubevent.service';
@@ -235,7 +235,7 @@ export class AuthService {
    */
   handleSetRepoSuccess(repoName: string) {
     this.setTitleWithPhaseDetail();
-    this.router.navigate([Phase.issuesViewer], {
+    this.router.navigate([View.issuesViewer], {
       queryParams: {
         [PhaseService.REPO_QUERY_PARAM_KEY]: repoName
       }

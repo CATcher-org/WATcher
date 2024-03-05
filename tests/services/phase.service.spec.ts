@@ -1,7 +1,7 @@
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { STORAGE_KEYS } from '../../src/app/core/constants/storage-keys.constants';
-import { Phase } from '../../src/app/core/models/phase.model';
+import { View } from '../../src/app/core/models/view.model';
 import { Repo } from '../../src/app/core/models/repo.model';
 import { ErrorMessageService } from '../../src/app/core/services/error-message.service';
 import { GithubService } from '../../src/app/core/services/github.service';
@@ -34,7 +34,7 @@ describe('PhaseService', () => {
       expect(phaseService.currentRepo).toEqual(WATCHER_REPO);
       expect(phaseService.otherRepos).toEqual(repos);
 
-      const currentSessionRepo = phaseService.sessionData.sessionRepo.find((x) => x.phase === phaseService.currentPhase);
+      const currentSessionRepo = phaseService.sessionData.sessionRepo.find((x) => x.view === phaseService.currentPhase);
       expect(currentSessionRepo?.repos).toEqual([WATCHER_REPO, CATCHER_REPO]);
     });
 
@@ -133,19 +133,19 @@ describe('PhaseService', () => {
     it('should set current phase', () => {
       phaseService.setRepository(WATCHER_REPO);
 
-      expect(phaseService.currentPhase).toEqual(Phase.issuesViewer);
+      expect(phaseService.currentPhase).toEqual(View.issuesViewer);
 
-      phaseService.changePhase(Phase.activityDashboard);
+      phaseService.changePhase(View.activityDashboard);
 
-      expect(phaseService.currentPhase).toEqual(Phase.activityDashboard);
+      expect(phaseService.currentPhase).toEqual(View.activityDashboard);
     });
   });
 
   describe('.reset()', () => {
     it('should reset the currentPhase of the PhaseService', () => {
-      phaseService.currentPhase = Phase.activityDashboard;
+      phaseService.currentPhase = View.activityDashboard;
       phaseService.reset();
-      expect(phaseService.currentPhase).toBe(Phase.issuesViewer);
+      expect(phaseService.currentPhase).toBe(View.issuesViewer);
     });
   });
 

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { STORAGE_KEYS } from '../constants/storage-keys.constants';
-import { Phase } from '../models/phase.model';
+import { View } from '../models/view.model';
 import { Repo } from '../models/repo.model';
 import { SessionData } from '../models/session.model';
 import { ErrorMessageService } from './error-message.service';
@@ -17,8 +17,8 @@ export const SESSION_AVALIABILITY_FIX_FAILED = 'Session Availability Fix failed.
  * The title of each phase that appears in the header bar.
  */
 export const PhaseDescription = {
-  [Phase.issuesViewer]: 'Issues Dashboard',
-  [Phase.activityDashboard]: 'Activity Dashboard'
+  [View.issuesViewer]: 'Issues Dashboard',
+  [View.activityDashboard]: 'Activity Dashboard'
 };
 
 /**
@@ -27,12 +27,12 @@ export const PhaseDescription = {
  */
 export const STARTING_SESSION_DATA: SessionData = {
   sessionRepo: [
-    { phase: Phase.issuesViewer, repos: [] }
-    // { phase: Phase.activityDashboard, repos: [] }
+    { view: View.issuesViewer, repos: [] }
+    // { view: View.activityDashboard, repos: [] }
   ]
 };
 
-export const STARTING_PHASE = Phase.issuesViewer;
+export const STARTING_PHASE = View.issuesViewer;
 
 @Injectable({
   providedIn: 'root'
@@ -47,7 +47,7 @@ export const STARTING_PHASE = Phase.issuesViewer;
 export class PhaseService {
   public static readonly REPO_QUERY_PARAM_KEY = 'repo';
 
-  public currentPhase: Phase = STARTING_PHASE;
+  public currentPhase: View = STARTING_PHASE;
   public currentRepo: Repo; // current or main repository of current phase
   public otherRepos: Repo[]; // more repositories relevant to this phase
 
@@ -84,7 +84,7 @@ export class PhaseService {
   setRepository(repo: Repo, repos?: Repo[]): void {
     this.currentRepo = repo;
     this.otherRepos = repos ? repos : [];
-    this.sessionData.sessionRepo.find((x) => x.phase === this.currentPhase).repos = this.getRepository();
+    this.sessionData.sessionRepo.find((x) => x.view === this.currentPhase).repos = this.getRepository();
     this.githubService.storePhaseDetails(this.currentRepo.owner, this.currentRepo.name);
     localStorage.setItem('sessionData', JSON.stringify(this.sessionData));
     this.router.navigate(['issuesViewer'], {
@@ -101,7 +101,7 @@ export class PhaseService {
   private changeCurrentRepository(repo: Repo): void {
     this.logger.info(`PhaseService: Changing current repository to '${repo}'`);
 
-    if (this.currentPhase === Phase.issuesViewer) {
+    if (this.currentPhase === View.issuesViewer) {
       /** Adds past repositories to phase */
       (this.otherRepos || []).push(this.currentRepo);
     }
@@ -192,7 +192,7 @@ export class PhaseService {
   }
 
   isPhaseAllowed(phaseName: string) {
-    return phaseName === '/' + Phase.issuesViewer;
+    return phaseName === '/' + View.issuesViewer;
   }
 
   isRepoSet(): boolean {
@@ -203,7 +203,7 @@ export class PhaseService {
    * Changes phase and updates Phase Service's properties.
    * @param phase New phase
    */
-  changePhase(phase: Phase) {
+  changePhase(phase: View) {
     this.currentPhase = phase;
 
     // For now, assumes repository stays the same

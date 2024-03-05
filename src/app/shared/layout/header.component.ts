@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { filter, pairwise, switchMap } from 'rxjs/operators';
 import { AppConfig } from '../../../environments/environment';
 import { STORAGE_KEYS } from '../../core/constants/storage-keys.constants';
-import { Phase } from '../../core/models/phase.model';
+import { View } from '../../core/models/view.model';
 import { RepoChangeResponse } from '../../core/models/repo-change-response.model';
 import { Repo } from '../../core/models/repo.model';
 import { AuthService } from '../../core/services/auth.service';
@@ -100,12 +100,12 @@ export class HeaderComponent implements OnInit {
    */
   routeToSelectedPhase(openPhase: string): void {
     // Do nothing if the selected phase is the current phase.
-    if (this.phaseService.currentPhase === Phase[openPhase]) {
+    if (this.phaseService.currentPhase === View[openPhase]) {
       return;
     }
 
     // Replace Current Phase Data.
-    this.phaseService.changePhase(Phase[openPhase]);
+    this.phaseService.changePhase(View[openPhase]);
 
     // Remove current phase issues and load selected phase issues.
     this.githubService.reset();
@@ -126,7 +126,7 @@ export class HeaderComponent implements OnInit {
   }
 
   isOpenUrlButtonShown(): boolean {
-    return this.phaseService.currentPhase === Phase.issuesViewer || this.phaseService.currentPhase === Phase.activityDashboard;
+    return this.phaseService.currentPhase === View.issuesViewer || this.phaseService.currentPhase === View.activityDashboard;
   }
 
   getVersion(): string {
@@ -146,7 +146,7 @@ export class HeaderComponent implements OnInit {
   }
 
   viewBrowser() {
-    if (this.phaseService.currentPhase === Phase.activityDashboard) {
+    if (this.phaseService.currentPhase === View.activityDashboard) {
       window.open(`https://github.com/${this.phaseService.currentRepo.owner}/${this.phaseService.currentRepo.name}/pulse`);
       return;
     }

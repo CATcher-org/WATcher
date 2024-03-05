@@ -1,13 +1,13 @@
 import { pipe } from 'rxjs';
 import { throwIfFalse } from '../../shared/lib/custom-ops';
-import { Phase } from './phase.model';
+import { View } from './view.model';
 import { Repo } from './repo.model';
 
 /**
  * Session repository comprises the phase and its corresponding repository array.
  */
 export interface SessionRepo {
-  phase: Phase;
+  view: View;
   repos: Repo[];
 }
 
@@ -49,7 +49,7 @@ function hasSessionRepo(sessionData: SessionData): boolean {
  */
 function arePhasesValid(sessionData: SessionData): boolean {
   return sessionData.sessionRepo.reduce(
-    (isPhaseValidSoFar: boolean, currentPhaseRepo: SessionRepo) => isPhaseValidSoFar && currentPhaseRepo.phase in Phase,
+    (isPhaseValidSoFar: boolean, currentPhaseRepo: SessionRepo) => isPhaseValidSoFar && currentPhaseRepo.view in View,
     true
   );
 }

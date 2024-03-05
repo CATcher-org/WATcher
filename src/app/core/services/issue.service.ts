@@ -4,7 +4,7 @@ import { catchError, exhaustMap, finalize, map } from 'rxjs/operators';
 import RestGithubIssueFilter from '../models/github/github-issue-filter.model';
 import { GithubIssue } from '../models/github/github-issue.model';
 import { Issue, Issues, IssuesFilter } from '../models/issue.model';
-import { Phase } from '../models/phase.model';
+import { View } from '../models/view.model';
 import { GithubService } from './github.service';
 import { PhaseService } from './phase.service';
 import { UserService } from './user.service';
@@ -196,7 +196,7 @@ export class IssueService {
 
   private createIssueModel(githubIssue: GithubIssue): Issue {
     switch (this.phaseService.currentPhase) {
-      case Phase.issuesViewer:
+      case View.issuesViewer:
         return Issue.createPhaseBugReportingIssue(githubIssue);
       default:
         return;

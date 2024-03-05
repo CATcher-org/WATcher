@@ -1,5 +1,5 @@
 import { of } from 'rxjs';
-import { Phase } from '../../../../src/app/core/models/phase.model';
+import { View } from '../../../../src/app/core/models/view.model';
 import {
   assertSessionDataIntegrity,
   NO_VALID_OPEN_PHASES,
@@ -42,7 +42,7 @@ describe('Session Model', () => {
     });
 
     it('should throw error on session with invalid phases', () => {
-      of({ sessionRepo: [{ phase: 'invalidPhase' as Phase, repos: [WATCHER_REPO] }] })
+      of({ sessionRepo: [{ view: 'invalidPhase' as View, repos: [WATCHER_REPO] }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
@@ -51,25 +51,25 @@ describe('Session Model', () => {
     });
 
     it('should throw error on session data with invalid repo', () => {
-      of({ sessionRepo: [{ phase: Phase.issuesViewer, repo: undefined }] })
+      of({ sessionRepo: [{ view: View.issuesViewer, repo: undefined }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
           error: (err) => expect(err).toEqual(new Error(OPENED_PHASE_REPO_UNDEFINED))
         });
-      of({ sessionRepo: [{ phase: Phase.issuesViewer, repo: null }] })
+      of({ sessionRepo: [{ view: View.issuesViewer, repo: null }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
           error: (err) => expect(err).toEqual(new Error(OPENED_PHASE_REPO_UNDEFINED))
         });
-      of({ sessionRepo: [{ phase: Phase.issuesViewer, repo: '' }] })
+      of({ sessionRepo: [{ view: View.issuesViewer, repo: '' }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
           error: (err) => expect(err).toEqual(new Error(OPENED_PHASE_REPO_UNDEFINED))
         });
-      of({ sessionRepo: [{ phase: Phase.issuesViewer, repo: [] }] })
+      of({ sessionRepo: [{ view: View.issuesViewer, repo: [] }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
