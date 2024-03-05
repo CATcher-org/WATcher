@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
+import { RepoChangeResponse } from '../../core/models/repo-change-response.model';
 
 @Component({
   selector: 'app-repo-change-form',
@@ -10,7 +11,7 @@ import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service'
   styleUrls: ['./repo-change-form.component.css']
 })
 export class RepoChangeFormComponent implements OnInit {
-  public repoName: String;
+  public repoName: string;
   public keepFilters: boolean;
   filteredSuggestions: Observable<string[]>;
   repoChangeForm = new FormControl();
@@ -32,10 +33,20 @@ export class RepoChangeFormComponent implements OnInit {
   }
 
   onYesClick(): void {
-    this.dialogRef.close([this.repoName, this.keepFilters]);
+    const response: RepoChangeResponse = {
+      repo: this.repoName,
+      keepFilters: this.keepFilters,
+      changeRepo: true
+    };
+    this.dialogRef.close(response);
   }
 
   onNoClick(): void {
-    this.dialogRef.close(false);
+    const response: RepoChangeResponse = {
+      repo: this.repoName,
+      keepFilters: this.keepFilters,
+      changeRepo: false
+    };
+    this.dialogRef.close(response);
   }
 }

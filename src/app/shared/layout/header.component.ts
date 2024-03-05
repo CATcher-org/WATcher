@@ -20,6 +20,7 @@ import { PhaseDescription, PhaseService } from '../../core/services/phase.servic
 import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 import { UserService } from '../../core/services/user.service';
+import { RepoChangeResponse } from '../../core/models/repo-change-response.model';
 
 const ISSUE_TRACKER_URL = 'https://github.com/CATcher-org/WATcher/issues';
 
@@ -253,14 +254,15 @@ export class HeaderComponent implements OnInit {
   openChangeRepoDialog() {
     const dialogRef = this.dialogService.openChangeRepoDialog(this.currentRepo);
 
-    dialogRef.afterClosed().subscribe((res) => {
-      if (!res) {
+    dialogRef.afterClosed().subscribe((res: RepoChangeResponse) => {
+      // res is undefined if user clicks away from change repo dialog
+      if (!res || !res.changeRepo) {
         return;
       }
-      const newRepo = Repo.of(res[0]);
+      const newRepo = Repo.of(res.repo);
 
       if (this.phaseService.isRepoSet()) {
-        this.changeRepositoryIfValid(newRepo, newRepo.toString(), res[1]);
+        this.changeRepositoryIfValid(newRepo, newRepo.toString(), res.keepFilters);
       } else {
         /**
          * From session-selection.component.ts

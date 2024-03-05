@@ -1,7 +1,7 @@
-<header>
+<div class="change-repo-form-header">
   <h1 mat-dialog-title class="change-repo-form-title">{{ data.repoName ? 'Change repository' : 'Select repository' }}</h1>
   <mat-checkbox *ngIf="data.repoName" [(ngModel)]="this.keepFilters">Keep Filters</mat-checkbox>
-</header>
+</div>
 <div mat-dialog-content>
   <form (ngSubmit)="onYesClick()">
     <mat-form-field appearance="fill">
