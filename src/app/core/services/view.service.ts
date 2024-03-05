@@ -44,7 +44,7 @@ export const STARTING_PHASE = View.issuesViewer;
  *
  * A phase is terminology from CATcher, in WATcher it refers to a feature of WATcher.
  */
-export class PhaseService {
+export class ViewService {
   public static readonly REPO_QUERY_PARAM_KEY = 'repo';
 
   public currentPhase: View = STARTING_PHASE;
@@ -62,7 +62,7 @@ export class PhaseService {
    */
   public repoChanged$: Subject<Repo | null> = new Subject();
 
-  /** Whether the PhaseService is changing the repository */
+  /** Whether the ViewService is changing the repository */
   public isChangingRepo = new BehaviorSubject<boolean>(false);
 
   public sessionData = STARTING_SESSION_DATA; // stores session data for the session
@@ -89,7 +89,7 @@ export class PhaseService {
     localStorage.setItem('sessionData', JSON.stringify(this.sessionData));
     this.router.navigate(['issuesViewer'], {
       queryParams: {
-        [PhaseService.REPO_QUERY_PARAM_KEY]: repo.toString()
+        [ViewService.REPO_QUERY_PARAM_KEY]: repo.toString()
       }
     });
   }
@@ -99,7 +99,7 @@ export class PhaseService {
    * @param repo New current repository
    */
   private changeCurrentRepository(repo: Repo): void {
-    this.logger.info(`PhaseService: Changing current repository to '${repo}'`);
+    this.logger.info(`ViewService: Changing current repository to '${repo}'`);
 
     if (this.currentPhase === View.issuesViewer) {
       /** Adds past repositories to phase */
@@ -142,7 +142,7 @@ export class PhaseService {
   async initializeCurrentRepository() {
     const org = window.localStorage.getItem(STORAGE_KEYS.ORG);
     const repoName = window.localStorage.getItem(STORAGE_KEYS.DATA_REPO);
-    this.logger.info(`PhaseService: received initial org (${org}) and initial name (${repoName})`);
+    this.logger.info(`ViewService: received initial org (${org}) and initial name (${repoName})`);
     let repo: Repo;
     if (!org || !repoName) {
       repo = Repo.ofEmptyRepo();
@@ -153,7 +153,7 @@ export class PhaseService {
     if (!isValidRepository) {
       throw new Error(ErrorMessageService.repositoryNotPresentMessage());
     }
-    this.logger.info(`PhaseService: Repo is ${repo}`);
+    this.logger.info(`ViewService: Repo is ${repo}`);
     this.setRepository(repo);
     this.repoSetSource.next(true);
   }
@@ -187,7 +187,7 @@ export class PhaseService {
   getPhaseAndRepoFromUrl(url: string): [string, string] {
     const urlObject = new URL(`${location.protocol}//${location.host}${url}`);
     const pathname = urlObject.pathname;
-    const reponame = urlObject.searchParams.get(PhaseService.REPO_QUERY_PARAM_KEY);
+    const reponame = urlObject.searchParams.get(ViewService.REPO_QUERY_PARAM_KEY);
     return [pathname, reponame];
   }
 

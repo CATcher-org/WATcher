@@ -17,7 +17,7 @@ import { GithubEventService } from '../../core/services/githubevent.service';
 import { IssueService } from '../../core/services/issue.service';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
-import { PhaseDescription, PhaseService } from '../../core/services/phase.service';
+import { PhaseDescription, ViewService } from '../../core/services/view.service';
 import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 import { UserService } from '../../core/services/user.service';
@@ -49,7 +49,7 @@ export class HeaderComponent implements OnInit {
   constructor(
     private router: Router,
     public auth: AuthService,
-    public phaseService: PhaseService,
+    public viewService: ViewService,
     public userService: UserService,
     public logger: LoggingService,
     private location: Location,
@@ -82,8 +82,8 @@ export class HeaderComponent implements OnInit {
       }
     });
 
-    this.phaseService.repoSetState.subscribe((state) => {
-      if (auth.isAuthenticated() && phaseService.isRepoSet()) {
+    this.viewService.repoSetState.subscribe((state) => {
+      if (auth.isAuthenticated() && viewService.isRepoSet()) {
         this.initializeRepoNameInTitle();
       }
     });
@@ -100,12 +100,12 @@ export class HeaderComponent implements OnInit {
    */
   routeToSelectedPhase(openPhase: string): void {
     // Do nothing if the selected phase is the current phase.
-    if (this.phaseService.currentPhase === View[openPhase]) {
+    if (this.viewService.currentPhase === View[openPhase]) {
       return;
     }
 
     // Replace Current Phase Data.
-    this.phaseService.changePhase(View[openPhase]);
+    this.viewService.changePhase(View[openPhase]);
 
     // Remove current phase issues and load selected phase issues.
     this.githubService.reset();
@@ -114,11 +114,11 @@ export class HeaderComponent implements OnInit {
     this.reload();
 
     // Route app to new phase.
-    this.router.navigateByUrl(this.phaseService.currentPhase);
+    this.router.navigateByUrl(this.viewService.currentPhase);
   }
 
   isBackButtonShown(): boolean {
-    return `/${this.phaseService.currentPhase}` !== this.router.url && this.router.url !== '/' && !this.router.url.startsWith('/?code');
+    return `/${this.viewService.currentPhase}` !== this.router.url && this.router.url !== '/' && !this.router.url.startsWith('/?code');
   }
 
   isReloadButtonShown(): boolean {
@@ -126,7 +126,7 @@ export class HeaderComponent implements OnInit {
   }
 
   isOpenUrlButtonShown(): boolean {
-    return this.phaseService.currentPhase === View.issuesViewer || this.phaseService.currentPhase === View.activityDashboard;
+    return this.viewService.currentPhase === View.issuesViewer || this.viewService.currentPhase === View.activityDashboard;
   }
 
   getVersion(): string {
@@ -138,16 +138,16 @@ export class HeaderComponent implements OnInit {
   }
 
   goBack() {
-    if (this.prevUrl === `/${this.phaseService.currentPhase}/issues/new`) {
-      this.router.navigateByUrl(this.phaseService.currentPhase);
+    if (this.prevUrl === `/${this.viewService.currentPhase}/issues/new`) {
+      this.router.navigateByUrl(this.viewService.currentPhase);
     } else {
       this.location.back();
     }
   }
 
   viewBrowser() {
-    if (this.phaseService.currentPhase === View.activityDashboard) {
-      window.open(`https://github.com/${this.phaseService.currentRepo.owner}/${this.phaseService.currentRepo.name}/pulse`);
+    if (this.viewService.currentPhase === View.activityDashboard) {
+      window.open(`https://github.com/${this.viewService.currentRepo.owner}/${this.viewService.currentRepo.name}/pulse`);
       return;
     }
 
@@ -218,10 +218,10 @@ export class HeaderComponent implements OnInit {
   }
 
   initializeRepoNameInTitle() {
-    if (Repo.isInvalidRepoName(this.phaseService.currentRepo)) {
+    if (Repo.isInvalidRepoName(this.viewService.currentRepo)) {
       return;
     }
-    const currentRepoString = this.phaseService.currentRepo.toString();
+    const currentRepoString = this.viewService.currentRepo.toString();
     this.logger.info(`HeaderComponent: initializing current repository name as ${currentRepoString}`);
     this.currentRepo = currentRepoString;
   }
@@ -239,7 +239,7 @@ export class HeaderComponent implements OnInit {
       this.filtersService.clearFilters();
     }
 
-    this.phaseService
+    this.viewService
       .changeRepositoryIfValid(repo)
       .then(() => {
         this.auth.setTitleWithPhaseDetail();
@@ -260,7 +260,7 @@ export class HeaderComponent implements OnInit {
       }
       const newRepo = Repo.of(res.repo);
 
-      if (this.phaseService.isRepoSet()) {
+      if (this.viewService.isRepoSet()) {
         this.changeRepositoryIfValid(newRepo, newRepo.toString(), res.keepFilters);
       } else {
         /**

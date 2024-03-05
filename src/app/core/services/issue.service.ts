@@ -6,7 +6,7 @@ import { GithubIssue } from '../models/github/github-issue.model';
 import { Issue, Issues, IssuesFilter } from '../models/issue.model';
 import { View } from '../models/view.model';
 import { GithubService } from './github.service';
-import { PhaseService } from './phase.service';
+import { ViewService } from './view.service';
 import { UserService } from './user.service';
 
 @Injectable({
@@ -29,7 +29,7 @@ export class IssueService {
   /** Whether the IssueService is downloading the data from Github*/
   public isLoading = new BehaviorSubject<boolean>(false);
 
-  constructor(private githubService: GithubService, private userService: UserService, private phaseService: PhaseService) {
+  constructor(private githubService: GithubService, private userService: UserService, private viewService: ViewService) {
     this.issues$ = new BehaviorSubject(new Array<Issue>());
   }
 
@@ -112,7 +112,7 @@ export class IssueService {
   private initializeData(): Observable<Issue[]> {
     let issuesAPICallsByFilter: Observable<Array<GithubIssue>>;
 
-    switch (IssuesFilter[this.phaseService.currentPhase][this.userService.currentUser.role]) {
+    switch (IssuesFilter[this.viewService.currentPhase][this.userService.currentUser.role]) {
       case 'FILTER_BY_CREATOR':
         issuesAPICallsByFilter = this.githubService.fetchIssuesGraphql(
           new RestGithubIssueFilter({ creator: this.userService.currentUser.loginId })
@@ -195,7 +195,7 @@ export class IssueService {
   }
 
   private createIssueModel(githubIssue: GithubIssue): Issue {
-    switch (this.phaseService.currentPhase) {
+    switch (this.viewService.currentPhase) {
       case View.issuesViewer:
         return Issue.createPhaseBugReportingIssue(githubIssue);
       default:

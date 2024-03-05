@@ -14,7 +14,7 @@ import { GithubEventService } from './githubevent.service';
 import { IssueService } from './issue.service';
 import { LabelService } from './label.service';
 import { LoggingService } from './logging.service';
-import { PhaseService } from './phase.service';
+import { ViewService } from './view.service';
 import { UserService } from './user.service';
 
 export enum AuthState {
@@ -50,7 +50,7 @@ export class AuthService {
     private userService: UserService,
     private issueService: IssueService,
     private labelService: LabelService,
-    private phaseService: PhaseService,
+    private viewService: ViewService,
     private githubEventService: GithubEventService,
     private titleService: Title,
     private errorHandlingService: ErrorHandlingService,
@@ -118,7 +118,7 @@ export class AuthService {
    */
   redirectToNext() {
     const next = sessionStorage.getItem(AuthService.SESSION_NEXT_KEY);
-    this.phaseService
+    this.viewService
       .setupFromUrl(next)
       .pipe(
         mergeMap(() => this.setRepo()),
@@ -156,7 +156,7 @@ export class AuthService {
     this.userService.reset();
     this.issueService.reset(true);
     this.labelService.reset();
-    this.phaseService.reset();
+    this.viewService.reset();
     this.githubEventService.reset();
     this.logger.reset();
     this.setLandingPageTitle();
@@ -166,7 +166,7 @@ export class AuthService {
 
   setTitleWithPhaseDetail(): void {
     const appSetting = require('../../../../package.json');
-    const title = `${appSetting.name} ${appSetting.version} - ${this.phaseService.getCurrentRepositoryURL()}`;
+    const title = `${appSetting.name} ${appSetting.version} - ${this.viewService.getCurrentRepositoryURL()}`;
     this.logger.info(`AuthService: Setting Title as ${title}`);
     this.titleService.setTitle(title);
   }
@@ -237,7 +237,7 @@ export class AuthService {
     this.setTitleWithPhaseDetail();
     this.router.navigate([View.issuesViewer], {
       queryParams: {
-        [PhaseService.REPO_QUERY_PARAM_KEY]: repoName
+        [ViewService.REPO_QUERY_PARAM_KEY]: repoName
       }
     });
   }
@@ -246,13 +246,13 @@ export class AuthService {
    * Setup repository after authentication.
    */
   setRepo(): Observable<boolean> {
-    return from(this.phaseService.initializeCurrentRepository()).pipe(
+    return from(this.viewService.initializeCurrentRepository()).pipe(
       map(() => {
-        if (!this.phaseService.currentRepo) {
+        if (!this.viewService.currentRepo) {
           return false;
         }
         this.githubEventService.setLatestChangeEvent();
-        this.handleSetRepoSuccess(this.phaseService.currentRepo.toString());
+        this.handleSetRepoSuccess(this.viewService.currentRepo.toString());
         return true;
       }),
       catchError((error) => {

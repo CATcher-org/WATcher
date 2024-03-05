@@ -10,7 +10,7 @@ import { IssueService } from '../issue.service';
 import { LabelService } from '../label.service';
 import { LoggingService } from '../logging.service';
 // import { MockAuthService } from '../mocks/mock.auth.service';
-import { PhaseService } from '../phase.service';
+import { ViewService } from '../view.service';
 import { UserService } from '../user.service';
 
 export function AuthServiceFactory(
@@ -20,7 +20,7 @@ export function AuthServiceFactory(
   userService: UserService,
   issueService: IssueService,
   labelService: LabelService,
-  phaseService: PhaseService,
+  viewService: ViewService,
   githubEventService: GithubEventService,
   titleService: Title,
   errorHandlingService: ErrorHandlingService,
@@ -35,7 +35,7 @@ export function AuthServiceFactory(
   //     userService,
   //     issueService,
   //     labelService,
-  //     phaseService,
+  //     viewService,
   //     githubEventService,
   //     titleService,
   //     logger
@@ -48,7 +48,7 @@ export function AuthServiceFactory(
     userService,
     issueService,
     labelService,
-    phaseService,
+    viewService,
     githubEventService,
     titleService,
     errorHandlingService,
