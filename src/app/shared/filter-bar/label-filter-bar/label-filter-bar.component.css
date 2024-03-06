@@ -88,12 +88,26 @@
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  width: calc(100% - 8px);
   border-radius: 10px;
   height: 40px;
   padding: 0px 12px;
   margin: 8px 4px;
   box-sizing: border-box;
+  position: relative;
+}
+
+.flexbox-container:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.flexbox-container-strikethrough {
+  position: absolute;
+  top: 50%;
+  width: 90%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 2px;
+  background-color: black;
 }
 
 .input-field {
@@ -111,7 +125,6 @@
   min-height: 16px;
   max-height: 42px;
   margin: 0px;
-  top: 50%;
 }
 
 .mat-stroked-button {

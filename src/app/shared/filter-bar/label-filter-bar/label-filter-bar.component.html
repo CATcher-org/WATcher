@@ -24,7 +24,7 @@
           class="flexbox-container"
           (click)="changeLabelState(label)"
           [class.hidden]="filter(input.value, label.name)"
-          [style]="{ border: '2px solid ' + getBorderColor(label) }"
+          [style]="{ border: '2px solid ' + getColor(label) }"
         >
           <button mat-icon-button *ngIf="!hiddenLabelNames.has(label.name)" (click)="hide(label.name); $event.stopPropagation()">
             <mat-icon>visibility</mat-icon>
@@ -39,6 +39,7 @@
           >
             {{ label.name }}
           </mat-chip>
+          <div *ngIf="deselectedLabelNames.has(label.name)" class="flexbox-container-strikethrough"></div>
         </div>
       </div>
     </div>

@@ -23,6 +23,10 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
 
   labelSubscription: Subscription;
 
+  private static readonly SELECTED_LABEL_COLOR: string = '#41c300';
+  private static readonly DESELECTED_LABEL_COLOR: string = '#b00020';
+  private static readonly DEFAULT_LABEL_COLOR: string = 'transparent';
+
   constructor(private labelService: LabelService, private logger: LoggingService, private filtersService: FiltersService) {}
 
   ngOnInit() {
@@ -82,13 +86,13 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
    * Returns the border color of the label.
    * The border color represents the state of the label.
    */
-  getBorderColor(label: SimpleLabel): string {
+  getColor(label: SimpleLabel): string {
     if (this.selectedLabelNames.has(label.name)) {
-      return '#2bfc2e';
+      return LabelFilterBarComponent.SELECTED_LABEL_COLOR;
     } else if (this.deselectedLabelNames.has(label.name)) {
-      return '#ff0303';
+      return LabelFilterBarComponent.DESELECTED_LABEL_COLOR;
     } else {
-      return 'transparent';
+      return LabelFilterBarComponent.DEFAULT_LABEL_COLOR;
     }
   }
 
