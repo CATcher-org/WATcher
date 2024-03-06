@@ -11,6 +11,10 @@ import { LoggingService } from '../../../core/services/logging.service';
   styleUrls: ['./label-filter-bar.component.css']
 })
 export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
+  private static readonly DEFAULT_LABEL_COLOR: string = 'transparent';
+  private static readonly DESELECTED_LABEL_COLOR: string = '#b00020';
+  private static readonly SELECTED_LABEL_COLOR: string = '#41c300';
+
   labels$: Observable<SimpleLabel[]>;
   allLabels: SimpleLabel[];
   selectedLabelNames: Set<string> = new Set<string>();
@@ -19,10 +23,6 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
   loaded = false;
 
   labelSubscription: Subscription;
-
-  private static readonly SELECTED_LABEL_COLOR: string = '#41c300';
-  private static readonly DESELECTED_LABEL_COLOR: string = '#b00020';
-  private static readonly DEFAULT_LABEL_COLOR: string = 'transparent';
 
   constructor(private labelService: LabelService, private logger: LoggingService, private filtersService: FiltersService) {}
 
