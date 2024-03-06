@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatSelectionList } from '@angular/material/list';
 import { Observable, Subscription } from 'rxjs';
 import { SimpleLabel } from '../../../core/models/label.model';
 import { FiltersService } from '../../../core/services/filters.service';
@@ -12,8 +11,6 @@ import { LoggingService } from '../../../core/services/logging.service';
   styleUrls: ['./label-filter-bar.component.css']
 })
 export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild(MatSelectionList) matSelectionList;
-
   labels$: Observable<SimpleLabel[]>;
   allLabels: SimpleLabel[];
   selectedLabelNames: Set<string> = new Set<string>();
@@ -129,7 +126,8 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   removeAllSelection(): void {
-    this.matSelectionList.deselectAll();
+    this.selectedLabelNames = new Set<string>();
+    this.deselectedLabelNames = new Set<string>();
     this.updateSelection();
   }
 }
