@@ -13,3 +13,5 @@ platformBrowserDynamic()
     preserveWhitespaces: false
   })
   .catch((err) => console.error(err));
+
+// test feature category
