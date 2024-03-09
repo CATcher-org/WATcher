@@ -1,9 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { Issue } from '../../core/models/issue.model';
+import { Filter } from '../../core/services/filters.service';
 import { GithubService } from '../../core/services/github.service';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
-import { DropdownFilter } from '../issue-tables/dropdownfilter';
 
 @Component({
   selector: 'app-issue-pr-card',
@@ -12,7 +12,7 @@ import { DropdownFilter } from '../issue-tables/dropdownfilter';
 })
 export class IssuePrCardComponent {
   @Input() issue: Issue;
-  @Input() dropdownFilter?: DropdownFilter;
+  @Input() filter?: Filter;
 
   constructor(private logger: LoggingService, private githubService: GithubService, public labelService: LabelService) {}
 
