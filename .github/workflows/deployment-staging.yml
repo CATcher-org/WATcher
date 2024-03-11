@@ -10,7 +10,7 @@ on:
 
 jobs:
   deploy_web:
-    if: ${{ github.ref == 'CATcher-org/WATcher-staging' }}
+    if: ${{ github.repository == 'CATcher-org/WATcher-staging' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
