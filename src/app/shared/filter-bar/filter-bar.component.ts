@@ -79,7 +79,7 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.milestoneSubscription = this.milestoneService.fetchMilestones().subscribe(
       (response) => {
         this.logger.debug('IssuesViewerComponent: Fetched milestones from Github');
-        this.milestoneService.milestones.forEach((milestone) => this.filter.milestones.push(milestone.number));
+        this.milestoneService.milestones.forEach((milestone) => this.filter.milestones.push(milestone.title));
       },
       (err) => {},
       () => {}
