@@ -1,7 +1,7 @@
+import { of } from 'rxjs';
 import { Milestone } from '../../src/app/core/models/milestone.model';
 import { GithubService } from '../../src/app/core/services/github.service';
 import { MilestoneService } from '../../src/app/core/services/milestone.service';
-import { of } from 'rxjs';
 
 let milestoneService: MilestoneService;
 let githubServiceSpy: jasmine.SpyObj<GithubService>;
