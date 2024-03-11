@@ -10,7 +10,7 @@ on:
 
 jobs:
   deploy_web:
-    if: ${{ github.ref == 'refs/heads/deploy' }}
+    if: ${{ github.ref == 'CATcher-org/WATcher-staging' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -27,4 +27,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm install
-          npm run deploy:staging -- --repo=https://x-access-token:$GITHUB_TOKEN@github.com/MadLamprey/WATcher.git
+          npm run deploy:staging -- --repo=https://x-access-token:$GITHUB_TOKEN@github.com/CATcher-org/WATcher-staging.git
