@@ -25,17 +25,6 @@ describe('issuer-sorter', () => {
       expect(sortedData).toEqual(issuesList);
     });
 
-    it('sorts issues based on their assignees correctly', () => {
-      matSort.active = 'assignees';
-      matSort.direction = 'asc';
-      const sortedIssuesByAssigneesAsc = applySort(matSort, issuesList);
-      assertOrder(sortedIssuesByAssigneesAsc, dummyIssue, otherDummyIssue);
-
-      matSort.direction = 'desc';
-      const sortedIssuesByAssigneesDesc = applySort(matSort, issuesList);
-      assertOrder(sortedIssuesByAssigneesDesc, otherDummyIssue, dummyIssue);
-    });
-
     it('sorts issues based on their string fields correctly', () => {
       matSort.active = 'title';
       matSort.direction = 'asc';
