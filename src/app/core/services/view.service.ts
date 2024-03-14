@@ -23,7 +23,7 @@ export const ViewDescription = {
 
 /**
  * All data of the session.
- * Add accessible phases here.
+ * Add accessible views here.
  */
 export const STARTING_SESSION_DATA: SessionData = {
   sessionRepo: [
@@ -42,14 +42,14 @@ export const STARTING_VIEW = View.issuesViewer;
  * Responsible for managing the current selected feature of WATcher as well as the
  * current session data and repository details related to the session.
  *
- * A phase is terminology from CATcher, in WATcher it refers to a feature of WATcher.
+ * A view is terminology from CATcher, in WATcher it refers to a feature of WATcher.
  */
 export class ViewService {
   public static readonly REPO_QUERY_PARAM_KEY = 'repo';
 
   public currentView: View = STARTING_VIEW;
-  public currentRepo: Repo; // current or main repository of current phase
-  public otherRepos: Repo[]; // more repositories relevant to this phase
+  public currentRepo: Repo; // current or main repository of current view
+  public otherRepos: Repo[]; // more repositories relevant to this view
 
   repoSetSource = new BehaviorSubject(false);
   repoSetState = this.repoSetSource.asObservable();
@@ -76,7 +76,7 @@ export class ViewService {
 
   /**
    * Sets the current main repository and additional repos if any.
-   * Updates session data in Phase Service and local storage.
+   * Updates session data in View Service and local storage.
    * Updates Github Service with current repository.
    * @param repo Main current repository
    * @param repos Additional repositories
@@ -102,7 +102,7 @@ export class ViewService {
     this.logger.info(`ViewService: Changing current repository to '${repo}'`);
 
     if (this.currentView === View.issuesViewer) {
-      /** Adds past repositories to phase */
+      /** Adds past repositories to view */
       (this.otherRepos || []).push(this.currentRepo);
     }
     this.setRepository(repo, this.otherRepos);
@@ -160,7 +160,7 @@ export class ViewService {
 
   /**
    * Set items in the local storage corresponding to the next URL.
-   * This includes checking if the phase is valid, and if the repo is of the correct format.
+   * This includes checking if the view is valid, and if the repo is of the correct format.
    * @param url The partial URL without the host, e.g. `/issuesViewer?repo=CATcher%2FWATcher.
    */
   setupFromUrl(url: string): Observable<void> {
