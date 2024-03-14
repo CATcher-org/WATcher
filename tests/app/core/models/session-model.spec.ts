@@ -41,8 +41,8 @@ describe('Session Model', () => {
         });
     });
 
-    it('should throw error on session with invalid phases', () => {
-      of({ sessionRepo: [{ view: 'invalidPhase' as View, repos: [WATCHER_REPO] }] })
+    it('should throw error on session with invalid views', () => {
+      of({ sessionRepo: [{ view: 'invalidView' as View, repos: [WATCHER_REPO] }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),

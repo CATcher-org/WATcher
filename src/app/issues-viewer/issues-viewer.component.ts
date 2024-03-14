@@ -83,7 +83,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Checks if our current repository available on phase service is indeed a valid repository
+   * Checks if our current repository available on view service is indeed a valid repository
    */
   private checkIfValidRepository() {
     const currentRepo = this.viewService.currentRepo;

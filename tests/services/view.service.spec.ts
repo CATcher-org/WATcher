@@ -38,7 +38,7 @@ describe('ViewService', () => {
       expect(currentSessionRepo?.repos).toEqual([WATCHER_REPO, CATCHER_REPO]);
     });
 
-    it('should store phase details via githubService and update localStorage', () => {
+    it('should store view details via githubService and update localStorage', () => {
       const localStorageSetItem = spyOn(localStorage, 'setItem');
 
       viewService.setRepository(WATCHER_REPO);
@@ -127,8 +127,8 @@ describe('ViewService', () => {
     });
   });
 
-  describe('changeView(Phase)', () => {
-    it('should set current phase', () => {
+  describe('changeView(View)', () => {
+    it('should set current view', () => {
       viewService.setRepository(WATCHER_REPO);
 
       expect(viewService.currentView).toEqual(View.issuesViewer);
