@@ -32,7 +32,7 @@ export const STARTING_SESSION_DATA: SessionData = {
   ]
 };
 
-export const STARTING_PHASE = View.issuesViewer;
+export const STARTING_VIEW = View.issuesViewer;
 
 @Injectable({
   providedIn: 'root'
@@ -47,7 +47,7 @@ export const STARTING_PHASE = View.issuesViewer;
 export class ViewService {
   public static readonly REPO_QUERY_PARAM_KEY = 'repo';
 
-  public currentView: View = STARTING_PHASE;
+  public currentView: View = STARTING_VIEW;
   public currentRepo: Repo; // current or main repository of current phase
   public otherRepos: Repo[]; // more repositories relevant to this phase
 
@@ -215,6 +215,6 @@ export class ViewService {
   }
 
   reset() {
-    this.currentView = STARTING_PHASE;
+    this.currentView = STARTING_VIEW;
   }
 }
