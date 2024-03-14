@@ -164,9 +164,9 @@ export class ViewService {
    * @param url The partial URL without the host, e.g. `/issuesViewer?repo=CATcher%2FWATcher.
    */
   setupFromUrl(url: string): Observable<void> {
-    return of(this.getPhaseAndRepoFromUrl(url)).pipe(
-      map(([phaseName, repoName]) => {
-        if (!this.isPhaseAllowed(phaseName)) {
+    return of(this.getViewAndRepoFromUrl(url)).pipe(
+      map(([viewName, repoName]) => {
+        if (!this.isViewAllowed(viewName)) {
           throw new Error(ErrorMessageService.invalidUrlMessage());
         }
 
@@ -184,15 +184,15 @@ export class ViewService {
     );
   }
 
-  getPhaseAndRepoFromUrl(url: string): [string, string] {
+  getViewAndRepoFromUrl(url: string): [string, string] {
     const urlObject = new URL(`${location.protocol}//${location.host}${url}`);
     const pathname = urlObject.pathname;
     const reponame = urlObject.searchParams.get(ViewService.REPO_QUERY_PARAM_KEY);
     return [pathname, reponame];
   }
 
-  isPhaseAllowed(phaseName: string) {
-    return phaseName === '/' + View.issuesViewer;
+  isViewAllowed(viewName: string) {
+    return viewName === '/' + View.issuesViewer;
   }
 
   isRepoSet(): boolean {
