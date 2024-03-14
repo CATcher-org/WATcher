@@ -180,9 +180,9 @@ export class ViewService {
 
   getViewAndRepoFromUrl(url: string): [string, string] {
     const urlObject = new URL(`${location.protocol}//${location.host}${url}`);
-    const pathname = urlObject.pathname;
+    const viewname = urlObject.pathname.substring(1);
     const reponame = urlObject.searchParams.get(ViewService.REPO_QUERY_PARAM_KEY);
-    return [pathname, reponame];
+    return [viewname, reponame];
   }
 
   isViewAllowed(viewName: string) {
