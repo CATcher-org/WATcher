@@ -186,7 +186,7 @@ export class ViewService {
   }
 
   isViewAllowed(viewName: string) {
-    return viewName === '/' + View.issuesViewer;
+    return viewName in View;
   }
 
   isRepoSet(): boolean {
