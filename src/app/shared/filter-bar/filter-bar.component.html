@@ -1,7 +1,7 @@
 <mat-grid-list cols="7" rowHeight="80px">
   <mat-grid-tile colspan="3">
     <mat-form-field class="search-bar">
-      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search" />
+      <input matInput (keyup)="this.filtersService.updateFilters({ title: $event.target.value })" placeholder="Search" />
     </mat-form-field>
   </mat-grid-tile>
 
@@ -9,7 +9,7 @@
     <div class="dropdown-filters">
       <mat-form-field appearance="standard">
         <mat-label>Status</mat-label>
-        <mat-select [value]="this.dropdownFilter.status" (selectionChange)="this.filtersService.updateFilters({ status: $event.value })">
+        <mat-select [value]="this.filter.status" (selectionChange)="this.filtersService.updateFilters({ status: $event.value })">
           <mat-option value="all">All</mat-option>
           <mat-option value="open">Open</mat-option>
           <mat-option value="closed">Closed</mat-option>
@@ -18,7 +18,7 @@
       </mat-form-field>
       <mat-form-field appearance="standard">
         <mat-label>Type</mat-label>
-        <mat-select [value]="this.dropdownFilter.type" (selectionChange)="this.filtersService.updateFilters({ type: $event.value })">
+        <mat-select [value]="this.filter.type" (selectionChange)="this.filtersService.updateFilters({ type: $event.value })">
           <mat-option value="all">All</mat-option>
           <mat-option value="issue">Issue</mat-option>
           <mat-option value="pullrequest">Pull Request</mat-option>
@@ -31,7 +31,7 @@
         (matSortChange)="this.filtersService.updateFilters({ sort: $event })"
       >
         <mat-label>Sort</mat-label>
-        <mat-select [value]="this.dropdownFilter.sort.active">
+        <mat-select [value]="this.filter.sort.active">
           <mat-option value="id">
             <span mat-sort-header="id">ID</span>
           </mat-option>
@@ -47,7 +47,7 @@
         <mat-label>Milestone</mat-label>
         <mat-select
           #milestoneSelectorRef
-          [value]="this.dropdownFilter.milestones"
+          [value]="this.filter.milestones"
           (selectionChange)="this.filtersService.updateFilters({ milestones: $event.value })"
           [disabled]="this.milestoneService.hasNoMilestones"
           multiple
@@ -55,7 +55,7 @@
           <mat-select-trigger *ngIf="this.milestoneService.hasNoMilestones">
             <span>No Milestones</span>
           </mat-select-trigger>
-          <mat-option *ngFor="let milestone of this.milestoneService.milestones" [value]="milestone.number">
+          <mat-option *ngFor="let milestone of this.milestoneService.milestones" [value]="milestone.title">
             {{ milestone.title }}
           </mat-option>
         </mat-select>
