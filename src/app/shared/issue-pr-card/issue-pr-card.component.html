@@ -4,7 +4,7 @@
       <app-issue-pr-card-header [issue]="issue"></app-issue-pr-card-header>
       <mat-card-content>
         <app-issue-pr-card-milestone [milestone]="issue.milestone"></app-issue-pr-card-milestone>
-        <app-issue-pr-card-labels [labels]="issue.githubLabels" [labelSet]="filter?.hiddenLabels"></app-issue-pr-card-labels>
+        <app-issue-pr-card-labels [labels]="issue.githubLabels" [labelSet]="dropdownFilter?.hiddenLabels"></app-issue-pr-card-labels>
       </mat-card-content>
     </span>
   </a>

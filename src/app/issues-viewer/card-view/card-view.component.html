@@ -21,7 +21,7 @@
   <div class="scrollable-container-wrapper">
     <div class="scrollable-container">
       <div class="issue-pr-cards" *ngFor="let issue of this.issues$ | async; index as i">
-        <app-issue-pr-card [issue]="issue" [filter]="issues.filter"></app-issue-pr-card>
+        <app-issue-pr-card [issue]="issue" [dropdownFilter]="issues.dropdownFilter"></app-issue-pr-card>
       </div>
       <mat-card class="loading-spinner" *ngIf="this.issues.isLoading$ | async">
         <mat-progress-spinner color="primary" mode="indeterminate" diameter="50" strokeWidth="5"></mat-progress-spinner>

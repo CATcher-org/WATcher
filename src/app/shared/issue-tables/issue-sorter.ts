@@ -9,15 +9,19 @@ export function applySort(sort: Sort, data: Issue[]): Issue[] {
 
   const direction: number = sort.direction === 'asc' ? 1 : -1;
 
-  switch (sort.active) {
-    case 'id':
-      return data.sort((a, b) => direction * compareByIntegerValue(a.id, b.id));
-    case 'date':
-      return data.sort((a, b) => direction * compareByDateValue(a.updated_at, b.updated_at));
-    default:
-      // title, responseTag are string values
-      return data.sort((a, b) => direction * compareByStringValue(a[sort.active], b[sort.active]));
-  }
+  return data.sort((a, b) => {
+    switch (sort.active) {
+      case 'assignees':
+        return direction * compareByStringValue(a.assignees.join(', '), b.assignees.join(', '));
+      case 'id':
+        return direction * compareByIntegerValue(a.id, b.id);
+      case 'date':
+        return direction * compareByDateValue(a.updated_at, b.updated_at);
+      default:
+        // title, responseTag are string values
+        return direction * compareByStringValue(a[sort.active], b[sort.active]);
+    }
+  });
 }
 
 function compareByStringValue(valueA: string, valueB: string): number {

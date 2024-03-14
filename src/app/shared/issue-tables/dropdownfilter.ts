@@ -1,5 +1,22 @@
+import { Sort } from '@angular/material/sort';
 import { Issue } from '../../core/models/issue.model';
-import { Filter } from '../../core/services/filters.service';
+
+export type DropdownFilter = {
+  status: string;
+  type: string;
+  sort: Sort;
+  labels: string[];
+  milestones: string[];
+  hiddenLabels?: Set<string>;
+};
+
+export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
+  status: 'all',
+  type: 'all',
+  sort: { active: 'id', direction: 'asc' },
+  labels: [],
+  milestones: []
+};
 
 /**
  * This module serves to improve separation of concerns in IssuesDataTable.ts and IssueList.ts module by containing the logic for
@@ -7,28 +24,28 @@ import { Filter } from '../../core/services/filters.service';
  * This module exports a single function applyDropDownFilter which is called by IssueList.
  * This functions returns the data passed in after all the filters of dropdownFilters are applied
  */
-export function applyDropdownFilter(filter: Filter, data: Issue[]): Issue[] {
+export function applyDropdownFilter(dropdownFilter: DropdownFilter, data: Issue[]): Issue[] {
   const filteredData: Issue[] = data.filter((issue) => {
     let ret = true;
 
-    if (filter.status === 'open') {
+    if (dropdownFilter.status === 'open') {
       ret = ret && issue.state === 'OPEN';
-    } else if (filter.status === 'closed') {
+    } else if (dropdownFilter.status === 'closed') {
       // there is apparently also a status called 'all' based on github api
       ret = ret && issue.state === 'CLOSED';
-    } else if (filter.status === 'merged') {
+    } else if (dropdownFilter.status === 'merged') {
       ret = ret && issue.state === 'MERGED';
     }
 
-    if (filter.type === 'issue') {
+    if (dropdownFilter.type === 'issue') {
       ret = ret && issue.issueOrPr === 'Issue';
-    } else if (filter.type === 'pullrequest') {
+    } else if (dropdownFilter.type === 'pullrequest') {
       ret = ret && issue.issueOrPr === 'PullRequest';
     }
 
-    ret = ret && filter.milestones.some((milestone) => issue.milestone.title === milestone);
+    ret = ret && dropdownFilter.milestones.some((milestone) => issue.milestone.number === milestone);
 
-    return ret && filter.labels.every((label) => issue.labels.includes(label));
+    return ret && dropdownFilter.labels.every((label) => issue.labels.includes(label));
   });
   return filteredData;
 }

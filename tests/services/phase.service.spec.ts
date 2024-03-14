@@ -1,4 +1,3 @@
-import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { STORAGE_KEYS } from '../../src/app/core/constants/storage-keys.constants';
 import { Phase } from '../../src/app/core/models/phase.model';
@@ -14,18 +13,14 @@ let phaseService: PhaseService;
 let githubServiceSpy: jasmine.SpyObj<GithubService>;
 let repoUrlCacheServiceSpy: jasmine.SpyObj<RepoUrlCacheService>;
 let loggingServiceSpy: jasmine.SpyObj<LoggingService>;
-let routerSpy: jasmine.SpyObj<Router>;
 
 describe('PhaseService', () => {
-  beforeEach(() => {
-    githubServiceSpy = jasmine.createSpyObj('GithubService', ['isRepositoryPresent', 'storePhaseDetails']);
-    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    repoUrlCacheServiceSpy = jasmine.createSpyObj('RepoUrlCacheService', ['cache']);
-    loggingServiceSpy = jasmine.createSpyObj('LoggingService', ['info']);
-    phaseService = new PhaseService(githubServiceSpy, repoUrlCacheServiceSpy, loggingServiceSpy, routerSpy);
-  });
-
   describe('setRepository(Repo, Repo[])', () => {
+    beforeEach(() => {
+      githubServiceSpy = jasmine.createSpyObj('GithubService', ['storePhaseDetails']);
+      phaseService = new PhaseService(githubServiceSpy, repoUrlCacheServiceSpy, loggingServiceSpy);
+    });
+
     it('should set the current repositories and update session data', () => {
       const repos: Repo[] = [CATCHER_REPO];
 
@@ -46,17 +41,16 @@ describe('PhaseService', () => {
       expect(githubServiceSpy.storePhaseDetails).toHaveBeenCalledWith(WATCHER_REPO.owner, WATCHER_REPO.name);
       expect(localStorageSetItem).toHaveBeenCalledWith('sessionData', JSON.stringify(phaseService.sessionData));
     });
-
-    it('should navigate to the new repository', () => {
-      phaseService.setRepository(WATCHER_REPO);
-
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['issuesViewer'], {
-        queryParams: { repo: WATCHER_REPO.toString() }
-      });
-    });
   });
 
   describe('changeRepositoryIfValid(Repo)', () => {
+    beforeEach(() => {
+      githubServiceSpy = jasmine.createSpyObj('GithubService', ['isRepositoryPresent', 'storePhaseDetails']);
+      repoUrlCacheServiceSpy = jasmine.createSpyObj('RepoUrlCacheService', ['cache']);
+      loggingServiceSpy = jasmine.createSpyObj('LoggingService', ['info']);
+      phaseService = new PhaseService(githubServiceSpy, repoUrlCacheServiceSpy, loggingServiceSpy);
+    });
+
     it('should set isChangingRepo to true at the start and false at the end', async () => {
       githubServiceSpy.isRepositoryPresent.and.returnValue(of(true));
 
@@ -78,7 +72,7 @@ describe('PhaseService', () => {
       );
     });
 
-    it('should set and navigate to new repo if repo is valid', async () => {
+    it('should set current repository if repository is valid', async () => {
       githubServiceSpy.isRepositoryPresent.and.returnValue(of(true));
 
       const repoChanged$Spy = spyOn(phaseService.repoChanged$, 'next');
@@ -87,9 +81,6 @@ describe('PhaseService', () => {
 
       expect(loggingServiceSpy.info).toHaveBeenCalledWith(`PhaseService: Changing current repository to '${WATCHER_REPO}'`);
       expect(phaseService.currentRepo).toEqual(WATCHER_REPO);
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['issuesViewer'], {
-        queryParams: { repo: WATCHER_REPO.toString() }
-      });
       expect(repoUrlCacheServiceSpy.cache).toHaveBeenCalledWith(WATCHER_REPO.toString());
       expect(repoChanged$Spy).toHaveBeenCalledWith(WATCHER_REPO);
     });
@@ -97,6 +88,10 @@ describe('PhaseService', () => {
 
   describe('initializeCurrentRepository()', () => {
     beforeEach(() => {
+      githubServiceSpy = jasmine.createSpyObj('GithubService', ['isRepositoryPresent', 'storePhaseDetails']);
+      loggingServiceSpy = jasmine.createSpyObj('LoggingService', ['info']);
+      phaseService = new PhaseService(githubServiceSpy, repoUrlCacheServiceSpy, loggingServiceSpy);
+
       const org = WATCHER_REPO.owner;
       const repoName = WATCHER_REPO.name;
 
@@ -105,7 +100,7 @@ describe('PhaseService', () => {
       localStorageGetItemSpy.withArgs(STORAGE_KEYS.DATA_REPO).and.returnValue(repoName);
     });
 
-    it('should set and navigate to new repo if repo is valid', async () => {
+    it('should set repository if repository is valid', async () => {
       githubServiceSpy.isRepositoryPresent.and.returnValue(of(true));
 
       const repoSetSourceNext = spyOn(phaseService.repoSetSource, 'next');
@@ -114,9 +109,6 @@ describe('PhaseService', () => {
 
       expect(loggingServiceSpy.info).toHaveBeenCalledWith(`PhaseService: Repo is ${WATCHER_REPO}`);
       expect(phaseService.currentRepo).toEqual(WATCHER_REPO);
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['issuesViewer'], {
-        queryParams: { repo: WATCHER_REPO.toString() }
-      });
       expect(repoSetSourceNext).toHaveBeenCalledWith(true);
     });
 
@@ -130,6 +122,11 @@ describe('PhaseService', () => {
   });
 
   describe('changePhase(Phase)', () => {
+    beforeEach(() => {
+      githubServiceSpy = jasmine.createSpyObj('GithubService', ['storePhaseDetails']);
+      phaseService = new PhaseService(githubServiceSpy, repoUrlCacheServiceSpy, loggingServiceSpy);
+    });
+
     it('should set current phase', () => {
       phaseService.setRepository(WATCHER_REPO);
 
@@ -142,55 +139,14 @@ describe('PhaseService', () => {
   });
 
   describe('.reset()', () => {
+    beforeEach(() => {
+      phaseService = new PhaseService(githubServiceSpy, repoUrlCacheServiceSpy, loggingServiceSpy);
+    });
+
     it('should reset the currentPhase of the PhaseService', () => {
       phaseService.currentPhase = Phase.activityDashboard;
       phaseService.reset();
       expect(phaseService.currentPhase).toBe(Phase.issuesViewer);
-    });
-  });
-
-  describe('setupFromUrl(url)', () => {
-    it('should set items in local storage if url is valid', async () => {
-      const validUrl = `/issuesViewer?repo=${WATCHER_REPO.owner}%2F${WATCHER_REPO.name}`;
-      const localStorageSetItemSpy = spyOn(window.localStorage, 'setItem');
-
-      await phaseService.setupFromUrl(validUrl).toPromise();
-
-      expect(localStorageSetItemSpy).toHaveBeenCalledWith(STORAGE_KEYS.ORG, WATCHER_REPO.owner);
-      expect(localStorageSetItemSpy).toHaveBeenCalledWith(STORAGE_KEYS.DATA_REPO, WATCHER_REPO.name);
-    });
-
-    it('should throw error for url without repo paramater', (done) => {
-      const urlWithoutRepo = '/issuesViewer';
-
-      phaseService.setupFromUrl(urlWithoutRepo).subscribe({
-        error: (err) => {
-          expect(err).toEqual(new Error(ErrorMessageService.invalidUrlMessage()));
-          done();
-        }
-      });
-    });
-
-    it('should throw error for empty url', (done) => {
-      const emptyUrl = '';
-
-      phaseService.setupFromUrl(emptyUrl).subscribe({
-        error: (err) => {
-          expect(err).toEqual(new Error(ErrorMessageService.invalidUrlMessage()));
-          done();
-        }
-      });
-    });
-
-    it('should throw error for url with invalid repo format', (done) => {
-      const urlWithInvalidRepoFormat = '/issuesViewer?repo=InvalidRepo';
-
-      phaseService.setupFromUrl(urlWithInvalidRepoFormat).subscribe({
-        error: (err) => {
-          expect(err).toEqual(new Error(ErrorMessageService.repositoryNotPresentMessage()));
-          done();
-        }
-      });
     });
   });
 });
