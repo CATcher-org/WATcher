@@ -18,7 +18,7 @@ let routerSpy: jasmine.SpyObj<Router>;
 
 describe('ViewService', () => {
   beforeEach(() => {
-    githubServiceSpy = jasmine.createSpyObj('GithubService', ['isRepositoryPresent', 'storePhaseDetails']);
+    githubServiceSpy = jasmine.createSpyObj('GithubService', ['isRepositoryPresent', 'storeViewDetails']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     repoUrlCacheServiceSpy = jasmine.createSpyObj('RepoUrlCacheService', ['cache']);
     loggingServiceSpy = jasmine.createSpyObj('LoggingService', ['info']);
@@ -43,7 +43,7 @@ describe('ViewService', () => {
 
       viewService.setRepository(WATCHER_REPO);
 
-      expect(githubServiceSpy.storePhaseDetails).toHaveBeenCalledWith(WATCHER_REPO.owner, WATCHER_REPO.name);
+      expect(githubServiceSpy.storeViewDetails).toHaveBeenCalledWith(WATCHER_REPO.owner, WATCHER_REPO.name);
       expect(localStorageSetItem).toHaveBeenCalledWith('sessionData', JSON.stringify(viewService.sessionData));
     });
 

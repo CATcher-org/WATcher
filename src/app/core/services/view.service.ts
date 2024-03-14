@@ -85,7 +85,7 @@ export class ViewService {
     this.currentRepo = repo;
     this.otherRepos = repos ? repos : [];
     this.sessionData.sessionRepo.find((x) => x.view === this.currentView).repos = this.getRepository();
-    this.githubService.storePhaseDetails(this.currentRepo.owner, this.currentRepo.name);
+    this.githubService.storeViewDetails(this.currentRepo.owner, this.currentRepo.name);
     localStorage.setItem('sessionData', JSON.stringify(this.sessionData));
     this.router.navigate(['issuesViewer'], {
       queryParams: {
@@ -207,7 +207,7 @@ export class ViewService {
     this.currentView = view;
 
     // For now, assumes repository stays the same
-    this.githubService.storePhaseDetails(this.currentRepo.owner, this.currentRepo.name);
+    this.githubService.storeViewDetails(this.currentRepo.owner, this.currentRepo.name);
   }
 
   public getCurrentRepositoryURL() {
