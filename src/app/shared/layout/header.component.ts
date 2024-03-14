@@ -242,7 +242,7 @@ export class HeaderComponent implements OnInit {
     this.viewService
       .changeRepositoryIfValid(repo)
       .then(() => {
-        this.auth.setTitleWithPhaseDetail();
+        this.auth.setTitleWithViewDetail();
         this.currentRepo = newRepoString;
       })
       .catch((error) => {

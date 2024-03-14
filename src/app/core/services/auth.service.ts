@@ -164,7 +164,7 @@ export class AuthService {
     this.reset();
   }
 
-  setTitleWithPhaseDetail(): void {
+  setTitleWithViewDetail(): void {
     const appSetting = require('../../../../package.json');
     const title = `${appSetting.name} ${appSetting.version} - ${this.viewService.getCurrentRepositoryURL()}`;
     this.logger.info(`AuthService: Setting Title as ${title}`);
@@ -234,7 +234,7 @@ export class AuthService {
    * Handles the clean up required after authentication and setting up of repository is completed.
    */
   handleSetRepoSuccess(repoName: string) {
-    this.setTitleWithPhaseDetail();
+    this.setTitleWithViewDetail();
     this.router.navigate([View.issuesViewer], {
       queryParams: {
         [ViewService.REPO_QUERY_PARAM_KEY]: repoName
