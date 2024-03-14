@@ -8,11 +8,11 @@
   >
     <mat-icon>arrow_back_ios</mat-icon>
   </button>
-  <a class="mat-toolbar mat-primary" style="text-decoration: none" [routerLink]="viewService.isRepoSet() ? viewService.currentPhase : null"
+  <a class="mat-toolbar mat-primary" style="text-decoration: none" [routerLink]="viewService.isRepoSet() ? viewService.currentView : null"
     >WATcher v{{ this.getVersion() }}</a
   >
   <span id="phase-descriptor" *ngIf="auth.isAuthenticated()" style="margin-left: 10px">
-    ({{ this.getPhaseDescription(viewService.currentPhase) }})
+    ({{ this.getPhaseDescription(viewService.currentView) }})
   </span>
 
   <div *ngIf="auth.isAuthenticated() && this.viewService.sessionData.sessionRepo.length > 1">
@@ -24,7 +24,7 @@
         (click)="this.routeToSelectedPhase(sessionRepo.view)"
       >
         <span>
-          <mat-icon [ngStyle]="{ color: 'green', visibility: this.viewService.currentPhase === sessionRepo.view ? 'visible' : 'hidden' }"
+          <mat-icon [ngStyle]="{ color: 'green', visibility: this.viewService.currentView === sessionRepo.view ? 'visible' : 'hidden' }"
             >done</mat-icon
           >
           {{ this.getPhaseDescription(sessionRepo.view) }}

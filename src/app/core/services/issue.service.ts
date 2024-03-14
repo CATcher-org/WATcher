@@ -112,7 +112,7 @@ export class IssueService {
   private initializeData(): Observable<Issue[]> {
     let issuesAPICallsByFilter: Observable<Array<GithubIssue>>;
 
-    switch (IssuesFilter[this.viewService.currentPhase][this.userService.currentUser.role]) {
+    switch (IssuesFilter[this.viewService.currentView][this.userService.currentUser.role]) {
       case 'FILTER_BY_CREATOR':
         issuesAPICallsByFilter = this.githubService.fetchIssuesGraphql(
           new RestGithubIssueFilter({ creator: this.userService.currentUser.loginId })
@@ -195,7 +195,7 @@ export class IssueService {
   }
 
   private createIssueModel(githubIssue: GithubIssue): Issue {
-    switch (this.viewService.currentPhase) {
+    switch (this.viewService.currentView) {
       case View.issuesViewer:
         return Issue.createPhaseBugReportingIssue(githubIssue);
       default:

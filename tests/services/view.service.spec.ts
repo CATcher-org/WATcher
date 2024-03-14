@@ -34,7 +34,7 @@ describe('ViewService', () => {
       expect(viewService.currentRepo).toEqual(WATCHER_REPO);
       expect(viewService.otherRepos).toEqual(repos);
 
-      const currentSessionRepo = viewService.sessionData.sessionRepo.find((x) => x.view === viewService.currentPhase);
+      const currentSessionRepo = viewService.sessionData.sessionRepo.find((x) => x.view === viewService.currentView);
       expect(currentSessionRepo?.repos).toEqual([WATCHER_REPO, CATCHER_REPO]);
     });
 
@@ -131,19 +131,19 @@ describe('ViewService', () => {
     it('should set current phase', () => {
       viewService.setRepository(WATCHER_REPO);
 
-      expect(viewService.currentPhase).toEqual(View.issuesViewer);
+      expect(viewService.currentView).toEqual(View.issuesViewer);
 
       viewService.changePhase(View.activityDashboard);
 
-      expect(viewService.currentPhase).toEqual(View.activityDashboard);
+      expect(viewService.currentView).toEqual(View.activityDashboard);
     });
   });
 
   describe('.reset()', () => {
-    it('should reset the currentPhase of the ViewService', () => {
-      viewService.currentPhase = View.activityDashboard;
+    it('should reset the currentView of the ViewService', () => {
+      viewService.currentView = View.activityDashboard;
       viewService.reset();
-      expect(viewService.currentPhase).toBe(View.issuesViewer);
+      expect(viewService.currentView).toBe(View.issuesViewer);
     });
   });
 

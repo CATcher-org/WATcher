@@ -100,7 +100,7 @@ export class HeaderComponent implements OnInit {
    */
   routeToSelectedPhase(openPhase: string): void {
     // Do nothing if the selected phase is the current phase.
-    if (this.viewService.currentPhase === View[openPhase]) {
+    if (this.viewService.currentView === View[openPhase]) {
       return;
     }
 
@@ -114,11 +114,11 @@ export class HeaderComponent implements OnInit {
     this.reload();
 
     // Route app to new phase.
-    this.router.navigateByUrl(this.viewService.currentPhase);
+    this.router.navigateByUrl(this.viewService.currentView);
   }
 
   isBackButtonShown(): boolean {
-    return `/${this.viewService.currentPhase}` !== this.router.url && this.router.url !== '/' && !this.router.url.startsWith('/?code');
+    return `/${this.viewService.currentView}` !== this.router.url && this.router.url !== '/' && !this.router.url.startsWith('/?code');
   }
 
   isReloadButtonShown(): boolean {
@@ -126,7 +126,7 @@ export class HeaderComponent implements OnInit {
   }
 
   isOpenUrlButtonShown(): boolean {
-    return this.viewService.currentPhase === View.issuesViewer || this.viewService.currentPhase === View.activityDashboard;
+    return this.viewService.currentView === View.issuesViewer || this.viewService.currentView === View.activityDashboard;
   }
 
   getVersion(): string {
@@ -138,15 +138,15 @@ export class HeaderComponent implements OnInit {
   }
 
   goBack() {
-    if (this.prevUrl === `/${this.viewService.currentPhase}/issues/new`) {
-      this.router.navigateByUrl(this.viewService.currentPhase);
+    if (this.prevUrl === `/${this.viewService.currentView}/issues/new`) {
+      this.router.navigateByUrl(this.viewService.currentView);
     } else {
       this.location.back();
     }
   }
 
   viewBrowser() {
-    if (this.viewService.currentPhase === View.activityDashboard) {
+    if (this.viewService.currentView === View.activityDashboard) {
       window.open(`https://github.com/${this.viewService.currentRepo.owner}/${this.viewService.currentRepo.name}/pulse`);
       return;
     }

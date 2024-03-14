@@ -47,7 +47,7 @@ export const STARTING_PHASE = View.issuesViewer;
 export class ViewService {
   public static readonly REPO_QUERY_PARAM_KEY = 'repo';
 
-  public currentPhase: View = STARTING_PHASE;
+  public currentView: View = STARTING_PHASE;
   public currentRepo: Repo; // current or main repository of current phase
   public otherRepos: Repo[]; // more repositories relevant to this phase
 
@@ -84,7 +84,7 @@ export class ViewService {
   setRepository(repo: Repo, repos?: Repo[]): void {
     this.currentRepo = repo;
     this.otherRepos = repos ? repos : [];
-    this.sessionData.sessionRepo.find((x) => x.view === this.currentPhase).repos = this.getRepository();
+    this.sessionData.sessionRepo.find((x) => x.view === this.currentView).repos = this.getRepository();
     this.githubService.storePhaseDetails(this.currentRepo.owner, this.currentRepo.name);
     localStorage.setItem('sessionData', JSON.stringify(this.sessionData));
     this.router.navigate(['issuesViewer'], {
@@ -101,7 +101,7 @@ export class ViewService {
   private changeCurrentRepository(repo: Repo): void {
     this.logger.info(`ViewService: Changing current repository to '${repo}'`);
 
-    if (this.currentPhase === View.issuesViewer) {
+    if (this.currentView === View.issuesViewer) {
       /** Adds past repositories to phase */
       (this.otherRepos || []).push(this.currentRepo);
     }
@@ -204,7 +204,7 @@ export class ViewService {
    * @param phase New phase
    */
   changePhase(phase: View) {
-    this.currentPhase = phase;
+    this.currentView = phase;
 
     // For now, assumes repository stays the same
     this.githubService.storePhaseDetails(this.currentRepo.owner, this.currentRepo.name);
@@ -215,6 +215,6 @@ export class ViewService {
   }
 
   reset() {
-    this.currentPhase = STARTING_PHASE;
+    this.currentView = STARTING_PHASE;
   }
 }
