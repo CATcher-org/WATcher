@@ -200,11 +200,11 @@ export class ViewService {
   }
 
   /**
-   * Changes phase and updates Phase Service's properties.
-   * @param phase New phase
+   * Changes view and updates View Service's properties.
+   * @param view New view
    */
-  changePhase(phase: View) {
-    this.currentView = phase;
+  changeView(view: View) {
+    this.currentView = view;
 
     // For now, assumes repository stays the same
     this.githubService.storePhaseDetails(this.currentRepo.owner, this.currentRepo.name);

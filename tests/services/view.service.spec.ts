@@ -127,13 +127,13 @@ describe('ViewService', () => {
     });
   });
 
-  describe('changePhase(Phase)', () => {
+  describe('changeView(Phase)', () => {
     it('should set current phase', () => {
       viewService.setRepository(WATCHER_REPO);
 
       expect(viewService.currentView).toEqual(View.issuesViewer);
 
-      viewService.changePhase(View.activityDashboard);
+      viewService.changeView(View.activityDashboard);
 
       expect(viewService.currentView).toEqual(View.activityDashboard);
     });

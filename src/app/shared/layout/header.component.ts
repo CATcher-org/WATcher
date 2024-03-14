@@ -105,7 +105,7 @@ export class HeaderComponent implements OnInit {
     }
 
     // Replace Current Phase Data.
-    this.viewService.changePhase(View[openPhase]);
+    this.viewService.changeView(View[openPhase]);
 
     // Remove current phase issues and load selected phase issues.
     this.githubService.reset();
