@@ -21,7 +21,7 @@
       <button
         mat-menu-item
         *ngFor="let sessionRepo of this.viewService.sessionData.sessionRepo"
-        (click)="this.routeToSelectedPhase(sessionRepo.view)"
+        (click)="this.routeToSelectedView(sessionRepo.view)"
       >
         <span>
           <mat-icon [ngStyle]="{ color: 'green', visibility: this.viewService.currentView === sessionRepo.view ? 'visible' : 'hidden' }"
