@@ -5,9 +5,9 @@ import { Observable } from 'rxjs';
 import { filter, pairwise, switchMap } from 'rxjs/operators';
 import { AppConfig } from '../../../environments/environment';
 import { STORAGE_KEYS } from '../../core/constants/storage-keys.constants';
-import { View } from '../../core/models/view.model';
 import { RepoChangeResponse } from '../../core/models/repo-change-response.model';
 import { Repo } from '../../core/models/repo.model';
+import { View } from '../../core/models/view.model';
 import { AuthService } from '../../core/services/auth.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
@@ -17,10 +17,10 @@ import { GithubEventService } from '../../core/services/githubevent.service';
 import { IssueService } from '../../core/services/issue.service';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
-import { ViewDescription, ViewService } from '../../core/services/view.service';
 import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 import { UserService } from '../../core/services/user.service';
+import { ViewDescription, ViewService } from '../../core/services/view.service';
 
 const ISSUE_TRACKER_URL = 'https://github.com/CATcher-org/WATcher/issues';
 

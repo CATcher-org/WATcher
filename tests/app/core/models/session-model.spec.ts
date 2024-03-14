@@ -1,5 +1,4 @@
 import { of } from 'rxjs';
-import { View } from '../../../../src/app/core/models/view.model';
 import {
   assertSessionDataIntegrity,
   NO_VALID_OPEN_VIEWS,
@@ -7,6 +6,7 @@ import {
   SESSION_DATA_MISSING_FIELDS,
   SESSION_DATA_UNAVAILABLE
 } from '../../../../src/app/core/models/session.model';
+import { View } from '../../../../src/app/core/models/view.model';
 import { VALID_SESSION_DATA, WATCHER_REPO } from '../../../constants/session.constants';
 
 describe('Session Model', () => {

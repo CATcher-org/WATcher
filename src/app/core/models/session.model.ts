@@ -1,7 +1,7 @@
 import { pipe } from 'rxjs';
 import { throwIfFalse } from '../../shared/lib/custom-ops';
-import { View } from './view.model';
 import { Repo } from './repo.model';
+import { View } from './view.model';
 
 /**
  * Session repository comprises the view and its corresponding repository array.

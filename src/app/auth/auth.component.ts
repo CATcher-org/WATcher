@@ -10,8 +10,8 @@ import { AuthService, AuthState } from '../core/services/auth.service';
 import { ErrorHandlingService } from '../core/services/error-handling.service';
 import { ErrorMessageService } from '../core/services/error-message.service';
 import { LoggingService } from '../core/services/logging.service';
-import { ViewService } from '../core/services/view.service';
 import { UserService } from '../core/services/user.service';
+import { ViewService } from '../core/services/view.service';
 
 @Component({
   selector: 'app-auth',

@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { NgZone } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, RouterStateSnapshot } from '@angular/router';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
@@ -14,8 +13,8 @@ import { GithubEventService } from './githubevent.service';
 import { IssueService } from './issue.service';
 import { LabelService } from './label.service';
 import { LoggingService } from './logging.service';
-import { ViewService } from './view.service';
 import { UserService } from './user.service';
+import { ViewService } from './view.service';
 
 export enum AuthState {
   'NotAuthenticated',

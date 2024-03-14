@@ -6,8 +6,8 @@ import { GithubIssue } from '../models/github/github-issue.model';
 import { Issue, Issues, IssuesFilter } from '../models/issue.model';
 import { View } from '../models/view.model';
 import { GithubService } from './github.service';
-import { ViewService } from './view.service';
 import { UserService } from './user.service';
+import { ViewService } from './view.service';
 
 @Injectable({
   providedIn: 'root'

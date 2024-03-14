@@ -1,6 +1,6 @@
-import { View } from '../../src/app/core/models/view.model';
 import { Repo } from '../../src/app/core/models/repo.model';
 import { SessionData, SessionRepo } from '../../src/app/core/models/session.model';
+import { View } from '../../src/app/core/models/view.model';
 
 export const WATCHER_REPO: Repo = Repo.of('CATcher-org/WATcher');
 export const CATCHER_REPO: Repo = Repo.of('CATcher-org/CATcher');

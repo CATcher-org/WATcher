@@ -10,8 +10,8 @@ import { IssueService } from '../issue.service';
 import { LabelService } from '../label.service';
 import { LoggingService } from '../logging.service';
 // import { MockAuthService } from '../mocks/mock.auth.service';
-import { ViewService } from '../view.service';
 import { UserService } from '../user.service';
+import { ViewService } from '../view.service';
 
 export function AuthServiceFactory(
   router: Router,

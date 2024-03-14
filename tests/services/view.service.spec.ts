@@ -1,13 +1,13 @@
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { STORAGE_KEYS } from '../../src/app/core/constants/storage-keys.constants';
-import { View } from '../../src/app/core/models/view.model';
 import { Repo } from '../../src/app/core/models/repo.model';
+import { View } from '../../src/app/core/models/view.model';
 import { ErrorMessageService } from '../../src/app/core/services/error-message.service';
 import { GithubService } from '../../src/app/core/services/github.service';
 import { LoggingService } from '../../src/app/core/services/logging.service';
-import { ViewService } from '../../src/app/core/services/view.service';
 import { RepoUrlCacheService } from '../../src/app/core/services/repo-url-cache.service';
+import { ViewService } from '../../src/app/core/services/view.service';
 import { CATCHER_REPO, WATCHER_REPO } from '../constants/session.constants';
 
 let viewService: ViewService;
