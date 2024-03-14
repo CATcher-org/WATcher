@@ -168,6 +168,8 @@ export class ViewService {
           throw new Error(ErrorMessageService.invalidUrlMessage());
         }
 
+        this.currentView = View[viewName];
+
         const newRepo = Repo.of(repoName);
         if (newRepo) {
           window.localStorage.setItem(STORAGE_KEYS.ORG, newRepo.owner);
