@@ -200,6 +200,8 @@ export class ViewService {
   changeView(view: View) {
     this.currentView = view;
 
+    this.navigate();
+
     // For now, assumes repository stays the same
     this.githubService.storeViewDetails(this.currentRepo.owner, this.currentRepo.name);
   }
