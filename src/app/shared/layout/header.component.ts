@@ -133,8 +133,8 @@ export class HeaderComponent implements OnInit {
     return AppConfig.version;
   }
 
-  getPhaseDescription(openPhase: string): string {
-    return ViewDescription[openPhase];
+  getViewDescription(openView: string): string {
+    return ViewDescription[openView];
   }
 
   goBack() {

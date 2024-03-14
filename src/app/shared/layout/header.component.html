@@ -12,7 +12,7 @@
     >WATcher v{{ this.getVersion() }}</a
   >
   <span id="phase-descriptor" *ngIf="auth.isAuthenticated()" style="margin-left: 10px">
-    ({{ this.getPhaseDescription(viewService.currentView) }})
+    ({{ this.getViewDescription(viewService.currentView) }})
   </span>
 
   <div *ngIf="auth.isAuthenticated() && this.viewService.sessionData.sessionRepo.length > 1">
@@ -27,7 +27,7 @@
           <mat-icon [ngStyle]="{ color: 'green', visibility: this.viewService.currentView === sessionRepo.view ? 'visible' : 'hidden' }"
             >done</mat-icon
           >
-          {{ this.getPhaseDescription(sessionRepo.view) }}
+          {{ this.getViewDescription(sessionRepo.view) }}
         </span>
       </button>
     </mat-menu>
