@@ -11,7 +11,7 @@
   <a class="mat-toolbar mat-primary" style="text-decoration: none" [routerLink]="viewService.isRepoSet() ? viewService.currentView : null"
     >WATcher v{{ this.getVersion() }}</a
   >
-  <span id="phase-descriptor" *ngIf="auth.isAuthenticated()" style="margin-left: 10px">
+  <span id="view-descriptor" *ngIf="auth.isAuthenticated()" style="margin-left: 10px">
     ({{ this.getViewDescription(viewService.currentView) }})
   </span>
 
@@ -38,7 +38,7 @@
   <span style="flex: 1 1 auto"></span>
 
   <div *ngIf="auth.isAuthenticated() && viewService.isRepoSet()">
-    <span id="phase-descriptor" style="margin-left: 10px">
+    <span id="view-descriptor" style="margin-left: 10px">
       {{ this.currentRepo || 'No Repository Set' }}
     </span>
     <button
