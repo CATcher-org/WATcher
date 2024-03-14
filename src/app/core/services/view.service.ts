@@ -85,11 +85,7 @@ export class ViewService {
     this.sessionData.sessionRepo.find((x) => x.view === this.currentView).repos = this.getRepository();
     this.githubService.storeViewDetails(this.currentRepo.owner, this.currentRepo.name);
     localStorage.setItem('sessionData', JSON.stringify(this.sessionData));
-    this.router.navigate(['issuesViewer'], {
-      queryParams: {
-        [ViewService.REPO_QUERY_PARAM_KEY]: repo.toString()
-      }
-    });
+    this.navigate();
   }
 
   /**
@@ -214,5 +210,16 @@ export class ViewService {
 
   reset() {
     this.currentView = STARTING_VIEW;
+  }
+
+  /**
+   * Navigate with current phase and current repo
+   */
+  private navigate() {
+    this.router.navigate([this.currentView], {
+      queryParams: {
+        [ViewService.REPO_QUERY_PARAM_KEY]: this.currentRepo.toString()
+      }
+    });
   }
 }
