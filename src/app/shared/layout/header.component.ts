@@ -17,7 +17,7 @@ import { GithubEventService } from '../../core/services/githubevent.service';
 import { IssueService } from '../../core/services/issue.service';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
-import { PhaseDescription, ViewService } from '../../core/services/view.service';
+import { ViewDescription, ViewService } from '../../core/services/view.service';
 import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 import { UserService } from '../../core/services/user.service';
@@ -134,7 +134,7 @@ export class HeaderComponent implements OnInit {
   }
 
   getPhaseDescription(openPhase: string): string {
-    return PhaseDescription[openPhase];
+    return ViewDescription[openPhase];
   }
 
   goBack() {

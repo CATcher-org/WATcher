@@ -14,9 +14,9 @@ import { RepoUrlCacheService } from './repo-url-cache.service';
 export const SESSION_AVALIABILITY_FIX_FAILED = 'Session Availability Fix failed.';
 
 /**
- * The title of each phase that appears in the header bar.
+ * The title of each view that appears in the header bar.
  */
-export const PhaseDescription = {
+export const ViewDescription = {
   [View.issuesViewer]: 'Issues Dashboard',
   [View.activityDashboard]: 'Activity Dashboard'
 };
