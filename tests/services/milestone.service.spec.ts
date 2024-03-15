@@ -13,7 +13,7 @@ describe('MilestoneService', () => {
   });
 
   describe('MilestoneService: fetchMilestones()', () => {
-    it('should fetch all milestones', async () => {
+    it('should fetch all milestones', (done) => {
       const mockMilestones = [{ title: 'Milestone 1' }, { title: 'Milestone 2' }];
       githubServiceSpy.fetchAllMilestones.and.returnValue(of(mockMilestones));
       milestoneService.fetchMilestones().subscribe((response) => {
@@ -21,15 +21,19 @@ describe('MilestoneService', () => {
         expect(milestoneService.milestones.length).toBe(3);
         expect(milestoneService.milestones[0].title).toBe('Milestone 1');
         expect(milestoneService.hasNoMilestones).toBeFalse();
+
+        done();
       });
     });
 
-    it('should handle no milestones', async () => {
+    it('should handle no milestones', (done) => {
       githubServiceSpy.fetchAllMilestones.and.returnValue(of([]));
       milestoneService.fetchMilestones().subscribe((response) => {
         expect(githubServiceSpy.fetchAllMilestones).toHaveBeenCalled();
         expect(milestoneService.milestones.length).toBe(1);
         expect(milestoneService.hasNoMilestones).toBeTrue();
+
+        done();
       });
     });
   });
