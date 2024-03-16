@@ -1,40 +1,46 @@
 <div>
-  <mat-grid-list cols="4" rowHeight="80px">
-    <mat-grid-tile>
-      <div class="grid-flush-left">
-        <h1 class="mat-headline" style="margin: 0px">Activity</h1>
-      </div>
-    </mat-grid-tile>
+  <div class="loading-spinner" *ngIf="this.viewService.isChangingRepo | async; else elseBlock">
+    <mat-progress-spinner color="primary" mode="indeterminate" diameter="50" strokeWidth="5"> </mat-progress-spinner>
+  </div>
 
-    <mat-grid-tile>
-      <mat-form-field appearance="fill">
-        <mat-label>Start Date</mat-label>
-        <input matInput [min]="startMinDate" [max]="startMaxDate" [matDatepicker]="startPicker" (dateChange)="pickStartDate($event)" />
-        <mat-hint>MM/DD/YYYY</mat-hint>
-        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
-        <mat-datepicker startView="year" #startPicker></mat-datepicker>
-      </mat-form-field>
-    </mat-grid-tile>
+  <ng-template #elseBlock>
+    <mat-grid-list cols="4" rowHeight="80px">
+      <mat-grid-tile>
+        <div class="grid-flush-left">
+          <h1 class="mat-headline" style="margin: 0px">Activity</h1>
+        </div>
+      </mat-grid-tile>
 
-    <mat-grid-tile>
-      <mat-form-field appearance="fill">
-        <mat-label>End Date</mat-label>
-        <input matInput [min]="endMinDate" [max]="endMaxDate" [matDatepicker]="endPicker" (dateChange)="pickEndDate($event)" />
-        <mat-hint>MM/DD/YYYY</mat-hint>
-        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
-        <mat-datepicker startView="year" #endPicker></mat-datepicker>
-      </mat-form-field>
-    </mat-grid-tile>
-  </mat-grid-list>
-</div>
+      <mat-grid-tile>
+        <mat-form-field appearance="fill">
+          <mat-label>Start Date</mat-label>
+          <input matInput [min]="startMinDate" [max]="startMaxDate" [matDatepicker]="startPicker" (dateChange)="pickStartDate($event)" />
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+          <mat-datepicker startView="year" #startPicker></mat-datepicker>
+        </mat-form-field>
+      </mat-grid-tile>
 
-<div class="event-tables-wrapper">
-  <app-event-tables
-    *ngFor="let assignee of assignees"
-    class="issue-table"
-    [actor]="assignee"
-    [columnsToDisplay]="this.displayedColumns"
-    [expandedColumnsToDisplay]="this.expandedColumns"
-    [actions]="this.actionButtons"
-  ></app-event-tables>
+      <mat-grid-tile>
+        <mat-form-field appearance="fill">
+          <mat-label>End Date</mat-label>
+          <input matInput [min]="endMinDate" [max]="endMaxDate" [matDatepicker]="endPicker" (dateChange)="pickEndDate($event)" />
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+          <mat-datepicker startView="year" #endPicker></mat-datepicker>
+        </mat-form-field>
+      </mat-grid-tile>
+    </mat-grid-list>
+
+    <div class="event-tables-wrapper">
+      <app-event-tables
+        *ngFor="let assignee of assignees"
+        class="issue-table"
+        [actor]="assignee"
+        [columnsToDisplay]="this.displayedColumns"
+        [expandedColumnsToDisplay]="this.expandedColumns"
+        [actions]="this.actionButtons"
+      ></app-event-tables>
+    </div>
+  </ng-template>
 </div>
