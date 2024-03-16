@@ -41,8 +41,6 @@ export const STARTING_VIEW = View.issuesViewer;
 /**
  * Responsible for managing the current selected feature of WATcher as well as the
  * current session data and repository details related to the session.
- *
- * A view is terminology from CATcher, in WATcher it refers to a feature of WATcher.
  */
 export class ViewService {
   public static readonly REPO_QUERY_PARAM_KEY = 'repo';

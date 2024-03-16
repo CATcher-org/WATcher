@@ -53,7 +53,6 @@ export const LIGHT_BG_DARK_TEXT = {
   color: `#${COLOR_BLACK}`
 };
 
-// Constant array of labels for team response view and moderation view to simulate Github response
 export const SEVERITY_LABELS = [
   {
     name: LABEL_NAME_SEVERITY_VERY_LOW,
