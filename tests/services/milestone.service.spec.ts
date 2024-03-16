@@ -44,7 +44,7 @@ describe('MilestoneService', () => {
       const parsedMilestones = milestoneService.parseMilestoneData(mockMilestones);
 
       for (const milestone of parsedMilestones) {
-        expect(milestone instanceof Milestone).toBeTrue();
+        expect(milestone).toBeInstanceOf(Milestone);
       }
 
       expect(parsedMilestones.length).toBe(3);
