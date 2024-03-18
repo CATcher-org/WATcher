@@ -2,9 +2,10 @@ import { DataSource } from '@angular/cdk/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { GithubUser } from '../../core/models/github-user.model';
+import { Group } from '../../core/models/github/group.interface';
 import { Issue } from '../../core/models/issue.model';
 import { DEFAULT_FILTER, Filter } from '../../core/services/filters.service';
+import { GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { IssueService } from '../../core/services/issue.service';
 import { applyDropdownFilter } from './dropdownfilter';
 import { FilterableSource } from './filterableTypes';
@@ -22,9 +23,10 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
 
   constructor(
     private issueService: IssueService,
+    private groupingContextService: GroupingContextService,
     private paginator: MatPaginator,
     private displayedColumn: string[],
-    private assignee?: GithubUser,
+    private group?: Group,
     private defaultFilter?: (issue: Issue) => boolean
   ) {
     super();
@@ -59,21 +61,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
             data = data.filter(this.defaultFilter);
           }
           // Filter by assignee of issue
-          if (this.assignee) {
-            data = data.filter((issue) => {
-              if (issue.issueOrPr === 'PullRequest') {
-                return issue.author === this.assignee.login;
-              } else if (!issue.assignees) {
-                return false;
-              } else {
-                return issue.assignees.includes(this.assignee.login);
-              }
-            });
-          } else {
-            data = data.filter((issue) => {
-              return issue.issueOrPr !== 'PullRequest' && issue.assignees.length === 0;
-            });
-          }
+          data = this.groupingContextService.getDataForGroup(data, this.group);
 
           // Apply Filters
           data = applyDropdownFilter(this.filter, data);
