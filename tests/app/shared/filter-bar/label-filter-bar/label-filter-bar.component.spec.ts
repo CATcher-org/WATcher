@@ -118,23 +118,19 @@ describe('LabelFilterBarComponent', () => {
   describe('updateSelection', () => {
     it('should update filters service with selected labels', () => {
       const selectedLabels = [LABEL_NAME_SEVERITY_HIGH, LABEL_NAME_SEVERITY_LOW];
-      component.selectedLabelNames = selectedLabels;
+      component.selectedLabelNames = new Set<string>(selectedLabels);
 
       component.updateSelection();
 
-      expect(filtersServiceSpy.updateFilters).toHaveBeenCalledWith({ labels: selectedLabels });
+      expect(filtersServiceSpy.updateFilters).toHaveBeenCalledWith({ labels: selectedLabels, deselectedLabels: new Set<string>() });
     });
   });
 
   describe('removeAllSelection', () => {
     it('should deselect all labels and update the filter', () => {
-      const matSelectionListSpy = jasmine.createSpyObj<MatSelectionList>('MatSelectionList', ['deselectAll']);
-      component.matSelectionList = matSelectionListSpy;
-
       component.removeAllSelection();
-
-      expect(matSelectionListSpy.deselectAll).toHaveBeenCalled();
-      expect(filtersServiceSpy.updateFilters).toHaveBeenCalledWith({ labels: [] });
+      expect(component.selectedLabelNames).toEqual(new Set<string>());
+      expect(component.deselectedLabelNames).toEqual(new Set<string>());
     });
   });
 });
