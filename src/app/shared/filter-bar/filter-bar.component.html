@@ -60,7 +60,7 @@
           <mat-select-trigger *ngIf="this.milestoneService.hasNoMilestones">
             <span>No Milestones</span>
           </mat-select-trigger>
-          <mat-option *ngFor="let milestone of this.milestoneService.milestones" [value]="milestone.number">
+          <mat-option *ngFor="let milestone of this.milestoneService.milestones" [value]="milestone.title">
             {{ milestone.title }}
           </mat-option>
         </mat-select>

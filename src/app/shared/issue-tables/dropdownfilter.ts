@@ -26,7 +26,7 @@ export function applyDropdownFilter(filter: Filter, data: Issue[]): Issue[] {
       ret = ret && issue.issueOrPr === 'PullRequest';
     }
 
-    ret = ret && filter.milestones.some((milestone) => issue.milestone.number === milestone);
+    ret = ret && filter.milestones.some((milestone) => issue.milestone.title === milestone);
 
     return ret && filter.labels.every((label) => issue.labels.includes(label));
   });
