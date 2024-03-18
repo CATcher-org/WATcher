@@ -1,0 +1,33 @@
+<div *ngIf="groups.length > 0" class="hidden-groups">
+  <mat-card matTooltip="Users that have no Issues/PRs pertaining to the current filter" matTooltipShowDelay="0" matTooltipHideDelay="0">
+    <mat-card-title>Hidden groups</mat-card-title>
+    <div class="row-count">{{ groups.length }}</div>
+  </mat-card>
+  <div class="scrollable-container">
+    <div *ngFor="let group of groups">
+      <ng-container [ngTemplateOutlet]="getCardTemplate()" [ngTemplateOutletContext]="{ $implicit: group }"></ng-container>
+    </div>
+  </div>
+</div>
+
+<!-- Templates -->
+<ng-template #defaultCard let-group>
+  <mat-card class="loading-spinner">
+    <mat-progress-spinner color="primary" mode="indeterminate" diameter="50" strokeWidth="5"></mat-progress-spinner>
+  </mat-card>
+</ng-template>
+
+<ng-template #assigneeCard let-assignee>
+  <mat-card>
+    <mar-card-header class="mat-card-header">
+      <div
+        mat-card-avatar
+        [ngStyle]="{
+          background: 'url(' + assignee.avatar_url + ')',
+          'background-size': '30px'
+        }"
+      ></div>
+      <mat-card-title>{{ assignee.login }}</mat-card-title>
+    </mar-card-header>
+  </mat-card>
+</ng-template>

@@ -16,7 +16,7 @@
         [headers]="this.displayedColumns"
         (issueLengthChange)="updateHiddenGroups($event, group)"
       ></app-card-view>
-      <app-hidden-users [groups]="this.hiddenGroups"></app-hidden-users>
+      <app-hidden-groups [groups]="this.hiddenGroups"></app-hidden-groups>
     </div>
   </ng-template>
 </div>
