@@ -49,7 +49,7 @@ export class FiltersService {
   }
 
   updateFilters(newFilters: Partial<Filter>): void {
-    let nextDropdownFilter: Filter = {
+    const nextDropdownFilter: Filter = {
       ...this.filter$.value,
       ...newFilters
     };
