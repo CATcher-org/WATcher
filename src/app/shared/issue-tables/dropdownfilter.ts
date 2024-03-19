@@ -1,5 +1,5 @@
 import { Issue } from '../../core/models/issue.model';
-import { Filter } from '../../core/services/filters.service';
+import { Filter, statusToType } from '../../core/services/filters.service';
 
 /**
  * This module serves to improve separation of concerns in IssuesDataTable.ts and IssueList.ts module by containing the logic for
@@ -11,14 +11,13 @@ export function applyDropdownFilter(filter: Filter, data: Issue[]): Issue[] {
   const filteredData: Issue[] = data.filter((issue) => {
     let ret = true;
 
-    if (filter.status === 'open') {
-      ret = ret && issue.state === 'OPEN';
-    } else if (filter.status === 'closed') {
-      // there is apparently also a status called 'all' based on github api
-      ret = ret && issue.state === 'CLOSED';
-    } else if (filter.status === 'merged') {
-      ret = ret && issue.state === 'MERGED';
-    }
+    // status can either be 'open', 'closed', or 'merged'
+    ret =
+      ret &&
+      filter.status.some((item) => {
+        const statusInfo = statusToType(item);
+        return statusInfo.status === issue.state.toLowerCase() && statusInfo.type === issue.issueOrPr.toLowerCase();
+      });
 
     if (filter.type === 'issue') {
       ret = ret && issue.issueOrPr === 'Issue';

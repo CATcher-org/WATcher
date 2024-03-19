@@ -9,11 +9,12 @@
     <div class="dropdown-filters">
       <mat-form-field appearance="standard">
         <mat-label>Status</mat-label>
-        <mat-select [value]="this.filter.status" (selectionChange)="this.filtersService.updateFilters({ status: $event.value })">
-          <mat-option value="all">All</mat-option>
-          <mat-option value="open">Open</mat-option>
-          <mat-option value="closed">Closed</mat-option>
-          <mat-option value="merged" *ngIf="isNotFilterIssue()">Merged</mat-option>
+        <mat-select [value]="this.filter.status" (selectionChange)="this.filtersService.updateFilters({ status: $event.value })" multiple>
+          <mat-option *ngIf="isFilterPullRequest()" value="open pullrequest">Open Pull Requests</mat-option>
+          <mat-option *ngIf="isFilterPullRequest()" value="merged pullrequest">Merged Pull Requests</mat-option>
+          <mat-option *ngIf="isFilterPullRequest()" value="closed pullrequest">Closed Pull Request</mat-option>
+          <mat-option *ngIf="isFilterIssue()" value="open issue">Open Issues</mat-option>
+          <mat-option *ngIf="isFilterIssue()" value="closed issue">Closed Issues</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="standard">

@@ -67,8 +67,12 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * Checks if program is filtering by type issue.
    */
-  isNotFilterIssue() {
-    return this.filter.type !== 'issue';
+  isFilterIssue() {
+    return this.filter.type === 'issue' || this.filter.type === 'all';
+  }
+
+  isFilterPullRequest() {
+    return this.filter.type === 'pullrequest' || this.filter.type === 'all';
   }
 
   /**
