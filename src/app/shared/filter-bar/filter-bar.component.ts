@@ -2,6 +2,7 @@ import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChil
 import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { DEFAULT_FILTER, Filter, FiltersService } from '../../core/services/filters.service';
+import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
 import { ViewService } from '../../core/services/view.service';
@@ -25,6 +26,8 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   /** Selected dropdown filter value */
   filter: Filter = DEFAULT_FILTER;
 
+  groupByEnum: typeof GroupBy = GroupBy;
+
   /** Milestone subscription */
   milestoneSubscription: Subscription;
 
@@ -36,6 +39,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     public milestoneService: MilestoneService,
     public filtersService: FiltersService,
     private viewService: ViewService,
+    public groupingContextService: GroupingContextService,
     private logger: LoggingService
   ) {
     this.repoChangeSubscription = this.viewService.repoChanged$.subscribe((newRepo) => this.newRepoInitialize());
