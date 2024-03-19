@@ -30,7 +30,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   isLoading = true;
   issueLength = 0;
 
-  pageSize: number = 20;
+  pageSize = 20;
 
   @Output() issueLengthChange: EventEmitter<Number> = new EventEmitter<Number>();
 
