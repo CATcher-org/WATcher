@@ -31,7 +31,7 @@
   <mat-paginator
     [pageSize]="pageSize"
     [pageSizeOptions]="[10, 20, 50]"
-    [class]="pageSize > issueLength ? 'pagination-hide-arrow' : ''"
+    [class]="pageSize >= issueLength ? 'pagination-hide-arrow' : ''"
     (page)="updatePageSize($event.pageSize)"
   ></mat-paginator>
 </div>

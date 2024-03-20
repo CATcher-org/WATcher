@@ -134,14 +134,14 @@ div.column-header .mat-card-header {
   font-size: 14px;
 }
 
-/deep/ .pagination-hide-arrow .mat-paginator-navigation-previous {
+:host ::ng-deep .pagination-hide-arrow .mat-paginator-navigation-previous {
   display: none !important;
 }
 
-/deep/ .pagination-hide-arrow .mat-paginator-navigation-next {
+:host ::ng-deep .pagination-hide-arrow .mat-paginator-navigation-next {
   display: none !important;
 }
 
-/deep/ .mat-paginator-range-actions {
+:host ::ng-deep .mat-paginator-range-actions {
   height: 47px;
 }
