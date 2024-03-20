@@ -35,9 +35,11 @@ export class FiltersService {
   public filter$ = new BehaviorSubject<Filter>(DEFAULT_FILTER);
 
   private _validateFilter = pipe(this.updateStatusPairing, this.updateTypePairing);
+  private previousMilestonesLength = 0;
 
   clearFilters(): void {
     this.filter$.next(DEFAULT_FILTER);
+    this.previousMilestonesLength = 0;
   }
 
   updateFilters(newFilters: Partial<Filter>): void {
@@ -69,6 +71,13 @@ export class FiltersService {
   sanitizeMilestones(allMilestones: Milestone[]) {
     const allMilestonesSet = new Set(allMilestones.map((milestone) => milestone.title));
 
+    // All previous milestones were selected, reset to all new milestones selected
+    if (this.filter$.value.milestones.length === this.previousMilestonesLength) {
+      this.updateFilters({ milestones: [...allMilestonesSet] });
+      this.previousMilestonesLength = allMilestones.length;
+      return;
+    }
+
     const newMilestones: string[] = [];
     for (const milestone of this.filter$.value.milestones) {
       if (allMilestonesSet.has(milestone)) {
@@ -82,6 +91,7 @@ export class FiltersService {
     }
 
     this.updateFilters({ milestones: newMilestones });
+    this.previousMilestonesLength = allMilestones.length;
   }
 
   /**
