@@ -34,6 +34,9 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
       this.labels$ = this.labelService.connect();
       this.labels$.subscribe((labels) => {
         this.allLabels = labels;
+        this.filtersService.sanitizeLabels(this.allLabels);
+        this.selectedLabelNames = this.filtersService.filter$.value.labels;
+        this.hiddenLabelNames = this.filtersService.filter$.value.hiddenLabels;
       });
     });
   }
@@ -70,7 +73,7 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
       return;
     }
     el.toggle();
-    this.updateSelection();
+    this.updateSelection([el]);
   }
 
   /** loads in the labels in the repository */
@@ -98,12 +101,22 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
     return this.allLabels.some((label) => !this.filter(filter, label.name));
   }
 
-  updateSelection(): void {
+  updateSelection(options: MatListOption[]): void {
+    options.forEach((option) => {
+      if (option.selected && !this.selectedLabelNames.includes(option.value)) {
+        this.selectedLabelNames.push(option.value);
+      }
+      if (!option.selected && this.selectedLabelNames.includes(option.value)) {
+        const index = this.selectedLabelNames.indexOf(option.value);
+        this.selectedLabelNames.splice(index, 1);
+      }
+    });
     this.filtersService.updateFilters({ labels: this.selectedLabelNames });
   }
 
   removeAllSelection(): void {
     this.matSelectionList.deselectAll();
-    this.updateSelection();
+    this.selectedLabelNames = [];
+    this.filtersService.updateFilters({ labels: this.selectedLabelNames });
   }
 }
