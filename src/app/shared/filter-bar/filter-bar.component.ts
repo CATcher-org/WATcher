@@ -17,7 +17,7 @@ import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.com
   templateUrl: './filter-bar.component.html',
   styleUrls: ['./filter-bar.component.css']
 })
-export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
+export class FilterBarComponent implements OnInit, OnDestroy {
   @Input() views$: BehaviorSubject<QueryList<FilterableComponent>>;
 
   repoChangeSubscription: Subscription;
@@ -38,18 +38,19 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
     private phaseService: PhaseService,
     private logger: LoggingService
   ) {
-    this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => this.initialize());
+    this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => this.newRepoInitialize());
   }
 
   ngOnInit() {
-    this.initialize();
-  }
+    this.newRepoInitialize();
 
-  ngAfterViewInit(): void {
-    this.filtersService.filter$.subscribe((dropdownFilter) => {
-      this.filter = dropdownFilter;
+    // One-time initializations
+    this.filtersService.filter$.subscribe((filter) => {
+      this.filter = filter;
       this.applyFilter();
     });
+
+    this.views$.subscribe(() => this.applyFilter());
   }
 
   ngOnDestroy(): void {
@@ -77,13 +78,14 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Fetch and initialize all information from repository to populate Issue Dashboard.
+   * Re-called when repo has changed
    */
-  private initialize() {
+  private newRepoInitialize() {
     // Fetch milestones and update dropdown filter
     this.milestoneSubscription = this.milestoneService.fetchMilestones().subscribe(
       (response) => {
         this.logger.debug('IssuesViewerComponent: Fetched milestones from Github');
-        this.milestoneService.milestones.forEach((milestone) => this.filter.milestones.push(milestone.title));
+        this.filtersService.updateFilters({ milestones: this.milestoneService.milestones.map((milestone) => milestone.title) });
       },
       (err) => {},
       () => {}

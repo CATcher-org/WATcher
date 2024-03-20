@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { BehaviorSubject, pipe } from 'rxjs';
+import { SimpleLabel } from '../models/label.model';
 
 export type Filter = {
   title: string;
@@ -9,7 +10,7 @@ export type Filter = {
   sort: Sort;
   labels: string[];
   milestones: string[];
-  hiddenLabels?: Set<string>;
+  hiddenLabels: Set<string>;
 };
 
 export const DEFAULT_FILTER: Filter = {
@@ -18,7 +19,8 @@ export const DEFAULT_FILTER: Filter = {
   type: 'all',
   sort: { active: 'id', direction: 'asc' },
   labels: [],
-  milestones: []
+  milestones: [],
+  hiddenLabels: new Set()
 };
 
 @Injectable({

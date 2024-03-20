@@ -19,7 +19,7 @@
 
     <div class="scroll-container-wrapper">
       <div class="scroll-container">
-        <mat-selection-list [(ngModel)]="selectedLabelNames" (selectionChange)="updateSelection()">
+        <mat-selection-list (selectionChange)="updateSelection($event.options)">
           <mat-list-option
             #option
             *ngFor="let label of this.labels$ | async"
