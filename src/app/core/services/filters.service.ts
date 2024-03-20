@@ -77,7 +77,7 @@ export class FiltersService {
     }
 
     // No applicable milestones, reset to all milestones selected
-    if (newMilestones.length == 0) {
+    if (newMilestones.length === 0) {
       newMilestones.push(...allMilestonesSet);
     }
 
