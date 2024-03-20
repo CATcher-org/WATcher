@@ -12,22 +12,9 @@ export type Filter = {
   hiddenLabels?: Set<string>;
 };
 
-type StatusInfo = {
-  type: string;
-  status: string;
-};
-
-/**
- * Converts a status string into an info object
- */
-export const statusToType = (statusString: string): StatusInfo => {
-  const [status, type] = statusString.split(' ');
-  return { status, type };
-};
-
 export const DEFAULT_FILTER: Filter = {
   title: '',
-  status: ['open pullrequest', 'merged pullrequest', 'closed pullrequest', 'open issue', 'closed issue'],
+  status: ['open pullrequest', 'merged pullrequest', 'open issue', 'closed issue'],
   type: 'all',
   sort: { active: 'id', direction: 'asc' },
   labels: [],

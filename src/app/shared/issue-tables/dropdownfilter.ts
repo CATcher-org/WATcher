@@ -1,5 +1,18 @@
 import { Issue } from '../../core/models/issue.model';
-import { Filter, statusToType } from '../../core/services/filters.service';
+import { Filter } from '../../core/services/filters.service';
+
+type StatusInfo = {
+  type: string;
+  status: string;
+};
+
+/**
+ * Converts a status string into an info object
+ */
+export const statusToType = (statusString: string): StatusInfo => {
+  const [status, type] = statusString.split(' ');
+  return { status, type };
+};
 
 /**
  * This module serves to improve separation of concerns in IssuesDataTable.ts and IssueList.ts module by containing the logic for
