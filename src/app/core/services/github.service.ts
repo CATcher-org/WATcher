@@ -95,12 +95,12 @@ export class GithubService {
 
   /**
    * Sets repository to watch. This repository is used for fetching from Github.
-   * @param phaseRepoOwner Repository owner
+   * @param viewRepoOwner Repository owner
    * @param repoName Repository name
    */
-  storePhaseDetails(phaseRepoOwner: string, repoName: string) {
+  storeViewDetails(viewRepoOwner: string, repoName: string) {
     REPO = repoName;
-    ORG_NAME = phaseRepoOwner;
+    ORG_NAME = viewRepoOwner;
   }
 
   /**
