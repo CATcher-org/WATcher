@@ -35,6 +35,8 @@ export class FiltersService {
   public filter$ = new BehaviorSubject<Filter>(DEFAULT_FILTER);
 
   private _validateFilter = pipe(this.updateStatusPairing, this.updateTypePairing);
+
+  // Helps in determining whether all milestones were selected from previous repo during sanitization of milestones
   private previousMilestonesLength = 0;
 
   clearFilters(): void {
