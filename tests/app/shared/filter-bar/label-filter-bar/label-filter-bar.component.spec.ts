@@ -121,7 +121,7 @@ describe('LabelFilterBarComponent', () => {
       const selectedLabels = [LABEL_NAME_SEVERITY_HIGH, LABEL_NAME_SEVERITY_LOW];
       component.selectedLabelNames = new Set<string>(selectedLabels);
 
-      component.updateSelection([]);
+      component.updateSelection();
 
       expect(filtersServiceSpy.updateFilters).toHaveBeenCalledWith({ labels: selectedLabels, deselectedLabels: new Set<string>() });
     });
