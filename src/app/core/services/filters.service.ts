@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { BehaviorSubject, pipe } from 'rxjs';
 import { SimpleLabel } from '../models/label.model';
+import { Milestone } from '../models/milestone.model';
 
 export type Filter = {
   title: string;
@@ -64,6 +65,25 @@ export class FiltersService {
 
     this.updateFilters({ labels: newLabels, hiddenLabels: newHiddenLabels });
   }
+
+  sanitizeMilestones(allMilestones: Milestone[]) {
+    const allMilestonesSet = new Set(allMilestones.map((milestone) => milestone.title));
+
+    const newMilestones: string[] = [];
+    for (const milestone of this.filter$.value.milestones) {
+      if (allMilestonesSet.has(milestone)) {
+        newMilestones.push(milestone);
+      }
+    }
+
+    // No applicable milestones, reset to all milestones selected
+    if (newMilestones.length == 0) {
+      newMilestones.push(...allMilestonesSet);
+    }
+
+    this.updateFilters({ milestones: newMilestones });
+  }
+
   /**
    * Changes type to a valid, default value when an incompatible combination of type and status is encountered.
    */
