@@ -49,7 +49,6 @@ describe('LabelFilterBarComponent', () => {
       labelsSubject = new BehaviorSubject<SimpleLabel[]>([]);
       labelServiceSpy.fetchLabels.and.returnValue(of([]));
       labelServiceSpy.connect.and.returnValue(labelsSubject.asObservable());
-      filtersServiceSpy.sanitizeLabels.and.callThrough();
     });
 
     // it('should update allLabels with latest emmitted value after ngAfterViewInit', fakeAsync(() => {
