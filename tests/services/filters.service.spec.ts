@@ -10,7 +10,7 @@ import {
 
 let filtersService: FiltersService;
 
-fdescribe('FiltersService', () => {
+describe('FiltersService', () => {
   beforeEach(() => (filtersService = new FiltersService()));
 
   it('should initially emit the default filter', (done) => {
