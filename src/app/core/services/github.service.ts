@@ -16,7 +16,7 @@ import {
 } from '../../../../graphql/graphql-types';
 import { AppConfig } from '../../../environments/environment';
 import { getNumberOfPages } from '../../shared/lib/github-paginator-parser';
-import { GithubUser } from '../models/github-user.model';
+import { GithubUser, RawGithubUser } from '../models/github-user.model';
 import { IssueLastModifiedManagerModel } from '../models/github/cache-manager/issue-last-modified-manager.model';
 import { IssuesCacheManager } from '../models/github/cache-manager/issues-cache-manager.model';
 import { GithubEvent } from '../models/github/github-event.model';
@@ -314,7 +314,10 @@ export class GithubService {
       })
     ).pipe(
       map((response) => {
-        return response['data'];
+        const data: RawGithubUser[] = response['data'];
+        return data.map((rawGithubUser) => {
+          return new GithubUser(rawGithubUser);
+        });
       }),
       catchError((err) => throwError(ErrorMessageService.unableToFetchUsersMessage()))
     );
@@ -406,7 +409,8 @@ export class GithubService {
   fetchAuthenticatedUser(): Observable<GithubUser> {
     return from(octokit.users.getAuthenticated()).pipe(
       map((response) => {
-        return response['data'];
+        const data: RawGithubUser = response['data'];
+        return new GithubUser(data);
       }),
       catchError((err) => throwError(ErrorMessageService.unableToFetchAuthenticatedUsersMessage()))
     );
