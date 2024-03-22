@@ -11,6 +11,7 @@ export type Filter = {
   labels: string[];
   milestones: string[];
   hiddenLabels: Set<string>;
+  deselectedLabels: Set<string>;
 };
 
 export const DEFAULT_FILTER: Filter = {
@@ -20,7 +21,8 @@ export const DEFAULT_FILTER: Filter = {
   sort: { active: 'id', direction: 'asc' },
   labels: [],
   milestones: [],
-  hiddenLabels: new Set()
+  hiddenLabels: new Set<string>(),
+  deselectedLabels: new Set<string>()
 };
 
 @Injectable({
