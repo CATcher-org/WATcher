@@ -3,6 +3,8 @@
  */
 export class Milestone {
   static DefaultMilestone: Milestone = new Milestone({ title: 'Without a milestone', state: null });
+  static IssueWithoutMilestone: Milestone = new Milestone({ title: 'Issue without a milestone', state: null });
+  static PRWithoutMilestone: Milestone = new Milestone({ title: 'PR without a milestone', state: null });
   title: string;
   state: string;
 

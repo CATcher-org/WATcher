@@ -55,7 +55,14 @@
           <mat-select-trigger *ngIf="this.milestoneService.hasNoMilestones">
             <span>No Milestones</span>
           </mat-select-trigger>
-          <mat-option *ngFor="let milestone of this.milestoneService.milestones" [value]="milestone.title">
+          <mat-option
+            *ngFor="let milestone of getDisplayedMilestones()"
+            [value]="
+              milestone.title === 'Without a milestone'
+                ? (this.filter.type === 'issue' ? 'Issue' : this.filter.type === 'pullrequest' ? 'PR' : '') + ' without a milestone'
+                : milestone.title
+            "
+          >
             {{ milestone.title }}
           </mat-option>
         </mat-select>

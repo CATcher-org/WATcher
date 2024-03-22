@@ -71,6 +71,14 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.filter.type !== 'issue';
   }
 
+  isTypeAll() {
+    return this.filter.type === 'all';
+  }
+
+  getDisplayedMilestones() {
+    return this.isTypeAll() ? this.milestoneService.milestones : this.milestoneService.altMilestones;
+  }
+
   /**
    * Fetch and initialize all information from repository to populate Issue Dashboard.
    */

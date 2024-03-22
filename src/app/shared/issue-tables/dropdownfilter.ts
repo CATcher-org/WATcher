@@ -1,3 +1,4 @@
+import { milestone } from '@primer/octicons';
 import { Issue } from '../../core/models/issue.model';
 import { Filter } from '../../core/services/filters.service';
 
@@ -23,6 +24,14 @@ export function applyDropdownFilter(filter: Filter, data: Issue[]): Issue[] {
     if (filter.type === 'issue') {
       ret = ret && issue.issueOrPr === 'Issue';
     } else if (filter.type === 'pullrequest') {
+      ret = ret && issue.issueOrPr === 'PullRequest';
+    }
+
+    if (filter.milestones.some((milestone) => issue.milestone.title === 'Issue without a milestone')) {
+      ret = ret && issue.issueOrPr === 'Issue';
+    }
+
+    if (filter.milestones.some((milestone) => issue.milestone.title === 'PR without a milestone')) {
       ret = ret && issue.issueOrPr === 'PullRequest';
     }
 

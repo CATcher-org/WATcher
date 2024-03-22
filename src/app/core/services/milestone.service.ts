@@ -14,6 +14,7 @@ import { GithubService } from './github.service';
  */
 export class MilestoneService {
   milestones: Milestone[];
+  altMilestones: Milestone[];
   hasNoMilestones: boolean;
 
   constructor(private githubService: GithubService) {}
@@ -24,7 +25,10 @@ export class MilestoneService {
   public fetchMilestones(): Observable<any> {
     return this.githubService.fetchAllMilestones().pipe(
       map((response) => {
-        this.milestones = this.parseMilestoneData(response);
+        const parsedMilestones = this.parseMilestoneData(response);
+        this.milestones = [...parsedMilestones];
+        this.milestones.splice(-3, 1);
+        this.altMilestones = parsedMilestones.slice(0, -2);
         this.hasNoMilestones = response.length === 0;
         return response;
       })
@@ -45,6 +49,9 @@ export class MilestoneService {
 
     // add default milestone for untracked issues/PRs at the end
     milestoneData.push(Milestone.DefaultMilestone);
+    milestoneData.push(Milestone.IssueWithoutMilestone);
+    milestoneData.push(Milestone.PRWithoutMilestone);
+
     return milestoneData;
   }
 }
