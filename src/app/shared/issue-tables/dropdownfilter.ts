@@ -9,7 +9,7 @@ type StatusInfo = {
 /**
  * Converts a status string into an info object
  */
-export const statusToType = (statusString: string): StatusInfo => {
+const infoFromStatus = (statusString: string): StatusInfo => {
   const [status, type] = statusString.split(' ');
   return { status, type };
 };
@@ -28,7 +28,7 @@ export function applyDropdownFilter(filter: Filter, data: Issue[]): Issue[] {
     ret =
       ret &&
       filter.status.some((item) => {
-        const statusInfo = statusToType(item);
+        const statusInfo = infoFromStatus(item);
         return statusInfo.status === issue.state.toLowerCase() && statusInfo.type === issue.issueOrPr.toLowerCase();
       });
 
