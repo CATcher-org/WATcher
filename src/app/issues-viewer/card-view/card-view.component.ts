@@ -30,6 +30,8 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   isLoading = true;
   issueLength = 0;
 
+  pageSize = 20;
+
   @Output() issueLengthChange: EventEmitter<Number> = new EventEmitter<Number>();
 
   constructor(public element: ElementRef, public issueService: IssueService) {}
@@ -44,8 +46,8 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
       this.issues$ = this.issues.connect();
 
       // Emit event when issues change
-      this.issues$.subscribe((issues) => {
-        this.issueLength = issues.length;
+      this.issues$.subscribe(() => {
+        this.issueLength = this.issues.count;
         this.issueLengthChange.emit(this.issueLength);
       });
 
@@ -64,5 +66,9 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
 
   retrieveFilterable(): FilterableSource {
     return this.issues;
+  }
+
+  updatePageSize(newPageSize: number) {
+    this.pageSize = newPageSize;
   }
 }

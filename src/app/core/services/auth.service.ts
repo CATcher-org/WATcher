@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { NgZone } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, RouterStateSnapshot } from '@angular/router';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
@@ -7,15 +6,15 @@ import { catchError, map, mergeMap } from 'rxjs/operators';
 import { AppConfig } from '../../../environments/environment';
 import { generateSessionId } from '../../shared/lib/session';
 import { uuid } from '../../shared/lib/uuid';
-import { Phase } from '../models/phase.model';
+import { View } from '../models/view.model';
 import { ErrorHandlingService } from './error-handling.service';
 import { GithubService } from './github.service';
 import { GithubEventService } from './githubevent.service';
 import { IssueService } from './issue.service';
 import { LabelService } from './label.service';
 import { LoggingService } from './logging.service';
-import { PhaseService } from './phase.service';
 import { UserService } from './user.service';
+import { ViewService } from './view.service';
 
 export enum AuthState {
   'NotAuthenticated',
@@ -50,7 +49,7 @@ export class AuthService {
     private userService: UserService,
     private issueService: IssueService,
     private labelService: LabelService,
-    private phaseService: PhaseService,
+    private viewService: ViewService,
     private githubEventService: GithubEventService,
     private titleService: Title,
     private errorHandlingService: ErrorHandlingService,
@@ -118,7 +117,7 @@ export class AuthService {
    */
   redirectToNext() {
     const next = sessionStorage.getItem(AuthService.SESSION_NEXT_KEY);
-    this.phaseService
+    this.viewService
       .setupFromUrl(next)
       .pipe(
         mergeMap(() => this.setRepo()),
@@ -156,7 +155,7 @@ export class AuthService {
     this.userService.reset();
     this.issueService.reset(true);
     this.labelService.reset();
-    this.phaseService.reset();
+    this.viewService.reset();
     this.githubEventService.reset();
     this.logger.reset();
     this.setLandingPageTitle();
@@ -164,9 +163,9 @@ export class AuthService {
     this.reset();
   }
 
-  setTitleWithPhaseDetail(): void {
+  setTitleWithViewDetail(): void {
     const appSetting = require('../../../../package.json');
-    const title = `${appSetting.name} ${appSetting.version} - ${this.phaseService.getCurrentRepositoryURL()}`;
+    const title = `${appSetting.name} ${appSetting.version} - ${this.viewService.getCurrentRepositoryURL()}`;
     this.logger.info(`AuthService: Setting Title as ${title}`);
     this.titleService.setTitle(title);
   }
@@ -234,10 +233,10 @@ export class AuthService {
    * Handles the clean up required after authentication and setting up of repository is completed.
    */
   handleSetRepoSuccess(repoName: string) {
-    this.setTitleWithPhaseDetail();
-    this.router.navigate([Phase.issuesViewer], {
+    this.setTitleWithViewDetail();
+    this.router.navigate([View.issuesViewer], {
       queryParams: {
-        [PhaseService.REPO_QUERY_PARAM_KEY]: repoName
+        [ViewService.REPO_QUERY_PARAM_KEY]: repoName
       }
     });
   }
@@ -246,13 +245,13 @@ export class AuthService {
    * Setup repository after authentication.
    */
   setRepo(): Observable<boolean> {
-    return from(this.phaseService.initializeCurrentRepository()).pipe(
+    return from(this.viewService.initializeCurrentRepository()).pipe(
       map(() => {
-        if (!this.phaseService.currentRepo) {
+        if (!this.viewService.currentRepo) {
           return false;
         }
         this.githubEventService.setLatestChangeEvent();
-        this.handleSetRepoSuccess(this.phaseService.currentRepo.toString());
+        this.handleSetRepoSuccess(this.viewService.currentRepo.toString());
         return true;
       }),
       catchError((error) => {

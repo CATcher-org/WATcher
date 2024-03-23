@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatListOption, MatSelectionList } from '@angular/material/list';
 import { Observable, Subscription } from 'rxjs';
 import { SimpleLabel } from '../../../core/models/label.model';
 import { FiltersService } from '../../../core/services/filters.service';
@@ -12,11 +11,14 @@ import { LoggingService } from '../../../core/services/logging.service';
   styleUrls: ['./label-filter-bar.component.css']
 })
 export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild(MatSelectionList) matSelectionList;
+  private static readonly DEFAULT_LABEL_COLOR: string = 'transparent';
+  private static readonly DESELECTED_LABEL_COLOR: string = '#b00020';
+  private static readonly SELECTED_LABEL_COLOR: string = '#41c300';
 
   labels$: Observable<SimpleLabel[]>;
   allLabels: SimpleLabel[];
-  selectedLabelNames: string[] = [];
+  selectedLabelNames: Set<string> = new Set<string>();
+  deselectedLabelNames: Set<string> = new Set<string>();
   hiddenLabelNames: Set<string> = new Set();
   loaded = false;
 
@@ -34,7 +36,7 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
       this.labels$ = this.labelService.connect();
       this.labels$.subscribe((labels) => {
         this.allLabels = labels;
-        this.selectedLabelNames = this.filtersService.filter$.value.labels;
+        this.selectedLabelNames = new Set<string>(this.filtersService.filter$.value.labels);
         this.hiddenLabelNames = this.filtersService.filter$.value.hiddenLabels;
       });
     });
@@ -63,16 +65,34 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   /**
-   * chip as of the current project version consumes click events
-   * this method is used as an workaround the issue.
-   * https://github.com/angular/components/issues/19759
+   * Change label to the next state.
+   * Label has the following state rotation: default -> selected -> deselected.
+   * @param label The label to change state
    */
-  simulateClick(el: MatListOption): void {
-    if (el.disabled) {
-      return;
+  changeLabelState(label: SimpleLabel) {
+    if (this.selectedLabelNames.has(label.name)) {
+      this.selectedLabelNames.delete(label.name);
+      this.deselectedLabelNames.add(label.name);
+    } else if (this.deselectedLabelNames.has(label.name)) {
+      this.deselectedLabelNames.delete(label.name);
+    } else {
+      this.selectedLabelNames.add(label.name);
     }
-    el.toggle();
-    this.updateSelection([el]);
+    this.updateSelection();
+  }
+
+  /**
+   * Returns the border color of the label.
+   * The border color represents the state of the label.
+   */
+  getColor(label: SimpleLabel): string {
+    if (this.selectedLabelNames.has(label.name)) {
+      return LabelFilterBarComponent.SELECTED_LABEL_COLOR;
+    } else if (this.deselectedLabelNames.has(label.name)) {
+      return LabelFilterBarComponent.DESELECTED_LABEL_COLOR;
+    } else {
+      return LabelFilterBarComponent.DEFAULT_LABEL_COLOR;
+    }
   }
 
   /** loads in the labels in the repository */
@@ -100,22 +120,16 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
     return this.allLabels.some((label) => !this.filter(filter, label.name));
   }
 
-  updateSelection(options: MatListOption[]): void {
-    options.forEach((option) => {
-      if (option.selected && !this.selectedLabelNames.includes(option.value)) {
-        this.selectedLabelNames.push(option.value);
-      }
-      if (!option.selected && this.selectedLabelNames.includes(option.value)) {
-        const index = this.selectedLabelNames.indexOf(option.value);
-        this.selectedLabelNames.splice(index, 1);
-      }
+  updateSelection(): void {
+    this.filtersService.updateFilters({
+      labels: Array.from(this.selectedLabelNames),
+      deselectedLabels: this.deselectedLabelNames
     });
-    this.filtersService.updateFilters({ labels: this.selectedLabelNames });
   }
 
   removeAllSelection(): void {
-    this.matSelectionList.deselectAll();
-    this.selectedLabelNames = [];
-    this.filtersService.updateFilters({ labels: this.selectedLabelNames });
+    this.selectedLabelNames = new Set<string>();
+    this.deselectedLabelNames = new Set<string>();
+    this.updateSelection();
   }
 }
