@@ -46,4 +46,26 @@ export class FiltersService {
     };
     this.filter$.next(nextDropdownFilter);
   }
+
+  sanitizeLabels(allLabels: SimpleLabel[]) {
+    const allLabelsSet = new Set(allLabels.map((label) => label.name));
+
+    const newHiddenLabels: Set<string> = new Set();
+    for (const hiddenLabel of this.filter$.value.hiddenLabels) {
+      if (allLabelsSet.has(hiddenLabel)) {
+        newHiddenLabels.add(hiddenLabel);
+      }
+    }
+
+    const newDeselectedLabels: Set<string> = new Set();
+    for (const deselectedLabel of this.filter$.value.deselectedLabels) {
+      if (allLabelsSet.has(deselectedLabel)) {
+        newDeselectedLabels.add(deselectedLabel);
+      }
+    }
+
+    const newLabels = this.filter$.value.labels.filter((label) => allLabelsSet.has(label));
+
+    this.updateFilters({ labels: newLabels, hiddenLabels: newHiddenLabels, deselectedLabels: newDeselectedLabels });
+  }
 }
