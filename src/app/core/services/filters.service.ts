@@ -74,8 +74,6 @@ export class FiltersService {
         if (!stringifiedFilterData) {
           continue;
         }
-        console.log(filterName);
-        console.log(stringifiedFilterData);
         const filterData = JSON.parse(stringifiedFilterData);
 
         if (nextFilter[filterName] instanceof Set) {
