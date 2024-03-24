@@ -4,12 +4,12 @@ import { STORAGE_KEYS } from '../../src/app/core/constants/storage-keys.constant
 import { Repo } from '../../src/app/core/models/repo.model';
 import { View } from '../../src/app/core/models/view.model';
 import { ErrorMessageService } from '../../src/app/core/services/error-message.service';
+import { FiltersService } from '../../src/app/core/services/filters.service';
 import { GithubService } from '../../src/app/core/services/github.service';
 import { LoggingService } from '../../src/app/core/services/logging.service';
 import { RepoUrlCacheService } from '../../src/app/core/services/repo-url-cache.service';
 import { ViewService } from '../../src/app/core/services/view.service';
 import { CATCHER_REPO, WATCHER_REPO } from '../constants/session.constants';
-import { FiltersService } from '../../src/app/core/services/filters.service';
 
 let viewService: ViewService;
 let githubServiceSpy: jasmine.SpyObj<GithubService>;

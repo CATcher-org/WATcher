@@ -7,10 +7,10 @@ import { Repo } from '../models/repo.model';
 import { SessionData } from '../models/session.model';
 import { View } from '../models/view.model';
 import { ErrorMessageService } from './error-message.service';
+import { FiltersService } from './filters.service';
 import { GithubService } from './github.service';
 import { LoggingService } from './logging.service';
 import { RepoUrlCacheService } from './repo-url-cache.service';
-import { FiltersService } from './filters.service';
 
 export const SESSION_AVALIABILITY_FIX_FAILED = 'Session Availability Fix failed.';
 

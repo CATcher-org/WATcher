@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, pipe } from 'rxjs';
 import { SimpleLabel } from '../models/label.model';
 import { LoggingService } from './logging.service';
-import { ActivatedRoute, Router } from '@angular/router';
 
 export type Filter = {
   title: string;
@@ -43,7 +43,7 @@ export class FiltersService {
 
   private pushFiltersToUrl(): void {
     const queryParams = {};
-    for (const filterName in this.filter$.value) {
+    for (const filterName of Object.keys(this.filter$.value)) {
       if (this.filter$.value[filterName] instanceof Set) {
         queryParams[filterName] = JSON.stringify([...this.filter$.value[filterName]]);
       } else {
@@ -64,17 +64,18 @@ export class FiltersService {
   }
 
   updateFiltersFromURL(url: URL) {
-    let nextFilter: Filter = {
+    const nextFilter: Filter = {
       ...DEFAULT_FILTER
     };
 
     try {
-      for (const filterName in nextFilter) {
+      for (const filterName of Object.keys(nextFilter)) {
         const stringifiedFilterData = url.searchParams.get(filterName);
         if (!stringifiedFilterData) {
           continue;
         }
-
+        console.log(filterName);
+        console.log(stringifiedFilterData);
         const filterData = JSON.parse(stringifiedFilterData);
 
         if (nextFilter[filterName] instanceof Set) {
