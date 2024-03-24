@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, EMPTY, Observable, of, Subscription, timer } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable, of, Subject, Subscription, timer } from 'rxjs';
 import { catchError, exhaustMap, finalize, map } from 'rxjs/operators';
 import { Label, SimpleLabel } from '../models/label.model';
 import { GithubService } from './github.service';
@@ -28,7 +28,7 @@ export class LabelService {
   simpleLabels: SimpleLabel[];
 
   private labelsPollSubscription: Subscription;
-  private labelsSubject = new BehaviorSubject<SimpleLabel[]>([]);
+  private labelsSubject = new Subject<SimpleLabel[]>();
 
   constructor(private githubService: GithubService) {}
 
