@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { BehaviorSubject, pipe } from 'rxjs';
 import { SimpleLabel } from '../models/label.model';
+import { LoggingService } from './logging.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 export type Filter = {
   title: string;
@@ -37,8 +39,54 @@ export class FiltersService {
 
   private _validateFilter = pipe(this.updateStatusPairing, this.updateTypePairing);
 
+  constructor(private logger: LoggingService, private router: Router, private activatedRoute: ActivatedRoute) {}
+
+  private pushFiltersToUrl(): void {
+    const queryParams = {};
+    for (const filterName in this.filter$.value) {
+      if (this.filter$.value[filterName] instanceof Set) {
+        queryParams[filterName] = JSON.stringify([...this.filter$.value[filterName]]);
+      } else {
+        queryParams[filterName] = JSON.stringify(this.filter$.value[filterName]);
+      }
+    }
+
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams,
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
+  }
+
   clearFilters(): void {
     this.filter$.next(DEFAULT_FILTER);
+  }
+
+  updateFiltersFromURL(url: URL) {
+    let nextFilter: Filter = {
+      ...DEFAULT_FILTER
+    };
+
+    try {
+      for (const filterName in nextFilter) {
+        const stringifiedFilterData = url.searchParams.get(filterName);
+        if (!stringifiedFilterData) {
+          continue;
+        }
+
+        const filterData = JSON.parse(stringifiedFilterData);
+
+        if (nextFilter[filterName] instanceof Set) {
+          nextFilter[filterName] = new Set(filterData);
+        } else {
+          nextFilter[filterName] = filterData;
+        }
+      }
+      this.updateFilters(nextFilter);
+    } catch (err) {
+      this.logger.info(`FiltersService: Update filters from URL failed with an error: ${err}`);
+    }
   }
 
   updateFilters(newFilters: Partial<Filter>): void {
@@ -50,9 +98,10 @@ export class FiltersService {
     nextFilter = this._validateFilter(nextFilter);
 
     this.filter$.next(nextFilter);
+    this.pushFiltersToUrl();
   }
 
-  sanitizeLabels(allLabels: SimpleLabel[]) {
+  sanitizeLabels(allLabels: SimpleLabel[]): void {
     const allLabelsSet = new Set(allLabels.map((label) => label.name));
 
     const newHiddenLabels: Set<string> = new Set();

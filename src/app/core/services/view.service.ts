@@ -10,6 +10,7 @@ import { ErrorMessageService } from './error-message.service';
 import { GithubService } from './github.service';
 import { LoggingService } from './logging.service';
 import { RepoUrlCacheService } from './repo-url-cache.service';
+import { FiltersService } from './filters.service';
 
 export const SESSION_AVALIABILITY_FIX_FAILED = 'Session Availability Fix failed.';
 
@@ -69,7 +70,8 @@ export class ViewService {
     private githubService: GithubService,
     private repoUrlCacheService: RepoUrlCacheService,
     public logger: LoggingService,
-    private router: Router
+    private router: Router,
+    private filtersService: FiltersService
   ) {}
 
   /**
@@ -162,7 +164,8 @@ export class ViewService {
    * @param url The partial URL without the host, e.g. `/issuesViewer?repo=CATcher%2FWATcher.
    */
   setupFromUrl(url: string): Observable<void> {
-    return of(this.getViewAndRepoFromUrl(url)).pipe(
+    const urlObject = new URL(`${location.protocol}//${location.host}${url}`);
+    return of(this.getViewAndRepoFromUrl(urlObject)).pipe(
       map(([viewName, repoName]) => {
         if (!this.isViewAllowed(viewName)) {
           throw new Error(ErrorMessageService.invalidUrlMessage());
@@ -171,6 +174,8 @@ export class ViewService {
         if (repoName === null) {
           throw new Error(ErrorMessageService.invalidUrlMessage());
         }
+
+        this.filtersService.updateFiltersFromURL(urlObject);
 
         const newRepo = Repo.of(repoName);
         if (newRepo) {
@@ -182,10 +187,9 @@ export class ViewService {
     );
   }
 
-  getViewAndRepoFromUrl(url: string): [string, string] {
-    const urlObject = new URL(`${location.protocol}//${location.host}${url}`);
-    const pathname = urlObject.pathname;
-    const reponame = urlObject.searchParams.get(ViewService.REPO_QUERY_PARAM_KEY);
+  getViewAndRepoFromUrl(url: URL): [string, string] {
+    const pathname = url.pathname;
+    const reponame = url.searchParams.get(ViewService.REPO_QUERY_PARAM_KEY);
     return [pathname, reponame];
   }
 
