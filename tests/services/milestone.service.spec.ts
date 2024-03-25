@@ -47,9 +47,9 @@ describe('MilestoneService', () => {
         expect(milestone).toBeInstanceOf(Milestone);
       }
 
-      expect(parsedMilestones.length).toBe(3);
+      expect(parsedMilestones.length).toBe(4);
       expect(parsedMilestones[0].title).toBe('Milestone 1');
-      expect(parsedMilestones[parsedMilestones.length - 1]).toBe(Milestone.DefaultMilestone);
+      expect(parsedMilestones[parsedMilestones.length - 1]).toBe(Milestone.PRWithoutMilestone);
     });
   });
 });

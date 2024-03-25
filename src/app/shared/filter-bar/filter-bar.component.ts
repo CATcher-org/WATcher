@@ -1,13 +1,13 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChild } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { Milestone } from '../../core/models/milestone.model';
 import { DEFAULT_FILTER, Filter, FiltersService } from '../../core/services/filters.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
 import { ViewService } from '../../core/services/view.service';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
-import { Milestone } from '../../core/models/milestone.model';
 
 /**
  * This component is abstracted out filterbar used by both detailed-viewer page
