@@ -1,4 +1,3 @@
-import { milestone } from '@primer/octicons';
 import { Issue } from '../../core/models/issue.model';
 import { Filter } from '../../core/services/filters.service';
 
