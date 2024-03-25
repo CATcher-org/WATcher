@@ -4,7 +4,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { DEFAULT_FILTER, Filter, FiltersService } from '../../core/services/filters.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
-import { PhaseService } from '../../core/services/phase.service';
+import { ViewService } from '../../core/services/view.service';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
 
@@ -35,10 +35,10 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   constructor(
     public milestoneService: MilestoneService,
     public filtersService: FiltersService,
-    private phaseService: PhaseService,
+    private viewService: ViewService,
     private logger: LoggingService
   ) {
-    this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => this.newRepoInitialize());
+    this.repoChangeSubscription = this.viewService.repoChanged$.subscribe((newRepo) => this.newRepoInitialize());
   }
 
   ngOnInit() {
@@ -68,8 +68,12 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   /**
    * Checks if program is filtering by type issue.
    */
-  isNotFilterIssue() {
-    return this.filter.type !== 'issue';
+  isFilterIssue() {
+    return this.filter.type === 'issue' || this.filter.type === 'all';
+  }
+
+  isFilterPullRequest() {
+    return this.filter.type === 'pullrequest' || this.filter.type === 'all';
   }
 
   /**

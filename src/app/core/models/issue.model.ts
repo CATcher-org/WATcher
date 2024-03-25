@@ -24,7 +24,7 @@ export class Issue {
   author: string;
   isDraft: boolean;
 
-  /** Depending on the phase, assignees attribute can be derived from Github's assignee feature OR from the Github's issue description */
+  /** Depending on the view, assignees attribute can be derived from Github's assignee feature OR from the Github's issue description */
   assignees?: string[];
   labels?: string[];
   githubLabels?: GithubLabel[];

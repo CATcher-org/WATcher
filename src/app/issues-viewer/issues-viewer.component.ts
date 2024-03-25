@@ -7,7 +7,7 @@ import { GithubService } from '../core/services/github.service';
 import { IssueService } from '../core/services/issue.service';
 import { LabelService } from '../core/services/label.service';
 import { MilestoneService } from '../core/services/milestone.service';
-import { PhaseService } from '../core/services/phase.service';
+import { ViewService } from '../core/services/view.service';
 import { TABLE_COLUMNS } from '../shared/issue-tables/issue-tables-columns';
 import { CardViewComponent } from './card-view/card-view.component';
 
@@ -36,13 +36,13 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   views = new BehaviorSubject<QueryList<CardViewComponent>>(undefined);
 
   constructor(
-    public phaseService: PhaseService,
+    public viewService: ViewService,
     public githubService: GithubService,
     public issueService: IssueService,
     public labelService: LabelService,
     public milestoneService: MilestoneService
   ) {
-    this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => {
+    this.repoChangeSubscription = this.viewService.repoChanged$.subscribe((newRepo) => {
       this.issueService.reset(false);
       this.labelService.reset();
       this.initialize();
@@ -83,10 +83,10 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Checks if our current repository available on phase service is indeed a valid repository
+   * Checks if our current repository available on view service is indeed a valid repository
    */
   private checkIfValidRepository() {
-    const currentRepo = this.phaseService.currentRepo;
+    const currentRepo = this.viewService.currentRepo;
 
     if (Repo.isInvalidRepoName(currentRepo)) {
       return of(false);
