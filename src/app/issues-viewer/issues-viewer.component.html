@@ -1,5 +1,5 @@
 <div>
-  <div class="loading-spinner" *ngIf="this.viewService.isChangingRepo | async; else elseBlock">
+  <div class="loading-spinner" *ngIf="(this.viewService.isChangingRepo | async) || this.groups.length === 0; else elseBlock">
     <mat-progress-spinner color="primary" mode="indeterminate" diameter="50" strokeWidth="5"> </mat-progress-spinner>
   </div>
 
@@ -8,22 +8,15 @@
 
     <div class="wrapper">
       <app-card-view
-        *ngFor="let assignee of assignees"
+        *ngFor="let group of groups"
         class="issue-table"
         #card
         [ngStyle]="{ display: card.isLoading || card.issueLength > 0 ? 'initial' : 'none' }"
-        [assignee]="assignee"
+        [group]="group"
         [headers]="this.displayedColumns"
-        (issueLengthChange)="updateHiddenUsers($event, assignee)"
+        (issueLengthChange)="updateHiddenGroups($event, group)"
       ></app-card-view>
-      <app-card-view
-        class="issue-table"
-        #card
-        [ngStyle]="{ display: card.isLoading || card.issueLength > 0 ? 'initial' : 'none' }"
-        [headers]="this.displayedColumns"
-      >
-      </app-card-view>
-      <app-hidden-users [users]="hiddenAssignees"></app-hidden-users>
+      <app-hidden-groups [groups]="this.hiddenGroups"></app-hidden-groups>
     </div>
   </ng-template>
 </div>
