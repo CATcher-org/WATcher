@@ -27,9 +27,9 @@ import { GithubEventService } from './core/services/githubevent.service';
 import { IssueService } from './core/services/issue.service';
 import { LabelService } from './core/services/label.service';
 import { LoggingService } from './core/services/logging.service';
-import { PhaseService } from './core/services/phase.service';
 import { RepoSessionStorageService } from './core/services/repo-session-storage.service';
 import { UserService } from './core/services/user.service';
+import { ViewService } from './core/services/view.service';
 import { IssuesViewerModule } from './issues-viewer/issues-viewer.module';
 import { LabelDefinitionPopupComponent } from './shared/label-definition-popup/label-definition-popup.component';
 import { HeaderComponent } from './shared/layout';
@@ -64,7 +64,7 @@ import { SharedModule } from './shared/shared.module';
         UserService,
         IssueService,
         LabelService,
-        PhaseService,
+        ViewService,
         GithubEventService,
         Title,
         ErrorHandlingService,
@@ -74,7 +74,7 @@ import { SharedModule } from './shared/shared.module';
     {
       provide: IssueService,
       useFactory: IssueServiceFactory,
-      deps: [GithubService, UserService, PhaseService]
+      deps: [GithubService, UserService, ViewService]
     },
     {
       provide: ErrorHandler,

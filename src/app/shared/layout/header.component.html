@@ -8,29 +8,26 @@
   >
     <mat-icon>arrow_back_ios</mat-icon>
   </button>
-  <a
-    class="mat-toolbar mat-primary"
-    style="text-decoration: none"
-    [routerLink]="phaseService.isRepoSet() ? phaseService.currentPhase : null"
+  <a class="mat-toolbar mat-primary" style="text-decoration: none" [routerLink]="viewService.isRepoSet() ? viewService.currentView : null"
     >WATcher v{{ this.getVersion() }}</a
   >
-  <span id="phase-descriptor" *ngIf="auth.isAuthenticated()" style="margin-left: 10px">
-    ({{ this.getPhaseDescription(phaseService.currentPhase) }})
+  <span id="view-descriptor" *ngIf="auth.isAuthenticated()" style="margin-left: 10px">
+    ({{ this.getViewDescription(viewService.currentView) }})
   </span>
 
-  <div *ngIf="auth.isAuthenticated() && this.phaseService.sessionData.sessionRepo.length > 1">
+  <div *ngIf="auth.isAuthenticated() && this.viewService.sessionData.sessionRepo.length > 1">
     <button mat-button [matMenuTriggerFor]="menu"><mat-icon style="color: white">expand_more</mat-icon></button>
     <mat-menu #menu="matMenu">
       <button
         mat-menu-item
-        *ngFor="let sessionRepo of this.phaseService.sessionData.sessionRepo"
-        (click)="this.routeToSelectedPhase(sessionRepo.phase)"
+        *ngFor="let sessionRepo of this.viewService.sessionData.sessionRepo"
+        (click)="this.routeToSelectedView(sessionRepo.view)"
       >
         <span>
-          <mat-icon [ngStyle]="{ color: 'green', visibility: this.phaseService.currentPhase === sessionRepo.phase ? 'visible' : 'hidden' }"
+          <mat-icon [ngStyle]="{ color: 'green', visibility: this.viewService.currentView === sessionRepo.view ? 'visible' : 'hidden' }"
             >done</mat-icon
           >
-          {{ this.getPhaseDescription(sessionRepo.phase) }}
+          {{ this.getViewDescription(sessionRepo.view) }}
         </span>
       </button>
     </mat-menu>
@@ -40,13 +37,13 @@
 
   <span style="flex: 1 1 auto"></span>
 
-  <div *ngIf="auth.isAuthenticated() && phaseService.isRepoSet()">
-    <span id="phase-descriptor" style="margin-left: 10px">
+  <div *ngIf="auth.isAuthenticated() && viewService.isRepoSet()">
+    <span id="view-descriptor" style="margin-left: 10px">
       {{ this.currentRepo || 'No Repository Set' }}
     </span>
     <button
       mat-button
-      matTooltip="{{ phaseService.isRepoSet() ? 'Change Repository' : 'Select Repository' }}"
+      matTooltip="{{ viewService.isRepoSet() ? 'Change Repository' : 'Select Repository' }}"
       (click)="this.openChangeRepoDialog()"
     >
       <mat-icon>edit</mat-icon>
@@ -63,7 +60,7 @@
   </button>
 
   <button
-    *ngIf="auth.isAuthenticated() && phaseService.isRepoSet() && isOpenUrlButtonShown()"
+    *ngIf="auth.isAuthenticated() && viewService.isRepoSet() && isOpenUrlButtonShown()"
     mat-button
     matTooltip="View current page on GitHub"
     (click)="viewBrowser()"
@@ -77,7 +74,7 @@
 
   <ng-template #notLoading>
     <button
-      *ngIf="auth.isAuthenticated() && phaseService.isRepoSet() && isReloadButtonShown() && !this.isReloadButtonDisabled"
+      *ngIf="auth.isAuthenticated() && viewService.isRepoSet() && isReloadButtonShown() && !this.isReloadButtonDisabled"
       mat-button
       matTooltip="Synchronize with Github data"
       (click)="reload()"
