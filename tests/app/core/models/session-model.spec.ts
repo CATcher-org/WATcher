@@ -1,12 +1,12 @@
 import { of } from 'rxjs';
-import { Phase } from '../../../../src/app/core/models/phase.model';
 import {
   assertSessionDataIntegrity,
-  NO_VALID_OPEN_PHASES,
-  OPENED_PHASE_REPO_UNDEFINED,
+  NO_VALID_OPEN_VIEWS,
+  OPENED_VIEW_REPO_UNDEFINED,
   SESSION_DATA_MISSING_FIELDS,
   SESSION_DATA_UNAVAILABLE
 } from '../../../../src/app/core/models/session.model';
+import { View } from '../../../../src/app/core/models/view.model';
 import { VALID_SESSION_DATA, WATCHER_REPO } from '../../../constants/session.constants';
 
 describe('Session Model', () => {
@@ -41,39 +41,39 @@ describe('Session Model', () => {
         });
     });
 
-    it('should throw error on session with invalid phases', () => {
-      of({ sessionRepo: [{ phase: 'invalidPhase' as Phase, repos: [WATCHER_REPO] }] })
+    it('should throw error on session with invalid views', () => {
+      of({ sessionRepo: [{ view: 'invalidView' as View, repos: [WATCHER_REPO] }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
-          error: (err) => expect(err).toEqual(new Error(NO_VALID_OPEN_PHASES))
+          error: (err) => expect(err).toEqual(new Error(NO_VALID_OPEN_VIEWS))
         });
     });
 
     it('should throw error on session data with invalid repo', () => {
-      of({ sessionRepo: [{ phase: Phase.issuesViewer, repo: undefined }] })
+      of({ sessionRepo: [{ view: View.issuesViewer, repo: undefined }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
-          error: (err) => expect(err).toEqual(new Error(OPENED_PHASE_REPO_UNDEFINED))
+          error: (err) => expect(err).toEqual(new Error(OPENED_VIEW_REPO_UNDEFINED))
         });
-      of({ sessionRepo: [{ phase: Phase.issuesViewer, repo: null }] })
+      of({ sessionRepo: [{ view: View.issuesViewer, repo: null }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
-          error: (err) => expect(err).toEqual(new Error(OPENED_PHASE_REPO_UNDEFINED))
+          error: (err) => expect(err).toEqual(new Error(OPENED_VIEW_REPO_UNDEFINED))
         });
-      of({ sessionRepo: [{ phase: Phase.issuesViewer, repo: '' }] })
+      of({ sessionRepo: [{ view: View.issuesViewer, repo: '' }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
-          error: (err) => expect(err).toEqual(new Error(OPENED_PHASE_REPO_UNDEFINED))
+          error: (err) => expect(err).toEqual(new Error(OPENED_VIEW_REPO_UNDEFINED))
         });
-      of({ sessionRepo: [{ phase: Phase.issuesViewer, repo: [] }] })
+      of({ sessionRepo: [{ view: View.issuesViewer, repo: [] }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
-          error: (err) => expect(err).toEqual(new Error(OPENED_PHASE_REPO_UNDEFINED))
+          error: (err) => expect(err).toEqual(new Error(OPENED_VIEW_REPO_UNDEFINED))
         });
     });
 
