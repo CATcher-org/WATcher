@@ -7,6 +7,7 @@ import { MilestoneService } from '../../core/services/milestone.service';
 import { ViewService } from '../../core/services/view.service';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
+import { Milestone } from '../../core/models/milestone.model';
 
 /**
  * This component is abstracted out filterbar used by both detailed-viewer page
@@ -81,7 +82,17 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   }
 
   getDisplayedMilestones() {
-    return this.isTypeAll() ? this.milestoneService.milestones : this.milestoneService.altMilestones;
+    if (this.isTypeAll()) {
+      return this.milestoneService.milestones;
+    } else {
+      const altMilestones = this.milestoneService.milestones.slice(0, -2);
+      if (this.filter.type === 'issue') {
+        altMilestones.push(Milestone.IssueWithoutMilestone);
+      } else {
+        altMilestones.push(Milestone.PRWithoutMilestone);
+      }
+      return altMilestones;
+    }
   }
 
   /**
