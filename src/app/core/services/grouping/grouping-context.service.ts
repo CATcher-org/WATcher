@@ -1,4 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Group } from '../../models/github/group.interface';
 import { Issue } from '../../models/issue.model';
@@ -18,13 +19,14 @@ export const DEFAULT_GROUPBY = GroupBy.Assignee;
   providedIn: 'root'
 })
 export class GroupingContextService {
+  public static readonly GROUP_BY_QUERY_PARAM_KEY = "groupby";
   private currGroupBySubject: BehaviorSubject<GroupBy>;
   currGroupBy: GroupBy;
   currGroupBy$: Observable<GroupBy>;
 
   private groupingStrategyMap: Map<string, GroupingStrategy>;
 
-  constructor(private injector: Injector) {
+  constructor(private injector: Injector, private route: ActivatedRoute, private router: Router) {
     this.currGroupBy = DEFAULT_GROUPBY;
     this.currGroupBySubject = new BehaviorSubject<GroupBy>(this.currGroupBy);
     this.currGroupBy$ = this.currGroupBySubject.asObservable();
@@ -38,10 +40,23 @@ export class GroupingContextService {
   /**
    * Sets the current grouping type.
    * @param groupBy - The grouping type to set.
+   * Sets the current grouping type and updates the corresponding query parameter in the URL.
+   * @param groupBy The grouping type to set.
+   * @param replaceUrl Determines whether to replace the current URL in the browser's history.
+   *                   If true, it replaces the URL; if false, it adds a new entry to the history.
    */
-  setCurrentGroupingType(groupBy: GroupBy): void {
+  setCurrentGroupingType(groupBy: GroupBy, replaceUrl: boolean): void {
     this.currGroupBy = groupBy;
     this.currGroupBySubject.next(this.currGroupBy);
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        [GroupingContextService.GROUP_BY_QUERY_PARAM_KEY]: groupBy
+      },
+      queryParamsHandling: 'merge',
+      replaceUrl: replaceUrl
+    });
   }
 
   /**
@@ -78,6 +93,6 @@ export class GroupingContextService {
    * Resets the current grouping type to the default.
    */
   reset(): void {
-    this.setCurrentGroupingType(DEFAULT_GROUPBY);
+    this.setCurrentGroupingType(DEFAULT_GROUPBY, true);
   }
 }
