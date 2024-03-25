@@ -5,7 +5,7 @@ import { SimpleLabel } from '../models/label.model';
 
 export type Filter = {
   title: string;
-  status: string;
+  status: string[];
   type: string;
   sort: Sort;
   labels: string[];
@@ -16,7 +16,7 @@ export type Filter = {
 
 export const DEFAULT_FILTER: Filter = {
   title: '',
-  status: 'all',
+  status: ['open pullrequest', 'merged pullrequest', 'open issue', 'closed issue'],
   type: 'all',
   sort: { active: 'id', direction: 'asc' },
   labels: [],
@@ -35,21 +35,16 @@ export const DEFAULT_FILTER: Filter = {
 export class FiltersService {
   public filter$ = new BehaviorSubject<Filter>(DEFAULT_FILTER);
 
-  private _validateFilter = pipe(this.updateStatusPairing, this.updateTypePairing);
-
   clearFilters(): void {
     this.filter$.next(DEFAULT_FILTER);
   }
 
   updateFilters(newFilters: Partial<Filter>): void {
-    let nextFilter: Filter = {
+    const nextDropdownFilter: Filter = {
       ...this.filter$.value,
       ...newFilters
     };
-
-    nextFilter = this._validateFilter(nextFilter);
-
-    this.filter$.next(nextFilter);
+    this.filter$.next(nextDropdownFilter);
   }
 
   sanitizeLabels(allLabels: SimpleLabel[]) {
@@ -62,27 +57,15 @@ export class FiltersService {
       }
     }
 
+    const newDeselectedLabels: Set<string> = new Set();
+    for (const deselectedLabel of this.filter$.value.deselectedLabels) {
+      if (allLabelsSet.has(deselectedLabel)) {
+        newDeselectedLabels.add(deselectedLabel);
+      }
+    }
+
     const newLabels = this.filter$.value.labels.filter((label) => allLabelsSet.has(label));
 
-    this.updateFilters({ labels: newLabels, hiddenLabels: newHiddenLabels });
-  }
-  /**
-   * Changes type to a valid, default value when an incompatible combination of type and status is encountered.
-   */
-  updateTypePairing(filter: Filter): Filter {
-    if (filter.status === 'merged') {
-      filter.type = 'pullrequest';
-    }
-    return filter;
-  }
-
-  /**
-   * Changes status to a valid, default value when an incompatible combination of type and status is encountered.
-   */
-  updateStatusPairing(filter: Filter): Filter {
-    if (filter.status === 'merged' && filter.type === 'issue') {
-      filter.status = 'all';
-    }
-    return filter;
+    this.updateFilters({ labels: newLabels, hiddenLabels: newHiddenLabels, deselectedLabels: newDeselectedLabels });
   }
 }
