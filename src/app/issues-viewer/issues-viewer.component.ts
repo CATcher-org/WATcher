@@ -23,7 +23,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Observes for any change in repo*/
   repoChangeSubscription: Subscription;
 
-  groupByChangeSubsription: Subscription;
+  groupByChangeSubscription: Subscription;
 
   /** Observes for any change in the cardviews */
   viewChange: Subscription;
@@ -52,7 +52,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.initialize();
     });
 
-    this.groupByChangeSubsription = this.groupingContextService.currGroupBy$.subscribe((newGroupBy) => {
+    this.groupByChangeSubscription = this.groupingContextService.currGroupBy$.subscribe((newGroupBy) => {
       this.initialize();
     });
   }
@@ -110,13 +110,13 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   updateHiddenGroups(issueLength: number, target: Group) {
     if (issueLength === 0 && this.groupingContextService.isInHiddenList(target)) {
-      this.updateHiddenGroup(target);
+      this.addToHiddenGroups(target);
     } else {
-      this.removeHiddenGroup(target);
+      this.removeFromHiddenGroups(target);
     }
   }
 
-  private updateHiddenGroup(target: Group) {
+  private addToHiddenGroups(target: Group) {
     const isGroupPresent = this.hiddenGroups.some((group) => group.equals(target));
 
     if (!isGroupPresent) {
@@ -124,7 +124,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  private removeHiddenGroup(target: Group) {
+  private removeFromHiddenGroups(target: Group) {
     this.hiddenGroups = this.hiddenGroups.filter((group) => !group.equals(target));
   }
 }
