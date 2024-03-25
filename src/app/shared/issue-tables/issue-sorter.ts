@@ -49,7 +49,7 @@ function compareByIssueType(valueA: Issue, valueB: Issue): number {
   const bOrder = sortOrder[valueB.state + ' ' + valueB.issueOrPr] || -1;
 
   if (aOrder === bOrder) {
-    return 0;
+    return compareByStringValue(valueA.title, valueB.title);
   } else if (aOrder > bOrder) {
     return 1;
   } else {
