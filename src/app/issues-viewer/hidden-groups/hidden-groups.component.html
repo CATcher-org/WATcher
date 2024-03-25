@@ -1,6 +1,6 @@
 <div *ngIf="groups.length > 0" class="hidden-groups">
   <mat-card matTooltip="Users that have no Issues/PRs pertaining to the current filter" matTooltipShowDelay="0" matTooltipHideDelay="0">
-    <mat-card-title>Hidden groups</mat-card-title>
+    <mat-card-title>Hidden {{ this.groupingContextService.currGroupBy }}s</mat-card-title>
     <div class="row-count">{{ groups.length }}</div>
   </mat-card>
   <div class="scrollable-container">

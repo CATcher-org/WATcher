@@ -13,7 +13,7 @@ export class HiddenGroupsComponent {
   @ViewChild('defaultCard') defaultCardTemplate: TemplateRef<any>;
   @ViewChild('assigneeCard') assigneeCardTemplate: TemplateRef<any>;
 
-  constructor(private groupingContextService: GroupingContextService) {}
+  constructor(public groupingContextService: GroupingContextService) {}
 
   getCardTemplate(): TemplateRef<any> {
     switch (this.groupingContextService.currGroupBy) {
