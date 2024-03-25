@@ -1,5 +1,5 @@
 <div *ngIf="users.length > 0" class="hidden-users">
-  <mat-card>
+  <mat-card matTooltip="Users that have no Issues/PRs pertaining to the current filter" matTooltipShowDelay="0" matTooltipHideDelay="0">
     <mat-card-title>Hidden users</mat-card-title>
     <div class="row-count">{{ users.length }}</div>
   </mat-card>

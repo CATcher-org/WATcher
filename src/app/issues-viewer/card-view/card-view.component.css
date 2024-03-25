@@ -133,3 +133,15 @@ div.column-header .mat-card-header {
   display: inline-flex;
   font-size: 14px;
 }
+
+:host ::ng-deep .pagination-hide-arrow .mat-paginator-navigation-previous {
+  display: none !important;
+}
+
+:host ::ng-deep .pagination-hide-arrow .mat-paginator-navigation-next {
+  display: none !important;
+}
+
+:host ::ng-deep .mat-paginator-range-actions {
+  height: 47px;
+}
