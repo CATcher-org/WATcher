@@ -1,54 +1,54 @@
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { STORAGE_KEYS } from '../../src/app/core/constants/storage-keys.constants';
-import { Phase } from '../../src/app/core/models/phase.model';
 import { Repo } from '../../src/app/core/models/repo.model';
+import { View } from '../../src/app/core/models/view.model';
 import { ErrorMessageService } from '../../src/app/core/services/error-message.service';
 import { GithubService } from '../../src/app/core/services/github.service';
 import { LoggingService } from '../../src/app/core/services/logging.service';
-import { PhaseService } from '../../src/app/core/services/phase.service';
 import { RepoUrlCacheService } from '../../src/app/core/services/repo-url-cache.service';
+import { ViewService } from '../../src/app/core/services/view.service';
 import { CATCHER_REPO, WATCHER_REPO } from '../constants/session.constants';
 
-let phaseService: PhaseService;
+let viewService: ViewService;
 let githubServiceSpy: jasmine.SpyObj<GithubService>;
 let repoUrlCacheServiceSpy: jasmine.SpyObj<RepoUrlCacheService>;
 let loggingServiceSpy: jasmine.SpyObj<LoggingService>;
 let routerSpy: jasmine.SpyObj<Router>;
 
-describe('PhaseService', () => {
+describe('ViewService', () => {
   beforeEach(() => {
-    githubServiceSpy = jasmine.createSpyObj('GithubService', ['isRepositoryPresent', 'storePhaseDetails']);
+    githubServiceSpy = jasmine.createSpyObj('GithubService', ['isRepositoryPresent', 'storeViewDetails']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     repoUrlCacheServiceSpy = jasmine.createSpyObj('RepoUrlCacheService', ['cache']);
     loggingServiceSpy = jasmine.createSpyObj('LoggingService', ['info']);
-    phaseService = new PhaseService(githubServiceSpy, repoUrlCacheServiceSpy, loggingServiceSpy, routerSpy);
+    viewService = new ViewService(githubServiceSpy, repoUrlCacheServiceSpy, loggingServiceSpy, routerSpy);
   });
 
   describe('setRepository(Repo, Repo[])', () => {
     it('should set the current repositories and update session data', () => {
       const repos: Repo[] = [CATCHER_REPO];
 
-      phaseService.setRepository(WATCHER_REPO, repos);
+      viewService.setRepository(WATCHER_REPO, repos);
 
-      expect(phaseService.currentRepo).toEqual(WATCHER_REPO);
-      expect(phaseService.otherRepos).toEqual(repos);
+      expect(viewService.currentRepo).toEqual(WATCHER_REPO);
+      expect(viewService.otherRepos).toEqual(repos);
 
-      const currentSessionRepo = phaseService.sessionData.sessionRepo.find((x) => x.phase === phaseService.currentPhase);
+      const currentSessionRepo = viewService.sessionData.sessionRepo.find((x) => x.view === viewService.currentView);
       expect(currentSessionRepo?.repos).toEqual([WATCHER_REPO, CATCHER_REPO]);
     });
 
-    it('should store phase details via githubService and update localStorage', () => {
+    it('should store view details via githubService and update localStorage', () => {
       const localStorageSetItem = spyOn(localStorage, 'setItem');
 
-      phaseService.setRepository(WATCHER_REPO);
+      viewService.setRepository(WATCHER_REPO);
 
-      expect(githubServiceSpy.storePhaseDetails).toHaveBeenCalledWith(WATCHER_REPO.owner, WATCHER_REPO.name);
-      expect(localStorageSetItem).toHaveBeenCalledWith('sessionData', JSON.stringify(phaseService.sessionData));
+      expect(githubServiceSpy.storeViewDetails).toHaveBeenCalledWith(WATCHER_REPO.owner, WATCHER_REPO.name);
+      expect(localStorageSetItem).toHaveBeenCalledWith('sessionData', JSON.stringify(viewService.sessionData));
     });
 
     it('should navigate to the new repository', () => {
-      phaseService.setRepository(WATCHER_REPO);
+      viewService.setRepository(WATCHER_REPO);
 
       expect(routerSpy.navigate).toHaveBeenCalledWith(['issuesViewer'], {
         queryParams: { repo: WATCHER_REPO.toString() }
@@ -60,10 +60,10 @@ describe('PhaseService', () => {
     it('should set isChangingRepo to true at the start and false at the end', async () => {
       githubServiceSpy.isRepositoryPresent.and.returnValue(of(true));
 
-      const isChangingRepoNextSpy = spyOn(phaseService.isChangingRepo, 'next');
-      spyOn(phaseService, 'setRepository');
+      const isChangingRepoNextSpy = spyOn(viewService.isChangingRepo, 'next');
+      spyOn(viewService, 'setRepository');
 
-      await phaseService.changeRepositoryIfValid(WATCHER_REPO);
+      await viewService.changeRepositoryIfValid(WATCHER_REPO);
 
       expect(isChangingRepoNextSpy.calls.first().args[0]).toBe(true);
 
@@ -73,7 +73,7 @@ describe('PhaseService', () => {
     it('should throw error if repository is not valid', async () => {
       githubServiceSpy.isRepositoryPresent.and.returnValue(of(false));
 
-      await expectAsync(phaseService.changeRepositoryIfValid(WATCHER_REPO)).toBeRejectedWithError(
+      await expectAsync(viewService.changeRepositoryIfValid(WATCHER_REPO)).toBeRejectedWithError(
         ErrorMessageService.repositoryNotPresentMessage()
       );
     });
@@ -81,12 +81,12 @@ describe('PhaseService', () => {
     it('should set and navigate to new repo if repo is valid', async () => {
       githubServiceSpy.isRepositoryPresent.and.returnValue(of(true));
 
-      const repoChanged$Spy = spyOn(phaseService.repoChanged$, 'next');
+      const repoChanged$Spy = spyOn(viewService.repoChanged$, 'next');
 
-      await phaseService.changeRepositoryIfValid(WATCHER_REPO);
+      await viewService.changeRepositoryIfValid(WATCHER_REPO);
 
-      expect(loggingServiceSpy.info).toHaveBeenCalledWith(`PhaseService: Changing current repository to '${WATCHER_REPO}'`);
-      expect(phaseService.currentRepo).toEqual(WATCHER_REPO);
+      expect(loggingServiceSpy.info).toHaveBeenCalledWith(`ViewService: Changing current repository to '${WATCHER_REPO}'`);
+      expect(viewService.currentRepo).toEqual(WATCHER_REPO);
       expect(routerSpy.navigate).toHaveBeenCalledWith(['issuesViewer'], {
         queryParams: { repo: WATCHER_REPO.toString() }
       });
@@ -108,12 +108,12 @@ describe('PhaseService', () => {
     it('should set and navigate to new repo if repo is valid', async () => {
       githubServiceSpy.isRepositoryPresent.and.returnValue(of(true));
 
-      const repoSetSourceNext = spyOn(phaseService.repoSetSource, 'next');
+      const repoSetSourceNext = spyOn(viewService.repoSetSource, 'next');
 
-      await phaseService.initializeCurrentRepository();
+      await viewService.initializeCurrentRepository();
 
-      expect(loggingServiceSpy.info).toHaveBeenCalledWith(`PhaseService: Repo is ${WATCHER_REPO}`);
-      expect(phaseService.currentRepo).toEqual(WATCHER_REPO);
+      expect(loggingServiceSpy.info).toHaveBeenCalledWith(`ViewService: Repo is ${WATCHER_REPO}`);
+      expect(viewService.currentRepo).toEqual(WATCHER_REPO);
       expect(routerSpy.navigate).toHaveBeenCalledWith(['issuesViewer'], {
         queryParams: { repo: WATCHER_REPO.toString() }
       });
@@ -123,29 +123,27 @@ describe('PhaseService', () => {
     it('should throw error if repository is invalid', async () => {
       githubServiceSpy.isRepositoryPresent.and.returnValue(of(false));
 
-      await expectAsync(phaseService.initializeCurrentRepository()).toBeRejectedWithError(
-        ErrorMessageService.repositoryNotPresentMessage()
-      );
+      await expectAsync(viewService.initializeCurrentRepository()).toBeRejectedWithError(ErrorMessageService.repositoryNotPresentMessage());
     });
   });
 
-  describe('changePhase(Phase)', () => {
-    it('should set current phase', () => {
-      phaseService.setRepository(WATCHER_REPO);
+  describe('changeView(View)', () => {
+    it('should set current view', () => {
+      viewService.setRepository(WATCHER_REPO);
 
-      expect(phaseService.currentPhase).toEqual(Phase.issuesViewer);
+      expect(viewService.currentView).toEqual(View.issuesViewer);
 
-      phaseService.changePhase(Phase.activityDashboard);
+      viewService.changeView(View.activityDashboard);
 
-      expect(phaseService.currentPhase).toEqual(Phase.activityDashboard);
+      expect(viewService.currentView).toEqual(View.activityDashboard);
     });
   });
 
   describe('.reset()', () => {
-    it('should reset the currentPhase of the PhaseService', () => {
-      phaseService.currentPhase = Phase.activityDashboard;
-      phaseService.reset();
-      expect(phaseService.currentPhase).toBe(Phase.issuesViewer);
+    it('should reset the currentView of the ViewService', () => {
+      viewService.currentView = View.activityDashboard;
+      viewService.reset();
+      expect(viewService.currentView).toBe(View.issuesViewer);
     });
   });
 
@@ -154,7 +152,7 @@ describe('PhaseService', () => {
       const validUrl = `/issuesViewer?repo=${WATCHER_REPO.owner}%2F${WATCHER_REPO.name}`;
       const localStorageSetItemSpy = spyOn(window.localStorage, 'setItem');
 
-      await phaseService.setupFromUrl(validUrl).toPromise();
+      await viewService.setupFromUrl(validUrl).toPromise();
 
       expect(localStorageSetItemSpy).toHaveBeenCalledWith(STORAGE_KEYS.ORG, WATCHER_REPO.owner);
       expect(localStorageSetItemSpy).toHaveBeenCalledWith(STORAGE_KEYS.DATA_REPO, WATCHER_REPO.name);
@@ -163,7 +161,7 @@ describe('PhaseService', () => {
     it('should throw error for url without repo paramater', (done) => {
       const urlWithoutRepo = '/issuesViewer';
 
-      phaseService.setupFromUrl(urlWithoutRepo).subscribe({
+      viewService.setupFromUrl(urlWithoutRepo).subscribe({
         error: (err) => {
           expect(err).toEqual(new Error(ErrorMessageService.invalidUrlMessage()));
           done();
@@ -174,7 +172,7 @@ describe('PhaseService', () => {
     it('should throw error for empty url', (done) => {
       const emptyUrl = '';
 
-      phaseService.setupFromUrl(emptyUrl).subscribe({
+      viewService.setupFromUrl(emptyUrl).subscribe({
         error: (err) => {
           expect(err).toEqual(new Error(ErrorMessageService.invalidUrlMessage()));
           done();
@@ -185,7 +183,7 @@ describe('PhaseService', () => {
     it('should throw error for url with invalid repo format', (done) => {
       const urlWithInvalidRepoFormat = '/issuesViewer?repo=InvalidRepo';
 
-      phaseService.setupFromUrl(urlWithInvalidRepoFormat).subscribe({
+      viewService.setupFromUrl(urlWithInvalidRepoFormat).subscribe({
         error: (err) => {
           expect(err).toEqual(new Error(ErrorMessageService.repositoryNotPresentMessage()));
           done();

@@ -88,15 +88,31 @@
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  border-radius: 10px;
+  height: 40px;
+  padding: 0px 12px;
+  margin: 8px 4px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.flexbox-container:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.flexbox-container-strikethrough {
+  position: absolute;
+  top: 50%;
+  width: 90%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 2px;
+  background-color: black;
 }
 
 .input-field {
   width: calc(100% - (2 * 15px)); /* To account for left and right padding. */
   padding: 0 15px;
-}
-
-.list-option {
-  width: 100%;
 }
 
 .mat-chip {
@@ -109,7 +125,6 @@
   min-height: 16px;
   max-height: 42px;
   margin: 0px;
-  top: 50%;
 }
 
 .mat-stroked-button {

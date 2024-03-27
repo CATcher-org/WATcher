@@ -1,13 +1,14 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
-import { GithubUser } from '../core/models/github-user.model';
+import { Group } from '../core/models/github/group.interface';
 import { Repo } from '../core/models/repo.model';
 import { ErrorMessageService } from '../core/services/error-message.service';
 import { GithubService } from '../core/services/github.service';
+import { GroupingContextService } from '../core/services/grouping/grouping-context.service';
 import { IssueService } from '../core/services/issue.service';
 import { LabelService } from '../core/services/label.service';
 import { MilestoneService } from '../core/services/milestone.service';
-import { PhaseService } from '../core/services/phase.service';
+import { ViewService } from '../core/services/view.service';
 import { TABLE_COLUMNS } from '../shared/issue-tables/issue-tables-columns';
 import { CardViewComponent } from './card-view/card-view.component';
 
@@ -22,29 +23,36 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Observes for any change in repo*/
   repoChangeSubscription: Subscription;
 
+  groupByChangeSubscription: Subscription;
+
   /** Observes for any change in the cardviews */
   viewChange: Subscription;
 
   /** Users to show as columns */
-  assignees: GithubUser[];
+  groups: Group[] = [];
 
   /** The list of users with 0 issues (hidden) */
-  hiddenAssignees: GithubUser[] = [];
+  hiddenGroups: Group[] = [];
 
   @ViewChildren(CardViewComponent) cardViews: QueryList<CardViewComponent>;
 
   views = new BehaviorSubject<QueryList<CardViewComponent>>(undefined);
 
   constructor(
-    public phaseService: PhaseService,
+    public viewService: ViewService,
     public githubService: GithubService,
     public issueService: IssueService,
     public labelService: LabelService,
-    public milestoneService: MilestoneService
+    public milestoneService: MilestoneService,
+    public groupingContextService: GroupingContextService
   ) {
-    this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => {
+    this.repoChangeSubscription = this.viewService.repoChanged$.subscribe((newRepo) => {
       this.issueService.reset(false);
       this.labelService.reset();
+      this.initialize();
+    });
+
+    this.groupByChangeSubscription = this.groupingContextService.currGroupBy$.subscribe((newGroupBy) => {
       this.initialize();
     });
   }
@@ -73,20 +81,20 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     // Fetch assignees
-    this.assignees = [];
-    this.hiddenAssignees = [];
+    this.groups = [];
+    this.hiddenGroups = [];
 
-    this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
+    this.groupingContextService.getGroups().subscribe((x) => (this.groups = x));
 
     // Fetch issues
     this.issueService.reloadAllIssues();
   }
 
   /**
-   * Checks if our current repository available on phase service is indeed a valid repository
+   * Checks if our current repository available on view service is indeed a valid repository
    */
   private checkIfValidRepository() {
-    const currentRepo = this.phaseService.currentRepo;
+    const currentRepo = this.viewService.currentRepo;
 
     if (Repo.isInvalidRepoName(currentRepo)) {
       return of(false);
@@ -96,25 +104,27 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Update the list of hidden user based on the new info.
-   * @param issueLength The number of issues assigned to this user.
-   * @param assignee The assignee.
+   * Update the list of hidden group based on the new info.
+   * @param issueLength The number of issues under this group.
+   * @param group The group.
    */
-  updateHiddenUsers(issueLength: number, assignee: GithubUser) {
-    if (issueLength === 0) {
-      this.updateHiddenUser(assignee);
+  updateHiddenGroups(issueLength: number, target: Group) {
+    if (issueLength === 0 && this.groupingContextService.isInHiddenList(target)) {
+      this.addToHiddenGroups(target);
     } else {
-      this.removeHiddenUser(assignee);
+      this.removeFromHiddenGroups(target);
     }
   }
 
-  private updateHiddenUser(assignee: GithubUser) {
-    if (!this.hiddenAssignees.includes(assignee)) {
-      this.hiddenAssignees.push(assignee);
+  private addToHiddenGroups(target: Group) {
+    const isGroupPresent = this.hiddenGroups.some((group) => group.equals(target));
+
+    if (!isGroupPresent) {
+      this.hiddenGroups.push(target);
     }
   }
 
-  private removeHiddenUser(assignee: GithubUser) {
-    this.hiddenAssignees = this.hiddenAssignees.filter((user) => user !== assignee);
+  private removeFromHiddenGroups(target: Group) {
+    this.hiddenGroups = this.hiddenGroups.filter((group) => !group.equals(target));
   }
 }
