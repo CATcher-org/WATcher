@@ -6,8 +6,7 @@ import { AssigneeGroupingStrategy } from './assignee-grouping-strategy.service';
 import { GroupingStrategy } from './grouping-strategy.interface';
 
 export enum GroupBy {
-  Assignee = 'assignee',
-  Milestone = 'milestone'
+  Assignee = 'assignee'
 }
 
 export const DEFAULT_GROUPBY = GroupBy.Assignee;

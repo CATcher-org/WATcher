@@ -13,6 +13,15 @@
   <mat-grid-tile colspan="3">
     <div class="dropdown-filters">
       <mat-form-field appearance="standard">
+        <mat-label>Group by</mat-label>
+        <mat-select
+          [value]="this.groupingContextService.currGroupBy$ | async"
+          (selectionChange)="this.groupingContextService.setCurrentGroupingType($event.value)"
+        >
+          <mat-option *ngFor="let option of this.groupByEnum | keyvalue" [value]="option.value">{{ option.key }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="standard">
         <mat-label>Status</mat-label>
         <mat-select [value]="this.filter.status" (selectionChange)="this.filtersService.updateFilters({ status: $event.value })" multiple>
           <mat-option *ngIf="isFilterPullRequest()" value="open pullrequest">Open Pull Requests</mat-option>
