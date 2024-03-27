@@ -3,7 +3,6 @@ import { Sort } from '@angular/material/sort';
 import { BehaviorSubject, pipe } from 'rxjs';
 import { SimpleLabel } from '../models/label.model';
 import { Milestone } from '../models/milestone.model';
-import { milestone } from '@primer/octicons';
 
 export type Filter = {
   title: string;

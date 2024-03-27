@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChild } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { Milestone } from '../../core/models/milestone.model';
 import { DEFAULT_FILTER, Filter, FiltersService } from '../../core/services/filters.service';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { LoggingService } from '../../core/services/logging.service';
