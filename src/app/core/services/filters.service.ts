@@ -3,6 +3,7 @@ import { Sort } from '@angular/material/sort';
 import { BehaviorSubject, pipe } from 'rxjs';
 import { SimpleLabel } from '../models/label.model';
 import { Milestone } from '../models/milestone.model';
+import { milestone } from '@primer/octicons';
 
 export type Filter = {
   title: string;
@@ -75,7 +76,9 @@ export class FiltersService {
   }
 
   sanitizeMilestones(allMilestones: Milestone[]) {
-    const allMilestonesSet = new Set(allMilestones.map((milestone) => milestone.title));
+    const milestones = allMilestones.map((milestone) => milestone.title);
+    milestones.push(Milestone.IssueWithoutMilestone.title, Milestone.PRWithoutMilestone.title);
+    const allMilestonesSet = new Set(milestones);
 
     // All previous milestones were selected, reset to all new milestones selected
     if (this.filter$.value.milestones.length === this.previousMilestonesLength) {
