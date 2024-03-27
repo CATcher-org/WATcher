@@ -77,10 +77,6 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     return this.filter.type === 'pullrequest' || this.filter.type === 'all';
   }
 
-  isTypeAll() {
-    return this.filter.type === 'all';
-  }
-
   /**
    * Fetch and initialize all information from repository to populate Issue Dashboard.
    * Re-called when repo has changed
