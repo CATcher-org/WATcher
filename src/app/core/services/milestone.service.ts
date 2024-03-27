@@ -42,10 +42,6 @@ export class MilestoneService {
     }
     milestoneData.sort((a: Milestone, b: Milestone) => a.title.localeCompare(b.title));
 
-    // add default milestone for untracked issues/PRs at the end
-    milestoneData.push(Milestone.IssueWithoutMilestone);
-    milestoneData.push(Milestone.PRWithoutMilestone);
-
     return milestoneData;
   }
 }

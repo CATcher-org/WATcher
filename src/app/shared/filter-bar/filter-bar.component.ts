@@ -81,20 +81,6 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     return this.filter.type === 'all';
   }
 
-  getDisplayedMilestones() {
-    if (this.isTypeAll()) {
-      return this.milestoneService.milestones;
-    } else {
-      const altMilestones = this.milestoneService.milestones.slice(0, -2);
-      if (this.filter.type === 'issue') {
-        altMilestones.push(Milestone.IssueWithoutMilestone);
-      } else {
-        altMilestones.push(Milestone.PRWithoutMilestone);
-      }
-      return altMilestones;
-    }
-  }
-
   /**
    * Fetch and initialize all information from repository to populate Issue Dashboard.
    * Re-called when repo has changed
@@ -104,7 +90,9 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     this.milestoneSubscription = this.milestoneService.fetchMilestones().subscribe(
       (response) => {
         this.logger.debug('IssuesViewerComponent: Fetched milestones from Github');
-        this.filtersService.updateFilters({ milestones: this.milestoneService.milestones.map((milestone) => milestone.title) });
+        const milestones = this.milestoneService.milestones.map((milestone) => milestone.title);
+        milestones.push(Milestone.IssueWithoutMilestone.title, Milestone.PRWithoutMilestone.title);
+        this.filtersService.updateFilters({ milestones: milestones });
       },
       (err) => {},
       () => {}
