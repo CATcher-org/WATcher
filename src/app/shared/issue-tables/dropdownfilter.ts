@@ -38,14 +38,6 @@ export function applyDropdownFilter(filter: Filter, data: Issue[]): Issue[] {
       ret = ret && issue.issueOrPr === 'PullRequest';
     }
 
-    if (filter.milestones.some((milestone) => issue.milestone.title === 'Issue without a milestone')) {
-      ret = ret && issue.issueOrPr === 'Issue';
-    }
-
-    if (filter.milestones.some((milestone) => issue.milestone.title === 'PR without a milestone')) {
-      ret = ret && issue.issueOrPr === 'PullRequest';
-    }
-
     ret = ret && filter.milestones.some((milestone) => issue.milestone.title === milestone);
     ret = ret && issue.labels.every((label) => !filter.deselectedLabels.has(label));
     return ret && filter.labels.every((label) => issue.labels.includes(label));
