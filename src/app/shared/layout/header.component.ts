@@ -43,6 +43,14 @@ export class HeaderComponent implements OnInit {
   private readonly yesButtonDialogMessage = 'Yes, I wish to log out';
   private readonly noButtonDialogMessage = "No, I don't wish to log out";
 
+  readonly presetViews: {
+    [key: string]: string;
+  } = {
+    currentlyActive: 'Currently active',
+    contributions: 'Contributions',
+    custom: 'Custom'
+  };
+
   /** Model for the displayed repository name */
   currentRepo = '';
 
