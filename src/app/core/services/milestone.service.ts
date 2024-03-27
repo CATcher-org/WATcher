@@ -25,6 +25,7 @@ export class MilestoneService {
     return this.githubService.fetchAllMilestones().pipe(
       map((response) => {
         this.milestones = this.parseMilestoneData(response);
+        this.hasNoMilestones = response.length === 0;
         return response;
       })
     );
