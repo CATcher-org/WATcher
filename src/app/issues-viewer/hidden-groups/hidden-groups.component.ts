@@ -12,6 +12,7 @@ export class HiddenGroupsComponent {
 
   @ViewChild('defaultCard') defaultCardTemplate: TemplateRef<any>;
   @ViewChild('assigneeCard') assigneeCardTemplate: TemplateRef<any>;
+  @ViewChild('milestoneCard') milestoneCardTemplate: TemplateRef<any>;
 
   constructor(public groupingContextService: GroupingContextService) {}
 
@@ -19,6 +20,8 @@ export class HiddenGroupsComponent {
     switch (this.groupingContextService.currGroupBy) {
       case GroupBy.Assignee:
         return this.assigneeCardTemplate;
+      case GroupBy.Milestone:
+        return this.milestoneCardTemplate;
       default:
         return this.defaultCardTemplate;
     }

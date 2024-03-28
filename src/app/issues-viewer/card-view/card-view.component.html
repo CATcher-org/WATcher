@@ -48,3 +48,16 @@
     </mat-card>
   </div>
 </ng-template>
+
+<ng-template #milestoneHeader let-milestone>
+  <div class="column-header">
+    <mat-card>
+      <mat-card-header [ngStyle]="{ height: '40px' }">
+        <mat-card-title>
+          {{ milestone.title }}
+        </mat-card-title>
+        <div class="row-count">{{ this.issues.count }}</div>
+      </mat-card-header>
+    </mat-card>
+  </div>
+</ng-template>

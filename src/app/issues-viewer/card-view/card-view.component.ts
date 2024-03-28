@@ -36,6 +36,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('defaultHeader') defaultHeaderTemplate: TemplateRef<any>;
   @ViewChild('assigneeHeader') assigneeHeaderTemplate: TemplateRef<any>;
+  @ViewChild('milestoneHeader') milestoneHeaderTemplate: TemplateRef<any>;
 
   issues: IssuesDataTable;
   issues$: Observable<Issue[]>;
@@ -82,6 +83,8 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
     switch (this.groupingContextService.currGroupBy) {
       case GroupBy.Assignee:
         return this.assigneeHeaderTemplate;
+      case GroupBy.Milestone:
+        return this.milestoneHeaderTemplate;
       default:
         return this.defaultHeaderTemplate;
     }
