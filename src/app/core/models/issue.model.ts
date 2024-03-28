@@ -82,8 +82,6 @@ export class Issue {
     this.title = githubIssue.title;
     this.hiddenDataInDescription = new HiddenData(githubIssue.body);
     this.description = Issue.updateDescription(this.hiddenDataInDescription.originalStringWithoutHiddenData);
-    // githubIssue without milestone will be set to default milestone
-    this.milestone = githubIssue.milestone ? new Milestone(githubIssue.milestone) : Milestone.DefaultMilestone;
     this.state = githubIssue.state;
     this.stateReason = githubIssue.stateReason;
     this.issueOrPr = githubIssue.issueOrPr;
@@ -94,6 +92,11 @@ export class Issue {
     this.assignees = githubIssue.assignees.map((assignee) => assignee.login);
     this.githubLabels = githubIssue.labels;
     this.labels = githubIssue.labels.map((label) => label.name);
+    this.milestone = githubIssue.milestone
+      ? new Milestone(githubIssue.milestone)
+      : this.issueOrPr === 'Issue'
+      ? Milestone.IssueWithoutMilestone
+      : Milestone.PRWithoutMilestone;
   }
 
   public static createPhaseBugReportingIssue(githubIssue: GithubIssue): Issue {

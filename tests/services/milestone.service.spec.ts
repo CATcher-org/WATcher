@@ -18,7 +18,7 @@ describe('MilestoneService', () => {
       githubServiceSpy.fetchAllMilestones.and.returnValue(of(mockMilestones));
       milestoneService.fetchMilestones().subscribe((response) => {
         expect(githubServiceSpy.fetchAllMilestones).toHaveBeenCalled();
-        expect(milestoneService.milestones.length).toBe(3);
+        expect(milestoneService.milestones.length).toBe(2);
         expect(milestoneService.milestones[0].title).toBe('Milestone 1');
         expect(milestoneService.hasNoMilestones).toBeFalse();
 
@@ -30,7 +30,7 @@ describe('MilestoneService', () => {
       githubServiceSpy.fetchAllMilestones.and.returnValue(of([]));
       milestoneService.fetchMilestones().subscribe((response) => {
         expect(githubServiceSpy.fetchAllMilestones).toHaveBeenCalled();
-        expect(milestoneService.milestones.length).toBe(1);
+        expect(milestoneService.milestones.length).toBe(0);
         expect(milestoneService.hasNoMilestones).toBeTrue();
 
         done();
@@ -47,9 +47,8 @@ describe('MilestoneService', () => {
         expect(milestone).toBeInstanceOf(Milestone);
       }
 
-      expect(parsedMilestones.length).toBe(3);
+      expect(parsedMilestones.length).toBe(2);
       expect(parsedMilestones[0].title).toBe('Milestone 1');
-      expect(parsedMilestones[parsedMilestones.length - 1]).toBe(Milestone.DefaultMilestone);
     });
   });
 });
