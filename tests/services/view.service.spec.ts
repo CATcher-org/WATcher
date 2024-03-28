@@ -128,7 +128,7 @@ describe('ViewService', () => {
   });
 
   describe('changeView(View)', () => {
-    it('should set current view', () => {
+    it('should set current view and redirect with current view and repo', () => {
       viewService.setRepository(WATCHER_REPO);
 
       expect(viewService.currentView).toEqual(View.issuesViewer);
@@ -136,6 +136,9 @@ describe('ViewService', () => {
       viewService.changeView(View.activityDashboard);
 
       expect(viewService.currentView).toEqual(View.activityDashboard);
+      expect(routerSpy.navigate).toHaveBeenCalledWith([View.activityDashboard], {
+        queryParams: { repo: WATCHER_REPO.toString() }
+      });
     });
   });
 

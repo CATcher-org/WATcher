@@ -112,9 +112,6 @@ export class HeaderComponent implements OnInit {
     this.issueService.reset(false);
     this.labelService.reset();
     this.reload();
-
-    // Route app to new view.
-    this.router.navigateByUrl(this.viewService.currentView);
   }
 
   isBackButtonShown(): boolean {

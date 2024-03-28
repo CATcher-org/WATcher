@@ -2,3 +2,9 @@
   display: flex;
   overflow-x: auto;
 }
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -85,11 +85,7 @@ export class ViewService {
     this.sessionData.sessionRepo.find((x) => x.view === this.currentView).repos = this.getRepository();
     this.githubService.storeViewDetails(this.currentRepo.owner, this.currentRepo.name);
     localStorage.setItem('sessionData', JSON.stringify(this.sessionData));
-    this.router.navigate(['issuesViewer'], {
-      queryParams: {
-        [ViewService.REPO_QUERY_PARAM_KEY]: repo.toString()
-      }
-    });
+    this.navigate();
   }
 
   /**
@@ -172,6 +168,8 @@ export class ViewService {
           throw new Error(ErrorMessageService.invalidUrlMessage());
         }
 
+        this.currentView = View[viewName];
+
         const newRepo = Repo.of(repoName);
         if (newRepo) {
           window.localStorage.setItem(STORAGE_KEYS.ORG, newRepo.owner);
@@ -184,13 +182,13 @@ export class ViewService {
 
   getViewAndRepoFromUrl(url: string): [string, string] {
     const urlObject = new URL(`${location.protocol}//${location.host}${url}`);
-    const pathname = urlObject.pathname;
+    const viewname = urlObject.pathname.substring(1);
     const reponame = urlObject.searchParams.get(ViewService.REPO_QUERY_PARAM_KEY);
-    return [pathname, reponame];
+    return [viewname, reponame];
   }
 
   isViewAllowed(viewName: string) {
-    return viewName === '/' + View.issuesViewer;
+    return viewName in View;
   }
 
   isRepoSet(): boolean {
@@ -204,6 +202,8 @@ export class ViewService {
   changeView(view: View) {
     this.currentView = view;
 
+    this.navigate();
+
     // For now, assumes repository stays the same
     this.githubService.storeViewDetails(this.currentRepo.owner, this.currentRepo.name);
   }
@@ -214,5 +214,16 @@ export class ViewService {
 
   reset() {
     this.currentView = STARTING_VIEW;
+  }
+
+  /**
+   * Navigate with current phase and current repo
+   */
+  private navigate() {
+    this.router.navigate([this.currentView], {
+      queryParams: {
+        [ViewService.REPO_QUERY_PARAM_KEY]: this.currentRepo.toString()
+      }
+    });
   }
 }
