@@ -99,6 +99,6 @@ export class FiltersService {
     }
 
     this.updateFilters({ milestones: newMilestones });
-    this.previousMilestonesLength = allMilestones.length;
+    this.previousMilestonesLength = allMilestonesSet.size;
   }
 }
