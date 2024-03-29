@@ -98,6 +98,10 @@ export class HeaderComponent implements OnInit {
       }
     });
 
+    this.viewService.repoChanged$.subscribe((repo) => {
+      this.initializeRepoNameInTitle();
+    });
+
     this.isLoading$ = this.issueService.isLoading.asObservable();
   }
 
