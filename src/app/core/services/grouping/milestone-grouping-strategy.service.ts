@@ -38,6 +38,6 @@ export class MilestoneGroupingStrategy implements GroupingStrategy {
    * hidden group list if empty.
    */
   isInHiddenList(group: Milestone): boolean {
-    return group !== Milestone.DefaultMilestone;
+    return group !== Milestone.IssueWithoutMilestone && group !== Milestone.PRWithoutMilestone;
   }
 }

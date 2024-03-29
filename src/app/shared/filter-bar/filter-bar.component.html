@@ -76,6 +76,8 @@
           <mat-option *ngFor="let milestone of this.milestoneService.milestones" [value]="milestone.title">
             {{ milestone.title }}
           </mat-option>
+          <mat-option *ngIf="isFilterIssue()" [value]="'Issue without a milestone'">Issues without a milestone</mat-option>
+          <mat-option *ngIf="isFilterPullRequest()" [value]="'PR without a milestone'">PRs without a milestone</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
