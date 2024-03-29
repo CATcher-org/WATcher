@@ -16,7 +16,7 @@
         <mat-label>Group by</mat-label>
         <mat-select
           [value]="this.groupingContextService.currGroupBy$ | async"
-          (selectionChange)="this.groupingContextService.setCurrentGroupingType($event.value, false)"
+          (selectionChange)="this.groupingContextService.setCurrentGroupingType($event.value)"
         >
           <mat-option *ngFor="let option of this.groupByEnum | keyvalue" [value]="option.value">{{ option.key }}</mat-option>
         </mat-select>

@@ -47,19 +47,17 @@ export class GroupingContextService {
     const groupByParam = this.route.snapshot.queryParamMap.get(GroupingContextService.GROUP_BY_QUERY_PARAM_KEY);
 
     if (groupByParam && Object.values(GroupBy).includes(groupByParam as GroupBy)) {
-      this.setCurrentGroupingType(groupByParam as GroupBy, true);
+      this.setCurrentGroupingType(groupByParam as GroupBy);
     } else {
-      this.setCurrentGroupingType(DEFAULT_GROUPBY, true);
+      this.setCurrentGroupingType(DEFAULT_GROUPBY);
     }
   }
 
   /**
    * Sets the current grouping type and updates the corresponding query parameter in the URL.
    * @param groupBy The grouping type to set.
-   * @param replaceUrl Determines whether to replace the current URL in the browser's history.
-   *                   If true, it replaces the URL; if false, it adds a new entry to the history.
    */
-  setCurrentGroupingType(groupBy: GroupBy, replaceUrl: boolean): void {
+  setCurrentGroupingType(groupBy: GroupBy): void {
     this.currGroupBy = groupBy;
     this.currGroupBySubject.next(this.currGroupBy);
 
@@ -69,7 +67,7 @@ export class GroupingContextService {
         [GroupingContextService.GROUP_BY_QUERY_PARAM_KEY]: groupBy
       },
       queryParamsHandling: 'merge',
-      replaceUrl: replaceUrl
+      replaceUrl: true
     });
   }
 
@@ -107,6 +105,6 @@ export class GroupingContextService {
    * Resets the current grouping type to the default.
    */
   reset(): void {
-    this.setCurrentGroupingType(DEFAULT_GROUPBY, false);
+    this.setCurrentGroupingType(DEFAULT_GROUPBY);
   }
 }
