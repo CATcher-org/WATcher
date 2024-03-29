@@ -39,7 +39,9 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
   disconnect() {
     this.filterChange.complete();
     this.issuesSubject.complete();
-    this.issueSubscription.unsubscribe();
+    if (this.issueSubscription) {
+      this.issueSubscription.unsubscribe();
+    }
     this.issueService.stopPollIssues();
   }
 

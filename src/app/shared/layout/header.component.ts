@@ -14,6 +14,7 @@ import { ErrorHandlingService } from '../../core/services/error-handling.service
 import { FiltersService } from '../../core/services/filters.service';
 import { GithubService } from '../../core/services/github.service';
 import { GithubEventService } from '../../core/services/githubevent.service';
+import { GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { IssueService } from '../../core/services/issue.service';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
@@ -61,7 +62,8 @@ export class HeaderComponent implements OnInit {
     private githubService: GithubService,
     private dialogService: DialogService,
     private repoSessionStorageService: RepoSessionStorageService,
-    private filtersService: FiltersService
+    private filtersService: FiltersService,
+    private groupingContextService: GroupingContextService
   ) {
     router.events
       .pipe(
@@ -244,6 +246,7 @@ export class HeaderComponent implements OnInit {
       .then(() => {
         this.auth.setTitleWithViewDetail();
         this.currentRepo = newRepoString;
+        this.groupingContextService.reset();
       })
       .catch((error) => {
         this.openChangeRepoDialog();

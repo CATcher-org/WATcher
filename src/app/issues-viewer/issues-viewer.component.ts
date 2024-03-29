@@ -1,5 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { Group } from '../core/models/github/group.interface';
 import { Repo } from '../core/models/repo.model';
 import { ErrorMessageService } from '../core/services/error-message.service';
@@ -28,6 +30,12 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Observes for any change in the cardviews */
   viewChange: Subscription;
 
+  popStateEventSubscription: Subscription;
+
+  availableGroupsSubscription: Subscription;
+
+  popStateNavigationId: number;
+
   /** Users to show as columns */
   groups: Group[] = [];
 
@@ -44,7 +52,8 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     public issueService: IssueService,
     public labelService: LabelService,
     public milestoneService: MilestoneService,
-    public groupingContextService: GroupingContextService
+    public groupingContextService: GroupingContextService,
+    private router: Router
   ) {
     this.repoChangeSubscription = this.viewService.repoChanged$.subscribe((newRepo) => {
       this.issueService.reset(false);
@@ -55,10 +64,23 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.groupByChangeSubscription = this.groupingContextService.currGroupBy$.subscribe((newGroupBy) => {
       this.initialize();
     });
+
+    this.popStateEventSubscription = this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd || event instanceof NavigationStart))
+      .subscribe((event) => {
+        if (event instanceof NavigationStart && event.navigationTrigger === 'popstate') {
+          this.popStateNavigationId = event.id;
+        }
+
+        if (event instanceof NavigationEnd && event.id === this.popStateNavigationId) {
+          this.groupingContextService.initializeFromUrlParams();
+        }
+      });
   }
 
   ngOnInit() {
     this.initialize();
+    this.groupingContextService.initializeFromUrlParams();
   }
 
   ngAfterViewInit(): void {
@@ -68,12 +90,17 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.repoChangeSubscription.unsubscribe();
     this.viewChange.unsubscribe();
+    this.popStateEventSubscription.unsubscribe();
   }
 
   /**
    * Fetch and initialize all information from repository to populate Issue Dashboard.
    */
   private initialize() {
+    if (this.availableGroupsSubscription) {
+      this.availableGroupsSubscription.unsubscribe();
+    }
+
     this.checkIfValidRepository().subscribe((isValidRepository) => {
       if (!isValidRepository) {
         throw new Error(ErrorMessageService.repositoryNotPresentMessage());
@@ -84,7 +111,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.groups = [];
     this.hiddenGroups = [];
 
-    this.groupingContextService.getGroups().subscribe((x) => (this.groups = x));
+    this.availableGroupsSubscription = this.groupingContextService.getGroups().subscribe((x) => (this.groups = x));
 
     // Fetch issues
     this.issueService.reloadAllIssues();
