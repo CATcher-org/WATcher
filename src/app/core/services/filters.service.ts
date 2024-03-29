@@ -51,7 +51,7 @@ export class FiltersService {
   };
 
   // List of keys in the new filter change that causes current filter to not qualify to be a preset view.
-  readonly presetChangingKeys = new Set<string>(['status', 'type', 'milestones', 'labels', 'hiddenLabels', 'deselectedLabels']);
+  readonly presetChangingKeys = new Set<string>(['status', 'type', 'milestones', 'labels', 'deselectedLabels']);
 
   readonly defaultFilter = this.presetViews.currentlyActive;
   public filter$ = new BehaviorSubject<Filter>(this.defaultFilter());
