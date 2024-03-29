@@ -239,7 +239,6 @@ export class HeaderComponent implements OnInit {
 
     if (!keepFilters) {
       this.filtersService.clearFilters();
-      this.groupingContextService.reset();
     }
 
     this.viewService
@@ -247,6 +246,7 @@ export class HeaderComponent implements OnInit {
       .then(() => {
         this.auth.setTitleWithViewDetail();
         this.currentRepo = newRepoString;
+        this.groupingContextService.reset();
       })
       .catch((error) => {
         this.openChangeRepoDialog();
