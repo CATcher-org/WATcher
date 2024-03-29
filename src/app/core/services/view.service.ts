@@ -7,7 +7,6 @@ import { Repo } from '../models/repo.model';
 import { SessionData } from '../models/session.model';
 import { View } from '../models/view.model';
 import { ErrorMessageService } from './error-message.service';
-import { FiltersService } from './filters.service';
 import { GithubService } from './github.service';
 import { LoggingService } from './logging.service';
 import { RepoUrlCacheService } from './repo-url-cache.service';
@@ -70,8 +69,7 @@ export class ViewService {
     private githubService: GithubService,
     private repoUrlCacheService: RepoUrlCacheService,
     public logger: LoggingService,
-    private router: Router,
-    private filtersService: FiltersService
+    private router: Router
   ) {}
 
   /**
@@ -175,8 +173,6 @@ export class ViewService {
         if (repoName === null) {
           throw new Error(ErrorMessageService.invalidUrlMessage());
         }
-
-        this.filtersService.updateFiltersFromURL(urlObject);
 
         const newRepo = Repo.of(repoName);
         if (newRepo) {

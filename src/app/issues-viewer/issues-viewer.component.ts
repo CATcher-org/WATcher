@@ -13,6 +13,7 @@ import { MilestoneService } from '../core/services/milestone.service';
 import { ViewService } from '../core/services/view.service';
 import { TABLE_COLUMNS } from '../shared/issue-tables/issue-tables-columns';
 import { CardViewComponent } from './card-view/card-view.component';
+import { FiltersService } from '../core/services/filters.service';
 
 @Component({
   selector: 'app-issues-viewer',
@@ -53,7 +54,8 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     public labelService: LabelService,
     public milestoneService: MilestoneService,
     public groupingContextService: GroupingContextService,
-    private router: Router
+    private router: Router,
+    private filtersService: FiltersService
   ) {
     this.repoChangeSubscription = this.viewService.repoChanged$.subscribe((newRepo) => {
       this.issueService.reset(false);
@@ -74,6 +76,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
         if (event instanceof NavigationEnd && event.id === this.popStateNavigationId) {
           this.groupingContextService.initializeFromUrlParams();
+          this.filtersService.initializeFromURLParams();
         }
       });
   }
@@ -81,6 +84,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.initialize();
     this.groupingContextService.initializeFromUrlParams();
+    this.filtersService.initializeFromURLParams();
   }
 
   ngAfterViewInit(): void {

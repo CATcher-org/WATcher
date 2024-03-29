@@ -26,6 +26,7 @@ export type Filter = {
  * Filters are subscribed to and emitted from this service
  */
 export class FiltersService {
+  public static readonly PRESET_VIEW_QUERY_PARAM_KEY = 'presetview';
   readonly presetViews: {
     [key: string]: () => Filter;
   } = {
@@ -66,7 +67,7 @@ export class FiltersService {
   constructor(
     private logger: LoggingService,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
+    private route: ActivatedRoute,
     private milestoneService: MilestoneService
   ) {}
 
@@ -79,9 +80,10 @@ export class FiltersService {
         queryParams[filterName] = JSON.stringify(this.filter$.value[filterName]);
       }
     }
+    queryParams[FiltersService.PRESET_VIEW_QUERY_PARAM_KEY] = this.presetView$.value;
 
     this.router.navigate([], {
-      relativeTo: this.activatedRoute,
+      relativeTo: this.route,
       queryParams,
       queryParamsHandling: 'merge',
       replaceUrl: true
@@ -94,12 +96,20 @@ export class FiltersService {
     this.previousMilestonesLength = 0;
   }
 
-  updateFiltersFromURL(url: URL) {
+  initializeFromURLParams() {
     const nextFilter: Filter = this.defaultFilter();
-
+    const queryParams = this.route.snapshot.queryParamMap;
     try {
+      const presetView = queryParams.get(FiltersService.PRESET_VIEW_QUERY_PARAM_KEY);
+
+      // Use preset view if set in url
+      if (presetView !== 'custom') {
+        this.updatePresetView(presetView);
+        return;
+      }
+
       for (const filterName of Object.keys(nextFilter)) {
-        const stringifiedFilterData = url.searchParams.get(filterName);
+        const stringifiedFilterData = queryParams.get(filterName);
         if (!stringifiedFilterData) {
           continue;
         }
@@ -124,6 +134,7 @@ export class FiltersService {
     };
     this.filter$.next(nextDropdownFilter);
     this.updatePresetViewFromFilters(newFilters);
+    this.pushFiltersToUrl();
   }
 
   /**
@@ -157,6 +168,7 @@ export class FiltersService {
   updatePresetView(presetViewName: string) {
     this.filter$.next(this.presetViews[presetViewName]());
     this.presetView$.next(presetViewName);
+    this.pushFiltersToUrl();
   }
 
   sanitizeLabels(allLabels: SimpleLabel[]): void {
