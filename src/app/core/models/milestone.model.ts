@@ -1,7 +1,9 @@
+import { Group } from './github/group.interface';
+
 /**
  * Represents a milestone and its attributes fetched from Github.
  */
-export class Milestone {
+export class Milestone implements Group {
   static IssueWithoutMilestone: Milestone = new Milestone({ title: 'Issue without a milestone', state: null });
   static PRWithoutMilestone: Milestone = new Milestone({ title: 'PR without a milestone', state: null });
   title: string;
@@ -12,7 +14,10 @@ export class Milestone {
     this.state = milestone.state;
   }
 
-  public equals(milestone: Milestone) {
-    return this.title === milestone.title;
+  public equals(other: any) {
+    if (!(other instanceof Milestone)) {
+      return false;
+    }
+    return this.title === other.title;
   }
 }
