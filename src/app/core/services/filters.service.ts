@@ -3,6 +3,7 @@ import { Sort } from '@angular/material/sort';
 import { BehaviorSubject, pipe } from 'rxjs';
 import { SimpleLabel } from '../models/label.model';
 import { Milestone } from '../models/milestone.model';
+import { MilestoneService } from './milestone.service';
 
 export type Filter = {
   title: string;
@@ -15,17 +16,6 @@ export type Filter = {
   deselectedLabels: Set<string>;
 };
 
-export const DEFAULT_FILTER: Filter = {
-  title: '',
-  status: ['open pullrequest', 'merged pullrequest', 'open issue', 'closed issue'],
-  type: 'all',
-  sort: { active: 'id', direction: 'asc' },
-  labels: [],
-  milestones: [],
-  hiddenLabels: new Set<string>(),
-  deselectedLabels: new Set<string>()
-};
-
 @Injectable({
   providedIn: 'root'
 })
@@ -34,13 +24,48 @@ export const DEFAULT_FILTER: Filter = {
  * Filters are subscribed to and emitted from this service
  */
 export class FiltersService {
-  public filter$ = new BehaviorSubject<Filter>(DEFAULT_FILTER);
+  readonly presetViews: {
+    [key: string]: () => Filter;
+  } = {
+    currentlyActive: () => ({
+      title: '',
+      status: ['open pullrequest', 'merged pullrequest', 'open issue', 'closed issue'],
+      type: 'all',
+      sort: { active: 'status', direction: 'asc' },
+      labels: [],
+      milestones: this.getMilestonesForCurrentlyActive().map((milestone) => milestone.title),
+      hiddenLabels: new Set<string>(),
+      deselectedLabels: new Set<string>()
+    }),
+    contributions: () => ({
+      title: '',
+      status: ['open pullrequest', 'merged pullrequest', 'open issue', 'closed issue'],
+      type: 'all',
+      sort: { active: 'id', direction: 'desc' },
+      labels: [],
+      milestones: this.milestoneService.milestones.map((milestone) => milestone.title),
+      hiddenLabels: new Set<string>(),
+      deselectedLabels: new Set<string>()
+    }),
+    custom: () => this.filter$.value
+  };
+
+  // List of keys in the new filter change that causes current filter to not qualify to be a preset view.
+  readonly presetChangingKeys = new Set<string>(['status', 'type', 'milestones', 'labels', 'deselectedLabels']);
+
+  readonly defaultFilter = this.presetViews.currentlyActive;
+  public filter$ = new BehaviorSubject<Filter>(this.defaultFilter());
+  // Either 'currentlyActive', 'contributions', or 'custom'.
+  public presetView$ = new BehaviorSubject<string>('currentlyActive');
 
   // Helps in determining whether all milestones were selected from previous repo during sanitization of milestones
   private previousMilestonesLength = 0;
 
+  constructor(private milestoneService: MilestoneService) {}
+
   clearFilters(): void {
-    this.filter$.next(DEFAULT_FILTER);
+    this.filter$.next(this.defaultFilter());
+    this.presetView$.next('currentlyActive');
     this.previousMilestonesLength = 0;
   }
 
@@ -50,6 +75,40 @@ export class FiltersService {
       ...newFilters
     };
     this.filter$.next(nextDropdownFilter);
+    this.updatePresetViewFromFilters(newFilters);
+  }
+
+  /**
+   * Updates the filters without updating the preset view.
+   * This should only be called when there are new labels/milestones.
+   * The preset view will be reapplied.
+   * @param newFilters The filters with new values
+   */
+  private updateFiltersWithoutUpdatingPresetView(newFilters: Partial<Filter>): void {
+    const nextDropdownFilter: Filter = {
+      ...this.filter$.value,
+      ...newFilters
+    };
+    this.filter$.next(nextDropdownFilter);
+    this.filter$.next(this.presetViews[this.presetView$.value]());
+  }
+
+  private updatePresetViewFromFilters(newFilter: Partial<Filter>): void {
+    for (const key of Object.keys(newFilter)) {
+      if (this.presetChangingKeys.has(key)) {
+        this.presetView$.next('custom');
+        return;
+      }
+    }
+  }
+
+  /**
+   * Updates the filter based on a preset view.
+   * @param presetViewName The name of the preset view, either 'currentlyActive', 'contributions', or 'custom'.
+   */
+  updatePresetView(presetViewName: string) {
+    this.filter$.next(this.presetViews[presetViewName]());
+    this.presetView$.next(presetViewName);
   }
 
   sanitizeLabels(allLabels: SimpleLabel[]) {
@@ -71,7 +130,11 @@ export class FiltersService {
 
     const newLabels = this.filter$.value.labels.filter((label) => allLabelsSet.has(label));
 
-    this.updateFilters({ labels: newLabels, hiddenLabels: newHiddenLabels, deselectedLabels: newDeselectedLabels });
+    this.updateFiltersWithoutUpdatingPresetView({
+      labels: newLabels,
+      hiddenLabels: newHiddenLabels,
+      deselectedLabels: newDeselectedLabels
+    });
   }
 
   sanitizeMilestones(allMilestones: Milestone[]) {
@@ -81,7 +144,7 @@ export class FiltersService {
 
     // All previous milestones were selected, reset to all new milestones selected
     if (this.filter$.value.milestones.length === this.previousMilestonesLength) {
-      this.updateFilters({ milestones: [...allMilestonesSet] });
+      this.updateFiltersWithoutUpdatingPresetView({ milestones: [...allMilestonesSet] });
       this.previousMilestonesLength = allMilestonesSet.size;
       return;
     }
@@ -98,7 +161,21 @@ export class FiltersService {
       newMilestones.push(...allMilestonesSet);
     }
 
-    this.updateFilters({ milestones: newMilestones });
+    this.updateFiltersWithoutUpdatingPresetView({ milestones: newMilestones });
     this.previousMilestonesLength = allMilestonesSet.size;
+  }
+
+  getMilestonesForCurrentlyActive(): Milestone[] {
+    const earliestOpenMilestone = this.milestoneService.getEarliestOpenMilestone();
+    if (earliestOpenMilestone) {
+      return [earliestOpenMilestone];
+    }
+
+    const latestClosedMilestone = this.milestoneService.getLatestClosedMilestone();
+    if (latestClosedMilestone) {
+      return [latestClosedMilestone];
+    }
+
+    return this.milestoneService.milestones;
   }
 }

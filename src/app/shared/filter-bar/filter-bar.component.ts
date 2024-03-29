@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChild } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { DEFAULT_FILTER, Filter, FiltersService } from '../../core/services/filters.service';
+import { Filter, FiltersService } from '../../core/services/filters.service';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
@@ -24,7 +24,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   repoChangeSubscription: Subscription;
 
   /** Selected dropdown filter value */
-  filter: Filter = DEFAULT_FILTER;
+  filter: Filter = this.filtersService.defaultFilter();
 
   groupByEnum: typeof GroupBy = GroupBy;
 
