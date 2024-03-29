@@ -32,6 +32,8 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   popStateEventSubscription: Subscription;
 
+  availableGroupsSubscription: Subscription;
+
   popStateNavigationId: number;
 
   /** Users to show as columns */
@@ -95,6 +97,10 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
    * Fetch and initialize all information from repository to populate Issue Dashboard.
    */
   private initialize() {
+    if (this.availableGroupsSubscription) {
+      this.availableGroupsSubscription.unsubscribe();
+    }
+
     this.checkIfValidRepository().subscribe((isValidRepository) => {
       if (!isValidRepository) {
         throw new Error(ErrorMessageService.repositoryNotPresentMessage());
@@ -105,7 +111,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.groups = [];
     this.hiddenGroups = [];
 
-    this.groupingContextService.getGroups().subscribe((x) => (this.groups = x));
+    this.availableGroupsSubscription = this.groupingContextService.getGroups().subscribe((x) => (this.groups = x));
 
     // Fetch issues
     this.issueService.reloadAllIssues();
