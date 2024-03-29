@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { BehaviorSubject, pipe } from 'rxjs';
 import { SimpleLabel } from '../models/label.model';
+import { Milestone } from '../models/milestone.model';
 
 export type Filter = {
   title: string;
@@ -35,8 +36,12 @@ export const DEFAULT_FILTER: Filter = {
 export class FiltersService {
   public filter$ = new BehaviorSubject<Filter>(DEFAULT_FILTER);
 
+  // Helps in determining whether all milestones were selected from previous repo during sanitization of milestones
+  private previousMilestonesLength = 0;
+
   clearFilters(): void {
     this.filter$.next(DEFAULT_FILTER);
+    this.previousMilestonesLength = 0;
   }
 
   updateFilters(newFilters: Partial<Filter>): void {
@@ -67,5 +72,31 @@ export class FiltersService {
     const newLabels = this.filter$.value.labels.filter((label) => allLabelsSet.has(label));
 
     this.updateFilters({ labels: newLabels, hiddenLabels: newHiddenLabels, deselectedLabels: newDeselectedLabels });
+  }
+
+  sanitizeMilestones(allMilestones: Milestone[]) {
+    const allMilestonesSet = new Set(allMilestones.map((milestone) => milestone.title));
+
+    // All previous milestones were selected, reset to all new milestones selected
+    if (this.filter$.value.milestones.length === this.previousMilestonesLength) {
+      this.updateFilters({ milestones: [...allMilestonesSet] });
+      this.previousMilestonesLength = allMilestones.length;
+      return;
+    }
+
+    const newMilestones: string[] = [];
+    for (const milestone of this.filter$.value.milestones) {
+      if (allMilestonesSet.has(milestone)) {
+        newMilestones.push(milestone);
+      }
+    }
+
+    // No applicable milestones, reset to all milestones selected
+    if (newMilestones.length === 0) {
+      newMilestones.push(...allMilestonesSet);
+    }
+
+    this.updateFilters({ milestones: newMilestones });
+    this.previousMilestonesLength = allMilestones.length;
   }
 }

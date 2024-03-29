@@ -5,9 +5,11 @@ import { Group } from '../../models/github/group.interface';
 import { Issue } from '../../models/issue.model';
 import { AssigneeGroupingStrategy } from './assignee-grouping-strategy.service';
 import { GroupingStrategy } from './grouping-strategy.interface';
+import { MilestoneGroupingStrategy } from './milestone-grouping-strategy.service';
 
 export enum GroupBy {
-  Assignee = 'assignee'
+  Assignee = 'assignee',
+  Milestone = 'milestone'
 }
 
 export const DEFAULT_GROUPBY = GroupBy.Assignee;
@@ -35,6 +37,7 @@ export class GroupingContextService {
 
     // Initialize the grouping strategy map with available strategies
     this.groupingStrategyMap.set(GroupBy.Assignee, this.injector.get(AssigneeGroupingStrategy));
+    this.groupingStrategyMap.set(GroupBy.Milestone, this.injector.get(MilestoneGroupingStrategy));
   }
 
   /**
