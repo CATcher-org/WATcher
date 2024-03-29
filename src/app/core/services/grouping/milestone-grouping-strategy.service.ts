@@ -28,7 +28,10 @@ export class MilestoneGroupingStrategy implements GroupingStrategy {
   getGroups(): Observable<Milestone[]> {
     return this.milestoneService.fetchMilestones().pipe(
       map((milestones) => {
-        return this.milestoneService.parseMilestoneData(milestones);
+        const parseMilestone = this.milestoneService.parseMilestoneData(milestones);
+        parseMilestone.push(Milestone.IssueWithoutMilestone);
+        parseMilestone.push(Milestone.PRWithoutMilestone);
+        return parseMilestone;
       })
     );
   }
