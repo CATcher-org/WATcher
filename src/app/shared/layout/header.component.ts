@@ -254,7 +254,9 @@ export class HeaderComponent implements OnInit {
       .then(() => {
         this.auth.setTitleWithViewDetail();
         this.currentRepo = newRepoString;
-        this.groupingContextService.reset();
+        if (!keepFilters) {
+          this.groupingContextService.reset();
+        }
       })
       .catch((error) => {
         this.openChangeRepoDialog();
