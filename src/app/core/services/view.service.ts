@@ -90,7 +90,8 @@ export class ViewService {
     this.router.navigate(['issuesViewer'], {
       queryParams: {
         [ViewService.REPO_QUERY_PARAM_KEY]: repo.toString()
-      }
+      },
+      queryParamsHandling: 'merge'
     });
   }
 

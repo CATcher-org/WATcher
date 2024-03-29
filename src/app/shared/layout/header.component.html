@@ -12,10 +12,11 @@
     >WATcher v{{ this.getVersion() }}</a
   >
   <span id="view-descriptor" *ngIf="auth.isAuthenticated()" style="margin-left: 10px">
-    ({{ this.getViewDescription(viewService.currentView) }})
+    ({{ this.presetViews[this.filtersService.presetView$.value] }})
   </span>
 
-  <div *ngIf="auth.isAuthenticated() && this.viewService.sessionData.sessionRepo.length > 1">
+  <!-- Gateway to activity dashboard, do not delete -->
+  <!--div *ngIf="auth.isAuthenticated() && this.viewService.sessionData.sessionRepo.length > 1">
     <button mat-button [matMenuTriggerFor]="menu"><mat-icon style="color: white">expand_more</mat-icon></button>
     <mat-menu #menu="matMenu">
       <button
@@ -28,6 +29,25 @@
             >done</mat-icon
           >
           {{ this.getViewDescription(sessionRepo.view) }}
+        </span>
+      </button>
+    </mat-menu>
+  </div-->
+
+  <div *ngIf="auth.isAuthenticated()">
+    <button mat-button [matMenuTriggerFor]="menu"><mat-icon style="color: white">expand_more</mat-icon></button>
+    <mat-menu #menu="matMenu">
+      <button
+        mat-menu-item
+        *ngFor="let presetView of this.presetViews | keyvalue"
+        (click)="this.filtersService.updatePresetView(presetView.key)"
+      >
+        <span>
+          <mat-icon
+            [ngStyle]="{ color: 'green', visibility: this.filtersService.presetView$.value === presetView.key ? 'visible' : 'hidden' }"
+            >done</mat-icon
+          >
+          {{ presetView.value }}
         </span>
       </button>
     </mat-menu>

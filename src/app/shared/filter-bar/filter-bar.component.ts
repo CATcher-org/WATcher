@@ -1,7 +1,8 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChild } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { DEFAULT_FILTER, Filter, FiltersService } from '../../core/services/filters.service';
+import { Filter, FiltersService } from '../../core/services/filters.service';
+import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
 import { ViewService } from '../../core/services/view.service';
@@ -23,7 +24,9 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   repoChangeSubscription: Subscription;
 
   /** Selected dropdown filter value */
-  filter: Filter = DEFAULT_FILTER;
+  filter: Filter = this.filtersService.defaultFilter();
+
+  groupByEnum: typeof GroupBy = GroupBy;
 
   /** Milestone subscription */
   milestoneSubscription: Subscription;
@@ -36,6 +39,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     public milestoneService: MilestoneService,
     public filtersService: FiltersService,
     private viewService: ViewService,
+    public groupingContextService: GroupingContextService,
     private logger: LoggingService
   ) {
     this.repoChangeSubscription = this.viewService.repoChanged$.subscribe((newRepo) => this.newRepoInitialize());
@@ -68,8 +72,12 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   /**
    * Checks if program is filtering by type issue.
    */
-  isNotFilterIssue() {
-    return this.filter.type !== 'issue';
+  isFilterIssue() {
+    return this.filter.type === 'issue' || this.filter.type === 'all';
+  }
+
+  isFilterPullRequest() {
+    return this.filter.type === 'pullrequest' || this.filter.type === 'all';
   }
 
   /**
@@ -81,7 +89,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     this.milestoneSubscription = this.milestoneService.fetchMilestones().subscribe(
       (response) => {
         this.logger.debug('IssuesViewerComponent: Fetched milestones from Github');
-        this.filtersService.updateFilters({ milestones: this.milestoneService.milestones.map((milestone) => milestone.title) });
+        this.filtersService.sanitizeMilestones(this.milestoneService.milestones);
       },
       (err) => {},
       () => {}

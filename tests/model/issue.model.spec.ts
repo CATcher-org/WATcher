@@ -52,7 +52,7 @@ describe('Issue model class', () => {
     it('should set milestone to default milestone for issue without milestone', () => {
       const issue = Issue.createPhaseBugReportingIssue(ISSUE_WITHOUT_MILESTONE);
 
-      expect(issue.milestone).toEqual(Milestone.DefaultMilestone);
+      expect(issue.milestone).toEqual(Milestone.IssueWithoutMilestone);
     });
 
     it('should set assignees correctly for issue with assignees', () => {

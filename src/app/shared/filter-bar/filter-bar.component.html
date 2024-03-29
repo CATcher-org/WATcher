@@ -13,12 +13,22 @@
   <mat-grid-tile colspan="3">
     <div class="dropdown-filters">
       <mat-form-field appearance="standard">
+        <mat-label>Group by</mat-label>
+        <mat-select
+          [value]="this.groupingContextService.currGroupBy$ | async"
+          (selectionChange)="this.groupingContextService.setCurrentGroupingType($event.value)"
+        >
+          <mat-option *ngFor="let option of this.groupByEnum | keyvalue" [value]="option.value">{{ option.key }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="standard">
         <mat-label>Status</mat-label>
-        <mat-select [value]="this.filter.status" (selectionChange)="this.filtersService.updateFilters({ status: $event.value })">
-          <mat-option value="all">All</mat-option>
-          <mat-option value="open">Open</mat-option>
-          <mat-option value="closed">Closed</mat-option>
-          <mat-option value="merged" *ngIf="isNotFilterIssue()">Merged</mat-option>
+        <mat-select [value]="this.filter.status" (selectionChange)="this.filtersService.updateFilters({ status: $event.value })" multiple>
+          <mat-option *ngIf="isFilterPullRequest()" value="open pullrequest">Open Pull Requests</mat-option>
+          <mat-option *ngIf="isFilterPullRequest()" value="merged pullrequest">Merged Pull Requests</mat-option>
+          <mat-option *ngIf="isFilterPullRequest()" value="closed pullrequest">Closed Pull Request</mat-option>
+          <mat-option *ngIf="isFilterIssue()" value="open issue">Open Issues</mat-option>
+          <mat-option *ngIf="isFilterIssue()" value="closed issue">Closed Issues</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="standard">
@@ -46,6 +56,9 @@
           <mat-option value="date">
             <span mat-sort-header="date">Date Updated</span>
           </mat-option>
+          <mat-option value="status">
+            <span mat-sort-header="status">Status</span>
+          </mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="standard">
@@ -63,6 +76,8 @@
           <mat-option *ngFor="let milestone of this.milestoneService.milestones" [value]="milestone.title">
             {{ milestone.title }}
           </mat-option>
+          <mat-option *ngIf="isFilterIssue()" [value]="'Issue without a milestone'">Issues without a milestone</mat-option>
+          <mat-option *ngIf="isFilterPullRequest()" [value]="'PR without a milestone'">PRs without a milestone</mat-option>
         </mat-select>
       </mat-form-field>
     </div>

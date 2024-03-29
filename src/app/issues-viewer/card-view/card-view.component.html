@@ -1,23 +1,8 @@
 <div class="card-column">
-  <div class="column-header">
-    <mat-card>
-      <mat-card-header [ngStyle]="{ height: '40px' }">
-        <div
-          mat-card-avatar
-          *ngIf="this.assignee"
-          [ngStyle]="{
-            background: 'url(' + this.assignee.avatar_url + ')',
-            'background-size': '40px'
-          }"
-        ></div>
-        <mat-card-title>
-          {{ this.assignee !== undefined ? this.assignee.login : 'Unassigned Issues' }}
-        </mat-card-title>
-        <div class="row-count">{{ this.issues.count }}</div>
-      </mat-card-header>
-    </mat-card>
-  </div>
-
+  <ng-container
+    [ngTemplateOutlet]="getHeaderTemplate() || defaultHeader"
+    [ngTemplateOutletContext]="{ $implicit: this.group }"
+  ></ng-container>
   <div class="scrollable-container-wrapper">
     <div class="scrollable-container">
       <div class="issue-pr-cards" *ngFor="let issue of this.issues$ | async; index as i">
@@ -35,3 +20,44 @@
     (page)="updatePageSize($event.pageSize)"
   ></mat-paginator>
 </div>
+
+<!-- Template -->
+<ng-template #defaultHeader>
+  <mat-card class="loading-spinner">
+    <mat-progress-spinner color="primary" mode="indeterminate" diameter="50" strokeWidth="5"></mat-progress-spinner>
+  </mat-card>
+</ng-template>
+
+<ng-template #assigneeHeader let-assignee>
+  <div class="column-header">
+    <mat-card>
+      <mat-card-header [ngStyle]="{ height: '40px' }">
+        <div
+          mat-card-avatar
+          *ngIf="assignee"
+          [ngStyle]="{
+            background: 'url(' + assignee.avatar_url + ')',
+            'background-size': '40px'
+          }"
+        ></div>
+        <mat-card-title>
+          {{ assignee.login }}
+        </mat-card-title>
+        <div class="row-count">{{ this.issues.count }}</div>
+      </mat-card-header>
+    </mat-card>
+  </div>
+</ng-template>
+
+<ng-template #milestoneHeader let-milestone>
+  <div class="column-header">
+    <mat-card>
+      <mat-card-header [ngStyle]="{ height: '40px' }">
+        <mat-card-title>
+          {{ milestone.title }}
+        </mat-card-title>
+        <div class="row-count">{{ this.issues.count }}</div>
+      </mat-card-header>
+    </mat-card>
+  </div>
+</ng-template>

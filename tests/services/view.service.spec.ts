@@ -54,7 +54,8 @@ describe('ViewService', () => {
       viewService.setRepository(WATCHER_REPO);
 
       expect(routerSpy.navigate).toHaveBeenCalledWith(['issuesViewer'], {
-        queryParams: { repo: WATCHER_REPO.toString() }
+        queryParams: { repo: WATCHER_REPO.toString() },
+        queryParamsHandling: 'merge'
       });
     });
   });
@@ -91,7 +92,8 @@ describe('ViewService', () => {
       expect(loggingServiceSpy.info).toHaveBeenCalledWith(`ViewService: Changing current repository to '${WATCHER_REPO}'`);
       expect(viewService.currentRepo).toEqual(WATCHER_REPO);
       expect(routerSpy.navigate).toHaveBeenCalledWith(['issuesViewer'], {
-        queryParams: { repo: WATCHER_REPO.toString() }
+        queryParams: { repo: WATCHER_REPO.toString() },
+        queryParamsHandling: 'merge'
       });
       expect(repoUrlCacheServiceSpy.cache).toHaveBeenCalledWith(WATCHER_REPO.toString());
       expect(repoChanged$Spy).toHaveBeenCalledWith(WATCHER_REPO);
@@ -118,7 +120,8 @@ describe('ViewService', () => {
       expect(loggingServiceSpy.info).toHaveBeenCalledWith(`ViewService: Repo is ${WATCHER_REPO}`);
       expect(viewService.currentRepo).toEqual(WATCHER_REPO);
       expect(routerSpy.navigate).toHaveBeenCalledWith(['issuesViewer'], {
-        queryParams: { repo: WATCHER_REPO.toString() }
+        queryParams: { repo: WATCHER_REPO.toString() },
+        queryParamsHandling: 'merge'
       });
       expect(repoSetSourceNext).toHaveBeenCalledWith(true);
     });
