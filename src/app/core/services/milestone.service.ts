@@ -13,7 +13,7 @@ import { GithubService } from './github.service';
  * from the GitHub repository for the WATcher application.
  */
 export class MilestoneService {
-  milestones: Milestone[];
+  milestones: Milestone[] = [];
   hasNoMilestones: boolean;
 
   constructor(private githubService: GithubService) {}

@@ -14,6 +14,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { Observable } from 'rxjs';
 import { Group } from '../../core/models/github/group.interface';
 import { Issue } from '../../core/models/issue.model';
+import { FiltersService } from '../../core/services/filters.service';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { IssueService } from '../../core/services/issue.service';
 import { FilterableComponent, FilterableSource } from '../../shared/issue-tables/filterableTypes';
@@ -47,12 +48,18 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
 
   @Output() issueLengthChange: EventEmitter<Number> = new EventEmitter<Number>();
 
-  constructor(public element: ElementRef, public issueService: IssueService, public groupingContextService: GroupingContextService) {}
+  constructor(
+    public element: ElementRef,
+    public issueService: IssueService,
+    public groupingContextService: GroupingContextService,
+    private filtersService: FiltersService
+  ) {}
 
   ngOnInit() {
     this.issues = new IssuesDataTable(
       this.issueService,
       this.groupingContextService,
+      this.filtersService,
       this.paginator,
       this.headers,
       this.group,
