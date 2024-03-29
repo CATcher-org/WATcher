@@ -3,8 +3,8 @@ import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, pipe } from 'rxjs';
 import { SimpleLabel } from '../models/label.model';
-import { LoggingService } from './logging.service';
 import { Milestone } from '../models/milestone.model';
+import { LoggingService } from './logging.service';
 import { MilestoneService } from './milestone.service';
 
 export type Filter = {

@@ -4,7 +4,6 @@ import { STORAGE_KEYS } from '../../src/app/core/constants/storage-keys.constant
 import { Repo } from '../../src/app/core/models/repo.model';
 import { View } from '../../src/app/core/models/view.model';
 import { ErrorMessageService } from '../../src/app/core/services/error-message.service';
-import { FiltersService } from '../../src/app/core/services/filters.service';
 import { GithubService } from '../../src/app/core/services/github.service';
 import { LoggingService } from '../../src/app/core/services/logging.service';
 import { RepoUrlCacheService } from '../../src/app/core/services/repo-url-cache.service';
@@ -16,7 +15,6 @@ let githubServiceSpy: jasmine.SpyObj<GithubService>;
 let repoUrlCacheServiceSpy: jasmine.SpyObj<RepoUrlCacheService>;
 let loggingServiceSpy: jasmine.SpyObj<LoggingService>;
 let routerSpy: jasmine.SpyObj<Router>;
-let filtersServiceSpy: jasmine.SpyObj<FiltersService>;
 
 describe('ViewService', () => {
   beforeEach(() => {
@@ -24,8 +22,8 @@ describe('ViewService', () => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     repoUrlCacheServiceSpy = jasmine.createSpyObj('RepoUrlCacheService', ['cache']);
     loggingServiceSpy = jasmine.createSpyObj('LoggingService', ['info']);
-    filtersServiceSpy = jasmine.createSpyObj('filtersService', ['updateFiltersFromURL']);
-    viewService = new ViewService(githubServiceSpy, repoUrlCacheServiceSpy, loggingServiceSpy, routerSpy, filtersServiceSpy);
+
+    viewService = new ViewService(githubServiceSpy, repoUrlCacheServiceSpy, loggingServiceSpy, routerSpy);
   });
 
   describe('setRepository(Repo, Repo[])', () => {

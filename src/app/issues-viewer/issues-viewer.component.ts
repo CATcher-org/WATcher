@@ -5,6 +5,7 @@ import { filter } from 'rxjs/operators';
 import { Group } from '../core/models/github/group.interface';
 import { Repo } from '../core/models/repo.model';
 import { ErrorMessageService } from '../core/services/error-message.service';
+import { FiltersService } from '../core/services/filters.service';
 import { GithubService } from '../core/services/github.service';
 import { GroupingContextService } from '../core/services/grouping/grouping-context.service';
 import { IssueService } from '../core/services/issue.service';
@@ -13,7 +14,6 @@ import { MilestoneService } from '../core/services/milestone.service';
 import { ViewService } from '../core/services/view.service';
 import { TABLE_COLUMNS } from '../shared/issue-tables/issue-tables-columns';
 import { CardViewComponent } from './card-view/card-view.component';
-import { FiltersService } from '../core/services/filters.service';
 
 @Component({
   selector: 'app-issues-viewer',
