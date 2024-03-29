@@ -75,6 +75,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         if (event instanceof NavigationEnd && event.id === this.popStateNavigationId) {
+          this.viewService.initializeRepoFromUrlParams();
           this.groupingContextService.initializeFromUrlParams();
           this.filtersService.initializeFromURLParams();
         }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { STORAGE_KEYS } from '../constants/storage-keys.constants';
@@ -69,6 +69,7 @@ export class ViewService {
     private githubService: GithubService,
     private repoUrlCacheService: RepoUrlCacheService,
     public logger: LoggingService,
+    private route: ActivatedRoute,
     private router: Router
   ) {}
 
@@ -163,8 +164,7 @@ export class ViewService {
    * @param url The partial URL without the host, e.g. `/issuesViewer?repo=CATcher%2FWATcher.
    */
   setupFromUrl(url: string): Observable<void> {
-    const urlObject = new URL(`${location.protocol}//${location.host}${url}`);
-    return of(this.getViewAndRepoFromUrl(urlObject)).pipe(
+    return of(this.getViewAndRepoFromUrl(url)).pipe(
       map(([viewName, repoName]) => {
         if (!this.isViewAllowed(viewName)) {
           throw new Error(ErrorMessageService.invalidUrlMessage());
@@ -184,9 +184,21 @@ export class ViewService {
     );
   }
 
-  getViewAndRepoFromUrl(url: URL): [string, string] {
-    const pathname = url.pathname;
-    const reponame = url.searchParams.get(ViewService.REPO_QUERY_PARAM_KEY);
+  /**
+   * Initializes a repo based on the URL parameters and changes the repo if valid.
+   */
+  initializeRepoFromUrlParams(): void {
+    const repoParams = this.route.snapshot.queryParamMap.get(ViewService.REPO_QUERY_PARAM_KEY);
+
+    const newRepo = Repo.of(repoParams);
+
+    this.changeRepositoryIfValid(newRepo);
+  }
+
+  getViewAndRepoFromUrl(url: string): [string, string] {
+    const urlObject = new URL(`${location.protocol}//${location.host}${url}`);
+    const pathname = urlObject.pathname;
+    const reponame = urlObject.searchParams.get(ViewService.REPO_QUERY_PARAM_KEY);
     return [pathname, reponame];
   }
 
