@@ -17,6 +17,7 @@ import { Issue } from '../../core/models/issue.model';
 import { FiltersService } from '../../core/services/filters.service';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { IssueService } from '../../core/services/issue.service';
+import { MilestoneService } from '../../core/services/milestone.service';
 import { FilterableComponent, FilterableSource } from '../../shared/issue-tables/filterableTypes';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
 
@@ -57,7 +58,8 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
     public element: ElementRef,
     public issueService: IssueService,
     public groupingContextService: GroupingContextService,
-    private filtersService: FiltersService
+    private filtersService: FiltersService,
+    private milestoneService: MilestoneService
   ) {}
 
   ngOnInit() {
@@ -65,6 +67,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
       this.issueService,
       this.groupingContextService,
       this.filtersService,
+      this.milestoneService,
       this.paginator,
       this.headers,
       this.group,

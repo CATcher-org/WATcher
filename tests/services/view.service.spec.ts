@@ -20,11 +20,10 @@ let activatedRouteSpy: jasmine.SpyObj<ActivatedRoute>;
 describe('ViewService', () => {
   beforeEach(() => {
     githubServiceSpy = jasmine.createSpyObj('GithubService', ['isRepositoryPresent', 'storeViewDetails']);
+    activatedRouteSpy = jasmine.createSpyObj('ActivatedRoute', ['snapshot']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     repoUrlCacheServiceSpy = jasmine.createSpyObj('RepoUrlCacheService', ['cache']);
     loggingServiceSpy = jasmine.createSpyObj('LoggingService', ['info']);
-    activatedRouteSpy = jasmine.createSpyObj('ActivatedRoute', ['snapshot']);
-
     viewService = new ViewService(githubServiceSpy, repoUrlCacheServiceSpy, loggingServiceSpy, activatedRouteSpy, routerSpy);
   });
 
