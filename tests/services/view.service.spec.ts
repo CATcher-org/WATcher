@@ -1,4 +1,4 @@
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { STORAGE_KEYS } from '../../src/app/core/constants/storage-keys.constants';
 import { Repo } from '../../src/app/core/models/repo.model';
@@ -15,14 +15,16 @@ let githubServiceSpy: jasmine.SpyObj<GithubService>;
 let repoUrlCacheServiceSpy: jasmine.SpyObj<RepoUrlCacheService>;
 let loggingServiceSpy: jasmine.SpyObj<LoggingService>;
 let routerSpy: jasmine.SpyObj<Router>;
+let activatedRouteSpy: jasmine.SpyObj<ActivatedRoute>;
 
 describe('ViewService', () => {
   beforeEach(() => {
     githubServiceSpy = jasmine.createSpyObj('GithubService', ['isRepositoryPresent', 'storeViewDetails']);
+    activatedRouteSpy = jasmine.createSpyObj('ActivatedRoute', ['snapshot']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     repoUrlCacheServiceSpy = jasmine.createSpyObj('RepoUrlCacheService', ['cache']);
     loggingServiceSpy = jasmine.createSpyObj('LoggingService', ['info']);
-    viewService = new ViewService(githubServiceSpy, repoUrlCacheServiceSpy, loggingServiceSpy, routerSpy);
+    viewService = new ViewService(githubServiceSpy, repoUrlCacheServiceSpy, loggingServiceSpy, activatedRouteSpy, routerSpy);
   });
 
   describe('setRepository(Repo, Repo[])', () => {
