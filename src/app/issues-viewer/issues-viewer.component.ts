@@ -5,6 +5,7 @@ import { filter } from 'rxjs/operators';
 import { Group } from '../core/models/github/group.interface';
 import { Repo } from '../core/models/repo.model';
 import { ErrorMessageService } from '../core/services/error-message.service';
+import { FiltersService } from '../core/services/filters.service';
 import { GithubService } from '../core/services/github.service';
 import { GroupingContextService } from '../core/services/grouping/grouping-context.service';
 import { IssueService } from '../core/services/issue.service';
@@ -53,7 +54,8 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     public labelService: LabelService,
     public milestoneService: MilestoneService,
     public groupingContextService: GroupingContextService,
-    private router: Router
+    private router: Router,
+    private filtersService: FiltersService
   ) {
     this.repoChangeSubscription = this.viewService.repoChanged$.subscribe((newRepo) => {
       this.issueService.reset(false);
@@ -75,6 +77,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
         if (event instanceof NavigationEnd && event.id === this.popStateNavigationId) {
           this.viewService.initializeRepoFromUrlParams();
           this.groupingContextService.initializeFromUrlParams();
+          this.filtersService.initializeFromURLParams();
         }
       });
   }
@@ -82,6 +85,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.initialize();
     this.groupingContextService.initializeFromUrlParams();
+    this.filtersService.initializeFromURLParams();
   }
 
   ngAfterViewInit(): void {

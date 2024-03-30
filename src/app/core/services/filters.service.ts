@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, pipe } from 'rxjs';
 import { SimpleLabel } from '../models/label.model';
 import { Milestone } from '../models/milestone.model';
+import { LoggingService } from './logging.service';
 import { MilestoneService } from './milestone.service';
 
 export type Filter = {
@@ -24,6 +26,7 @@ export type Filter = {
  * Filters are subscribed to and emitted from this service
  */
 export class FiltersService {
+  public static readonly PRESET_VIEW_QUERY_PARAM_KEY = 'presetview';
   readonly presetViews: {
     [key: string]: () => Filter;
   } = {
@@ -61,12 +64,66 @@ export class FiltersService {
   // Helps in determining whether all milestones were selected from previous repo during sanitization of milestones
   private previousMilestonesLength = 0;
 
-  constructor(private milestoneService: MilestoneService) {}
+  constructor(
+    private logger: LoggingService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private milestoneService: MilestoneService
+  ) {}
+
+  private pushFiltersToUrl(): void {
+    const queryParams = {};
+    for (const filterName of Object.keys(this.filter$.value)) {
+      if (this.filter$.value[filterName] instanceof Set) {
+        queryParams[filterName] = JSON.stringify([...this.filter$.value[filterName]]);
+      } else {
+        queryParams[filterName] = JSON.stringify(this.filter$.value[filterName]);
+      }
+    }
+    queryParams[FiltersService.PRESET_VIEW_QUERY_PARAM_KEY] = this.presetView$.value;
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
+  }
 
   clearFilters(): void {
-    this.filter$.next(this.defaultFilter());
-    this.presetView$.next('currentlyActive');
+    this.updatePresetView('currentlyActive');
     this.previousMilestonesLength = 0;
+  }
+
+  initializeFromURLParams() {
+    const nextFilter: Filter = this.defaultFilter();
+    const queryParams = this.route.snapshot.queryParamMap;
+    try {
+      const presetView = queryParams.get(FiltersService.PRESET_VIEW_QUERY_PARAM_KEY);
+
+      // Use preset view if set in url
+      if (presetView && this.presetViews.hasOwnProperty(presetView) && presetView !== 'custom') {
+        this.updatePresetView(presetView);
+        return;
+      }
+
+      for (const filterName of Object.keys(nextFilter)) {
+        const stringifiedFilterData = queryParams.get(filterName);
+        if (!stringifiedFilterData) {
+          continue;
+        }
+        const filterData = JSON.parse(stringifiedFilterData);
+
+        if (nextFilter[filterName] instanceof Set) {
+          nextFilter[filterName] = new Set(filterData);
+        } else {
+          nextFilter[filterName] = filterData;
+        }
+      }
+      this.updateFilters(nextFilter);
+    } catch (err) {
+      this.logger.info(`FiltersService: Update filters from URL failed with an error: ${err}`);
+    }
   }
 
   updateFilters(newFilters: Partial<Filter>): void {
@@ -76,6 +133,7 @@ export class FiltersService {
     };
     this.filter$.next(nextDropdownFilter);
     this.updatePresetViewFromFilters(newFilters);
+    this.pushFiltersToUrl();
   }
 
   /**
@@ -109,9 +167,10 @@ export class FiltersService {
   updatePresetView(presetViewName: string) {
     this.filter$.next(this.presetViews[presetViewName]());
     this.presetView$.next(presetViewName);
+    this.pushFiltersToUrl();
   }
 
-  sanitizeLabels(allLabels: SimpleLabel[]) {
+  sanitizeLabels(allLabels: SimpleLabel[]): void {
     const allLabelsSet = new Set(allLabels.map((label) => label.name));
 
     const newHiddenLabels: Set<string> = new Set();
