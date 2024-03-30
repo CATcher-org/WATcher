@@ -91,8 +91,7 @@ export class FiltersService {
   }
 
   clearFilters(): void {
-    this.filter$.next(this.defaultFilter());
-    this.presetView$.next('currentlyActive');
+    this.updatePresetView('currentlyActive');
     this.previousMilestonesLength = 0;
   }
 
@@ -103,7 +102,7 @@ export class FiltersService {
       const presetView = queryParams.get(FiltersService.PRESET_VIEW_QUERY_PARAM_KEY);
 
       // Use preset view if set in url
-      if (presetView !== 'custom') {
+      if (presetView && this.presetViews.hasOwnProperty(presetView) && presetView !== 'custom') {
         this.updatePresetView(presetView);
         return;
       }

@@ -249,10 +249,6 @@ export class HeaderComponent implements OnInit {
       return;
     }
 
-    if (!keepFilters) {
-      this.filtersService.clearFilters();
-    }
-
     this.viewService
       .changeRepositoryIfValid(repo)
       .then(() => {
@@ -260,6 +256,7 @@ export class HeaderComponent implements OnInit {
         this.currentRepo = newRepoString;
         if (!keepFilters) {
           this.groupingContextService.reset();
+          this.filtersService.clearFilters();
         }
       })
       .catch((error) => {
