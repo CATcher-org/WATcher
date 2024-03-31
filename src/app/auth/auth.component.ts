@@ -10,8 +10,8 @@ import { AuthService, AuthState } from '../core/services/auth.service';
 import { ErrorHandlingService } from '../core/services/error-handling.service';
 import { ErrorMessageService } from '../core/services/error-message.service';
 import { LoggingService } from '../core/services/logging.service';
-import { PhaseService } from '../core/services/phase.service';
 import { UserService } from '../core/services/user.service';
+import { ViewService } from '../core/services/view.service';
 
 @Component({
   selector: 'app-auth',
@@ -33,7 +33,7 @@ export class AuthComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private errorHandlingService: ErrorHandlingService,
     private router: Router,
-    private phaseService: PhaseService,
+    private viewService: ViewService,
     private ngZone: NgZone,
     private activatedRoute: ActivatedRoute,
     private logger: LoggingService
@@ -46,7 +46,7 @@ export class AuthComponent implements OnInit, OnDestroy {
     const state = this.activatedRoute.snapshot.queryParamMap.get('state');
 
     if (this.authService.isAuthenticated()) {
-      this.router.navigate([this.phaseService.currentPhase]);
+      this.router.navigate([this.viewService.currentView]);
       return;
     }
     this.initAccessTokenSubscription();
@@ -141,7 +141,7 @@ export class AuthComponent implements OnInit, OnDestroy {
   }
 
   isRepoSet(): boolean {
-    return this.phaseService.isRepoSet();
+    return this.viewService.isRepoSet();
   }
 
   get currentSessionOrg(): string {

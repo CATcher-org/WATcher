@@ -1,10 +1,23 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { Observable } from 'rxjs';
-import { GithubUser } from '../../core/models/github-user.model';
+import { Observable, Subscription } from 'rxjs';
+import { Group } from '../../core/models/github/group.interface';
 import { Issue } from '../../core/models/issue.model';
+import { FiltersService } from '../../core/services/filters.service';
+import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { IssueService } from '../../core/services/issue.service';
+import { MilestoneService } from '../../core/services/milestone.service';
 import { FilterableComponent, FilterableSource } from '../../shared/issue-tables/filterableTypes';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
 
@@ -19,50 +32,101 @@ import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
  */
 export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, FilterableComponent {
   @Input() headers: string[];
-  @Input() assignee?: GithubUser = undefined;
+  @Input() group?: Group = undefined;
   @Input() filters?: any = undefined;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild('defaultHeader') defaultHeaderTemplate: TemplateRef<any>;
+  @ViewChild('assigneeHeader') assigneeHeaderTemplate: TemplateRef<any>;
+  @ViewChild('milestoneHeader') milestoneHeaderTemplate: TemplateRef<any>;
 
   issues: IssuesDataTable;
   issues$: Observable<Issue[]>;
 
+  private timeoutId: NodeJS.Timeout | null = null;
+  private issuesLengthSubscription: Subscription;
+  private issuesLoadingStateSubscription: Subscription;
+
   isLoading = true;
   issueLength = 0;
 
+  pageSize = 20;
+
   @Output() issueLengthChange: EventEmitter<Number> = new EventEmitter<Number>();
 
-  constructor(public element: ElementRef, public issueService: IssueService) {}
+  constructor(
+    public element: ElementRef,
+    public issueService: IssueService,
+    public groupingContextService: GroupingContextService,
+    private filtersService: FiltersService,
+    private milestoneService: MilestoneService
+  ) {}
 
   ngOnInit() {
-    this.issues = new IssuesDataTable(this.issueService, this.paginator, this.headers, this.assignee, this.filters);
+    this.issues = new IssuesDataTable(
+      this.issueService,
+      this.groupingContextService,
+      this.filtersService,
+      this.milestoneService,
+      this.paginator,
+      this.headers,
+      this.group,
+      this.filters
+    );
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
+    this.timeoutId = setTimeout(() => {
       this.issues.loadIssues();
       this.issues$ = this.issues.connect();
 
       // Emit event when issues change
-      this.issues$.subscribe((issues) => {
-        this.issueLength = issues.length;
+      this.issuesLengthSubscription = this.issues$.subscribe(() => {
+        this.issueLength = this.issues.count;
         this.issueLengthChange.emit(this.issueLength);
       });
 
       // Emit event when loading state changes
-      this.issues.isLoading$.subscribe((isLoadingUpdate) => {
+      this.issuesLoadingStateSubscription = this.issues.isLoading$.subscribe((isLoadingUpdate) => {
         this.isLoading = isLoadingUpdate;
       });
     });
   }
 
+  getHeaderTemplate(): TemplateRef<any> {
+    switch (this.groupingContextService.currGroupBy) {
+      case GroupBy.Assignee:
+        return this.assigneeHeaderTemplate;
+      case GroupBy.Milestone:
+        return this.milestoneHeaderTemplate;
+      default:
+        return this.defaultHeaderTemplate;
+    }
+  }
+
   ngOnDestroy(): void {
-    setTimeout(() => {
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+    }
+
+    if (this.issues) {
       this.issues.disconnect();
-    });
+    }
+
+    if (this.issuesLengthSubscription) {
+      this.issuesLengthSubscription.unsubscribe();
+    }
+
+    if (this.issuesLoadingStateSubscription) {
+      this.issuesLoadingStateSubscription.unsubscribe();
+    }
   }
 
   retrieveFilterable(): FilterableSource {
     return this.issues;
+  }
+
+  updatePageSize(newPageSize: number) {
+    this.pageSize = newPageSize;
   }
 }

@@ -13,7 +13,7 @@ import { GithubService } from './github.service';
  * from the GitHub repository for the WATcher application.
  */
 export class MilestoneService {
-  milestones: Milestone[];
+  milestones: Milestone[] = [];
   hasNoMilestones: boolean;
 
   constructor(private githubService: GithubService) {}
@@ -43,8 +43,44 @@ export class MilestoneService {
     }
     milestoneData.sort((a: Milestone, b: Milestone) => a.title.localeCompare(b.title));
 
-    // add default milestone for untracked issues/PRs at the end
-    milestoneData.push(Milestone.DefaultMilestone);
     return milestoneData;
+  }
+
+  /**
+   * Gets the open milestone with the earliest deadline.
+   * Returns null if there is no open milestone with deadline.
+   */
+  getEarliestOpenMilestone(): Milestone {
+    let earliestOpenMilestone: Milestone = null;
+    for (const milestone of this.milestones) {
+      if (!milestone.deadline || milestone.state !== 'open') {
+        continue;
+      }
+      if (earliestOpenMilestone === null) {
+        earliestOpenMilestone = milestone;
+      } else if (milestone.deadline < earliestOpenMilestone.deadline) {
+        earliestOpenMilestone = milestone;
+      }
+    }
+    return earliestOpenMilestone;
+  }
+
+  /**
+   * Gets the closed milestone with the latest deadline.
+   * Returns null if there is no closed milestone with deadline.
+   */
+  getLatestClosedMilestone(): Milestone {
+    let latestClosedMilestone: Milestone = null;
+    for (const milestone of this.milestones) {
+      if (!milestone.deadline || milestone.state !== 'closed') {
+        continue;
+      }
+      if (latestClosedMilestone === null) {
+        latestClosedMilestone = milestone;
+      } else if (milestone.deadline > latestClosedMilestone.deadline) {
+        latestClosedMilestone = milestone;
+      }
+    }
+    return latestClosedMilestone;
   }
 }

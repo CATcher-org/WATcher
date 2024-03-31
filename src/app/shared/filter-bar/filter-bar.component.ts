@@ -1,10 +1,11 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChild } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { DEFAULT_FILTER, Filter, FiltersService } from '../../core/services/filters.service';
+import { Filter, FiltersService } from '../../core/services/filters.service';
+import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
-import { PhaseService } from '../../core/services/phase.service';
+import { ViewService } from '../../core/services/view.service';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
 
@@ -17,13 +18,15 @@ import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.com
   templateUrl: './filter-bar.component.html',
   styleUrls: ['./filter-bar.component.css']
 })
-export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
+export class FilterBarComponent implements OnInit, OnDestroy {
   @Input() views$: BehaviorSubject<QueryList<FilterableComponent>>;
 
   repoChangeSubscription: Subscription;
 
   /** Selected dropdown filter value */
-  filter: Filter = DEFAULT_FILTER;
+  filter: Filter = this.filtersService.defaultFilter();
+
+  groupByEnum: typeof GroupBy = GroupBy;
 
   /** Milestone subscription */
   milestoneSubscription: Subscription;
@@ -35,21 +38,23 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public milestoneService: MilestoneService,
     public filtersService: FiltersService,
-    private phaseService: PhaseService,
+    private viewService: ViewService,
+    public groupingContextService: GroupingContextService,
     private logger: LoggingService
   ) {
-    this.repoChangeSubscription = this.phaseService.repoChanged$.subscribe((newRepo) => this.initialize());
+    this.repoChangeSubscription = this.viewService.repoChanged$.subscribe((newRepo) => this.newRepoInitialize());
   }
 
   ngOnInit() {
-    this.initialize();
-  }
+    this.newRepoInitialize();
 
-  ngAfterViewInit(): void {
-    this.filtersService.filter$.subscribe((dropdownFilter) => {
-      this.filter = dropdownFilter;
+    // One-time initializations
+    this.filtersService.filter$.subscribe((filter) => {
+      this.filter = filter;
       this.applyFilter();
     });
+
+    this.views$.subscribe(() => this.applyFilter());
   }
 
   ngOnDestroy(): void {
@@ -67,19 +72,24 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * Checks if program is filtering by type issue.
    */
-  isNotFilterIssue() {
-    return this.filter.type !== 'issue';
+  isFilterIssue() {
+    return this.filter.type === 'issue' || this.filter.type === 'all';
+  }
+
+  isFilterPullRequest() {
+    return this.filter.type === 'pullrequest' || this.filter.type === 'all';
   }
 
   /**
    * Fetch and initialize all information from repository to populate Issue Dashboard.
+   * Re-called when repo has changed
    */
-  private initialize() {
+  private newRepoInitialize() {
     // Fetch milestones and update dropdown filter
     this.milestoneSubscription = this.milestoneService.fetchMilestones().subscribe(
       (response) => {
         this.logger.debug('IssuesViewerComponent: Fetched milestones from Github');
-        this.milestoneService.milestones.forEach((milestone) => this.filter.milestones.push(milestone.title));
+        this.filtersService.sanitizeMilestones(this.milestoneService.milestones);
       },
       (err) => {},
       () => {}
