@@ -107,6 +107,12 @@ export class FiltersService {
         return;
       }
 
+      // No preset view and no other filters in params, use default view
+      if (!presetView && Object.keys(nextFilter).every((filterName) => queryParams.get(filterName) === null)) {
+        this.updatePresetView('currentlyActive');
+        return;
+      }
+
       for (const filterName of Object.keys(nextFilter)) {
         const stringifiedFilterData = queryParams.get(filterName);
         if (!stringifiedFilterData) {
