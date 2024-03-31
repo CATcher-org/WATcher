@@ -1,10 +1,11 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChild } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { DEFAULT_FILTER, Filter, FiltersService } from '../../core/services/filters.service';
+import { FiltersService } from '../../core/services/filters.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
 import { PhaseService } from '../../core/services/phase.service';
+import { DEFAULT_DROPDOWN_FILTER, DropdownFilter } from '../issue-tables/dropdownfilter';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
 
@@ -23,7 +24,7 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   repoChangeSubscription: Subscription;
 
   /** Selected dropdown filter value */
-  filter: Filter = DEFAULT_FILTER;
+  dropdownFilter: DropdownFilter = DEFAULT_DROPDOWN_FILTER;
 
   /** Milestone subscription */
   milestoneSubscription: Subscription;
@@ -46,9 +47,9 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.filtersService.filter$.subscribe((dropdownFilter) => {
-      this.filter = dropdownFilter;
-      this.applyFilter();
+    this.filtersService.dropdownFilter$.subscribe((dropdownFilter) => {
+      this.dropdownFilter = dropdownFilter;
+      this.applyDropdownFilter();
     });
   }
 
@@ -59,16 +60,24 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Signals to IssuesDataTable that a change has occurred in filter.
+   * @param filterValue
    */
-  applyFilter() {
-    this.views$?.value?.forEach((v) => (v.retrieveFilterable().filter = this.filter));
+  applyFilter(filterValue: string) {
+    this.views$?.value?.forEach((v) => (v.retrieveFilterable().filter = filterValue));
+  }
+
+  /**
+   * Signals to IssuesDataTable that a change has occurred in dropdown filter.
+   */
+  applyDropdownFilter() {
+    this.views$?.value?.forEach((v) => (v.retrieveFilterable().dropdownFilter = this.dropdownFilter));
   }
 
   /**
    * Checks if program is filtering by type issue.
    */
   isNotFilterIssue() {
-    return this.filter.type !== 'issue';
+    return this.dropdownFilter.type !== 'issue';
   }
 
   /**
@@ -79,7 +88,7 @@ export class FilterBarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.milestoneSubscription = this.milestoneService.fetchMilestones().subscribe(
       (response) => {
         this.logger.debug('IssuesViewerComponent: Fetched milestones from Github');
-        this.milestoneService.milestones.forEach((milestone) => this.filter.milestones.push(milestone.title));
+        this.milestoneService.milestones.forEach((milestone) => this.dropdownFilter.milestones.push(milestone.number));
       },
       (err) => {},
       () => {}
