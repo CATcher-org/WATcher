@@ -1,8 +1,10 @@
+import { SimpleLabel } from '../../src/app/core/models/label.model';
+
 // Label name constants
-export const SEVERITY_VERY_LOW = 'Very Low';
-export const SEVERITY_LOW = 'Low';
-export const SEVERITY_MEDIUM = 'Medium';
-export const SEVERITY_HIGH = 'High';
+export const SEVERITY_VERY_LOW = 'veryLow';
+export const SEVERITY_LOW = 'low';
+export const SEVERITY_MEDIUM = 'medium';
+export const SEVERITY_HIGH = 'high';
 
 // Label category constants
 export const CATEGORY_SEVERITY = 'severity';
@@ -51,7 +53,6 @@ export const LIGHT_BG_DARK_TEXT = {
   color: `#${COLOR_BLACK}`
 };
 
-// Constant array of labels for team response phase and moderation phase to simulate Github response
 export const SEVERITY_LABELS = [
   {
     name: LABEL_NAME_SEVERITY_VERY_LOW,
@@ -74,3 +75,8 @@ export const SEVERITY_LABELS = [
     definition: DEFINITION_SEVERITY_HIGH
   }
 ];
+
+export const SEVERITY_SIMPLE_LABELS: SimpleLabel[] = SEVERITY_LABELS.map((label) => ({
+  name: label.name,
+  color: label.color
+}));

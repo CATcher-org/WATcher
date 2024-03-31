@@ -1,19 +1,25 @@
+import { Group } from './github/group.interface';
+
 /**
  * Represents a milestone and its attributes fetched from Github.
  */
-export class Milestone {
-  static DefaultMilestone: Milestone = new Milestone({ number: 'untracked', title: 'Without a milestone', state: null });
-  readonly number: string; // equivalent to the id of an issue e.g. milestone #1
+export class Milestone implements Group {
+  static IssueWithoutMilestone: Milestone = new Milestone({ title: 'Issue without a milestone', state: null });
+  static PRWithoutMilestone: Milestone = new Milestone({ title: 'PR without a milestone', state: null });
   title: string;
   state: string;
+  deadline?: Date;
 
-  constructor(milestone: { number: string; title: string; state: string }) {
-    this.number = milestone.number;
+  constructor(milestone: { title: string; state: string; due_on?: string }) {
     this.title = milestone.title;
     this.state = milestone.state;
+    this.deadline = milestone.due_on ? new Date(milestone.due_on) : undefined;
   }
 
-  public equals(milestone: Milestone) {
-    return this.number === milestone.number;
+  public equals(other: any) {
+    if (!(other instanceof Milestone)) {
+      return false;
+    }
+    return this.title === other.title;
   }
 }

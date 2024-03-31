@@ -9,19 +9,17 @@ export function applySort(sort: Sort, data: Issue[]): Issue[] {
 
   const direction: number = sort.direction === 'asc' ? 1 : -1;
 
-  return data.sort((a, b) => {
-    switch (sort.active) {
-      case 'assignees':
-        return direction * compareByStringValue(a.assignees.join(', '), b.assignees.join(', '));
-      case 'id':
-        return direction * compareByIntegerValue(a.id, b.id);
-      case 'date':
-        return direction * compareByDateValue(a.updated_at, b.updated_at);
-      default:
-        // title, responseTag are string values
-        return direction * compareByStringValue(a[sort.active], b[sort.active]);
-    }
-  });
+  switch (sort.active) {
+    case 'id':
+      return data.sort((a, b) => direction * compareByIntegerValue(a.id, b.id));
+    case 'date':
+      return data.sort((a, b) => direction * compareByDateValue(a.updated_at, b.updated_at));
+    case 'status':
+      return data.sort((a, b) => direction * compareByIssueType(a, b));
+    default:
+      // title, responseTag are string values
+      return data.sort((a, b) => direction * compareByStringValue(a[sort.active], b[sort.active]));
+  }
 }
 
 function compareByStringValue(valueA: string, valueB: string): number {
@@ -36,4 +34,25 @@ function compareByIntegerValue(valueA: number, valueB: number): number {
 
 function compareByDateValue(valueA: string, valueB: string): number {
   return moment(valueA).isBefore(valueB) ? -1 : 1;
+}
+
+function compareByIssueType(valueA: Issue, valueB: Issue): number {
+  const sortOrder = {
+    'OPEN PullRequest': 0,
+    'OPEN Issue': 1,
+    'MERGED PullRequest': 2,
+    'CLOSED Issue': 3,
+    'CLOSED PullRequest': 4
+  };
+
+  const aOrder = sortOrder[valueA.state + ' ' + valueA.issueOrPr] || -1;
+  const bOrder = sortOrder[valueB.state + ' ' + valueB.issueOrPr] || -1;
+
+  if (aOrder === bOrder) {
+    return compareByStringValue(valueA.title, valueB.title);
+  } else if (aOrder > bOrder) {
+    return 1;
+  } else {
+    return -1;
+  }
 }

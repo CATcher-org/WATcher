@@ -1,21 +1,17 @@
-import { Sort } from '@angular/material/sort';
 import { Issue } from '../../core/models/issue.model';
+import { Filter } from '../../core/services/filters.service';
 
-export type DropdownFilter = {
-  status: string;
+type StatusInfo = {
   type: string;
-  sort: Sort;
-  labels: string[];
-  milestones: string[];
-  hiddenLabels?: Set<string>;
+  status: string;
 };
 
-export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
-  status: 'all',
-  type: 'all',
-  sort: { active: 'id', direction: 'asc' },
-  labels: [],
-  milestones: []
+/**
+ * Converts a status string into an info object
+ */
+const infoFromStatus = (statusString: string): StatusInfo => {
+  const [status, type] = statusString.split(' ');
+  return { status, type };
 };
 
 /**
@@ -24,28 +20,27 @@ export const DEFAULT_DROPDOWN_FILTER = <DropdownFilter>{
  * This module exports a single function applyDropDownFilter which is called by IssueList.
  * This functions returns the data passed in after all the filters of dropdownFilters are applied
  */
-export function applyDropdownFilter(dropdownFilter: DropdownFilter, data: Issue[]): Issue[] {
+export function applyDropdownFilter(filter: Filter, data: Issue[], isFilteringByMilestone: boolean): Issue[] {
   const filteredData: Issue[] = data.filter((issue) => {
     let ret = true;
 
-    if (dropdownFilter.status === 'open') {
-      ret = ret && issue.state === 'OPEN';
-    } else if (dropdownFilter.status === 'closed') {
-      // there is apparently also a status called 'all' based on github api
-      ret = ret && issue.state === 'CLOSED';
-    } else if (dropdownFilter.status === 'merged') {
-      ret = ret && issue.state === 'MERGED';
-    }
+    // status can either be 'open', 'closed', or 'merged'
+    ret =
+      ret &&
+      filter.status.some((item) => {
+        const statusInfo = infoFromStatus(item);
+        return statusInfo.status === issue.state.toLowerCase() && statusInfo.type === issue.issueOrPr.toLowerCase();
+      });
 
-    if (dropdownFilter.type === 'issue') {
+    if (filter.type === 'issue') {
       ret = ret && issue.issueOrPr === 'Issue';
-    } else if (dropdownFilter.type === 'pullrequest') {
+    } else if (filter.type === 'pullrequest') {
       ret = ret && issue.issueOrPr === 'PullRequest';
     }
 
-    ret = ret && dropdownFilter.milestones.some((milestone) => issue.milestone.number === milestone);
-
-    return ret && dropdownFilter.labels.every((label) => issue.labels.includes(label));
+    ret = ret && (!isFilteringByMilestone || filter.milestones.some((milestone) => issue.milestone.title === milestone));
+    ret = ret && issue.labels.every((label) => !filter.deselectedLabels.has(label));
+    return ret && filter.labels.every((label) => issue.labels.includes(label));
   });
   return filteredData;
 }

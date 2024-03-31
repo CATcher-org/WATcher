@@ -1,13 +1,13 @@
 import { pipe } from 'rxjs';
 import { throwIfFalse } from '../../shared/lib/custom-ops';
-import { Phase } from './phase.model';
 import { Repo } from './repo.model';
+import { View } from './view.model';
 
 /**
- * Session repository comprises the phase and its corresponding repository array.
+ * Session repository comprises the view and its corresponding repository array.
  */
 export interface SessionRepo {
-  phase: Phase;
+  view: View;
   repos: Repo[];
 }
 
@@ -20,8 +20,8 @@ export interface SessionData {
 
 export const SESSION_DATA_UNAVAILABLE = 'Session data does not exist.';
 export const SESSION_DATA_MISSING_FIELDS = 'Session data does not contain any repositories.';
-export const NO_VALID_OPEN_PHASES = 'Invalid phases in Session data.';
-export const OPENED_PHASE_REPO_UNDEFINED = 'Phase has no repo defined.';
+export const NO_VALID_OPEN_VIEWS = 'Invalid views in Session data.';
+export const OPENED_VIEW_REPO_UNDEFINED = 'View has no repo defined.';
 
 export function assertSessionDataIntegrity() {
   return pipe(
@@ -30,8 +30,8 @@ export function assertSessionDataIntegrity() {
       () => new Error(SESSION_DATA_UNAVAILABLE)
     ),
     throwIfFalse(hasSessionRepo, () => new Error(SESSION_DATA_MISSING_FIELDS)),
-    throwIfFalse(arePhasesValid, () => new Error(NO_VALID_OPEN_PHASES)),
-    throwIfFalse(areReposDefined, () => new Error(OPENED_PHASE_REPO_UNDEFINED))
+    throwIfFalse(areViewsValid, () => new Error(NO_VALID_OPEN_VIEWS)),
+    throwIfFalse(areReposDefined, () => new Error(OPENED_VIEW_REPO_UNDEFINED))
   );
 }
 
@@ -44,24 +44,24 @@ function hasSessionRepo(sessionData: SessionData): boolean {
 }
 
 /**
- * Checks if Phases belong to a pre-defined Phase.
+ * Checks if Views belong to a pre-defined View.
  * @param sessionData
  */
-function arePhasesValid(sessionData: SessionData): boolean {
+function areViewsValid(sessionData: SessionData): boolean {
   return sessionData.sessionRepo.reduce(
-    (isPhaseValidSoFar: boolean, currentPhaseRepo: SessionRepo) => isPhaseValidSoFar && currentPhaseRepo.phase in Phase,
+    (isViewValidSoFar: boolean, currentViewRepo: SessionRepo) => isViewValidSoFar && currentViewRepo.view in View,
     true
   );
 }
 
 /**
- * Checks if each Phase has an associated repo defined as well.
+ * Checks if each View has an associated repo defined as well.
  * @param sessionData
  */
 function areReposDefined(sessionData: SessionData): boolean {
   return sessionData.sessionRepo.reduce(
-    (isPhaseRepoDefinedSoFar: boolean, currentPhaseRepo: SessionRepo) =>
-      isPhaseRepoDefinedSoFar && !!currentPhaseRepo.repos && Array.isArray(currentPhaseRepo.repos) && currentPhaseRepo.repos.length > 0,
+    (isViewRepoDefinedSoFar: boolean, currentViewRepo: SessionRepo) =>
+      isViewRepoDefinedSoFar && !!currentViewRepo.repos && Array.isArray(currentViewRepo.repos) && currentViewRepo.repos.length > 0,
     true
   );
 }
