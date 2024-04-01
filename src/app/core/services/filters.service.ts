@@ -233,14 +233,14 @@ export class FiltersService {
   getMilestonesForCurrentlyActive(): Milestone[] {
     const earliestOpenMilestone = this.milestoneService.getEarliestOpenMilestone();
     if (earliestOpenMilestone) {
-      return [earliestOpenMilestone];
+      return [earliestOpenMilestone, Milestone.PRWithoutMilestone];
     }
 
     const latestClosedMilestone = this.milestoneService.getLatestClosedMilestone();
     if (latestClosedMilestone) {
-      return [latestClosedMilestone];
+      return [latestClosedMilestone, Milestone.PRWithoutMilestone];
     }
 
-    return this.milestoneService.milestones;
+    return [...this.milestoneService.milestones, Milestone.PRWithoutMilestone];
   }
 }
