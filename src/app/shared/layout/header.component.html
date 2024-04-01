@@ -11,8 +11,8 @@
   <a class="mat-toolbar mat-primary" style="text-decoration: none" [routerLink]="viewService.isRepoSet() ? viewService.currentView : null"
     >WATcher v{{ this.getVersion() }}</a
   >
-  <span id="view-descriptor" *ngIf="auth.isAuthenticated()" style="margin-left: 10px">
-    ({{ this.presetViews[this.filtersService.presetView$.value] }})
+  <span id="view-descriptor" *ngIf="auth.isAuthenticated()" style="margin-left: 70px">
+    {{ this.presetViews[this.filtersService.presetView$.value] }}
   </span>
 
   <!-- Gateway to activity dashboard, do not delete -->
