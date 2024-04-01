@@ -8,7 +8,7 @@ import { Milestone } from '../../../core/models/milestone.model';
 })
 export class IssuePrCardMilestoneComponent {
   @Input() milestone: Milestone;
-  @Input() hasMilestones: boolean;
+  @Input() repoHasMilestones: boolean;
 
   constructor() {}
 }

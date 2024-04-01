@@ -5,7 +5,7 @@
       <mat-card-content>
         <app-issue-pr-card-milestone
           [milestone]="issue.milestone"
-          [hasMilestones]="!milestoneService.hasNoMilestones"
+          [repoHasMilestones]="!milestoneService.hasNoMilestones"
         ></app-issue-pr-card-milestone>
         <app-issue-pr-card-labels [labels]="issue.githubLabels" [labelSet]="filter?.hiddenLabels"></app-issue-pr-card-labels>
       </mat-card-content>

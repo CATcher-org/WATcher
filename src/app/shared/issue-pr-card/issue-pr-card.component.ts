@@ -14,9 +14,13 @@ import { MilestoneService } from '../../core/services/milestone.service';
 export class IssuePrCardComponent {
   @Input() issue: Issue;
   @Input() filter?: Filter;
-  @Input() milestoneService: MilestoneService;
 
-  constructor(private logger: LoggingService, private githubService: GithubService, public labelService: LabelService) {}
+  constructor(
+    private logger: LoggingService,
+    private githubService: GithubService,
+    public labelService: LabelService,
+    public milestoneService: MilestoneService
+  ) {}
 
   /** Opens issue in new window */
   viewIssueInBrowser(event: Event) {

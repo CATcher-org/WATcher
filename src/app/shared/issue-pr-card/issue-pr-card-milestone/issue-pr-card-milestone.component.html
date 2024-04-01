@@ -1,4 +1,4 @@
-<div *ngIf="hasMilestones" class="milestone" [ngStyle]="{ color: milestone.state ? 'grey' : 'red' }">
+<div *ngIf="repoHasMilestones" class="milestone" [ngStyle]="{ color: milestone.state ? 'grey' : 'red' }">
   <span class="octicon-milestone" octicon="milestone" [color]="milestone.state ? 'grey' : 'red'" size="8"> </span>
   {{ milestone.state ? milestone.title : '???' }}
 </div>
