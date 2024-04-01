@@ -74,10 +74,27 @@ export class FiltersService {
   private pushFiltersToUrl(): void {
     const queryParams = {};
     for (const filterName of Object.keys(this.filter$.value)) {
-      if (this.filter$.value[filterName] instanceof Set) {
-        queryParams[filterName] = JSON.stringify([...this.filter$.value[filterName]]);
-      } else {
-        queryParams[filterName] = JSON.stringify(this.filter$.value[filterName]);
+      const filterValue = this.filter$.value[filterName];
+      switch (filterName) {
+        // Strings
+        case 'title':
+        case 'type':
+        // Arrays
+        case 'status':
+        case 'labels':
+        case 'milestones':
+          queryParams[filterName] = filterValue;
+          break;
+        // Sets
+        case 'selectedLabels':
+        case 'deselectedLabels':
+          queryParams[filterName] = [...filterValue];
+          break;
+        // Objects
+        case 'sort':
+          queryParams[filterName] = JSON.stringify(filterValue);
+          break;
+        default:
       }
     }
     queryParams[FiltersService.PRESET_VIEW_QUERY_PARAM_KEY] = this.presetView$.value;
@@ -100,7 +117,6 @@ export class FiltersService {
     const queryParams = this.route.snapshot.queryParamMap;
     try {
       const presetView = queryParams.get(FiltersService.PRESET_VIEW_QUERY_PARAM_KEY);
-
       // Use preset view if set in url
       if (presetView && this.presetViews.hasOwnProperty(presetView) && presetView !== 'custom') {
         this.updatePresetView(presetView);
@@ -114,16 +130,35 @@ export class FiltersService {
       }
 
       for (const filterName of Object.keys(nextFilter)) {
-        const stringifiedFilterData = queryParams.get(filterName);
-        if (!stringifiedFilterData) {
+        // Check if there is no such param in url
+        if (queryParams.get(filterName) === null) {
           continue;
         }
-        const filterData = JSON.parse(stringifiedFilterData);
 
-        if (nextFilter[filterName] instanceof Set) {
-          nextFilter[filterName] = new Set(filterData);
-        } else {
-          nextFilter[filterName] = filterData;
+        const filterData = queryParams.getAll(filterName);
+
+        switch (filterName) {
+          // Strings
+          case 'title':
+          case 'type':
+            nextFilter[filterName] = filterData[0];
+            break;
+          // Arrays
+          case 'status':
+          case 'labels':
+          case 'milestones':
+            nextFilter[filterName] = filterData;
+            break;
+          // Sets
+          case 'selectedLabels':
+          case 'deselectedLabels':
+            nextFilter[filterName] = new Set(filterData);
+            break;
+          // Objects
+          case 'sort':
+            nextFilter[filterName] = JSON.parse(filterData[0]);
+            break;
+          default:
         }
       }
       this.updateFilters(nextFilter);
