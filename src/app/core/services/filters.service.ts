@@ -72,22 +72,39 @@ export class FiltersService {
   ) {}
 
   private pushFiltersToUrl(): void {
-    const queryParams = {};
+    const queryParams = { ...this.route.snapshot.queryParams };
+
     for (const filterName of Object.keys(this.filter$.value)) {
       const filterValue = this.filter$.value[filterName];
+
+      // Don't include empty or null filters
+      // Intended behaviour to reset to default if 0 of a certain filter are selected
       switch (filterName) {
         // Strings
         case 'title':
         case 'type':
+          if (!filterValue) {
+            delete queryParams[filterName];
+            continue;
+          }
+          queryParams[filterName] = filterValue;
+          break;
         // Arrays
         case 'status':
         case 'labels':
         case 'milestones':
+          if (filterValue.length === 0) {
+            delete queryParams[filterName];
+            continue;
+          }
           queryParams[filterName] = filterValue;
           break;
         // Sets
         case 'selectedLabels':
         case 'deselectedLabels':
+          if (filterValue.size === 0) {
+            delete queryParams[filterName];
+          }
           queryParams[filterName] = [...filterValue];
           break;
         // Objects
@@ -102,7 +119,6 @@ export class FiltersService {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams,
-      queryParamsHandling: 'merge',
       replaceUrl: true
     });
   }
