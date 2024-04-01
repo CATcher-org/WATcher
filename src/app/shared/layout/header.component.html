@@ -62,13 +62,39 @@
       {{ this.currentRepo || 'No Repository Set' }}
     </span>
     <button
-      mat-button
+      mat-icon-button
       matTooltip="{{ viewService.isRepoSet() ? 'Change Repository' : 'Select Repository' }}"
-      (click)="this.openChangeRepoDialog()"
+      [matMenuTriggerFor]="repoMenu"
     >
       <mat-icon>edit</mat-icon>
     </button>
   </div>
+
+  <mat-menu #repoMenu xPosition="before" class="repo-menu">
+    <div class="repo-options">
+      <div *ngFor="let repo of this.repoUrlCacheService.suggestions">
+        <button mat-menu-item *ngIf="repo !== this.currentRepo" (click)="this.applyRepoDropdown(repo, true)">
+          {{ repo }}
+        </button>
+      </div>
+    </div>
+
+    <div class="repo-menu-footer">
+      <button mat-flat-button color="primary" class="new-repo-button" (click)="this.openChangeRepoDialog()" matTooltip="Add new repository">
+        <mat-icon>add</mat-icon>
+      </button>
+
+      <button
+        mat-icon-button
+        (click)="toggleKeepFilters($event)"
+        class="keep-filter-button"
+        matTooltip="{{ keepFilters ? 'Keep filter on' : 'Keep filter off' }}"
+        color="{{ keepFilters ? 'primary' : 'warn' }}"
+      >
+        <mat-icon>{{ keepFilters ? 'filter_alt' : 'filter_alt_off' }}</mat-icon>
+      </button>
+    </div>
+  </mat-menu>
 
   <span style="flex: 1 1 auto"></span>
 
