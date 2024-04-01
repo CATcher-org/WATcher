@@ -2,3 +2,7 @@
   <span class="octicon-milestone" octicon="milestone" color="grey" size="8"> </span>
   {{ milestone.title }}
 </div>
+<div *ngIf="!milestone.state" class="milestone">
+  <span class="octicon-milestone" octicon="milestone" color="red" size="8"> </span>
+  <span style="color: red">???</span>
+</div>
