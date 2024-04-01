@@ -4,9 +4,10 @@ import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Group } from '../../core/models/github/group.interface';
 import { Issue } from '../../core/models/issue.model';
-import { DEFAULT_FILTER, Filter } from '../../core/services/filters.service';
+import { Filter, FiltersService } from '../../core/services/filters.service';
 import { GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { IssueService } from '../../core/services/issue.service';
+import { MilestoneService } from '../../core/services/milestone.service';
 import { applyDropdownFilter } from './dropdownfilter';
 import { FilterableSource } from './filterableTypes';
 import { paginateData } from './issue-paginator';
@@ -15,7 +16,7 @@ import { applySearchFilter } from './search-filter';
 
 export class IssuesDataTable extends DataSource<Issue> implements FilterableSource {
   public count = 0;
-  private filterChange = new BehaviorSubject(DEFAULT_FILTER);
+  private filterChange = new BehaviorSubject(this.filtersService.defaultFilter());
   private issuesSubject = new BehaviorSubject<Issue[]>([]);
   private issueSubscription: Subscription;
 
@@ -24,6 +25,8 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
   constructor(
     private issueService: IssueService,
     private groupingContextService: GroupingContextService,
+    private filtersService: FiltersService,
+    private milestoneService: MilestoneService,
     private paginator: MatPaginator,
     private displayedColumn: string[],
     private group?: Group,
@@ -39,7 +42,9 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
   disconnect() {
     this.filterChange.complete();
     this.issuesSubject.complete();
-    this.issueSubscription.unsubscribe();
+    if (this.issueSubscription) {
+      this.issueSubscription.unsubscribe();
+    }
     this.issueService.stopPollIssues();
   }
 
@@ -64,7 +69,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
           data = this.groupingContextService.getDataForGroup(data, this.group);
 
           // Apply Filters
-          data = applyDropdownFilter(this.filter, data);
+          data = applyDropdownFilter(this.filter, data, !this.milestoneService.hasNoMilestones);
 
           data = applySearchFilter(this.filter.title, this.displayedColumn, this.issueService, data);
           this.count = data.length;

@@ -20,7 +20,7 @@ const infoFromStatus = (statusString: string): StatusInfo => {
  * This module exports a single function applyDropDownFilter which is called by IssueList.
  * This functions returns the data passed in after all the filters of dropdownFilters are applied
  */
-export function applyDropdownFilter(filter: Filter, data: Issue[]): Issue[] {
+export function applyDropdownFilter(filter: Filter, data: Issue[], isFilteringByMilestone: boolean): Issue[] {
   const filteredData: Issue[] = data.filter((issue) => {
     let ret = true;
 
@@ -38,7 +38,7 @@ export function applyDropdownFilter(filter: Filter, data: Issue[]): Issue[] {
       ret = ret && issue.issueOrPr === 'PullRequest';
     }
 
-    ret = ret && filter.milestones.some((milestone) => issue.milestone.title === milestone);
+    ret = ret && (!isFilteringByMilestone || filter.milestones.some((milestone) => issue.milestone.title === milestone));
     ret = ret && issue.labels.every((label) => !filter.deselectedLabels.has(label));
     return ret && filter.labels.every((label) => issue.labels.includes(label));
   });

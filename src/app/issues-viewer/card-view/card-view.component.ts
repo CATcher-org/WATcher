@@ -11,11 +11,13 @@ import {
   ViewChild
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Group } from '../../core/models/github/group.interface';
 import { Issue } from '../../core/models/issue.model';
+import { FiltersService } from '../../core/services/filters.service';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { IssueService } from '../../core/services/issue.service';
+import { MilestoneService } from '../../core/services/milestone.service';
 import { FilterableComponent, FilterableSource } from '../../shared/issue-tables/filterableTypes';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
 
@@ -41,6 +43,10 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   issues: IssuesDataTable;
   issues$: Observable<Issue[]>;
 
+  private timeoutId: NodeJS.Timeout | null = null;
+  private issuesLengthSubscription: Subscription;
+  private issuesLoadingStateSubscription: Subscription;
+
   isLoading = true;
   issueLength = 0;
 
@@ -48,12 +54,20 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
 
   @Output() issueLengthChange: EventEmitter<Number> = new EventEmitter<Number>();
 
-  constructor(public element: ElementRef, public issueService: IssueService, public groupingContextService: GroupingContextService) {}
+  constructor(
+    public element: ElementRef,
+    public issueService: IssueService,
+    public groupingContextService: GroupingContextService,
+    private filtersService: FiltersService,
+    private milestoneService: MilestoneService
+  ) {}
 
   ngOnInit() {
     this.issues = new IssuesDataTable(
       this.issueService,
       this.groupingContextService,
+      this.filtersService,
+      this.milestoneService,
       this.paginator,
       this.headers,
       this.group,
@@ -62,18 +76,18 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
+    this.timeoutId = setTimeout(() => {
       this.issues.loadIssues();
       this.issues$ = this.issues.connect();
 
       // Emit event when issues change
-      this.issues$.subscribe(() => {
+      this.issuesLengthSubscription = this.issues$.subscribe(() => {
         this.issueLength = this.issues.count;
         this.issueLengthChange.emit(this.issueLength);
       });
 
       // Emit event when loading state changes
-      this.issues.isLoading$.subscribe((isLoadingUpdate) => {
+      this.issuesLoadingStateSubscription = this.issues.isLoading$.subscribe((isLoadingUpdate) => {
         this.isLoading = isLoadingUpdate;
       });
     });
@@ -91,9 +105,21 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   }
 
   ngOnDestroy(): void {
-    setTimeout(() => {
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+    }
+
+    if (this.issues) {
       this.issues.disconnect();
-    });
+    }
+
+    if (this.issuesLengthSubscription) {
+      this.issuesLengthSubscription.unsubscribe();
+    }
+
+    if (this.issuesLoadingStateSubscription) {
+      this.issuesLoadingStateSubscription.unsubscribe();
+    }
   }
 
   retrieveFilterable(): FilterableSource {

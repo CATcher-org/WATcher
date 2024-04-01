@@ -1,4 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Group } from '../../models/github/group.interface';
 import { Issue } from '../../models/issue.model';
@@ -20,13 +21,14 @@ export const DEFAULT_GROUPBY = GroupBy.Assignee;
   providedIn: 'root'
 })
 export class GroupingContextService {
+  public static readonly GROUP_BY_QUERY_PARAM_KEY = 'groupby';
   private currGroupBySubject: BehaviorSubject<GroupBy>;
   currGroupBy: GroupBy;
   currGroupBy$: Observable<GroupBy>;
 
   private groupingStrategyMap: Map<string, GroupingStrategy>;
 
-  constructor(private injector: Injector) {
+  constructor(private injector: Injector, private route: ActivatedRoute, private router: Router) {
     this.currGroupBy = DEFAULT_GROUPBY;
     this.currGroupBySubject = new BehaviorSubject<GroupBy>(this.currGroupBy);
     this.currGroupBy$ = this.currGroupBySubject.asObservable();
@@ -39,12 +41,34 @@ export class GroupingContextService {
   }
 
   /**
-   * Sets the current grouping type.
-   * @param groupBy - The grouping type to set.
+   * Initializes the service from URL parameters.
+   */
+  initializeFromUrlParams() {
+    const groupByParam = this.route.snapshot.queryParamMap.get(GroupingContextService.GROUP_BY_QUERY_PARAM_KEY);
+
+    if (groupByParam && Object.values(GroupBy).includes(groupByParam as GroupBy)) {
+      this.setCurrentGroupingType(groupByParam as GroupBy);
+    } else {
+      this.setCurrentGroupingType(DEFAULT_GROUPBY);
+    }
+  }
+
+  /**
+   * Sets the current grouping type and updates the corresponding query parameter in the URL.
+   * @param groupBy The grouping type to set.
    */
   setCurrentGroupingType(groupBy: GroupBy): void {
     this.currGroupBy = groupBy;
     this.currGroupBySubject.next(this.currGroupBy);
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        [GroupingContextService.GROUP_BY_QUERY_PARAM_KEY]: groupBy
+      },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
   }
 
   /**

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { STORAGE_KEYS } from '../constants/storage-keys.constants';
@@ -69,6 +69,7 @@ export class ViewService {
     private githubService: GithubService,
     private repoUrlCacheService: RepoUrlCacheService,
     public logger: LoggingService,
+    private route: ActivatedRoute,
     private router: Router
   ) {}
 
@@ -88,7 +89,8 @@ export class ViewService {
     this.router.navigate(['issuesViewer'], {
       queryParams: {
         [ViewService.REPO_QUERY_PARAM_KEY]: repo.toString()
-      }
+      },
+      queryParamsHandling: 'merge'
     });
   }
 
@@ -180,6 +182,17 @@ export class ViewService {
         }
       })
     );
+  }
+
+  /**
+   * Initializes a repo based on the URL parameters and changes the repo if valid.
+   */
+  initializeRepoFromUrlParams(): void {
+    const repoParams = this.route.snapshot.queryParamMap.get(ViewService.REPO_QUERY_PARAM_KEY);
+
+    const newRepo = Repo.of(repoParams);
+
+    this.changeRepositoryIfValid(newRepo);
   }
 
   getViewAndRepoFromUrl(url: string): [string, string] {
