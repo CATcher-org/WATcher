@@ -19,8 +19,9 @@ jobs:
       - name: Checkout Upstream
         uses: actions/checkout@v2
         with:
-          ref: deploy
-          token: ${{ secrets.DEPLOY_TOKEN }}
+          repository: CATcher-org/WATcher-staging
+          ref: master
+          token: ${{ secrets.STAGING_TOKEN }}
           fetch-depth: 0
       - name: Merge Upstream
         run: |
