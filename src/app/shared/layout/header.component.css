@@ -1,0 +1,32 @@
+.repo-menu-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  padding: 10px;
+}
+
+.new-repo-button {
+  flex-grow: 1;
+}
+
+.keep-filter-button {
+  margin-left: 2px;
+}
+
+.repo-options {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.repo-options button {
+  font-size: 17px;
+}
+
+/* Overwrite the width of the menu */
+::ng-deep .repo-menu {
+  width: fit-content !important;
+  min-width: 320px !important;
+}
