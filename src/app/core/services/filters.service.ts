@@ -72,12 +72,46 @@ export class FiltersService {
   ) {}
 
   private pushFiltersToUrl(): void {
-    const queryParams = {};
+    const queryParams = { ...this.route.snapshot.queryParams };
+
     for (const filterName of Object.keys(this.filter$.value)) {
-      if (this.filter$.value[filterName] instanceof Set) {
-        queryParams[filterName] = JSON.stringify([...this.filter$.value[filterName]]);
-      } else {
-        queryParams[filterName] = JSON.stringify(this.filter$.value[filterName]);
+      const filterValue = this.filter$.value[filterName];
+
+      // Don't include empty or null filters
+      // Intended behaviour to reset to default if 0 of a certain filter are selected
+      switch (filterName) {
+        // Strings
+        case 'title':
+        case 'type':
+          if (!filterValue) {
+            delete queryParams[filterName];
+            continue;
+          }
+          queryParams[filterName] = filterValue;
+          break;
+        // Arrays
+        case 'status':
+        case 'labels':
+        case 'milestones':
+          if (filterValue.length === 0) {
+            delete queryParams[filterName];
+            continue;
+          }
+          queryParams[filterName] = filterValue;
+          break;
+        // Sets
+        case 'selectedLabels':
+        case 'deselectedLabels':
+          if (filterValue.size === 0) {
+            delete queryParams[filterName];
+          }
+          queryParams[filterName] = [...filterValue];
+          break;
+        // Objects
+        case 'sort':
+          queryParams[filterName] = JSON.stringify(filterValue);
+          break;
+        default:
       }
     }
     queryParams[FiltersService.PRESET_VIEW_QUERY_PARAM_KEY] = this.presetView$.value;
@@ -85,7 +119,6 @@ export class FiltersService {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams,
-      queryParamsHandling: 'merge',
       replaceUrl: true
     });
   }
@@ -100,7 +133,6 @@ export class FiltersService {
     const queryParams = this.route.snapshot.queryParamMap;
     try {
       const presetView = queryParams.get(FiltersService.PRESET_VIEW_QUERY_PARAM_KEY);
-
       // Use preset view if set in url
       if (presetView && this.presetViews.hasOwnProperty(presetView) && presetView !== 'custom') {
         this.updatePresetView(presetView);
@@ -114,16 +146,35 @@ export class FiltersService {
       }
 
       for (const filterName of Object.keys(nextFilter)) {
-        const stringifiedFilterData = queryParams.get(filterName);
-        if (!stringifiedFilterData) {
+        // Check if there is no such param in url
+        if (queryParams.get(filterName) === null) {
           continue;
         }
-        const filterData = JSON.parse(stringifiedFilterData);
 
-        if (nextFilter[filterName] instanceof Set) {
-          nextFilter[filterName] = new Set(filterData);
-        } else {
-          nextFilter[filterName] = filterData;
+        const filterData = queryParams.getAll(filterName);
+
+        switch (filterName) {
+          // Strings
+          case 'title':
+          case 'type':
+            nextFilter[filterName] = filterData[0];
+            break;
+          // Arrays
+          case 'status':
+          case 'labels':
+          case 'milestones':
+            nextFilter[filterName] = filterData;
+            break;
+          // Sets
+          case 'selectedLabels':
+          case 'deselectedLabels':
+            nextFilter[filterName] = new Set(filterData);
+            break;
+          // Objects
+          case 'sort':
+            nextFilter[filterName] = JSON.parse(filterData[0]);
+            break;
+          default:
         }
       }
       this.updateFilters(nextFilter);
