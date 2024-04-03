@@ -1,5 +1,8 @@
 .card-column {
   margin: 8px;
+  height: 77vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .card {
@@ -45,15 +48,8 @@ div.column-header .mat-card-header {
 }
 
 .scrollable-container {
-  height: 53vh;
-  overflow: auto;
   margin-bottom: 2px;
-  scrollbar-width: none;
   position: relative;
-}
-
-.scrollable-container::-webkit-scrollbar {
-  display: none;
 }
 
 /* Ref: https://css-scroll-shadows.vercel.app */
@@ -82,6 +78,13 @@ div.column-header .mat-card-header {
 
 .scrollable-container-wrapper {
   position: relative;
+  scrollbar-width: none;
+  overflow: auto;
+  flex-grow: 1;
+}
+
+.scrollable-container-wrapper::-webkit-scrollbar {
+  display: none;
 }
 
 .scrollable-container-wrapper::before {
@@ -142,6 +145,6 @@ div.column-header .mat-card-header {
   display: none !important;
 }
 
-:host ::ng-deep .mat-paginator-range-actions {
-  height: 47px;
+:host ::ng-deep .pagination-hide-arrow .mat-paginator-range-actions {
+  display: none !important;
 }

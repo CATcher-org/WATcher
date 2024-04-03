@@ -27,7 +27,8 @@ const ISSUE_TRACKER_URL = 'https://github.com/CATcher-org/WATcher/issues';
 
 @Component({
   selector: 'app-layout-header',
-  templateUrl: './header.component.html'
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
   private prevUrl;
@@ -55,16 +56,18 @@ export class HeaderComponent implements OnInit {
   /** Model for the displayed repository name */
   currentRepo = '';
 
+  keepFilters = false;
+
   constructor(
     private router: Router,
     public auth: AuthService,
     public viewService: ViewService,
     public userService: UserService,
     public logger: LoggingService,
+    public repoUrlCacheService: RepoUrlCacheService,
     private location: Location,
     private githubEventService: GithubEventService,
     private issueService: IssueService,
-    private repoUrlCacheService: RepoUrlCacheService,
     private labelService: LabelService,
     private errorHandlingService: ErrorHandlingService,
     private githubService: GithubService,
@@ -263,6 +266,16 @@ export class HeaderComponent implements OnInit {
         this.openChangeRepoDialog();
         this.errorHandlingService.handleError(error);
       });
+  }
+
+  applyRepoDropdown(repoString: string) {
+    const newRepo = Repo.of(repoString);
+    this.changeRepositoryIfValid(newRepo, newRepo.toString(), this.keepFilters);
+  }
+
+  toggleKeepFilters(event: MouseEvent) {
+    event.stopPropagation();
+    this.keepFilters = !this.keepFilters;
   }
 
   openChangeRepoDialog() {

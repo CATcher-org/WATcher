@@ -11,8 +11,8 @@
   <a class="mat-toolbar mat-primary" style="text-decoration: none" [routerLink]="viewService.isRepoSet() ? viewService.currentView : null"
     >WATcher v{{ this.getVersion() }}</a
   >
-  <span id="view-descriptor" *ngIf="auth.isAuthenticated()" style="margin-left: 10px">
-    ({{ this.presetViews[this.filtersService.presetView$.value] }})
+  <span id="view-descriptor" *ngIf="auth.isAuthenticated()" style="margin-left: 70px">
+    {{ this.presetViews[this.filtersService.presetView$.value] }}
   </span>
 
   <!-- Gateway to activity dashboard, do not delete -->
@@ -37,19 +37,17 @@
   <div *ngIf="auth.isAuthenticated()">
     <button mat-button [matMenuTriggerFor]="menu"><mat-icon style="color: white">expand_more</mat-icon></button>
     <mat-menu #menu="matMenu">
-      <button
-        mat-menu-item
-        *ngFor="let presetView of this.presetViews | keyvalue"
-        (click)="this.filtersService.updatePresetView(presetView.key)"
-      >
-        <span>
-          <mat-icon
-            [ngStyle]="{ color: 'green', visibility: this.filtersService.presetView$.value === presetView.key ? 'visible' : 'hidden' }"
-            >done</mat-icon
-          >
-          {{ presetView.value }}
-        </span>
-      </button>
+      <div *ngFor="let presetView of this.presetViews | keyvalue">
+        <button mat-menu-item *ngIf="presetView.key !== 'custom'" (click)="this.filtersService.updatePresetView(presetView.key)">
+          <span>
+            <mat-icon
+              [ngStyle]="{ color: 'green', visibility: this.filtersService.presetView$.value === presetView.key ? 'visible' : 'hidden' }"
+              >done</mat-icon
+            >
+            {{ presetView.value }}
+          </span>
+        </button>
+      </div>
     </mat-menu>
   </div>
 
@@ -62,13 +60,39 @@
       {{ this.currentRepo || 'No Repository Set' }}
     </span>
     <button
-      mat-button
+      mat-icon-button
       matTooltip="{{ viewService.isRepoSet() ? 'Change Repository' : 'Select Repository' }}"
-      (click)="this.openChangeRepoDialog()"
+      [matMenuTriggerFor]="repoMenu"
     >
       <mat-icon>edit</mat-icon>
     </button>
   </div>
+
+  <mat-menu #repoMenu xPosition="before" class="repo-menu">
+    <div class="repo-options">
+      <div *ngFor="let repo of this.repoUrlCacheService.suggestions">
+        <button mat-menu-item *ngIf="repo !== this.currentRepo" (click)="this.applyRepoDropdown(repo, true)">
+          {{ repo }}
+        </button>
+      </div>
+    </div>
+
+    <div class="repo-menu-footer">
+      <button mat-flat-button color="primary" class="new-repo-button" (click)="this.openChangeRepoDialog()" matTooltip="Add new repository">
+        <mat-icon>add</mat-icon>
+      </button>
+
+      <button
+        mat-icon-button
+        (click)="toggleKeepFilters($event)"
+        class="keep-filter-button"
+        matTooltip="{{ keepFilters ? 'Keep filter on' : 'Keep filter off' }}"
+        color="{{ keepFilters ? 'primary' : 'warn' }}"
+      >
+        <mat-icon>{{ keepFilters ? 'filter_alt' : 'filter_alt_off' }}</mat-icon>
+      </button>
+    </div>
+  </mat-menu>
 
   <span style="flex: 1 1 auto"></span>
 
