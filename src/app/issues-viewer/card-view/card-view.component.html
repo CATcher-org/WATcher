@@ -14,9 +14,10 @@
     </div>
   </div>
   <mat-paginator
+    class="column-footer"
     [pageSize]="pageSize"
     [pageSizeOptions]="[10, 20, 50]"
-    [class]="pageSize >= issueLength ? 'pagination-hide-arrow' : ''"
+    [class.pagination-hide-arrow]="pageSize >= issueLength"
     (page)="updatePageSize($event.pageSize)"
   ></mat-paginator>
 </div>

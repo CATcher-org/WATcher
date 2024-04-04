@@ -99,12 +99,16 @@ div.column-header .mat-card-header {
   background-image: radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.5), transparent);
 }
 
-.scrollable-container-wrapper::after {
+.mat-paginator {
+  position: relative;
+}
+
+.column-footer::before {
   pointer-events: none;
   content: '';
   position: absolute;
   z-index: 1;
-  bottom: 0;
+  top: -5px;
   left: 0;
   right: 0;
   height: 5px;
