@@ -87,12 +87,12 @@ div.column-header .mat-card-header {
   display: none;
 }
 
-.scrollable-container-wrapper::before {
+.column-header::after {
   pointer-events: none;
   content: '';
   position: absolute;
   z-index: 1;
-  top: 0;
+  bottom: -6px;
   left: 0;
   right: 0;
   height: 5px;
