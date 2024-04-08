@@ -58,7 +58,7 @@ export class GroupingContextService {
    * @param groupBy The grouping type to set.
    */
   setCurrentGroupingType(groupBy: GroupBy): void {
-    if (groupBy != this.currGroupBy) {
+    if (groupBy !== this.currGroupBy) {
       this.currGroupBy = groupBy;
       this.currGroupBySubject.next(this.currGroupBy);
     }
