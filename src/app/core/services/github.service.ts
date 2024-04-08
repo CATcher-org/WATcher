@@ -115,8 +115,8 @@ export class GithubService {
     /*
      * Github Issues consists of issues and pull requests in WATcher.
      */
-    const issueObs = this.toFetchIssues(issuesFilter).pipe(
-      filter((toFetch) => toFetch),
+    const toFetchIssues = this.toFetchIssues(issuesFilter).pipe(filter((toFetch) => toFetch));
+    const issueObs = toFetchIssues.pipe(
       flatMap(() => {
         return this.fetchGraphqlList<FetchIssuesQuery, GithubGraphqlIssueOrPr>(
           FetchIssues,
@@ -126,8 +126,7 @@ export class GithubService {
         );
       })
     );
-    const prObs = this.toFetchIssues(issuesFilter).pipe(
-      filter((toFetch) => toFetch),
+    const prObs = toFetchIssues.pipe(
       flatMap(() => {
         return this.fetchGraphqlList<FetchPullRequestsQuery, GithubGraphqlIssueOrPr>(
           FetchPullRequests,

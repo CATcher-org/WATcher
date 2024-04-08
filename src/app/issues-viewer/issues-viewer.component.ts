@@ -111,9 +111,6 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.hiddenGroups = [];
 
     this.availableGroupsSubscription = this.groupingContextService.getGroups().subscribe((x) => (this.groups = x));
-
-    // Fetch issues
-    this.issueService.reloadAllIssues();
   }
 
   /**
