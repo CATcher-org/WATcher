@@ -106,10 +106,6 @@ div.column-header .mat-card-header {
   display: none;
 }
 
-.mat-paginator {
-  position: relative;
-}
-
 .loading-spinner {
   display: flex;
   justify-content: center;
