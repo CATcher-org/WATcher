@@ -40,6 +40,7 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
         this.selectedLabelNames = new Set<string>(this.filtersService.filter$.value.labels);
         this.deselectedLabelNames = this.filtersService.filter$.value.deselectedLabels;
         this.hiddenLabelNames = this.filtersService.filter$.value.hiddenLabels;
+        this.loaded = true;
       });
     });
   }
@@ -100,15 +101,6 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
   /** loads in the labels in the repository */
   public load() {
     this.labelService.startPollLabels();
-    this.labelSubscription = this.labelService.fetchLabels().subscribe(
-      (response) => {
-        this.logger.debug('LabelFilterBarComponent: Fetched labels from Github');
-      },
-      (err) => {},
-      () => {
-        this.loaded = true;
-      }
-    );
   }
 
   filter(filter: string, target: string): boolean {
