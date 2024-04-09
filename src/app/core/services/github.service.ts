@@ -115,30 +115,25 @@ export class GithubService {
     /*
      * Github Issues consists of issues and pull requests in WATcher.
      */
-    const toFetchIssues = this.toFetchIssues(issuesFilter).pipe(filter((toFetch) => toFetch));
-    const issueObs = toFetchIssues.pipe(
+    return this.toFetchIssues(issuesFilter).pipe(
+      filter((toFetch) => toFetch),
       flatMap(() => {
-        return this.fetchGraphqlList<FetchIssuesQuery, GithubGraphqlIssueOrPr>(
-          FetchIssues,
-          { owner: ORG_NAME, name: REPO, filter: graphqlFilter },
-          (result) => result.data.repository.issues.edges,
-          GithubGraphqlIssueOrPr
+        return merge(
+          this.fetchGraphqlList<FetchIssuesQuery, GithubGraphqlIssueOrPr>(
+            FetchIssues,
+            { owner: ORG_NAME, name: REPO, filter: graphqlFilter },
+            (result) => result.data.repository.issues.edges,
+            GithubGraphqlIssueOrPr
+          ),
+          this.fetchGraphqlList<FetchPullRequestsQuery, GithubGraphqlIssueOrPr>(
+            FetchPullRequests,
+            { owner: ORG_NAME, name: REPO },
+            (result) => result.data.repository.pullRequests.edges,
+            GithubGraphqlIssueOrPr
+          )
         );
       })
     );
-    const prObs = toFetchIssues.pipe(
-      flatMap(() => {
-        return this.fetchGraphqlList<FetchPullRequestsQuery, GithubGraphqlIssueOrPr>(
-          FetchPullRequests,
-          { owner: ORG_NAME, name: REPO },
-          (result) => result.data.repository.pullRequests.edges,
-          GithubGraphqlIssueOrPr
-        );
-      })
-    );
-
-    // Concatenate both streams together.
-    return merge(issueObs, prObs);
   }
 
   /**
