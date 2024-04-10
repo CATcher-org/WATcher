@@ -187,7 +187,8 @@ export class FiltersService {
             nextFilter[filterName] = JSON.parse(filterData[0]);
             break;
           case 'itemsPerPage':
-            nextFilter[filterName] = parseInt(filterData[0]);
+            nextFilter[filterName] = Number(filterData[0]);
+            break;
           default:
         }
       }
