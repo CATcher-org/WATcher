@@ -16,6 +16,7 @@ export type Filter = {
   milestones: string[];
   hiddenLabels: Set<string>;
   deselectedLabels: Set<string>;
+  itemsPerPage: number;
 };
 
 @Injectable({
@@ -27,6 +28,8 @@ export type Filter = {
  */
 export class FiltersService {
   public static readonly PRESET_VIEW_QUERY_PARAM_KEY = 'presetview';
+  private itemsPerPage = 20;
+
   readonly presetViews: {
     [key: string]: () => Filter;
   } = {
@@ -38,7 +41,8 @@ export class FiltersService {
       labels: [],
       milestones: this.getMilestonesForCurrentlyActive().map((milestone) => milestone.title),
       hiddenLabels: new Set<string>(),
-      deselectedLabels: new Set<string>()
+      deselectedLabels: new Set<string>(),
+      itemsPerPage: this.itemsPerPage
     }),
     contributions: () => ({
       title: '',
@@ -48,7 +52,8 @@ export class FiltersService {
       labels: [],
       milestones: this.milestoneService.milestones.map((milestone) => milestone.title),
       hiddenLabels: new Set<string>(),
-      deselectedLabels: new Set<string>()
+      deselectedLabels: new Set<string>(),
+      itemsPerPage: this.itemsPerPage
     }),
     custom: () => this.filter$.value
   };
@@ -69,7 +74,11 @@ export class FiltersService {
     private router: Router,
     private route: ActivatedRoute,
     private milestoneService: MilestoneService
-  ) {}
+  ) {
+    this.filter$.subscribe((filter: Filter) => {
+      this.itemsPerPage = filter.itemsPerPage;
+    });
+  }
 
   private pushFiltersToUrl(): void {
     const queryParams = { ...this.route.snapshot.queryParams };
@@ -110,6 +119,9 @@ export class FiltersService {
         // Objects
         case 'sort':
           queryParams[filterName] = JSON.stringify(filterValue);
+          break;
+        case 'itemsPerPage':
+          queryParams[filterName] = filterValue.toString();
           break;
         default:
       }
@@ -174,6 +186,8 @@ export class FiltersService {
           case 'sort':
             nextFilter[filterName] = JSON.parse(filterData[0]);
             break;
+          case 'itemsPerPage':
+            nextFilter[filterName] = parseInt(filterData[0]);
           default:
         }
       }

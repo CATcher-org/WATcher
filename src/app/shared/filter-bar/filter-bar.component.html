@@ -80,6 +80,17 @@
           <mat-option *ngIf="isFilterPullRequest()" [value]="'PR without a milestone'">PRs without a milestone</mat-option>
         </mat-select>
       </mat-form-field>
+      <mat-form-field appearance="standard">
+        <mat-label>Items per page</mat-label>
+        <mat-select
+          [value]="this.filter.itemsPerPage"
+          (selectionChange)="this.filtersService.updateFilters({ itemsPerPage: $event.value })"
+        >
+          <mat-option [value]="10">10</mat-option>
+          <mat-option [value]="20">20</mat-option>
+          <mat-option [value]="50">50</mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
   </mat-grid-tile>
 
