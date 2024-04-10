@@ -3,7 +3,7 @@
     [ngTemplateOutlet]="getHeaderTemplate() || defaultHeader"
     [ngTemplateOutletContext]="{ $implicit: this.group }"
   ></ng-container>
-  <div class="scrollable-container-wrapper">
+  <div class="scrollable-container-wrapper scroll-shadow">
     <div class="scrollable-container">
       <div class="issue-pr-cards" *ngFor="let issue of this.issues$ | async; index as i">
         <app-issue-pr-card [issue]="issue" [filter]="issues.filter" [milestoneService]="milestoneService"></app-issue-pr-card>
