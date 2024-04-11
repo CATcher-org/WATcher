@@ -2,11 +2,11 @@
   margin: 8px;
   font-size: 14px;
   max-width: 20%;
-  width: 13%; /* depends on number of filters*/
+  width: 14%; /* depends on number of filters*/
 }
 
 .search-bar {
-  width: 90%;
+  width: 80%;
 }
 
 .dropdown-filters {
