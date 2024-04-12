@@ -18,7 +18,7 @@ import { ViewService } from './view.service';
  * using GitHub.
  */
 export class IssueService {
-  static readonly POLL_INTERVAL = 5000; // 5 seconds
+  static readonly POLL_INTERVAL = 20000; // 20 seconds
 
   issues: Issues;
   issues$: BehaviorSubject<Issue[]>;

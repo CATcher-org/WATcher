@@ -52,7 +52,26 @@ div.column-header .mat-card-header {
   position: relative;
 }
 
-/* Ref: https://css-scroll-shadows.vercel.app */
+/* Ref: https://lea.verou.me/blog/2012/04/background-attachment-local/ */
+.scroll-shadow {
+  background:
+    /* Shadow covers */ linear-gradient(white 30%, rgba(255, 255, 255, 0)),
+    linear-gradient(rgba(255, 255, 255, 0), white 70%) 0 100%,
+    /* Shadows */ radial-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
+    radial-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0 100%;
+  background:
+    /* Shadow covers */ linear-gradient(white 30%, rgba(255, 255, 255, 0)),
+    linear-gradient(rgba(255, 255, 255, 0), white 70%) 0 100%,
+    /* Shadows */ radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0)),
+    radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0)) 0 100%;
+  background-repeat: no-repeat;
+  background-color: white;
+  background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
+
+  /* Opera doesn't support this in the shorthand */
+  background-attachment: local, local, scroll, scroll;
+}
+
 .scrollable-container::before {
   pointer-events: none;
   content: '';
@@ -85,30 +104,6 @@ div.column-header .mat-card-header {
 
 .scrollable-container-wrapper::-webkit-scrollbar {
   display: none;
-}
-
-.scrollable-container-wrapper::before {
-  pointer-events: none;
-  content: '';
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 5px;
-  background-image: radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.5), transparent);
-}
-
-.scrollable-container-wrapper::after {
-  pointer-events: none;
-  content: '';
-  position: absolute;
-  z-index: 1;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 5px;
-  background-image: radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.5), transparent);
 }
 
 .loading-spinner {

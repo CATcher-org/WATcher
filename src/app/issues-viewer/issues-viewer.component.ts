@@ -106,20 +106,11 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.availableGroupsSubscription.unsubscribe();
     }
 
-    this.checkIfValidRepository().subscribe((isValidRepository) => {
-      if (!isValidRepository) {
-        throw new Error(ErrorMessageService.repositoryNotPresentMessage());
-      }
-    });
-
     // Fetch assignees
     this.groups = [];
     this.hiddenGroups = [];
 
     this.availableGroupsSubscription = this.groupingContextService.getGroups().subscribe((x) => (this.groups = x));
-
-    // Fetch issues
-    this.issueService.reloadAllIssues();
   }
 
   /**

@@ -46,6 +46,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   private timeoutId: NodeJS.Timeout | null = null;
   private issuesLengthSubscription: Subscription;
   private issuesLoadingStateSubscription: Subscription;
+  private filterSubscription: Subscription;
 
   isLoading = true;
   issueLength = 0;
@@ -73,6 +74,10 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
       this.group,
       this.filters
     );
+
+    this.filterSubscription = this.filtersService.filter$.subscribe((filter: any) => {
+      this.pageSize = filter.itemsPerPage;
+    });
   }
 
   ngAfterViewInit(): void {
@@ -124,9 +129,5 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
 
   retrieveFilterable(): FilterableSource {
     return this.issues;
-  }
-
-  updatePageSize(newPageSize: number) {
-    this.pageSize = newPageSize;
   }
 }
