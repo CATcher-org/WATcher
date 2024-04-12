@@ -105,11 +105,12 @@ export class ViewService {
       /** Adds past repositories to view */
       (this.otherRepos || []).push(this.currentRepo);
     }
-    this.setRepository(repo, this.otherRepos);
+    if (!repo.equals(this.currentRepo)) {
+      this.setRepository(repo, this.otherRepos);
+      this.repoChanged$.next(repo);
+    }
 
     this.repoUrlCacheService.cache(repo.toString());
-
-    this.repoChanged$.next(repo);
   }
 
   /**

@@ -58,8 +58,10 @@ export class GroupingContextService {
    * @param groupBy The grouping type to set.
    */
   setCurrentGroupingType(groupBy: GroupBy): void {
-    this.currGroupBy = groupBy;
-    this.currGroupBySubject.next(this.currGroupBy);
+    if (groupBy !== this.currGroupBy) {
+      this.currGroupBy = groupBy;
+      this.currGroupBySubject.next(this.currGroupBy);
+    }
 
     this.router.navigate([], {
       relativeTo: this.route,

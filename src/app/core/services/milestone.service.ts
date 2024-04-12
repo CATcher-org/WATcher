@@ -47,22 +47,37 @@ export class MilestoneService {
   }
 
   /**
-   * Gets the open milestone with the earliest deadline.
-   * Returns null if there is no open milestone with deadline.
+   * Returns the open milestone with earliest deadline.
+   * If no deadline exists, returns milestone with alphabetically smallest title.
+   * Returns null if there are no open milestones.
    */
   getEarliestOpenMilestone(): Milestone {
-    let earliestOpenMilestone: Milestone = null;
-    for (const milestone of this.milestones) {
-      if (!milestone.deadline || milestone.state !== 'open') {
-        continue;
-      }
-      if (earliestOpenMilestone === null) {
-        earliestOpenMilestone = milestone;
-      } else if (milestone.deadline < earliestOpenMilestone.deadline) {
-        earliestOpenMilestone = milestone;
-      }
+    const openMilestones: Milestone[] = this.milestones.filter((milestone: Milestone) => milestone.state === 'open');
+
+    if (openMilestones.length === 0) {
+      return null;
     }
-    return earliestOpenMilestone;
+
+    const target = openMilestones.reduce((prev, curr) => {
+      if (prev === null) {
+        return curr;
+      }
+
+      if (prev.deadline !== curr.deadline) {
+        if (!prev.deadline) {
+          return curr;
+        }
+        if (!curr.deadline) {
+          return prev;
+        }
+        return prev.deadline < curr.deadline ? prev : curr;
+      }
+
+      // Both without due date or with the same due date
+      return prev.title.localeCompare(curr.title) < 0 ? prev : curr;
+    }, null);
+
+    return target;
   }
 
   /**

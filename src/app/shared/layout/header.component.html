@@ -11,7 +11,7 @@
   <a class="mat-toolbar mat-primary" style="text-decoration: none" [routerLink]="viewService.isRepoSet() ? viewService.currentView : null"
     >WATcher v{{ this.getVersion() }}</a
   >
-  <span id="view-descriptor" *ngIf="auth.isAuthenticated()" style="margin-left: 70px">
+  <span id="view-descriptor" *ngIf="viewService.isRepoSet()" style="margin-left: 70px">
     {{ this.presetViews[this.filtersService.presetView$.value] }}
   </span>
 
@@ -34,7 +34,7 @@
     </mat-menu>
   </div-->
 
-  <div *ngIf="auth.isAuthenticated()">
+  <div *ngIf="viewService.isRepoSet()">
     <button mat-button [matMenuTriggerFor]="menu"><mat-icon style="color: white">expand_more</mat-icon></button>
     <mat-menu #menu="matMenu">
       <div *ngFor="let presetView of this.presetViews | keyvalue">
