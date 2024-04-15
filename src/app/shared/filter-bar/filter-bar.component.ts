@@ -24,7 +24,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   repoChangeSubscription: Subscription;
 
   /** Selected dropdown filter value */
-  filter: Filter = this.filtersService.defaultFilter();
+  filter: Filter = this.filtersService.defaultFilter;
 
   groupByEnum: typeof GroupBy = GroupBy;
 

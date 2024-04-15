@@ -30,30 +30,34 @@ export class FiltersService {
   public static readonly PRESET_VIEW_QUERY_PARAM_KEY = 'presetview';
   private itemsPerPage = 20;
 
+  readonly defaultFilter: Filter = {
+    title: '',
+    status: ['open pullrequest', 'merged pullrequest', 'open issue', 'closed issue'],
+    type: 'all',
+    sort: { active: 'status', direction: 'asc' },
+    labels: [],
+    milestones: [],
+    hiddenLabels: new Set<string>(),
+    deselectedLabels: new Set<string>(),
+    itemsPerPage: this.itemsPerPage
+  };
+
   readonly presetViews: {
-    [key: string]: () => Filter;
+    [key: string]: () => Partial<Filter>;
   } = {
     currentlyActive: () => ({
-      title: '',
       status: ['open pullrequest', 'merged pullrequest', 'open issue', 'closed issue'],
       type: 'all',
-      sort: { active: 'status', direction: 'asc' },
       labels: [],
       milestones: this.getMilestonesForCurrentlyActive().map((milestone) => milestone.title),
-      hiddenLabels: new Set<string>(),
-      deselectedLabels: new Set<string>(),
-      itemsPerPage: this.itemsPerPage
+      deselectedLabels: new Set<string>()
     }),
     contributions: () => ({
-      title: '',
       status: ['open pullrequest', 'merged pullrequest', 'open issue', 'closed issue'],
       type: 'all',
-      sort: { active: 'id', direction: 'desc' },
       labels: [],
       milestones: this.milestoneService.milestones.map((milestone) => milestone.title),
-      hiddenLabels: new Set<string>(),
-      deselectedLabels: new Set<string>(),
-      itemsPerPage: this.itemsPerPage
+      deselectedLabels: new Set<string>()
     }),
     custom: () => this.filter$.value
   };
@@ -61,8 +65,7 @@ export class FiltersService {
   // List of keys in the new filter change that causes current filter to not qualify to be a preset view.
   readonly presetChangingKeys = new Set<string>(['status', 'type', 'milestones', 'labels', 'deselectedLabels']);
 
-  readonly defaultFilter = this.presetViews.currentlyActive;
-  public filter$ = new BehaviorSubject<Filter>(this.defaultFilter());
+  public filter$ = new BehaviorSubject<Filter>(this.defaultFilter);
   // Either 'currentlyActive', 'contributions', or 'custom'.
   public presetView$ = new BehaviorSubject<string>('currentlyActive');
 
@@ -141,22 +144,9 @@ export class FiltersService {
   }
 
   initializeFromURLParams() {
-    const nextFilter: Filter = this.defaultFilter();
+    const nextFilter: Filter = this.defaultFilter;
     const queryParams = this.route.snapshot.queryParamMap;
     try {
-      const presetView = queryParams.get(FiltersService.PRESET_VIEW_QUERY_PARAM_KEY);
-      // Use preset view if set in url
-      if (presetView && this.presetViews.hasOwnProperty(presetView) && presetView !== 'custom') {
-        this.updatePresetView(presetView);
-        return;
-      }
-
-      // No preset view and no other filters in params, use default view
-      if (!presetView && Object.keys(nextFilter).every((filterName) => queryParams.get(filterName) === null)) {
-        this.updatePresetView('currentlyActive');
-        return;
-      }
-
       for (const filterName of Object.keys(nextFilter)) {
         // Check if there is no such param in url
         if (queryParams.get(filterName) === null) {
@@ -192,7 +182,14 @@ export class FiltersService {
           default:
         }
       }
+
       this.updateFilters(nextFilter);
+
+      // Use preset view if set in url
+      const presetView = queryParams.get(FiltersService.PRESET_VIEW_QUERY_PARAM_KEY);
+      if (presetView && this.presetViews.hasOwnProperty(presetView)) {
+        this.updatePresetView(presetView);
+      }
     } catch (err) {
       this.logger.info(`FiltersService: Update filters from URL failed with an error: ${err}`);
     }
@@ -217,10 +214,11 @@ export class FiltersService {
   private updateFiltersWithoutUpdatingPresetView(newFilters: Partial<Filter>): void {
     const nextDropdownFilter: Filter = {
       ...this.filter$.value,
-      ...newFilters
+      ...newFilters,
+      ...this.presetViews[this.presetView$.value]()
     };
+
     this.filter$.next(nextDropdownFilter);
-    this.filter$.next(this.presetViews[this.presetView$.value]());
   }
 
   private updatePresetViewFromFilters(newFilter: Partial<Filter>): void {
@@ -237,7 +235,7 @@ export class FiltersService {
    * @param presetViewName The name of the preset view, either 'currentlyActive', 'contributions', or 'custom'.
    */
   updatePresetView(presetViewName: string) {
-    this.filter$.next(this.presetViews[presetViewName]());
+    this.filter$.next({ ...this.filter$.value, ...this.presetViews[presetViewName]() });
     this.presetView$.next(presetViewName);
     this.pushFiltersToUrl();
   }
