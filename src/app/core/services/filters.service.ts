@@ -59,7 +59,7 @@ export class FiltersService {
       milestones: this.milestoneService.milestones.map((milestone) => milestone.title),
       deselectedLabels: new Set<string>()
     }),
-    custom: () => this.filter$.value
+    custom: () => ({})
   };
 
   // List of keys in the new filter change that causes current filter to not qualify to be a preset view.
@@ -208,7 +208,7 @@ export class FiltersService {
   /**
    * Updates the filters without updating the preset view.
    * This should only be called when there are new labels/milestones.
-   * The preset view will be reapplied.
+   * The preset view will be reapplied in order to account for changes in milestone categories on upstream
    * @param newFilters The filters with new values
    */
   private updateFiltersWithoutUpdatingPresetView(newFilters: Partial<Filter>): void {
