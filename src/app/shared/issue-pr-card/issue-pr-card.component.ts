@@ -4,6 +4,7 @@ import { Filter } from '../../core/services/filters.service';
 import { GithubService } from '../../core/services/github.service';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
+import { MilestoneService } from '../../core/services/milestone.service';
 
 @Component({
   selector: 'app-issue-pr-card',
@@ -14,7 +15,12 @@ export class IssuePrCardComponent {
   @Input() issue: Issue;
   @Input() filter?: Filter;
 
-  constructor(private logger: LoggingService, private githubService: GithubService, public labelService: LabelService) {}
+  constructor(
+    private logger: LoggingService,
+    private githubService: GithubService,
+    public labelService: LabelService,
+    public milestoneService: MilestoneService
+  ) {}
 
   /** Opens issue in new window */
   viewIssueInBrowser(event: Event) {

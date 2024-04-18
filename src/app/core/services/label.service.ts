@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, EMPTY, Observable, of, Subscription, timer } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable, of, Subject, Subscription, timer } from 'rxjs';
 import { catchError, exhaustMap, finalize, map } from 'rxjs/operators';
 import { Label, SimpleLabel } from '../models/label.model';
 import { GithubService } from './github.service';
@@ -22,13 +22,13 @@ const COLOR_WHITE = 'ffffff'; // Light color for text with dark background
  * from the GitHub repository for the WATcher application.
  */
 export class LabelService {
-  static readonly POLL_INTERVAL = 5000; // 5 seconds
+  static readonly POLL_INTERVAL = 20000; // 20 seconds
 
   labels: Label[];
   simpleLabels: SimpleLabel[];
 
   private labelsPollSubscription: Subscription;
-  private labelsSubject = new BehaviorSubject<SimpleLabel[]>([]);
+  private labelsSubject = new Subject<SimpleLabel[]>();
 
   constructor(private githubService: GithubService) {}
 

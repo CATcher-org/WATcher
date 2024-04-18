@@ -1,4 +1,4 @@
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { STORAGE_KEYS } from '../../src/app/core/constants/storage-keys.constants';
 import { Repo } from '../../src/app/core/models/repo.model';
@@ -15,14 +15,16 @@ let githubServiceSpy: jasmine.SpyObj<GithubService>;
 let repoUrlCacheServiceSpy: jasmine.SpyObj<RepoUrlCacheService>;
 let loggingServiceSpy: jasmine.SpyObj<LoggingService>;
 let routerSpy: jasmine.SpyObj<Router>;
+let activatedRouteSpy: jasmine.SpyObj<ActivatedRoute>;
 
 describe('ViewService', () => {
   beforeEach(() => {
     githubServiceSpy = jasmine.createSpyObj('GithubService', ['isRepositoryPresent', 'storeViewDetails']);
+    activatedRouteSpy = jasmine.createSpyObj('ActivatedRoute', ['snapshot']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     repoUrlCacheServiceSpy = jasmine.createSpyObj('RepoUrlCacheService', ['cache']);
     loggingServiceSpy = jasmine.createSpyObj('LoggingService', ['info']);
-    viewService = new ViewService(githubServiceSpy, repoUrlCacheServiceSpy, loggingServiceSpy, routerSpy);
+    viewService = new ViewService(githubServiceSpy, repoUrlCacheServiceSpy, loggingServiceSpy, activatedRouteSpy, routerSpy);
   });
 
   describe('setRepository(Repo, Repo[])', () => {
@@ -51,7 +53,8 @@ describe('ViewService', () => {
       viewService.setRepository(WATCHER_REPO);
 
       expect(routerSpy.navigate).toHaveBeenCalledWith(['issuesViewer'], {
-        queryParams: { repo: WATCHER_REPO.toString() }
+        queryParams: { repo: WATCHER_REPO.toString() },
+        queryParamsHandling: 'merge'
       });
     });
   });
@@ -88,7 +91,8 @@ describe('ViewService', () => {
       expect(loggingServiceSpy.info).toHaveBeenCalledWith(`ViewService: Changing current repository to '${WATCHER_REPO}'`);
       expect(viewService.currentRepo).toEqual(WATCHER_REPO);
       expect(routerSpy.navigate).toHaveBeenCalledWith(['issuesViewer'], {
-        queryParams: { repo: WATCHER_REPO.toString() }
+        queryParams: { repo: WATCHER_REPO.toString() },
+        queryParamsHandling: 'merge'
       });
       expect(repoUrlCacheServiceSpy.cache).toHaveBeenCalledWith(WATCHER_REPO.toString());
       expect(repoChanged$Spy).toHaveBeenCalledWith(WATCHER_REPO);
@@ -115,7 +119,8 @@ describe('ViewService', () => {
       expect(loggingServiceSpy.info).toHaveBeenCalledWith(`ViewService: Repo is ${WATCHER_REPO}`);
       expect(viewService.currentRepo).toEqual(WATCHER_REPO);
       expect(routerSpy.navigate).toHaveBeenCalledWith(['issuesViewer'], {
-        queryParams: { repo: WATCHER_REPO.toString() }
+        queryParams: { repo: WATCHER_REPO.toString() },
+        queryParamsHandling: 'merge'
       });
       expect(repoSetSourceNext).toHaveBeenCalledWith(true);
     });

@@ -1,9 +1,13 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
-import { GithubUser } from '../core/models/github-user.model';
+import { filter } from 'rxjs/operators';
+import { Group } from '../core/models/github/group.interface';
 import { Repo } from '../core/models/repo.model';
 import { ErrorMessageService } from '../core/services/error-message.service';
+import { FiltersService } from '../core/services/filters.service';
 import { GithubService } from '../core/services/github.service';
+import { GroupingContextService } from '../core/services/grouping/grouping-context.service';
 import { IssueService } from '../core/services/issue.service';
 import { LabelService } from '../core/services/label.service';
 import { MilestoneService } from '../core/services/milestone.service';
@@ -22,14 +26,22 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Observes for any change in repo*/
   repoChangeSubscription: Subscription;
 
+  groupByChangeSubscription: Subscription;
+
   /** Observes for any change in the cardviews */
   viewChange: Subscription;
 
+  popStateEventSubscription: Subscription;
+
+  availableGroupsSubscription: Subscription;
+
+  popStateNavigationId: number;
+
   /** Users to show as columns */
-  assignees: GithubUser[];
+  groups: Group[] = [];
 
   /** The list of users with 0 issues (hidden) */
-  hiddenAssignees: GithubUser[] = [];
+  hiddenGroups: Group[] = [];
 
   @ViewChildren(CardViewComponent) cardViews: QueryList<CardViewComponent>;
 
@@ -40,17 +52,40 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     public githubService: GithubService,
     public issueService: IssueService,
     public labelService: LabelService,
-    public milestoneService: MilestoneService
+    public milestoneService: MilestoneService,
+    public groupingContextService: GroupingContextService,
+    private router: Router,
+    private filtersService: FiltersService
   ) {
     this.repoChangeSubscription = this.viewService.repoChanged$.subscribe((newRepo) => {
       this.issueService.reset(false);
       this.labelService.reset();
       this.initialize();
     });
+
+    this.groupByChangeSubscription = this.groupingContextService.currGroupBy$.subscribe((newGroupBy) => {
+      this.initialize();
+    });
+
+    this.popStateEventSubscription = this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd || event instanceof NavigationStart))
+      .subscribe((event) => {
+        if (event instanceof NavigationStart && event.navigationTrigger === 'popstate') {
+          this.popStateNavigationId = event.id;
+        }
+
+        if (event instanceof NavigationEnd && event.id === this.popStateNavigationId) {
+          this.viewService.initializeRepoFromUrlParams();
+          this.groupingContextService.initializeFromUrlParams();
+          this.filtersService.initializeFromURLParams();
+        }
+      });
   }
 
   ngOnInit() {
     this.initialize();
+    this.groupingContextService.initializeFromUrlParams();
+    this.filtersService.initializeFromURLParams();
   }
 
   ngAfterViewInit(): void {
@@ -60,26 +95,22 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.repoChangeSubscription.unsubscribe();
     this.viewChange.unsubscribe();
+    this.popStateEventSubscription.unsubscribe();
   }
 
   /**
    * Fetch and initialize all information from repository to populate Issue Dashboard.
    */
   private initialize() {
-    this.checkIfValidRepository().subscribe((isValidRepository) => {
-      if (!isValidRepository) {
-        throw new Error(ErrorMessageService.repositoryNotPresentMessage());
-      }
-    });
+    if (this.availableGroupsSubscription) {
+      this.availableGroupsSubscription.unsubscribe();
+    }
 
     // Fetch assignees
-    this.assignees = [];
-    this.hiddenAssignees = [];
+    this.groups = [];
+    this.hiddenGroups = [];
 
-    this.githubService.getUsersAssignable().subscribe((x) => (this.assignees = x));
-
-    // Fetch issues
-    this.issueService.reloadAllIssues();
+    this.availableGroupsSubscription = this.groupingContextService.getGroups().subscribe((x) => (this.groups = x));
   }
 
   /**
@@ -96,25 +127,27 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Update the list of hidden user based on the new info.
-   * @param issueLength The number of issues assigned to this user.
-   * @param assignee The assignee.
+   * Update the list of hidden group based on the new info.
+   * @param issueLength The number of issues under this group.
+   * @param group The group.
    */
-  updateHiddenUsers(issueLength: number, assignee: GithubUser) {
-    if (issueLength === 0) {
-      this.updateHiddenUser(assignee);
+  updateHiddenGroups(issueLength: number, target: Group) {
+    if (issueLength === 0 && this.groupingContextService.isInHiddenList(target)) {
+      this.addToHiddenGroups(target);
     } else {
-      this.removeHiddenUser(assignee);
+      this.removeFromHiddenGroups(target);
     }
   }
 
-  private updateHiddenUser(assignee: GithubUser) {
-    if (!this.hiddenAssignees.includes(assignee)) {
-      this.hiddenAssignees.push(assignee);
+  private addToHiddenGroups(target: Group) {
+    const isGroupPresent = this.hiddenGroups.some((group) => group.equals(target));
+
+    if (!isGroupPresent) {
+      this.hiddenGroups.push(target);
     }
   }
 
-  private removeHiddenUser(assignee: GithubUser) {
-    this.hiddenAssignees = this.hiddenAssignees.filter((user) => user !== assignee);
+  private removeFromHiddenGroups(target: Group) {
+    this.hiddenGroups = this.hiddenGroups.filter((group) => !group.equals(target));
   }
 }

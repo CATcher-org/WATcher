@@ -14,6 +14,7 @@ import { ErrorHandlingService } from '../../core/services/error-handling.service
 import { FiltersService } from '../../core/services/filters.service';
 import { GithubService } from '../../core/services/github.service';
 import { GithubEventService } from '../../core/services/githubevent.service';
+import { GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { IssueService } from '../../core/services/issue.service';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
@@ -26,7 +27,8 @@ const ISSUE_TRACKER_URL = 'https://github.com/CATcher-org/WATcher/issues';
 
 @Component({
   selector: 'app-layout-header',
-  templateUrl: './header.component.html'
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
   private prevUrl;
@@ -43,8 +45,18 @@ export class HeaderComponent implements OnInit {
   private readonly yesButtonDialogMessage = 'Yes, I wish to log out';
   private readonly noButtonDialogMessage = "No, I don't wish to log out";
 
+  readonly presetViews: {
+    [key: string]: string;
+  } = {
+    currentlyActive: 'Currently active',
+    contributions: 'Contributions',
+    custom: 'Custom'
+  };
+
   /** Model for the displayed repository name */
   currentRepo = '';
+
+  keepFilters = false;
 
   constructor(
     private router: Router,
@@ -52,16 +64,17 @@ export class HeaderComponent implements OnInit {
     public viewService: ViewService,
     public userService: UserService,
     public logger: LoggingService,
+    public repoUrlCacheService: RepoUrlCacheService,
     private location: Location,
     private githubEventService: GithubEventService,
     private issueService: IssueService,
-    private repoUrlCacheService: RepoUrlCacheService,
     private labelService: LabelService,
     private errorHandlingService: ErrorHandlingService,
     private githubService: GithubService,
     private dialogService: DialogService,
     private repoSessionStorageService: RepoSessionStorageService,
-    private filtersService: FiltersService
+    private filtersService: FiltersService,
+    private groupingContextService: GroupingContextService
   ) {
     router.events
       .pipe(
@@ -86,6 +99,10 @@ export class HeaderComponent implements OnInit {
       if (auth.isAuthenticated() && viewService.isRepoSet()) {
         this.initializeRepoNameInTitle();
       }
+    });
+
+    this.viewService.repoChanged$.subscribe((repo) => {
+      this.initializeRepoNameInTitle();
     });
 
     this.isLoading$ = this.issueService.isLoading.asObservable();
@@ -235,20 +252,30 @@ export class HeaderComponent implements OnInit {
       return;
     }
 
-    if (!keepFilters) {
-      this.filtersService.clearFilters();
-    }
-
     this.viewService
       .changeRepositoryIfValid(repo)
       .then(() => {
         this.auth.setTitleWithViewDetail();
         this.currentRepo = newRepoString;
+        if (!keepFilters) {
+          this.groupingContextService.reset();
+          this.filtersService.clearFilters();
+        }
       })
       .catch((error) => {
         this.openChangeRepoDialog();
         this.errorHandlingService.handleError(error);
       });
+  }
+
+  applyRepoDropdown(repoString: string) {
+    const newRepo = Repo.of(repoString);
+    this.changeRepositoryIfValid(newRepo, newRepo.toString(), this.keepFilters);
+  }
+
+  toggleKeepFilters(event: MouseEvent) {
+    event.stopPropagation();
+    this.keepFilters = !this.keepFilters;
   }
 
   openChangeRepoDialog() {
