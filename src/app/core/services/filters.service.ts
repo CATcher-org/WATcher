@@ -189,6 +189,8 @@ export class FiltersService {
       const presetView = queryParams.get(FiltersService.PRESET_VIEW_QUERY_PARAM_KEY);
       if (presetView && this.presetViews.hasOwnProperty(presetView)) {
         this.updatePresetView(presetView);
+      } else {
+        this.updatePresetView('currentlyActive');
       }
     } catch (err) {
       this.logger.info(`FiltersService: Update filters from URL failed with an error: ${err}`);
