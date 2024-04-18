@@ -46,24 +46,30 @@ export class FiltersService {
     [key: string]: () => Partial<Filter>;
   } = {
     currentlyActive: () => ({
+      title: '',
       status: ['open pullrequest', 'merged pullrequest', 'open issue', 'closed issue'],
       type: 'all',
+      sort: { active: 'status', direction: 'asc' },
       labels: [],
       milestones: this.getMilestonesForCurrentlyActive().map((milestone) => milestone.title),
-      deselectedLabels: new Set<string>()
+      deselectedLabels: new Set<string>(),
+      itemsPerPage: 20
     }),
     contributions: () => ({
+      title: '',
       status: ['open pullrequest', 'merged pullrequest', 'open issue', 'closed issue'],
       type: 'all',
+      sort: { active: 'id', direction: 'desc' },
       labels: [],
       milestones: this.milestoneService.milestones.map((milestone) => milestone.title),
-      deselectedLabels: new Set<string>()
+      deselectedLabels: new Set<string>(),
+      itemsPerPage: 20
     }),
     custom: () => ({})
   };
 
   // List of keys in the new filter change that causes current filter to not qualify to be a preset view.
-  readonly presetChangingKeys = new Set<string>(['status', 'type', 'milestones', 'labels', 'deselectedLabels']);
+  readonly presetChangingKeys = new Set<string>(['status', 'type', 'sort', 'milestones', 'labels', 'deselectedLabels']);
 
   public filter$ = new BehaviorSubject<Filter>(this.defaultFilter);
   // Either 'currentlyActive', 'contributions', or 'custom'.
@@ -209,15 +215,21 @@ export class FiltersService {
 
   /**
    * Updates the filters without updating the preset view.
-   * This should only be called when there are new labels/milestones.
+   * This should only be called when there are new labels/milestones fetched.
    * The preset view will be reapplied in order to account for changes in milestone categories on upstream
    * @param newFilters The filters with new values
    */
   private updateFiltersWithoutUpdatingPresetView(newFilters: Partial<Filter>): void {
+    const presetFilters = this.presetViews[this.presetView$.value]();
+
+    // Remove filters that should not be reset when labels/milestones are fetched
+    delete presetFilters.title;
+    delete presetFilters.itemsPerPage;
+
     const nextDropdownFilter: Filter = {
       ...this.filter$.value,
       ...newFilters,
-      ...this.presetViews[this.presetView$.value]()
+      ...presetFilters
     };
 
     this.filter$.next(nextDropdownFilter);
