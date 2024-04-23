@@ -10,7 +10,7 @@ let routerSpy: jasmine.SpyObj<Router>;
 let activatedRouteSpy: jasmine.SpyObj<ActivatedRoute>;
 let milestoneServiceSpy: jasmine.SpyObj<MilestoneService>;
 
-fdescribe('FiltersService', () => {
+describe('FiltersService', () => {
   beforeEach(() => {
     loggingServiceSpy = jasmine.createSpyObj('LoggingService', ['info']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
