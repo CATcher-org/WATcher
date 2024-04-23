@@ -1,34 +1,28 @@
 import { SimpleLabel } from '../../src/app/core/models/label.model';
 import { Filter } from '../../src/app/core/services/filters.service';
 
-export const FILTER_NON_CONFLICTING_FIELDS: Filter = {
-  title: 'Test',
-  status: 'open',
-  type: 'pullrequest',
-  sort: { active: 'title', direction: 'desc' },
-  labels: ['aspect-testing', 'aspect-documentation'],
-  milestones: ['V3.3.7', 'V3.3.8'],
-  hiddenLabels: new Set('aspect-codeQuality')
-};
-
-export const FILTER_MERGED_STATUS_ISSUE_TYPE: Filter = {
-  title: 'Test 2',
-  status: 'merged',
-  type: 'issue',
-  sort: { active: 'title', direction: 'desc' },
-  labels: ['aspect-testing', 'aspect-documentation'],
-  milestones: ['V3.3.7', 'V3.3.8'],
-  hiddenLabels: new Set('aspect-codeQuality')
-};
-
-export const FILTER_MERGED_STATUS_ALL_TYPE: Filter = {
-  title: 'Test 3',
-  status: 'merged',
+export const DEFAULT_FILTER: Filter = {
+  title: '',
+  status: ['open pullrequest', 'merged pullrequest', 'open issue', 'closed issue'],
   type: 'all',
-  sort: { active: 'title', direction: 'desc' },
+  sort: { active: 'status', direction: 'asc' },
+  labels: [],
+  milestones: ['PR without a milestone'],
+  hiddenLabels: new Set<string>(),
+  deselectedLabels: new Set<string>(),
+  itemsPerPage: 20
+};
+
+export const CHANGED_FILTER: Filter = {
+  title: 'test',
+  status: ['open pullrequest'],
+  type: 'issue',
+  sort: { active: 'id', direction: 'asc' },
   labels: ['aspect-testing', 'aspect-documentation'],
-  milestones: ['V3.3.7', 'V3.3.8'],
-  hiddenLabels: new Set('aspect-codeQuality')
+  milestones: ['V3.3.6'],
+  hiddenLabels: new Set<string>(['aspect-testing']),
+  deselectedLabels: new Set<string>(['aspect-documentation']),
+  itemsPerPage: 50
 };
 
 export const FILTER_FULL_LABELS_ARRAY: string[] = [

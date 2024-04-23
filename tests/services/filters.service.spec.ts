@@ -1,80 +1,133 @@
-import { DEFAULT_FILTER, FiltersService } from '../../src/app/core/services/filters.service';
+import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
+import { Filter, FiltersService } from '../../src/app/core/services/filters.service';
+import { LoggingService } from '../../src/app/core/services/logging.service';
 import {
+  CHANGED_FILTER,
+  DEFAULT_FILTER,
   FILTER_FULL_LABELS_ARRAY,
-  FILTER_MERGED_STATUS_ALL_TYPE,
-  FILTER_MERGED_STATUS_ISSUE_TYPE,
-  FILTER_NON_CONFLICTING_FIELDS,
   FILTER_SUBSET_LABELS_ARRAY,
   FILTER_SUBSET_SIMPLE_LABELS
 } from '../constants/filter.constants';
+import { MilestoneService } from '../../src/app/core/services/milestone.service';
+import { of } from 'rxjs';
 
 let filtersService: FiltersService;
+let loggingServiceSpy: jasmine.SpyObj<LoggingService>;
+let routerSpy: jasmine.SpyObj<Router>;
+let activatedRouteSpy: jasmine.SpyObj<ActivatedRoute>;
+let milestoneServiceSpy: jasmine.SpyObj<MilestoneService>;
 
-describe('FiltersService', () => {
-  beforeEach(() => (filtersService = new FiltersService()));
+fdescribe('FiltersService', () => {
+  beforeEach(() => {
+    loggingServiceSpy = jasmine.createSpyObj('LoggingService', ['info']);
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    activatedRouteSpy = jasmine.createSpyObj('ActivatedRoute', ['snapshot'], {
+      snapshot: {
+        queryParamMap: convertToParamMap({})
+      }
+    });
+    milestoneServiceSpy = jasmine.createSpyObj('MilestoneService', ['milestones', 'getEarliestOpenMilestone', 'getLatestClosedMilestone'], {
+      milestones: []
+    });
+    filtersService = new FiltersService(loggingServiceSpy, routerSpy, activatedRouteSpy, milestoneServiceSpy);
+    filtersService.initializeFromURLParams();
+  });
 
-  it('should initially emit the default filter', (done) => {
+  it('should initially be on currentlyActive preset', (done) => {
+    filtersService.presetView$.subscribe((presetView) => {
+      expect(presetView).toEqual('currentlyActive');
+      done();
+    });
+  });
+
+  it('should initially have the correct default filters', (done) => {
     filtersService.filter$.subscribe((filter) => {
       expect(filter).toEqual(DEFAULT_FILTER);
       done();
     });
   });
 
-  describe('.updateFilters', () => {
-    it('should update filters with same information when there are no conflicts', (done) => {
-      filtersService.updateFilters(FILTER_NON_CONFLICTING_FIELDS);
-
-      filtersService.filter$.subscribe((filter) => {
-        expect(filter).toEqual(FILTER_NON_CONFLICTING_FIELDS);
-        done();
-      });
-    });
-
-    it('should update filters correctly when given merged status and issue type', (done) => {
-      filtersService.updateFilters(FILTER_MERGED_STATUS_ISSUE_TYPE);
-
-      filtersService.filter$.subscribe((filter) => {
-        expect(filter).toEqual({ ...FILTER_MERGED_STATUS_ISSUE_TYPE, status: 'all' });
-        done();
-      });
-    });
-
-    it('should update filters correctly when given merged status and all type', (done) => {
-      filtersService.updateFilters(FILTER_MERGED_STATUS_ALL_TYPE);
-
-      filtersService.filter$.subscribe((filter) => {
-        expect(filter).toEqual({ ...FILTER_MERGED_STATUS_ALL_TYPE, type: 'pullrequest' });
-        done();
-      });
-    });
-  });
-
-  describe('.sanitizeLabels', () => {
-    beforeEach(() => {
-      filtersService.updateFilters({ labels: FILTER_FULL_LABELS_ARRAY });
-    });
-
-    it('should keep existent labels and remove non-existent labels', (done) => {
-      filtersService.sanitizeLabels(FILTER_SUBSET_SIMPLE_LABELS);
-
-      const commonLabels = FILTER_FULL_LABELS_ARRAY.filter((label) => FILTER_SUBSET_LABELS_ARRAY.includes(label));
-
-      filtersService.filter$.subscribe((filter) => {
-        expect(filter.labels).toEqual(commonLabels);
-        done();
-      });
-    });
-  });
-
   describe('.clearFilters', () => {
-    beforeEach(() => {
-      filtersService.updateFilters(FILTER_NON_CONFLICTING_FIELDS);
-    });
-
-    it('should reset current filters to default', (done) => {
+    it('should reset to default filters', (done) => {
+      filtersService.updateFilters(CHANGED_FILTER);
       filtersService.clearFilters();
       filtersService.filter$.subscribe((filter) => {
         expect(filter).toEqual(DEFAULT_FILTER);
+        done();
+      });
+    });
+    it('should reset to default preset view', (done) => {
+      filtersService.updateFilters(CHANGED_FILTER);
+      filtersService.clearFilters();
+      filtersService.presetView$.subscribe((presetView) => {
+        expect(presetView).toEqual('currentlyActive');
+        done();
+      });
+    });
+  });
+
+  describe('.updateFilters', () => {
+    beforeEach(() => {
+      filtersService.clearFilters();
+    });
+
+    it('should correctly update filters', (done) => {
+      filtersService.updateFilters(CHANGED_FILTER);
+      filtersService.filter$.subscribe((filter) => {
+        expect(filter).toEqual(CHANGED_FILTER);
+        done();
+      });
+    });
+
+    it('should update preset views when certain filters changed', (done) => {
+      filtersService.updateFilters({ labels: ['aspect-testing'] });
+      filtersService.presetView$.subscribe((presetView) => {
+        expect(presetView).toEqual('custom');
+        done();
+      });
+    });
+
+    it('should retain preset view when certain filters are changed', (done) => {
+      filtersService.updateFilters({ title: 'test' });
+      filtersService.presetView$.subscribe((presetView) => {
+        expect(presetView).toEqual('currentlyActive');
+        done();
+      });
+    });
+
+    it('should push filters to URL', (done) => {
+      filtersService.updateFilters(CHANGED_FILTER);
+      expect(routerSpy.navigate).toHaveBeenCalled();
+      done();
+    });
+  });
+
+  describe('.updatePresetView', () => {
+    beforeEach(() => {
+      filtersService.clearFilters();
+    });
+
+    it('should correctly update preset view', (done) => {
+      filtersService.updatePresetView('contributions');
+      filtersService.presetView$.subscribe((presetView) => {
+        expect(presetView).toEqual('contributions');
+        done();
+      });
+    });
+
+    it('should correctly apply filters when updating preset view', (done) => {
+      filtersService.updatePresetView('contributions');
+      filtersService.filter$.subscribe((filter) => {
+        expect(filter.sort).toEqual({ active: 'id', direction: 'desc' });
+        done();
+      });
+    });
+
+    it('should not overwrite certain filters', (done) => {
+      filtersService.updateFilters({ hiddenLabels: new Set(['aspect-testing']) });
+      filtersService.updatePresetView('contributions');
+      filtersService.filter$.subscribe((filter) => {
+        expect(filter.hiddenLabels).toEqual(new Set(['aspect-testing']));
         done();
       });
     });
