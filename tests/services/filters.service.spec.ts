@@ -1,8 +1,8 @@
-import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { FiltersService } from '../../src/app/core/services/filters.service';
 import { LoggingService } from '../../src/app/core/services/logging.service';
-import { CHANGED_FILTER, DEFAULT_FILTER } from '../constants/filter.constants';
 import { MilestoneService } from '../../src/app/core/services/milestone.service';
+import { CHANGED_FILTER, DEFAULT_FILTER } from '../constants/filter.constants';
 
 let filtersService: FiltersService;
 let loggingServiceSpy: jasmine.SpyObj<LoggingService>;
