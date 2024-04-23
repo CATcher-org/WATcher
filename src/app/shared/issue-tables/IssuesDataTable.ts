@@ -16,7 +16,7 @@ import { applySearchFilter } from './search-filter';
 
 export class IssuesDataTable extends DataSource<Issue> implements FilterableSource {
   public count = 0;
-  private filterChange = new BehaviorSubject(this.filtersService.defaultFilter());
+  private filterChange = new BehaviorSubject(this.filtersService.defaultFilter);
   private issuesSubject = new BehaviorSubject<Issue[]>([]);
   private issueSubscription: Subscription;
 
