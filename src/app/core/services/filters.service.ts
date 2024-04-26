@@ -145,6 +145,7 @@ export class FiltersService {
   }
 
   clearFilters(): void {
+    this.updateFilters(this.defaultFilter);
     this.updatePresetView('currentlyActive');
     this.previousMilestonesLength = 0;
   }
@@ -190,7 +191,6 @@ export class FiltersService {
       }
 
       this.updateFilters(nextFilter);
-
       // Use preset view if set in url
       const presetView = queryParams.get(FiltersService.PRESET_VIEW_QUERY_PARAM_KEY);
       if (presetView && this.presetViews.hasOwnProperty(presetView)) {
@@ -318,7 +318,6 @@ export class FiltersService {
     if (latestClosedMilestone) {
       return [latestClosedMilestone, Milestone.PRWithoutMilestone];
     }
-
     return [...this.milestoneService.milestones, Milestone.PRWithoutMilestone];
   }
 }
