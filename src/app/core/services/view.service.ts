@@ -113,19 +113,27 @@ export class ViewService {
     this.repoUrlCacheService.cache(repo.toString());
   }
 
+  async verifyOrgAndRepo(org: string, repo: string): Promise<boolean> {
+    const isValidOrganisation = await this.githubService.isOrganisationPresent(org).toPromise();
+    if (!isValidOrganisation) {
+      throw new Error(ErrorMessageService.organisationNotPresentMessage());
+    }
+
+    const isValidRepository = await this.githubService.isRepositoryPresent(org, repo).toPromise();
+    if (!isValidRepository) {
+      throw new Error(ErrorMessageService.repositoryNotPresentMessage());
+    }
+
+    return true;
+  }
+
   /**
    * Change repository if a valid repository is provided
    * @param repo New repository
    */
   async changeRepositoryIfValid(repo: Repo) {
     this.isChangingRepo.next(true);
-
-    const isValidRepository = await this.githubService.isRepositoryPresent(repo.owner, repo.name).toPromise();
-    if (!isValidRepository) {
-      this.isChangingRepo.next(false);
-      throw new Error(ErrorMessageService.repositoryNotPresentMessage());
-    }
-
+    await this.verifyOrgAndRepo(repo.owner, repo.name);
     this.changeCurrentRepository(repo);
     this.isChangingRepo.next(false);
   }
@@ -150,10 +158,7 @@ export class ViewService {
     } else {
       repo = new Repo(org, repoName);
     }
-    const isValidRepository = await this.githubService.isRepositoryPresent(repo.owner, repo.name).toPromise();
-    if (!isValidRepository) {
-      throw new Error(ErrorMessageService.repositoryNotPresentMessage());
-    }
+    await this.verifyOrgAndRepo(repo.owner, repo.name);
     this.logger.info(`ViewService: Repo is ${repo}`);
     this.setRepository(repo);
     this.repoSetSource.next(true);
