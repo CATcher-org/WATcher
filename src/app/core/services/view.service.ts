@@ -113,6 +113,12 @@ export class ViewService {
     this.repoUrlCacheService.cache(repo.toString());
   }
 
+  /**
+   * Verifies if the organisation and repository are present on GitHub.
+   * @param org Organisation name
+   * @param repo Repository name
+   * @returns Promise that resolves to true if the organisation and repository are present.
+   */
   async verifyOrgAndRepo(org: string, repo: string): Promise<boolean> {
     const isValidOrganisation = await this.githubService.isOrganisationPresent(org).toPromise();
     if (!isValidOrganisation) {
