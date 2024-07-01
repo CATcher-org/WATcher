@@ -20,21 +20,7 @@ export interface RawGithubUser {
 /**
  * Represents a GitHub user in WATcher
  */
-export class GithubUser implements RawGithubUser, Group {
-  static NO_ASSIGNEE: GithubUser = new GithubUser({
-    avatar_url: '',
-    created_at: '',
-    html_url: '',
-    login: 'Unassigned',
-    name: '',
-    node_id: '',
-    two_factor_authentication: false,
-    site_admin: false,
-    type: '',
-    updated_at: '',
-    url: ''
-  });
-
+export class GithubUser implements RawGithubUser {
   avatar_url: string;
   created_at: string;
   html_url: string;
