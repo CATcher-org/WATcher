@@ -4,7 +4,7 @@ import { Group } from './github/group.interface';
  * Represents an assignee and its attributes fetched from Github.
  */
 export class Assignee implements Group {
-  static WithoutAssignee: Assignee = new Assignee({ login: 'Issue/PR without an assignee', avatar_url: null });
+  static WithoutAssignee: Assignee = new Assignee({ login: 'Issues/PRs without an assignee', avatar_url: null });
   login: string;
   avatarUrl: string;
 
