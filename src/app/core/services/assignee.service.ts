@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { GithubService } from './github.service';
 import { Assignee } from '../models/assignee.model';
+import { GithubService } from './github.service';
 
 @Injectable({
   providedIn: 'root'
