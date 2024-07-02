@@ -119,10 +119,11 @@ export class ViewService {
    * @param repo Repository name
    * @returns Promise that resolves to true if the organisation and repository are present.
    */
-  async verifyOrgAndRepo(org: string, repo: string): Promise<boolean> {
-    const isValidOrganisation = await this.githubService.isOrganisationPresent(org).toPromise();
-    if (!isValidOrganisation) {
-      throw new Error(ErrorMessageService.organisationNotPresentMessage());
+  async verifyPrefixAndRepo(org: string, repo: string): Promise<boolean> {
+    const isValidPrefix =
+      (await this.githubService.isOrganisationPresent(org).toPromise()) || (await this.githubService.isUsernamePresent(org).toPromise());
+    if (!isValidPrefix) {
+      throw new Error(ErrorMessageService.repoPrefixNotPresentMessage());
     }
 
     const isValidRepository = await this.githubService.isRepositoryPresent(org, repo).toPromise();
@@ -139,7 +140,7 @@ export class ViewService {
    */
   async changeRepositoryIfValid(repo: Repo) {
     this.isChangingRepo.next(true);
-    await this.verifyOrgAndRepo(repo.owner, repo.name);
+    await this.verifyPrefixAndRepo(repo.owner, repo.name);
     this.changeCurrentRepository(repo);
     this.isChangingRepo.next(false);
   }
@@ -164,7 +165,7 @@ export class ViewService {
     } else {
       repo = new Repo(org, repoName);
     }
-    await this.verifyOrgAndRepo(repo.owner, repo.name);
+    await this.verifyPrefixAndRepo(repo.owner, repo.name);
     this.logger.info(`ViewService: Repo is ${repo}`);
     this.setRepository(repo);
     this.repoSetSource.next(true);

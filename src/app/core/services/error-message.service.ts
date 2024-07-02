@@ -8,12 +8,12 @@ import { Injectable } from '@angular/core';
  * Contains all error message prompts to user.
  */
 export class ErrorMessageService {
-  public static organisationNotPresentMessage() {
-    return 'Invalid organisation name. Please provide a repository URL or repo name (Org/Repo Name) with a valid organisation name.';
+  public static repoPrefixNotPresentMessage() {
+    return 'Invalid repo prefix. Please provide a repository URL or repo name with a valid prefix (org/user name), using the format <ORG/USER_NAME>/<REPO_NAME>';
   }
 
   public static repositoryNotPresentMessage() {
-    return 'Invalid repository name. Please provide Github repository URL or the repository name in the format Org/Repository Name.';
+    return 'Invalid repository name. Please provide Github repository URL or the repository name in the format <ORG/USER_NAME>/<REPO_NAME>.';
   }
 
   public static invalidUrlMessage() {

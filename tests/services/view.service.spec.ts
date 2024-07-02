@@ -19,7 +19,12 @@ let activatedRouteSpy: jasmine.SpyObj<ActivatedRoute>;
 
 describe('ViewService', () => {
   beforeEach(() => {
-    githubServiceSpy = jasmine.createSpyObj('GithubService', ['isOrganisationPresent', 'isRepositoryPresent', 'storeViewDetails']);
+    githubServiceSpy = jasmine.createSpyObj('GithubService', [
+      'isUsernamePresent',
+      'isOrganisationPresent',
+      'isRepositoryPresent',
+      'storeViewDetails'
+    ]);
     activatedRouteSpy = jasmine.createSpyObj('ActivatedRoute', ['snapshot']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     repoUrlCacheServiceSpy = jasmine.createSpyObj('RepoUrlCacheService', ['cache']);
@@ -76,10 +81,11 @@ describe('ViewService', () => {
 
     it('should throw error if repository is not valid', async () => {
       githubServiceSpy.isOrganisationPresent.and.returnValue(of(false));
+      githubServiceSpy.isUsernamePresent.and.returnValue(of(false));
       githubServiceSpy.isRepositoryPresent.and.returnValue(of(false));
 
       await expectAsync(viewService.changeRepositoryIfValid(WATCHER_REPO)).toBeRejectedWithError(
-        ErrorMessageService.organisationNotPresentMessage()
+        ErrorMessageService.repoPrefixNotPresentMessage()
       );
     });
 

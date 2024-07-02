@@ -173,6 +173,21 @@ export class GithubService {
   }
 
   /**
+   * Checks if the specified username exists.
+   * @param userName - Name of Username
+   */
+  isUsernamePresent(userName: string): Observable<boolean> {
+    return from(octokit.users.getByUsername({ username: userName, headers: GithubService.IF_NONE_MATCH_EMPTY })).pipe(
+      map((rawData: { status: number }) => {
+        return rawData.status !== ERRORCODE_NOT_FOUND;
+      }),
+      catchError((err) => {
+        return of(false);
+      })
+    );
+  }
+
+  /**
    * Checks if the specified organisation exists.
    * @param orgName - Name of Organisation.
    */
@@ -183,8 +198,7 @@ export class GithubService {
       }),
       catchError((err) => {
         return of(false);
-      }),
-      catchError((err) => throwError(ErrorMessageService.organisationNotPresentMessage()))
+      })
     );
   }
 
@@ -200,8 +214,7 @@ export class GithubService {
       }),
       catchError((err) => {
         return of(false);
-      }),
-      catchError((err) => throwError(ErrorMessageService.repositoryNotPresentMessage()))
+      })
     );
   }
 
