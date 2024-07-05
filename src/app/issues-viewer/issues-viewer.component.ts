@@ -125,6 +125,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
     return (
       this.githubService.isOrganisationPresent(currentRepo.owner) &&
+      this.githubService.isUsernamePresent(currentRepo.owner) &&
       this.githubService.isRepositoryPresent(currentRepo.owner, currentRepo.name)
     );
   }
