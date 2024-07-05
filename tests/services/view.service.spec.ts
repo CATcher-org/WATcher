@@ -85,7 +85,7 @@ describe('ViewService', () => {
       githubServiceSpy.isRepositoryPresent.and.returnValue(of(false));
 
       await expectAsync(viewService.changeRepositoryIfValid(WATCHER_REPO)).toBeRejectedWithError(
-        ErrorMessageService.repoPrefixNotPresentMessage()
+        ErrorMessageService.repoOwnerNotPresentMessage()
       );
     });
 
