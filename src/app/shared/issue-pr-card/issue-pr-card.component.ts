@@ -28,7 +28,7 @@ export class IssuePrCardComponent {
     this.githubService.viewIssueInBrowser(this.issue.id, event);
   }
 
-  /** Opens issue in new window */
+  /** Opens milestone in new window */
   viewMilestoneInBrowser(event: Event) {
     this.logger.info(`CardViewComponent: Opening Milestone ${this.issue.milestone.number} on Github`);
     this.githubService.viewMilestoneInBrowser(this.issue.milestone.number, event);
