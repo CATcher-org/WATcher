@@ -9,4 +9,11 @@ span.octicon-milestone {
   margin-bottom: 0px;
   margin-top: 0px;
   align-items: center;
+  transition: box-shadow 0.3s ease-in-out;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.milestone:hover {
+  box-shadow: 2px 2px rgba(160, 160, 160, 0.2);
 }

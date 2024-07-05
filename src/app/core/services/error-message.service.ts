@@ -64,6 +64,10 @@ export class ErrorMessageService {
     return 'Unable to open this issue in Browser';
   }
 
+  public static unableToOpenMilestoneInBrowserMessage() {
+    return 'Unable to open this milestone in Browser';
+  }
+
   public static applicationVersionOutdatedMessage() {
     return 'Please update to the latest version of WATcher.';
   }

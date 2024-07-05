@@ -17,6 +17,7 @@ import { applySearchFilter } from './search-filter';
 export class IssuesDataTable extends DataSource<Issue> implements FilterableSource {
   public count = 0;
   private filterChange = new BehaviorSubject(this.filtersService.defaultFilter);
+  private pageChange = new BehaviorSubject(this.paginator.page);
   private issuesSubject = new BehaviorSubject<Issue[]>([]);
   private issueSubscription: Subscription;
 
@@ -54,7 +55,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
       page = this.paginator.page;
     }
 
-    const displayDataChanges = [this.issueService.issues$, page, this.filterChange].filter((x) => x !== undefined);
+    const displayDataChanges = [this.issueService.issues$, this.pageChange, this.filterChange].filter((x) => x !== undefined);
 
     this.issueService.startPollIssues();
     this.issueSubscription = merge(...displayDataChanges)

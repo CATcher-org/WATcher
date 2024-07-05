@@ -423,6 +423,15 @@ export class GithubService {
     event.stopPropagation();
   }
 
+  viewMilestoneInBrowser(id: number, event: Event) {
+    if (id) {
+      window.open('https://github.com/'.concat(this.getRepoURL()).concat('/milestone/').concat(String(id)));
+    } else {
+      this.errorHandlingService.handleError(new Error(ErrorMessageService.unableToOpenMilestoneInBrowserMessage()));
+    }
+    event.stopPropagation();
+  }
+
   reset(): void {
     this.logger.info(`GithubService: Resetting issues cache`);
     this.issuesCacheManager.clear();

@@ -9,11 +9,13 @@ export class Milestone implements Group {
   title: string;
   state: string;
   deadline?: Date;
+  number?: number;
 
-  constructor(milestone: { title: string; state: string; due_on?: string }) {
+  constructor(milestone: { title: string; state: string; due_on?: string; number?: string }) {
     this.title = milestone.title;
     this.state = milestone.state;
     this.deadline = milestone.due_on ? new Date(milestone.due_on) : undefined;
+    this.number = milestone.number ? +milestone.number : undefined;
   }
 
   public equals(other: any) {
