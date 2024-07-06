@@ -118,15 +118,17 @@ export class ViewService {
    * @param org Organisation name
    * @param repo Repository name
    * @returns Promise that resolves to true if the organisation and repository are present.
+   * @throws Error if the organisation or repository are not present.
    */
-  async verifyOwnerAndRepo(org: string, repo: string): Promise<boolean> {
+  async verifyOwnerAndRepo(owner: string, repo: string): Promise<boolean> {
     const isValidOwner =
-      (await this.githubService.isOrganisationPresent(org).toPromise()) || (await this.githubService.isUsernamePresent(org).toPromise());
+      (await this.githubService.isOrganisationPresent(owner).toPromise()) ||
+      (await this.githubService.isUsernamePresent(owner).toPromise());
     if (!isValidOwner) {
       throw new Error(ErrorMessageService.repoOwnerNotPresentMessage());
     }
 
-    const isValidRepository = await this.githubService.isRepositoryPresent(org, repo).toPromise();
+    const isValidRepository = await this.githubService.isRepositoryPresent(owner, repo).toPromise();
     if (!isValidRepository) {
       throw new Error(ErrorMessageService.repositoryNotPresentMessage());
     }
@@ -137,10 +139,16 @@ export class ViewService {
   /**
    * Change repository if a valid repository is provided
    * @param repo New repository
+   * @throws Error if the repository is not valid
    */
   async changeRepositoryIfValid(repo: Repo) {
-    this.isChangingRepo.next(true);
-    await this.verifyOwnerAndRepo(repo.owner, repo.name);
+    try {
+      this.isChangingRepo.next(true);
+      await this.verifyOwnerAndRepo(repo.owner, repo.name);
+    } catch (error) {
+      this.isChangingRepo.next(false);
+      throw error;
+    }
     this.changeCurrentRepository(repo);
     this.isChangingRepo.next(false);
   }
