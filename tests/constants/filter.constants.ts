@@ -9,7 +9,8 @@ export const DEFAULT_FILTER: Filter = {
   milestones: ['PR without a milestone'],
   hiddenLabels: new Set<string>(),
   deselectedLabels: new Set<string>(),
-  itemsPerPage: 20
+  itemsPerPage: 20,
+  assignees: []
 };
 
 export const CHANGED_FILTER: Filter = {
@@ -21,5 +22,6 @@ export const CHANGED_FILTER: Filter = {
   milestones: ['V3.3.6'],
   hiddenLabels: new Set<string>(['aspect-testing']),
   deselectedLabels: new Set<string>(['aspect-documentation']),
-  itemsPerPage: 50
+  itemsPerPage: 50,
+  assignees: ['test']
 };

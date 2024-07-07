@@ -91,6 +91,20 @@
           <mat-option [value]="50">50</mat-option>
         </mat-select>
       </mat-form-field>
+      <mat-form-field appearance="standard">
+        <mat-label>Assigned to</mat-label>
+        <mat-select
+          #assigneeSelectorRef
+          [value]="this.filter.assignees"
+          (selectionChange)="this.filtersService.updateFilters({ assignees: $event.value })"
+          [disabled]="this.assigneeService.hasNoAssignees"
+          multiple
+        >
+          <mat-option *ngFor="let assignee of this.assigneeService.assignees" [value]="assignee.login">
+            {{ assignee.login }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
   </mat-grid-tile>
 

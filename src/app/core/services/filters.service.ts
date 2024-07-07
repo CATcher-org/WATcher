@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, pipe } from 'rxjs';
+import { GithubUser } from '../models/github-user.model';
 import { SimpleLabel } from '../models/label.model';
 import { Milestone } from '../models/milestone.model';
+import { AssigneeService } from './assignee.service';
 import { LoggingService } from './logging.service';
 import { MilestoneService } from './milestone.service';
 
@@ -17,6 +19,7 @@ export type Filter = {
   hiddenLabels: Set<string>;
   deselectedLabels: Set<string>;
   itemsPerPage: number;
+  assignees: string[];
 };
 
 @Injectable({
@@ -39,7 +42,8 @@ export class FiltersService {
     milestones: [],
     hiddenLabels: new Set<string>(),
     deselectedLabels: new Set<string>(),
-    itemsPerPage: this.itemsPerPage
+    itemsPerPage: this.itemsPerPage,
+    assignees: []
   };
 
   readonly presetViews: {
@@ -53,7 +57,8 @@ export class FiltersService {
       labels: [],
       milestones: this.getMilestonesForCurrentlyActive().map((milestone) => milestone.title),
       deselectedLabels: new Set<string>(),
-      itemsPerPage: 20
+      itemsPerPage: 20,
+      assignees: this.getAssigneesForCurrentlyActive().map((assignee) => assignee.login)
     }),
     contributions: () => ({
       title: '',
@@ -63,7 +68,8 @@ export class FiltersService {
       labels: [],
       milestones: this.milestoneService.milestones.map((milestone) => milestone.title),
       deselectedLabels: new Set<string>(),
-      itemsPerPage: 20
+      itemsPerPage: 20,
+      assignees: this.assigneeService.assignees.map((assignee) => assignee.login)
     }),
     custom: () => ({})
   };
@@ -77,12 +83,14 @@ export class FiltersService {
 
   // Helps in determining whether all milestones were selected from previous repo during sanitization of milestones
   private previousMilestonesLength = 0;
+  private previousAssigneesLength = 0;
 
   constructor(
     private logger: LoggingService,
     private router: Router,
     private route: ActivatedRoute,
-    private milestoneService: MilestoneService
+    private milestoneService: MilestoneService,
+    private assigneeService: AssigneeService
   ) {
     this.filter$.subscribe((filter: Filter) => {
       this.itemsPerPage = filter.itemsPerPage;
@@ -148,6 +156,7 @@ export class FiltersService {
     this.updateFilters(this.defaultFilter);
     this.updatePresetView('currentlyActive');
     this.previousMilestonesLength = 0;
+    this.previousAssigneesLength = 0;
   }
 
   initializeFromURLParams() {
@@ -280,6 +289,29 @@ export class FiltersService {
     });
   }
 
+  sanitizeAssignees(allAssignees: GithubUser[]) {
+    const assignees = allAssignees.map((assignee) => assignee.login);
+    assignees.push(GithubUser.NO_ASSIGNEE.login);
+    const allAssigneesSet = new Set(assignees);
+
+    // All previous assignees were selected, reset to all new assignees selected
+    if (this.filter$.value.assignees.length === this.assigneeService.assignees.length) {
+      this.updateFiltersWithoutUpdatingPresetView({ assignees: [...allAssigneesSet] });
+      this.previousAssigneesLength = allAssigneesSet.size;
+      return;
+    }
+
+    const newAssignees: string[] = [];
+    for (const assignee of this.filter$.value.assignees) {
+      if (allAssigneesSet.has(assignee)) {
+        newAssignees.push(assignee);
+      }
+    }
+
+    this.updateFiltersWithoutUpdatingPresetView({ assignees: newAssignees });
+    this.previousAssigneesLength = allAssigneesSet.size;
+  }
+
   sanitizeMilestones(allMilestones: Milestone[]) {
     const milestones = allMilestones.map((milestone) => milestone.title);
     milestones.push(Milestone.IssueWithoutMilestone.title, Milestone.PRWithoutMilestone.title);
@@ -319,5 +351,11 @@ export class FiltersService {
       return [latestClosedMilestone, Milestone.PRWithoutMilestone];
     }
     return [...this.milestoneService.milestones, Milestone.PRWithoutMilestone];
+  }
+
+  getAssigneesForCurrentlyActive(): GithubUser[] {
+    // TODO Filter out assignees that have not contributed in currently active milestones
+
+    return this.assigneeService.assignees;
   }
 }
