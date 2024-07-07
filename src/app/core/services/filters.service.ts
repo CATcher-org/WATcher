@@ -295,7 +295,7 @@ export class FiltersService {
     const allAssigneesSet = new Set(assignees);
 
     // All previous assignees were selected, reset to all new assignees selected
-    if (this.filter$.value.assignees.length === this.assigneeService.assignees.length) {
+    if (this.filter$.value.assignees.length === this.previousAssigneesLength) {
       this.updateFiltersWithoutUpdatingPresetView({ assignees: [...allAssigneesSet] });
       this.previousAssigneesLength = allAssigneesSet.size;
       return;
@@ -356,6 +356,6 @@ export class FiltersService {
   getAssigneesForCurrentlyActive(): GithubUser[] {
     // TODO Filter out assignees that have not contributed in currently active milestones
 
-    return this.assigneeService.assignees;
+    return [...this.assigneeService.assignees, GithubUser.NO_ASSIGNEE];
   }
 }
