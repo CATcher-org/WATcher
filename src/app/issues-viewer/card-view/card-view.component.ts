@@ -14,6 +14,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { Observable, Subscription } from 'rxjs';
 import { Group } from '../../core/models/github/group.interface';
 import { Issue } from '../../core/models/issue.model';
+import { AssigneeService } from '../../core/services/assignee.service';
 import { FiltersService } from '../../core/services/filters.service';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { IssueService } from '../../core/services/issue.service';
@@ -60,7 +61,8 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
     public issueService: IssueService,
     public groupingContextService: GroupingContextService,
     private filtersService: FiltersService,
-    private milestoneService: MilestoneService
+    private milestoneService: MilestoneService,
+    private assigneeService: AssigneeService
   ) {}
 
   ngOnInit() {
@@ -68,6 +70,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
       this.issueService,
       this.groupingContextService,
       this.filtersService,
+      this.assigneeService,
       this.milestoneService,
       this.paginator,
       this.headers,

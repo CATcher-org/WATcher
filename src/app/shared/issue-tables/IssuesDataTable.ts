@@ -4,6 +4,7 @@ import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Group } from '../../core/models/github/group.interface';
 import { Issue } from '../../core/models/issue.model';
+import { AssigneeService } from '../../core/services/assignee.service';
 import { Filter, FiltersService } from '../../core/services/filters.service';
 import { GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { IssueService } from '../../core/services/issue.service';
@@ -26,6 +27,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
     private issueService: IssueService,
     private groupingContextService: GroupingContextService,
     private filtersService: FiltersService,
+    private assigneeService: AssigneeService,
     private milestoneService: MilestoneService,
     private paginator: MatPaginator,
     private displayedColumn: string[],
@@ -69,7 +71,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
           data = this.groupingContextService.getDataForGroup(data, this.group);
 
           // Apply Filters
-          data = applyDropdownFilter(this.filter, data, !this.milestoneService.hasNoMilestones);
+          data = applyDropdownFilter(this.filter, data, !this.milestoneService.hasNoMilestones, !this.assigneeService.hasNoAssignees);
 
           data = applySearchFilter(this.filter.title, this.displayedColumn, this.issueService, data);
           this.count = data.length;

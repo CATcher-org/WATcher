@@ -119,6 +119,7 @@ export class FiltersService {
         case 'status':
         case 'labels':
         case 'milestones':
+        case 'assignees':
           if (filterValue.length === 0) {
             delete queryParams[filterName];
             continue;
@@ -181,6 +182,7 @@ export class FiltersService {
           case 'status':
           case 'labels':
           case 'milestones':
+          case 'assignees':
             nextFilter[filterName] = filterData;
             break;
           // Sets
@@ -355,7 +357,6 @@ export class FiltersService {
 
   getAssigneesForCurrentlyActive(): GithubUser[] {
     // TODO Filter out assignees that have not contributed in currently active milestones
-
     return [...this.assigneeService.assignees, GithubUser.NO_ASSIGNEE];
   }
 }

@@ -129,9 +129,11 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * Update the list of hidden group based on the new info.
    * @param issueLength The number of issues under this group.
-   * @param group The group.
+   * @param target The group.
    */
   updateHiddenGroups(issueLength: number, target: Group) {
+    // If the group is in the hidden list, add it if it has no issues.
+    // Also add it if it is unchecked in the filter.
     if (issueLength === 0 && this.groupingContextService.isInHiddenList(target)) {
       this.addToHiddenGroups(target);
     } else {

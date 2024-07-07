@@ -100,6 +100,9 @@
           [disabled]="this.assigneeService.hasNoAssignees"
           multiple
         >
+          <mat-select-trigger *ngIf="this.assigneeService.hasNoAssignees">
+            <span>No Assignees</span>
+          </mat-select-trigger>
           <mat-option *ngFor="let assignee of this.assigneeService.assignees" [value]="assignee.login">
             {{ assignee.login }}
           </mat-option>

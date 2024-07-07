@@ -10,7 +10,7 @@ export const DEFAULT_FILTER: Filter = {
   hiddenLabels: new Set<string>(),
   deselectedLabels: new Set<string>(),
   itemsPerPage: 20,
-  assignees: ['Unassigned']
+  assignees: []
 };
 
 export const CHANGED_FILTER: Filter = {
