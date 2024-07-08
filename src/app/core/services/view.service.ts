@@ -125,11 +125,13 @@ export class ViewService {
       (await this.githubService.isOrganisationPresent(owner).toPromise()) ||
       (await this.githubService.isUsernamePresent(owner).toPromise());
     if (!isValidOwner) {
+      this.isChangingRepo.next(false);
       throw new Error(ErrorMessageService.repoOwnerNotPresentMessage());
     }
 
     const isValidRepository = await this.githubService.isRepositoryPresent(owner, repo).toPromise();
     if (!isValidRepository) {
+      this.isChangingRepo.next(false);
       throw new Error(ErrorMessageService.repositoryNotPresentMessage());
     }
 
@@ -142,13 +144,8 @@ export class ViewService {
    * @throws Error if the repository is not valid
    */
   async changeRepositoryIfValid(repo: Repo) {
-    try {
-      this.isChangingRepo.next(true);
-      await this.verifyOwnerAndRepo(repo.owner, repo.name);
-    } catch (error) {
-      this.isChangingRepo.next(false);
-      throw error;
-    }
+    this.isChangingRepo.next(true);
+    await this.verifyOwnerAndRepo(repo.owner, repo.name);
     this.changeCurrentRepository(repo);
     this.isChangingRepo.next(false);
   }
