@@ -106,6 +106,7 @@
           <mat-option *ngFor="let assignee of this.assigneeService.assignees" [value]="assignee.login">
             {{ assignee.login }}
           </mat-option>
+          <mat-option [value]="'Unassigned'">Unassigned</mat-option>
         </mat-select>
       </mat-form-field>
     </div>

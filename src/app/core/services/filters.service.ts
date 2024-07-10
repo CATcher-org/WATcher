@@ -43,7 +43,7 @@ export class FiltersService {
     hiddenLabels: new Set<string>(),
     deselectedLabels: new Set<string>(),
     itemsPerPage: this.itemsPerPage,
-    assignees: []
+    assignees: [],
   };
 
   readonly presetViews: {
@@ -75,7 +75,7 @@ export class FiltersService {
   };
 
   // List of keys in the new filter change that causes current filter to not qualify to be a preset view.
-  readonly presetChangingKeys = new Set<string>(['status', 'type', 'sort', 'milestones', 'labels', 'deselectedLabels']);
+  readonly presetChangingKeys = new Set<string>(['status', 'type', 'sort', 'milestones', 'labels', 'deselectedLabels', 'assignees']);
 
   public filter$ = new BehaviorSubject<Filter>(this.defaultFilter);
   // Either 'currentlyActive', 'contributions', or 'custom'.
