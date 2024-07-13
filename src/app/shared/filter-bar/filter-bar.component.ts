@@ -8,6 +8,7 @@ import { MilestoneService } from '../../core/services/milestone.service';
 import { ViewService } from '../../core/services/view.service';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 /**
  * This component is abstracted out filterbar used by both detailed-viewer page
@@ -28,6 +29,15 @@ export class FilterBarComponent implements OnInit, OnDestroy {
 
   groupByEnum: typeof GroupBy = GroupBy;
 
+  /** True if screen is not large */
+  isSmallScreen: boolean = false;
+
+  gridCols: number = 7;
+  filterColSpan: number = 4;
+  searchColSpan: number = 2;
+
+  private breakpointSubscription: Subscription;
+
   /** Milestone subscription */
   milestoneSubscription: Subscription;
 
@@ -40,7 +50,8 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     public filtersService: FiltersService,
     private viewService: ViewService,
     public groupingContextService: GroupingContextService,
-    private logger: LoggingService
+    private logger: LoggingService,
+    private breakpointObserver: BreakpointObserver
   ) {
     this.repoChangeSubscription = this.viewService.repoChanged$.subscribe((newRepo) => this.newRepoInitialize());
   }
@@ -55,11 +66,19 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     });
 
     this.views$.subscribe(() => this.applyFilter());
+
+    this.breakpointSubscription = this.breakpointObserver
+      .observe([Breakpoints.Small, Breakpoints.XSmall, Breakpoints.Medium])
+      .subscribe((result) => {
+        this.isSmallScreen = result.matches;
+        this.updateSpan();
+      });
   }
 
   ngOnDestroy(): void {
     this.milestoneSubscription.unsubscribe();
     this.repoChangeSubscription.unsubscribe();
+    this.breakpointSubscription.unsubscribe();
   }
 
   /**
@@ -94,5 +113,17 @@ export class FilterBarComponent implements OnInit, OnDestroy {
       (err) => {},
       () => {}
     );
+  }
+
+  private updateSpan() {
+    if (this.isSmallScreen) {
+      this.gridCols = 3;
+      this.filterColSpan = 1;
+      this.searchColSpan = 1;
+    } else {
+      this.gridCols = 7;
+      this.filterColSpan = 4;
+      this.searchColSpan = 2;
+    }
   }
 }

@@ -3,6 +3,8 @@
   font-size: 14px;
   max-width: 20%;
   width: 14%; /* depends on number of filters*/
+  flex-shrink: 0;
+  min-width: 110px;
 }
 
 .search-bar {
@@ -11,12 +13,29 @@
 
 .dropdown-filters {
   width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
 }
 
 .label-filter-grid-tile {
   width: 100%;
+  justify-content: flex-end;
 }
 
 .submit-button {
   margin-left: 8px;
+}
+
+.dropdown-filters-container {
+  margin-right: 8px;
+  overflow-x: auto;
+  display: flex;
+  justify-content: center;
+  scrollbar-width: 2px;
+}
+
+@media (max-width: 960px) {
+  .dropdown-filters-container {
+    justify-content: flex-start;
+  }
 }
