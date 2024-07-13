@@ -65,7 +65,7 @@ export class ErrorMessageService {
   }
 
   public static unableToOpenMilestoneInBrowserMessage() {
-    return 'Unable to open this milestone in Browser';
+    return 'Milestone is not assigned';
   }
 
   public static applicationVersionOutdatedMessage() {
