@@ -29,8 +29,11 @@ export class FilterBarComponent implements OnInit, OnDestroy {
 
   groupByEnum: typeof GroupBy = GroupBy;
 
-  /** True if screen is not large */
+  /** True if screen is small or xsmall */
   isSmallScreen: boolean = false;
+
+  /** True if screen is medium */
+  isMediumScreen: boolean = true;
 
   gridCols: number = 7;
   filterColSpan: number = 4;
@@ -67,12 +70,17 @@ export class FilterBarComponent implements OnInit, OnDestroy {
 
     this.views$.subscribe(() => this.applyFilter());
 
-    this.breakpointSubscription = this.breakpointObserver
-      .observe([Breakpoints.Small, Breakpoints.XSmall, Breakpoints.Medium])
-      .subscribe((result) => {
-        this.isSmallScreen = result.matches;
-        this.updateSpan();
-      });
+    this.breakpointSubscription = this.breakpointObserver.observe([Breakpoints.Small, Breakpoints.XSmall]).subscribe((result) => {
+      this.isSmallScreen = result.matches;
+      console.log(result);
+      this.updateSpan();
+    });
+
+    this.breakpointSubscription = this.breakpointObserver.observe([Breakpoints.Medium]).subscribe((result) => {
+      this.isMediumScreen = result.matches;
+      console.log(result);
+      this.updateSpan();
+    });
   }
 
   ngOnDestroy(): void {
@@ -120,6 +128,10 @@ export class FilterBarComponent implements OnInit, OnDestroy {
       this.gridCols = 3;
       this.filterColSpan = 1;
       this.searchColSpan = 1;
+    } else if (this.isMediumScreen) {
+      this.gridCols = 5;
+      this.filterColSpan = 2;
+      this.searchColSpan = 2;
     } else {
       this.gridCols = 7;
       this.filterColSpan = 4;

@@ -19,7 +19,7 @@
 
 .label-filter-grid-tile {
   width: 100%;
-  justify-content: flex-end;
+  justify-content: end;
 }
 
 .submit-button {
@@ -31,7 +31,7 @@
   overflow-x: auto;
   display: flex;
   justify-content: center;
-  scrollbar-width: 2px;
+  scrollbar-width: 5px;
 }
 
 @media (max-width: 960px) {
