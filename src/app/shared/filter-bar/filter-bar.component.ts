@@ -73,13 +73,11 @@ export class FilterBarComponent implements OnInit, OnDestroy {
 
     this.breakpointSubscription = this.breakpointObserver.observe([Breakpoints.Small, Breakpoints.XSmall]).subscribe((result) => {
       this.isSmallScreen = result.matches;
-      console.log(result);
       this.updateSpan();
     });
 
     this.breakpointSubscription = this.breakpointObserver.observe([Breakpoints.Medium]).subscribe((result) => {
       this.isMediumScreen = result.matches;
-      console.log(result);
       this.updateSpan();
     });
   }
