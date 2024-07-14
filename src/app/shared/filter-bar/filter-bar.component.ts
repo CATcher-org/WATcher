@@ -1,3 +1,4 @@
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChild } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -8,7 +9,6 @@ import { MilestoneService } from '../../core/services/milestone.service';
 import { ViewService } from '../../core/services/view.service';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 /**
  * This component is abstracted out filterbar used by both detailed-viewer page
@@ -30,14 +30,15 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   groupByEnum: typeof GroupBy = GroupBy;
 
   /** True if screen is small or xsmall */
-  isSmallScreen: boolean = false;
+  isSmallScreen = false;
 
   /** True if screen is medium */
-  isMediumScreen: boolean = true;
+  isMediumScreen = false;
 
-  gridCols: number = 7;
-  filterColSpan: number = 4;
-  searchColSpan: number = 2;
+  /** Initial styling of grid */
+  gridCols = 7;
+  filterColSpan = 4;
+  searchColSpan = 2;
 
   private breakpointSubscription: Subscription;
 
@@ -123,6 +124,9 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Update grid column span according to screen size.
+   */
   private updateSpan() {
     if (this.isSmallScreen) {
       this.gridCols = 3;
