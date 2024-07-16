@@ -114,18 +114,38 @@ export class ViewService {
   }
 
   /**
-   * Change repository if a valid repository is provided
-   * @param repo New repository
+   * Verifies if the organisation and repository are present on GitHub.
+   * @param org Organisation name
+   * @param repo Repository name
+   * @returns Promise that resolves to true if the organisation and repository are present.
+   * @throws Error if the organisation or repository are not present.
    */
-  async changeRepositoryIfValid(repo: Repo) {
-    this.isChangingRepo.next(true);
+  async verifyOwnerAndRepo(owner: string, repo: string): Promise<boolean> {
+    const isValidOwner =
+      (await this.githubService.isOrganisationPresent(owner).toPromise()) ||
+      (await this.githubService.isUsernamePresent(owner).toPromise());
+    if (!isValidOwner) {
+      this.isChangingRepo.next(false);
+      throw new Error(ErrorMessageService.repoOwnerNotPresentMessage());
+    }
 
-    const isValidRepository = await this.githubService.isRepositoryPresent(repo.owner, repo.name).toPromise();
+    const isValidRepository = await this.githubService.isRepositoryPresent(owner, repo).toPromise();
     if (!isValidRepository) {
       this.isChangingRepo.next(false);
       throw new Error(ErrorMessageService.repositoryNotPresentMessage());
     }
 
+    return true;
+  }
+
+  /**
+   * Change repository if a valid repository is provided
+   * @param repo New repository
+   * @throws Error if the repository is not valid
+   */
+  async changeRepositoryIfValid(repo: Repo) {
+    this.isChangingRepo.next(true);
+    await this.verifyOwnerAndRepo(repo.owner, repo.name);
     this.changeCurrentRepository(repo);
     this.isChangingRepo.next(false);
   }
@@ -150,10 +170,7 @@ export class ViewService {
     } else {
       repo = new Repo(org, repoName);
     }
-    const isValidRepository = await this.githubService.isRepositoryPresent(repo.owner, repo.name).toPromise();
-    if (!isValidRepository) {
-      throw new Error(ErrorMessageService.repositoryNotPresentMessage());
-    }
+    await this.verifyOwnerAndRepo(repo.owner, repo.name);
     this.logger.info(`ViewService: Repo is ${repo}`);
     this.setRepository(repo);
     this.repoSetSource.next(true);
