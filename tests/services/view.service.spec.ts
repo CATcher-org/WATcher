@@ -19,7 +19,12 @@ let activatedRouteSpy: jasmine.SpyObj<ActivatedRoute>;
 
 describe('ViewService', () => {
   beforeEach(() => {
-    githubServiceSpy = jasmine.createSpyObj('GithubService', ['isRepositoryPresent', 'storeViewDetails']);
+    githubServiceSpy = jasmine.createSpyObj('GithubService', [
+      'isUsernamePresent',
+      'isOrganisationPresent',
+      'isRepositoryPresent',
+      'storeViewDetails'
+    ]);
     activatedRouteSpy = jasmine.createSpyObj('ActivatedRoute', ['snapshot']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     repoUrlCacheServiceSpy = jasmine.createSpyObj('RepoUrlCacheService', ['cache']);
@@ -61,6 +66,7 @@ describe('ViewService', () => {
 
   describe('changeRepositoryIfValid(Repo)', () => {
     it('should set isChangingRepo to true at the start and false at the end', async () => {
+      githubServiceSpy.isOrganisationPresent.and.returnValue(of(true));
       githubServiceSpy.isRepositoryPresent.and.returnValue(of(true));
 
       const isChangingRepoNextSpy = spyOn(viewService.isChangingRepo, 'next');
@@ -74,14 +80,17 @@ describe('ViewService', () => {
     });
 
     it('should throw error if repository is not valid', async () => {
+      githubServiceSpy.isOrganisationPresent.and.returnValue(of(false));
+      githubServiceSpy.isUsernamePresent.and.returnValue(of(false));
       githubServiceSpy.isRepositoryPresent.and.returnValue(of(false));
 
       await expectAsync(viewService.changeRepositoryIfValid(WATCHER_REPO)).toBeRejectedWithError(
-        ErrorMessageService.repositoryNotPresentMessage()
+        ErrorMessageService.repoOwnerNotPresentMessage()
       );
     });
 
     it('should set and navigate to new repo if repo is valid', async () => {
+      githubServiceSpy.isOrganisationPresent.and.returnValue(of(true));
       githubServiceSpy.isRepositoryPresent.and.returnValue(of(true));
 
       const repoChanged$Spy = spyOn(viewService.repoChanged$, 'next');
@@ -110,6 +119,7 @@ describe('ViewService', () => {
     });
 
     it('should set and navigate to new repo if repo is valid', async () => {
+      githubServiceSpy.isOrganisationPresent.and.returnValue(of(true));
       githubServiceSpy.isRepositoryPresent.and.returnValue(of(true));
 
       const repoSetSourceNext = spyOn(viewService.repoSetSource, 'next');
@@ -126,6 +136,7 @@ describe('ViewService', () => {
     });
 
     it('should throw error if repository is invalid', async () => {
+      githubServiceSpy.isOrganisationPresent.and.returnValue(of(true));
       githubServiceSpy.isRepositoryPresent.and.returnValue(of(false));
 
       await expectAsync(viewService.initializeCurrentRepository()).toBeRejectedWithError(ErrorMessageService.repositoryNotPresentMessage());
