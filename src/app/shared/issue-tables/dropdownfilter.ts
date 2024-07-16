@@ -46,7 +46,7 @@ export function applyDropdownFilter(
     }
 
     ret = ret && (!isFilteringByMilestone || filter.milestones.some((milestone) => issue.milestone.title === milestone));
-    ret = ret && (!isFilteringByAssignee || this.assigneeService.isFilteredByAssignee(filter, issue));
+    ret = ret && (!isFilteringByAssignee || assigneeService.isFilteredByAssignee(filter, issue));
     ret = ret && issue.labels.every((label) => !filter.deselectedLabels.has(label));
     return ret && filter.labels.every((label) => issue.labels.includes(label));
   });
