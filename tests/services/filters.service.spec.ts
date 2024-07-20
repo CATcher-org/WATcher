@@ -1,4 +1,5 @@
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
+import { AssigneeService } from '../../src/app/core/services/assignee.service';
 import { FiltersService } from '../../src/app/core/services/filters.service';
 import { LoggingService } from '../../src/app/core/services/logging.service';
 import { MilestoneService } from '../../src/app/core/services/milestone.service';
@@ -9,6 +10,7 @@ let loggingServiceSpy: jasmine.SpyObj<LoggingService>;
 let routerSpy: jasmine.SpyObj<Router>;
 let activatedRouteSpy: jasmine.SpyObj<ActivatedRoute>;
 let milestoneServiceSpy: jasmine.SpyObj<MilestoneService>;
+let assigneeServiceSpy: jasmine.SpyObj<AssigneeService>;
 
 describe('FiltersService', () => {
   beforeEach(() => {
@@ -22,7 +24,10 @@ describe('FiltersService', () => {
     milestoneServiceSpy = jasmine.createSpyObj('MilestoneService', ['milestones', 'getEarliestOpenMilestone', 'getLatestClosedMilestone'], {
       milestones: []
     });
-    filtersService = new FiltersService(loggingServiceSpy, routerSpy, activatedRouteSpy, milestoneServiceSpy);
+    assigneeServiceSpy = jasmine.createSpyObj('AssigneeService', ['assignees', 'hasNoAssignees'], {
+      assignees: []
+    });
+    filtersService = new FiltersService(loggingServiceSpy, routerSpy, activatedRouteSpy, milestoneServiceSpy, assigneeServiceSpy);
     filtersService.initializeFromURLParams();
   });
 

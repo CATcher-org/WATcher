@@ -18,7 +18,8 @@ export interface RawGithubUser {
 }
 
 /**
- * Represents a GitHub user in WATcher
+ * Represents a GitHub user in WATcher, used for authentication
+ * of user as well as representing assignees for issues/PRs.
  */
 export class GithubUser implements RawGithubUser, Group {
   static NO_ASSIGNEE: GithubUser = new GithubUser({
