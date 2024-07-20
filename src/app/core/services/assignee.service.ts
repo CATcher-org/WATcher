@@ -21,26 +21,11 @@ export class AssigneeService {
   public fetchAssignees(): Observable<any> {
     return this.githubService.getUsersAssignable().pipe(
       map((response) => {
-        this.assignees = this.parseAssigneeData(response);
+        this.assignees = response;
         this.hasNoAssignees = response.length === 0;
         return response;
       })
     );
-  }
-
-  /**
-   * Parses assignee information and returns an array of GithubUser objects.
-   * @param assignees - Assignee Information from API.
-   */
-  parseAssigneeData(assignees: Array<any>): GithubUser[] {
-    const assigneeData: GithubUser[] = [];
-
-    for (const assignee of assignees) {
-      assigneeData.push(new GithubUser(assignee));
-    }
-    assigneeData.sort((a: GithubUser, b: GithubUser) => a.login.localeCompare(b.login));
-
-    return assigneeData;
   }
 
   public isFilteredByAssignee(filter: Filter, issue: Issue): boolean {
