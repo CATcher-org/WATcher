@@ -2,13 +2,10 @@ import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren } 
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { Group } from '../core/models/github/group.interface';
-import { Repo } from '../core/models/repo.model';
-import { ErrorMessageService } from '../core/services/error-message.service';
 import { FiltersService } from '../core/services/filters.service';
 import { GithubService } from '../core/services/github.service';
+import { GroupService } from '../core/services/grouping/group.service';
 import { GroupingContextService } from '../core/services/grouping/grouping-context.service';
-import { GroupService } from '../core/services/grouping/groups.service';
 import { IssueService } from '../core/services/issue.service';
 import { LabelService } from '../core/services/label.service';
 import { MilestoneService } from '../core/services/milestone.service';
