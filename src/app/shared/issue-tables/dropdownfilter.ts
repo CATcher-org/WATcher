@@ -24,7 +24,6 @@ const infoFromStatus = (statusString: string): StatusInfo => {
 export function applyDropdownFilter(
   filter: Filter,
   data: Issue[],
-  assigneeService: AssigneeService,
   isFilteringByMilestone: boolean,
   isFilteringByAssignee: boolean
 ): Issue[] {
@@ -46,9 +45,26 @@ export function applyDropdownFilter(
     }
 
     ret = ret && (!isFilteringByMilestone || filter.milestones.some((milestone) => issue.milestone.title === milestone));
-    ret = ret && (!isFilteringByAssignee || assigneeService.isFilteredByAssignee(filter, issue));
+    ret = ret && (!isFilteringByAssignee || isFilteredByAssignee(filter, issue));
     ret = ret && issue.labels.every((label) => !filter.deselectedLabels.has(label));
     return ret && filter.labels.every((label) => issue.labels.includes(label));
   });
   return filteredData;
+}
+
+function isFilteredByAssignee(filter: Filter, issue: Issue): boolean {
+  if (issue.issueOrPr === 'Issue') {
+    return (
+      filter.assignees.some((assignee) => issue.assignees.includes(assignee)) ||
+      (filter.assignees.includes('Unassigned') && issue.assignees.length === 0)
+    );
+  } else if (issue.issueOrPr === 'PullRequest') {
+    return (
+      filter.assignees.some((assignee) => issue.author === assignee) || (filter.assignees.includes('Unassigned') && issue.author === null)
+    );
+    // note that issue.author is never == null for PRs, but is left for semantic reasons
+  } else {
+    // should never occur
+    throw new Error('Issue or PR is neither Issue nor PullRequest');
+  }
 }

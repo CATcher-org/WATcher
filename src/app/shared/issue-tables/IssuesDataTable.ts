@@ -71,13 +71,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
           data = this.groupingContextService.getDataForGroup(data, this.group);
 
           // Apply Filters
-          data = applyDropdownFilter(
-            this.filter,
-            data,
-            this.assigneeService,
-            !this.milestoneService.hasNoMilestones,
-            !this.assigneeService.hasNoAssignees
-          );
+          data = applyDropdownFilter(this.filter, data, !this.milestoneService.hasNoMilestones, !this.assigneeService.hasNoAssignees);
 
           data = applySearchFilter(this.filter.title, this.displayedColumn, this.issueService, data);
           this.count = data.length;
