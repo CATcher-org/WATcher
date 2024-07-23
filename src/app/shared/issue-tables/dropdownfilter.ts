@@ -1,5 +1,4 @@
 import { Issue } from '../../core/models/issue.model';
-import { AssigneeService } from '../../core/services/assignee.service';
 import { Filter } from '../../core/services/filters.service';
 
 type StatusInfo = {

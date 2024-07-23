@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GithubUser } from '../models/github-user.model';
-import { Issue } from '../models/issue.model';
-import { Filter } from './filters.service';
 import { GithubService } from './github.service';
 
 @Injectable({
