@@ -98,10 +98,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.availableGroupsSubscription) {
       this.availableGroupsSubscription.unsubscribe();
     }
-
-    this.groupService.groups = [];
-    this.groupService.hiddenGroups = [];
-
+    this.groupService.resetGroups();
     this.availableGroupsSubscription = this.groupingContextService.getGroups().subscribe((x) => (this.groupService.groups = x));
   }
 }

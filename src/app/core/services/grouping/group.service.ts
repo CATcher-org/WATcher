@@ -15,6 +15,14 @@ export class GroupService {
   constructor(public groupingContextService: GroupingContextService) {}
 
   /**
+   * Resets both arrays tracking current groups and hidden groups.
+   */
+  resetGroups() {
+    this.groups = [];
+    this.hiddenGroups = [];
+  }
+
+  /**
    * Update the list of hidden group based on the new info.
    * @param issueLength The number of issues under this group.
    * @param target The group.
