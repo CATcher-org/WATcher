@@ -1,4 +1,3 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChild } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -29,18 +28,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
 
   groupByEnum: typeof GroupBy = GroupBy;
 
-  /** True if screen is small or xsmall */
-  isSmallScreen = false;
-
-  /** True if screen is medium */
-  isMediumScreen = false;
-
-  /** Initial styling of grid */
-  gridCols = 7;
-  filterColSpan = 4;
-  searchColSpan = 2;
-
-  private breakpointSubscription: Subscription;
+  isMenuOpen = false;
 
   /** Milestone subscription */
   milestoneSubscription: Subscription;
@@ -54,8 +42,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     public filtersService: FiltersService,
     private viewService: ViewService,
     public groupingContextService: GroupingContextService,
-    private logger: LoggingService,
-    private breakpointObserver: BreakpointObserver
+    private logger: LoggingService
   ) {
     this.repoChangeSubscription = this.viewService.repoChanged$.subscribe((newRepo) => this.newRepoInitialize());
   }
@@ -70,22 +57,11 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     });
 
     this.views$.subscribe(() => this.applyFilter());
-
-    this.breakpointSubscription = this.breakpointObserver.observe([Breakpoints.Small, Breakpoints.XSmall]).subscribe((result) => {
-      this.isSmallScreen = result.matches;
-      this.updateSpan();
-    });
-
-    this.breakpointSubscription = this.breakpointObserver.observe([Breakpoints.Medium]).subscribe((result) => {
-      this.isMediumScreen = result.matches;
-      this.updateSpan();
-    });
   }
 
   ngOnDestroy(): void {
     this.milestoneSubscription.unsubscribe();
     this.repoChangeSubscription.unsubscribe();
-    this.breakpointSubscription.unsubscribe();
   }
 
   /**
@@ -122,22 +98,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     );
   }
 
-  /**
-   * Update grid column span according to screen size.
-   */
-  private updateSpan() {
-    if (this.isSmallScreen) {
-      this.gridCols = 3;
-      this.filterColSpan = 1;
-      this.searchColSpan = 1;
-    } else if (this.isMediumScreen) {
-      this.gridCols = 5;
-      this.filterColSpan = 2;
-      this.searchColSpan = 2;
-    } else {
-      this.gridCols = 7;
-      this.filterColSpan = 4;
-      this.searchColSpan = 2;
-    }
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
   }
 }
