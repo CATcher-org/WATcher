@@ -2,11 +2,9 @@ import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren } 
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { Group } from '../core/models/github/group.interface';
-import { Repo } from '../core/models/repo.model';
-import { ErrorMessageService } from '../core/services/error-message.service';
 import { FiltersService } from '../core/services/filters.service';
 import { GithubService } from '../core/services/github.service';
+import { GroupService } from '../core/services/grouping/group.service';
 import { GroupingContextService } from '../core/services/grouping/grouping-context.service';
 import { IssueService } from '../core/services/issue.service';
 import { LabelService } from '../core/services/label.service';
@@ -37,12 +35,6 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   popStateNavigationId: number;
 
-  /** Users to show as columns */
-  groups: Group[] = [];
-
-  /** The list of users with 0 issues (hidden) */
-  hiddenGroups: Group[] = [];
-
   @ViewChildren(CardViewComponent) cardViews: QueryList<CardViewComponent>;
 
   views = new BehaviorSubject<QueryList<CardViewComponent>>(undefined);
@@ -53,6 +45,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     public issueService: IssueService,
     public labelService: LabelService,
     public milestoneService: MilestoneService,
+    public groupService: GroupService,
     public groupingContextService: GroupingContextService,
     private router: Router,
     private filtersService: FiltersService
@@ -105,54 +98,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.availableGroupsSubscription) {
       this.availableGroupsSubscription.unsubscribe();
     }
-
-    // Fetch assignees
-    this.groups = [];
-    this.hiddenGroups = [];
-
-    this.availableGroupsSubscription = this.groupingContextService.getGroups().subscribe((x) => (this.groups = x));
-  }
-
-  /**
-   * Checks if our current repository available on view service is indeed a valid repository
-   */
-  private checkIfValidRepository() {
-    const currentRepo = this.viewService.currentRepo;
-
-    if (Repo.isInvalidRepoName(currentRepo)) {
-      return of(false);
-    }
-
-    return (
-      (this.githubService.isOrganisationPresent(currentRepo.owner) || this.githubService.isUsernamePresent(currentRepo.owner)) &&
-      this.githubService.isRepositoryPresent(currentRepo.owner, currentRepo.name)
-    );
-  }
-
-  /**
-   * Update the list of hidden group based on the new info.
-   * @param issueLength The number of issues under this group.
-   * @param target The group.
-   */
-  updateHiddenGroups(issueLength: number, target: Group) {
-    // If the group is in the hidden list, add it if it has no issues.
-    // Also add it if it is unchecked in the filter.
-    if (issueLength === 0 && this.groupingContextService.isInHiddenList(target)) {
-      this.addToHiddenGroups(target);
-    } else {
-      this.removeFromHiddenGroups(target);
-    }
-  }
-
-  private addToHiddenGroups(target: Group) {
-    const isGroupPresent = this.hiddenGroups.some((group) => group.equals(target));
-
-    if (!isGroupPresent) {
-      this.hiddenGroups.push(target);
-    }
-  }
-
-  private removeFromHiddenGroups(target: Group) {
-    this.hiddenGroups = this.hiddenGroups.filter((group) => !group.equals(target));
+    this.groupService.resetGroups();
+    this.availableGroupsSubscription = this.groupingContextService.getGroups().subscribe((x) => (this.groupService.groups = x));
   }
 }
