@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChild } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { AssigneeService } from '../../core/services/assignee.service';
 import { Filter, FiltersService } from '../../core/services/filters.service';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { LoggingService } from '../../core/services/logging.service';
@@ -32,12 +33,14 @@ export class FilterBarComponent implements OnInit, OnDestroy {
 
   /** Milestone subscription */
   milestoneSubscription: Subscription;
+  assigneeSubscription: Subscription;
 
   @ViewChild(LabelFilterBarComponent, { static: true }) labelFilterBar: LabelFilterBarComponent;
 
   @ViewChild('milestoneSelectorRef', { static: false }) milestoneSelectorRef: MatSelect;
 
   constructor(
+    public assigneeService: AssigneeService,
     public milestoneService: MilestoneService,
     public filtersService: FiltersService,
     private viewService: ViewService,
@@ -61,6 +64,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.milestoneSubscription.unsubscribe();
+    this.assigneeSubscription.unsubscribe();
     this.repoChangeSubscription.unsubscribe();
   }
 
@@ -92,6 +96,14 @@ export class FilterBarComponent implements OnInit, OnDestroy {
       (response) => {
         this.logger.debug('IssuesViewerComponent: Fetched milestones from Github');
         this.filtersService.sanitizeMilestones(this.milestoneService.milestones);
+      },
+      (err) => {},
+      () => {}
+    );
+    this.assigneeSubscription = this.assigneeService.fetchAssignees().subscribe(
+      (response) => {
+        this.logger.debug('IssuesViewerComponent: Fetched assignees from Github');
+        this.filtersService.sanitizeAssignees(this.assigneeService.assignees);
       },
       (err) => {},
       () => {}

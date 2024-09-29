@@ -14,9 +14,11 @@ import { MatPaginator } from '@angular/material/paginator';
 import { Observable, Subscription } from 'rxjs';
 import { Group } from '../../core/models/github/group.interface';
 import { Issue } from '../../core/models/issue.model';
+import { AssigneeService } from '../../core/services/assignee.service';
 import { FiltersService } from '../../core/services/filters.service';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { IssueService } from '../../core/services/issue.service';
+import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
 import { FilterableComponent, FilterableSource } from '../../shared/issue-tables/filterableTypes';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
@@ -60,7 +62,9 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
     public issueService: IssueService,
     public groupingContextService: GroupingContextService,
     private filtersService: FiltersService,
-    private milestoneService: MilestoneService
+    private milestoneService: MilestoneService,
+    private assigneeService: AssigneeService,
+    private logger: LoggingService
   ) {}
 
   ngOnInit() {
@@ -68,6 +72,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
       this.issueService,
       this.groupingContextService,
       this.filtersService,
+      this.assigneeService,
       this.milestoneService,
       this.paginator,
       this.headers,
@@ -84,6 +89,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
     this.timeoutId = setTimeout(() => {
       this.issues.loadIssues();
       this.issues$ = this.issues.connect();
+      this.logger.debug('CardViewComponent: Issues loaded', this.issues$);
 
       // Emit event when issues change
       this.issuesLengthSubscription = this.issues$.subscribe(() => {

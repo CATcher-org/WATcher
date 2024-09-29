@@ -17,14 +17,13 @@ export class AssigneeGroupingStrategy implements GroupingStrategy {
 
   /**
    * Retrieves data for a specific assignee.
-   * If it is the"No Assignee" group, unassigned issues are returned.
+   * If it is the "No Assignee" group, unassigned issues are returned.
    * Otherwise, issues assigned to the specified user are returned.
    */
   getDataForGroup(issues: Issue[], key: GithubUser): Issue[] {
     if (key === GithubUser.NO_ASSIGNEE) {
       return this.getUnassignedData(issues);
     }
-
     return this.getDataAssignedToUser(issues, key);
   }
 
