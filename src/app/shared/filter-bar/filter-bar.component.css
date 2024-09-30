@@ -16,11 +16,6 @@ ul {
   max-height: 80px;
 }
 
-.search-bar {
-  width: 100%;
-  flex-grow: 1;
-}
-
 .menu {
   padding: 0 10px;
   border-left: 1px solid #eee;
@@ -38,7 +33,6 @@ ul {
   display: flex;
   align-items: center;
   flex: 1;
-  flex-grow: 3;
   margin-right: 100px;
 
   @media (max-width: 1400px) {
@@ -57,9 +51,5 @@ ul {
         margin: 8px;
       }
     }
-  }
-
-  .filter-item {
-    display: block;
   }
 }
