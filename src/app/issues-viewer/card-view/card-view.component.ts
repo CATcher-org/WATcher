@@ -64,7 +64,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
     private filtersService: FiltersService,
     private milestoneService: MilestoneService,
     private assigneeService: AssigneeService,
-    private logger: LoggingService,
+    private logger: LoggingService
   ) {}
 
   ngOnInit() {
@@ -82,6 +82,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
 
     this.filterSubscription = this.filtersService.filter$.subscribe((filter: any) => {
       this.pageSize = filter.itemsPerPage;
+      this.paginator._changePageSize(this.pageSize);
     });
   }
 
