@@ -29,6 +29,8 @@ export class FilterBarComponent implements OnInit, OnDestroy {
 
   groupByEnum: typeof GroupBy = GroupBy;
 
+  isMenuOpen = false;
+
   /** Milestone subscription */
   milestoneSubscription: Subscription;
   assigneeSubscription: Subscription;
@@ -106,5 +108,9 @@ export class FilterBarComponent implements OnInit, OnDestroy {
       (err) => {},
       () => {}
     );
+  }
+
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
   }
 }

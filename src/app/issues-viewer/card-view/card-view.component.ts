@@ -64,7 +64,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
     private filtersService: FiltersService,
     private milestoneService: MilestoneService,
     private assigneeService: AssigneeService,
-    private logger: LoggingService,
+    private logger: LoggingService
   ) {}
 
   ngOnInit() {

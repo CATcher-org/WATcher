@@ -43,7 +43,7 @@ export class FiltersService {
     hiddenLabels: new Set<string>(),
     deselectedLabels: new Set<string>(),
     itemsPerPage: this.itemsPerPage,
-    assignees: [],
+    assignees: []
   };
 
   readonly presetViews: {

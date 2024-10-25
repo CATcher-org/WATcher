@@ -1,22 +1,55 @@
-.dropdown-filters .mat-form-field {
+.filters .mat-form-field {
   margin: 8px;
   font-size: 14px;
   max-width: 20%;
   width: 14%; /* depends on number of filters*/
 }
 
-.search-bar {
-  width: 80%;
+ul {
+  margin: 8px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style-type: none;
+  position: relative;
+  max-height: 80px;
 }
 
-.dropdown-filters {
-  width: 100%;
+.menu {
+  padding: 0 10px;
+  border-left: 1px solid #eee;
+  display: none;
+  cursor: pointer;
+
+  @media (max-width: 1400px) {
+    display: block;
+    justify-items: right;
+  }
 }
 
-.label-filter-grid-tile {
-  width: 100%;
-}
+.filters {
+  width: 57%;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  margin-right: 100px;
 
-.submit-button {
-  margin-left: 8px;
+  @media (max-width: 1400px) {
+    display: none;
+
+    &.is-open {
+      display: block;
+      position: absolute;
+      width: 100%;
+      top: 100%;
+      z-index: 10;
+      background-color: #ffffff;
+
+      .filter-item {
+        display: inline-block;
+        margin: 8px;
+      }
+    }
+  }
 }
