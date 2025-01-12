@@ -30,7 +30,7 @@ export class GroupService {
   updateHiddenGroups(issueLength: number, target: Group) {
     // If the group is in the hidden list, add it if it has no issues.
     // Also add it if it is unchecked in the filter.
-    if (issueLength === 0 && this.groupingContextService.isInHiddenList(target)) {
+    if (this.groupingContextService.isInHiddenList(target)) {
       this.addToHiddenGroups(target);
     } else {
       this.removeFromHiddenGroups(target);

@@ -359,4 +359,8 @@ export class FiltersService {
     // TODO Filter out assignees that have not contributed in currently active milestones
     return [...this.assigneeService.assignees, GithubUser.NO_ASSIGNEE];
   }
+
+  getAssignees(): GithubUser[] {
+    return this.assigneeService.assignees.filter((assignee) => this.filter$.value.assignees.includes(assignee.login));
+  }
 }

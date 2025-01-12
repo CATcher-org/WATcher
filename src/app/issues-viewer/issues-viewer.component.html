@@ -11,7 +11,9 @@
         *ngFor="let group of this.groupService.groups"
         class="issue-table"
         #card
-        [ngStyle]="{ display: card.isLoading || card.issueLength > 0 ? 'initial' : 'none' }"
+        [ngStyle]="{
+          display: card.isLoading || (card.issueLength > 0 && !groupService.hiddenGroups.includes(card.group)) ? 'initial' : 'none'
+        }"
         [group]="group"
         [headers]="this.displayedColumns"
         (issueLengthChange)="this.groupService.updateHiddenGroups($event, group)"
