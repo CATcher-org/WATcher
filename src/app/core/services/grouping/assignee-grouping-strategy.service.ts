@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GithubUser } from '../../models/github-user.model';
 import { Issue } from '../../models/issue.model';
+import { FiltersService } from '../filters.service';
 import { GithubService } from '../github.service';
 import { GroupingStrategy } from './grouping-strategy.interface';
 
@@ -13,7 +14,7 @@ import { GroupingStrategy } from './grouping-strategy.interface';
   providedIn: 'root'
 })
 export class AssigneeGroupingStrategy implements GroupingStrategy {
-  constructor(private githubService: GithubService) {}
+  constructor(private githubService: GithubService, private filtersService: FiltersService) {}
 
   /**
    * Retrieves data for a specific assignee.
@@ -45,7 +46,13 @@ export class AssigneeGroupingStrategy implements GroupingStrategy {
    * hidden group list if empty.
    */
   isInHiddenList(group: GithubUser): boolean {
-    return group !== GithubUser.NO_ASSIGNEE;
+    return (
+      group !== GithubUser.NO_ASSIGNEE && // group is not "No Assignee"
+      !this.filtersService
+        .getAssignees()
+        .map((assignee) => assignee.login)
+        .includes(group.login)
+    ); // group is not selected
   }
 
   private getDataAssignedToUser(issues: Issue[], user: GithubUser): Issue[] {
