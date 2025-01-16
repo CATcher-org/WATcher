@@ -88,6 +88,24 @@
         <mat-option [value]="50">50</mat-option>
       </mat-select>
     </mat-form-field>
+    <mat-form-field appearance="standard">
+      <mat-label>Assigned to</mat-label>
+      <mat-select
+        #assigneeSelectorRef
+        [value]="this.filter.assignees"
+        (selectionChange)="this.filtersService.updateFilters({ assignees: $event.value })"
+        [disabled]="this.assigneeService.hasNoAssignees"
+        multiple
+      >
+        <mat-select-trigger *ngIf="this.assigneeService.hasNoAssignees">
+          <span>No Assignees</span>
+        </mat-select-trigger>
+        <mat-option *ngFor="let assignee of this.assigneeService.assignees" [value]="assignee.login">
+          {{ assignee.login }}
+        </mat-option>
+        <mat-option [value]="'Unassigned'">Unassigned</mat-option>
+      </mat-select>
+    </mat-form-field>
     <app-label-filter-bar></app-label-filter-bar>
   </li>
   <li class="menu" (click)="toggleMenu()">
