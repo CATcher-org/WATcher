@@ -1,19 +1,146 @@
 <mat-toolbar color="primary" style="position: sticky; position: -webkit-sticky; top: 0; z-index: 1000">
-  <button
-    *ngIf="isBackButtonShown()"
-    mat-icon-button
-    class="mat-toolbar mat-primary back-button"
-    style="transform: scale(0.9)"
-    (click)="goBack()"
-  >
-    <mat-icon>arrow_back_ios</mat-icon>
-  </button>
-  <a class="mat-toolbar mat-primary" style="text-decoration: none" [routerLink]="viewService.isRepoSet() ? viewService.currentView : null"
-    >WATcher v{{ this.getVersion() }}</a
-  >
-  <span id="view-descriptor" *ngIf="viewService.isRepoSet()" style="margin-left: 70px">
-    {{ this.presetViews[this.filtersService.presetView$.value] }}
-  </span>
+  <div class="toolbar-wrapper">
+    <div class="left">
+      <button
+        *ngIf="isBackButtonShown()"
+        mat-icon-button
+        class="mat-toolbar mat-primary back-button"
+        style="transform: scale(0.9)"
+        (click)="goBack()"
+      >
+        <mat-icon>arrow_back_ios</mat-icon>
+      </button>
+      <a
+        class="mat-toolbar mat-primary"
+        style="text-decoration: none"
+        [routerLink]="viewService.isRepoSet() ? viewService.currentView : null"
+        >WATcher v{{ this.getVersion() }}</a
+      >
+      <div *ngIf="viewService.isRepoSet()" style="margin-left: 20px">
+        <button mat-button [matMenuTriggerFor]="menu">
+          <span class="header-main-text">
+            {{ this.presetViews[this.filtersService.presetView$.value] }}
+          </span>
+          <mat-icon style="color: white">expand_more</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <div *ngFor="let presetView of this.presetViews | keyvalue">
+            <button mat-menu-item *ngIf="presetView.key !== 'custom'" (click)="this.filtersService.updatePresetView(presetView.key)">
+              <span>
+                <mat-icon
+                  [ngStyle]="{
+                    color: 'green',
+                    visibility: this.filtersService.presetView$.value === presetView.key ? 'visible' : 'hidden'
+                  }"
+                  >done</mat-icon
+                >
+                {{ presetView.value }}
+              </span>
+            </button>
+          </div>
+        </mat-menu>
+      </div>
+    </div>
+    <div class="center">
+      <div *ngIf="auth.isAuthenticated() && viewService.isRepoSet()">
+        <!-- <span id="view-descriptor" style="margin-left: 10px">
+                    {{ this.currentRepo || 'No Repository Set' }}
+                </span> -->
+        <button
+          mat-button
+          matTooltip="{{ viewService.isRepoSet() ? 'Change Repository' : 'Select Repository' }}"
+          [matMenuTriggerFor]="repoMenu"
+          style=""
+        >
+          <span id="view-descriptor" class="header-main-text">
+            {{ this.currentRepo || 'No Repository Set' }}
+          </span>
+          <mat-icon>edit</mat-icon>
+        </button>
+      </div>
+
+      <mat-menu #repoMenu xPosition="after" class="repo-menu">
+        <div class="repo-options">
+          <div *ngFor="let repo of this.repoUrlCacheService.suggestions">
+            <button mat-menu-item *ngIf="repo !== this.currentRepo" (click)="this.applyRepoDropdown(repo, true)">
+              {{ repo }}
+            </button>
+          </div>
+        </div>
+
+        <div class="repo-menu-footer">
+          <button
+            mat-flat-button
+            color="primary"
+            class="new-repo-button"
+            (click)="this.openChangeRepoDialog()"
+            matTooltip="Add new repository"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            (click)="toggleKeepFilters($event)"
+            class="keep-filter-button"
+            matTooltip="{{ keepFilters ? 'Keep filter on' : 'Keep filter off' }}"
+            color="{{ keepFilters ? 'primary' : 'warn' }}"
+          >
+            <mat-icon>{{ keepFilters ? 'filter_alt' : 'filter_alt_off' }}</mat-icon>
+          </button>
+        </div>
+      </mat-menu>
+    </div>
+
+    <div class="right">
+      <span style="flex: 1 1 auto"></span>
+
+      <button mat-button matTooltip="Download WATcher Log" (click)="this.exportLogFile()">
+        <mat-icon>receipt</mat-icon>
+      </button>
+      <button mat-button matTooltip="Give feedback about WATcher" (click)="openIssueTracker()">
+        <mat-icon>mail</mat-icon>
+      </button>
+
+      <button
+        *ngIf="auth.isAuthenticated() && viewService.isRepoSet() && isOpenUrlButtonShown()"
+        mat-button
+        matTooltip="View current page on GitHub"
+        (click)="viewBrowser()"
+      >
+        <mat-icon>open_in_new</mat-icon>
+      </button>
+
+      <div class="sync-spinner" *ngIf="auth.isAuthenticated() && (this.isLoading$ | async); else notLoading">
+        <mat-spinner class="white-spinner" [diameter]="20"></mat-spinner>
+      </div>
+
+      <ng-template #notLoading>
+        <button
+          *ngIf="auth.isAuthenticated() && viewService.isRepoSet() && isReloadButtonShown() && !this.isReloadButtonDisabled"
+          mat-button
+          matTooltip="Synchronize with Github data"
+          (click)="reload()"
+        >
+          Sync
+          <mat-icon>refresh</mat-icon>
+        </button>
+        <div class="sync-spinner" *ngIf="auth.isAuthenticated() && isReloadButtonShown() && this.isReloadButtonDisabled">
+          <span style="font-size: 14px; margin-right: 7px">Sync</span>
+          <mat-spinner class="white-spinner" [diameter]="20"></mat-spinner>
+        </div>
+      </ng-template>
+
+      <button *ngIf="auth.isAuthenticated()" mat-button matTooltip="Log out" (click)="openLogOutDialog(); $event.stopPropagation()">
+        ({{ userService.currentUser.loginId }})
+        <mat-icon style="margin-left: 2px">exit_to_app</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- <span id="view-descriptor" *ngIf="viewService.isRepoSet()" style="margin-left: 70px">
+        {{ this.presetViews[this.filtersService.presetView$.value] }}
+    </span> -->
 
   <!-- Gateway to activity dashboard, do not delete -->
   <!--div *ngIf="auth.isAuthenticated() && this.viewService.sessionData.sessionRepo.length > 1">
@@ -34,106 +161,7 @@
     </mat-menu>
   </div-->
 
-  <div *ngIf="viewService.isRepoSet()">
-    <button mat-button [matMenuTriggerFor]="menu"><mat-icon style="color: white">expand_more</mat-icon></button>
-    <mat-menu #menu="matMenu">
-      <div *ngFor="let presetView of this.presetViews | keyvalue">
-        <button mat-menu-item *ngIf="presetView.key !== 'custom'" (click)="this.filtersService.updatePresetView(presetView.key)">
-          <span>
-            <mat-icon
-              [ngStyle]="{ color: 'green', visibility: this.filtersService.presetView$.value === presetView.key ? 'visible' : 'hidden' }"
-              >done</mat-icon
-            >
-            {{ presetView.value }}
-          </span>
-        </button>
-      </div>
-    </mat-menu>
-  </div>
-
   <!-- everything else -->
 
-  <span style="flex: 1 1 auto"></span>
-
-  <div *ngIf="auth.isAuthenticated() && viewService.isRepoSet()">
-    <span id="view-descriptor" style="margin-left: 10px">
-      {{ this.currentRepo || 'No Repository Set' }}
-    </span>
-    <button
-      mat-icon-button
-      matTooltip="{{ viewService.isRepoSet() ? 'Change Repository' : 'Select Repository' }}"
-      [matMenuTriggerFor]="repoMenu"
-    >
-      <mat-icon>edit</mat-icon>
-    </button>
-  </div>
-
-  <mat-menu #repoMenu xPosition="before" class="repo-menu">
-    <div class="repo-options">
-      <div *ngFor="let repo of this.repoUrlCacheService.suggestions">
-        <button mat-menu-item *ngIf="repo !== this.currentRepo" (click)="this.applyRepoDropdown(repo, true)">
-          {{ repo }}
-        </button>
-      </div>
-    </div>
-
-    <div class="repo-menu-footer">
-      <button mat-flat-button color="primary" class="new-repo-button" (click)="this.openChangeRepoDialog()" matTooltip="Add new repository">
-        <mat-icon>add</mat-icon>
-      </button>
-
-      <button
-        mat-icon-button
-        (click)="toggleKeepFilters($event)"
-        class="keep-filter-button"
-        matTooltip="{{ keepFilters ? 'Keep filter on' : 'Keep filter off' }}"
-        color="{{ keepFilters ? 'primary' : 'warn' }}"
-      >
-        <mat-icon>{{ keepFilters ? 'filter_alt' : 'filter_alt_off' }}</mat-icon>
-      </button>
-    </div>
-  </mat-menu>
-
-  <span style="flex: 1 1 auto"></span>
-
-  <button mat-button matTooltip="Download WATcher Log" (click)="this.exportLogFile()">
-    <mat-icon>receipt</mat-icon>
-  </button>
-  <button mat-button matTooltip="Give feedback about WATcher" (click)="openIssueTracker()">
-    <mat-icon>mail</mat-icon>
-  </button>
-
-  <button
-    *ngIf="auth.isAuthenticated() && viewService.isRepoSet() && isOpenUrlButtonShown()"
-    mat-button
-    matTooltip="View current page on GitHub"
-    (click)="viewBrowser()"
-  >
-    <mat-icon>open_in_new</mat-icon>
-  </button>
-
-  <div class="sync-spinner" *ngIf="auth.isAuthenticated() && (this.isLoading$ | async); else notLoading">
-    <mat-spinner class="white-spinner" [diameter]="20"></mat-spinner>
-  </div>
-
-  <ng-template #notLoading>
-    <button
-      *ngIf="auth.isAuthenticated() && viewService.isRepoSet() && isReloadButtonShown() && !this.isReloadButtonDisabled"
-      mat-button
-      matTooltip="Synchronize with Github data"
-      (click)="reload()"
-    >
-      Sync
-      <mat-icon>refresh</mat-icon>
-    </button>
-    <div class="sync-spinner" *ngIf="auth.isAuthenticated() && isReloadButtonShown() && this.isReloadButtonDisabled">
-      <span style="font-size: 14px; margin-right: 7px">Sync</span>
-      <mat-spinner class="white-spinner" [diameter]="20"></mat-spinner>
-    </div>
-  </ng-template>
-
-  <button *ngIf="auth.isAuthenticated()" mat-button matTooltip="Log out" (click)="openLogOutDialog(); $event.stopPropagation()">
-    ({{ userService.currentUser.loginId }})
-    <mat-icon style="margin-left: 2px">exit_to_app</mat-icon>
-  </button>
+  <!-- <span style="flex: 1 1 auto"></span> -->
 </mat-toolbar>

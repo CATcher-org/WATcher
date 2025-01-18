@@ -30,3 +30,22 @@
   width: fit-content !important;
   min-width: 320px !important;
 }
+
+/* Font size of 20px for main elements in header */
+.header-main-text {
+  font-size: 20px;
+}
+
+.toolbar-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.left,
+.center,
+.right {
+  display: flex;
+  align-items: center;
+}
