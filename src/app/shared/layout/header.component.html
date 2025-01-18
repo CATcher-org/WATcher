@@ -43,14 +43,10 @@
     </div>
     <div class="center">
       <div *ngIf="auth.isAuthenticated() && viewService.isRepoSet()">
-        <!-- <span id="view-descriptor" style="margin-left: 10px">
-                    {{ this.currentRepo || 'No Repository Set' }}
-                </span> -->
         <button
           mat-button
           matTooltip="{{ viewService.isRepoSet() ? 'Change Repository' : 'Select Repository' }}"
           [matMenuTriggerFor]="repoMenu"
-          style=""
         >
           <span id="view-descriptor" class="header-main-text">
             {{ this.currentRepo || 'No Repository Set' }}
@@ -138,10 +134,6 @@
     </div>
   </div>
 
-  <!-- <span id="view-descriptor" *ngIf="viewService.isRepoSet()" style="margin-left: 70px">
-        {{ this.presetViews[this.filtersService.presetView$.value] }}
-    </span> -->
-
   <!-- Gateway to activity dashboard, do not delete -->
   <!--div *ngIf="auth.isAuthenticated() && this.viewService.sessionData.sessionRepo.length > 1">
     <button mat-button [matMenuTriggerFor]="menu"><mat-icon style="color: white">expand_more</mat-icon></button>
@@ -160,8 +152,4 @@
       </button>
     </mat-menu>
   </div-->
-
-  <!-- everything else -->
-
-  <!-- <span style="flex: 1 1 auto"></span> -->
 </mat-toolbar>
