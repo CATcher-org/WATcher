@@ -33,7 +33,7 @@ jobs:
     # - run: npm run actions:e2e
 
   macos-setup-and-tests:
-    runs-on: macos-
+    runs-on: macos-latest
     strategy:
       matrix:
         node-version: [14.x]
