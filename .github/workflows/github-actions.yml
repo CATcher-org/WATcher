@@ -33,16 +33,16 @@ jobs:
     # - run: npm run actions:e2e
 
   macos-setup-and-tests:
-    runs-on: macos-13
+    runs-on: macos-
     strategy:
       matrix:
         node-version: [14.x]
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
+        run: |
+            sudo softwareupdate --install-rosetta --agree-to-license
+            arch -x86_64 /bin/bash -c "npm install -g n && n ${{ matrix.node-version }}"
       - run: npm install
       - run: npm update
       - run: npm run lint
