@@ -39,13 +39,10 @@ jobs:
         node-version: [14.x]
     steps:
       - uses: actions/checkout@v2
-      - name: Install nvm
-        run: |
-          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-          source ~/.zshrc
       - name: Use Node.js ${{ matrix.node-version }}
-        run: nvm install 14
-          nvm use 14
+        run: |
+          sudo softwareupdate --install-rosetta --agree-to-license
+          arch -x86_64 /bin/bash -c "npm install -g n && n 14"
       - run: npm install
       - run: npm update
       - run: npm run lint
