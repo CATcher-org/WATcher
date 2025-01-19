@@ -43,6 +43,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+          architecture: 'x64'
       - run: npm install
       - run: npm update
       - run: npm run lint
