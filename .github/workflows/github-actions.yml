@@ -39,11 +39,12 @@ jobs:
         node-version: [14.x]
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Install nvm
         run: |
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
           source ~/.bashrc
-          nvm install 14
+      - name: Use Node.js ${{ matrix.node-version }}
+        run: nvm install 14
           nvm use 14
       - run: npm install
       - run: npm update
