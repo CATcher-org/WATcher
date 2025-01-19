@@ -54,10 +54,10 @@ jobs:
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
           nvm use 14
-      - run: npm install
-      - run: npm update
-      - run: npm run lint
-      - run: npm run test
+          npm install
+          npm update
+          npm run lint
+          npm run test
     # - run: npm test -- "--karma-config=./tests/karma.ci.conf.js" || npm test -- "--karma-config=./tests/karma.ci.conf.js"
     # retry tests once, in case they timed out on Mac OS
   windows-setup-and-tests:
