@@ -39,15 +39,15 @@ jobs:
         node-version: [14.x]
     steps:
       - uses: actions/checkout@v2
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
       - name: Use Node.js ${{ matrix.node-version }}
         run: |
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-          source ~/.bashrc
 
-          sudo softwareupdate --install-rosetta --agree-to-license
-          arch -x86_64 /bin/bash -c "nvm install 14 && nvm use 14"
+          arch -x86_64 /bin/bash -c "
+            source ~/.bashrc
+            nvm install ${{ matrix.node-version }}
+            nvm use ${{ matrix.node-version }}
+          "
       - run: npm install
       - run: npm update
       - run: npm run lint
