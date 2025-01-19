@@ -42,7 +42,7 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         run: |
           sudo softwareupdate --install-rosetta --agree-to-license
-          arch -x86_64 /bin/bash -c "npm install -g n && n 14"
+          arch -x86_64 /bin/bash -c "sudo npm install -g n && n 14"
       - run: npm install
       - run: npm update
       - run: npm run lint
