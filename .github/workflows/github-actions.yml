@@ -42,7 +42,7 @@ jobs:
       - name: Install nvm
         run: |
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-          source ~/.bashrc
+          source ~/.zshrc
       - name: Use Node.js ${{ matrix.node-version }}
         run: nvm install 14
           nvm use 14
