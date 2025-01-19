@@ -33,7 +33,7 @@ jobs:
     # - run: npm run actions:e2e
 
   macos-setup-and-tests:
-    runs-on: macos-latest
+    runs-on: macos-13
     strategy:
       matrix:
         node-version: [14.x]
@@ -43,7 +43,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-          architecture: 'x64'
       - run: npm install
       - run: npm update
       - run: npm run lint
