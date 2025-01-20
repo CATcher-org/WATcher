@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install --legacy-peer-deps
-      - run: npm update
+      - run: npm update --legacy-peer-deps
       - run: npm run lint
       - run: npm run build:prod:web
       - run: npm run test
@@ -44,7 +44,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install --legacy-peer-deps
-      - run: npm update
+      - run: npm update --legacy-peer-deps
       - run: npm run lint
       - run: npm run test
     # - run: npm test -- "--karma-config=./tests/karma.ci.conf.js" || npm test -- "--karma-config=./tests/karma.ci.conf.js"
@@ -61,7 +61,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install --legacy-peer-deps
-      - run: npm update
+      - run: npm update --legacy-peer-deps
       - run: npm run lint
       - run: npm run test
     # - run: npm test -- "--karma-config=./tests/karma.ci.conf.js"
