@@ -41,11 +41,9 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-}
 
-.left,
-.center,
-.right {
-  display: flex;
-  align-items: center;
+  div {
+    display: flex;
+    align-items: center;
+  }
 }
