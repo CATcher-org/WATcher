@@ -82,6 +82,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
 
     this.filterSubscription = this.filtersService.filter$.subscribe((filter: any) => {
       this.pageSize = filter.itemsPerPage;
+      this.paginator._changePageSize(this.pageSize);
     });
   }
 
