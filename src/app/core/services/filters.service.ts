@@ -66,7 +66,7 @@ export class FiltersService {
       type: 'all',
       sort: { active: 'id', direction: 'desc' },
       labels: [],
-      milestones: this.milestoneService.milestones.map((milestone) => milestone.title),
+      milestones: this.getMilestonesForContributions().map((milestone) => milestone.title),
       deselectedLabels: new Set<string>(),
       itemsPerPage: 20,
       assignees: this.assigneeService.assignees.map((assignee) => assignee.login)
@@ -358,5 +358,10 @@ export class FiltersService {
   getAssigneesForCurrentlyActive(): GithubUser[] {
     // TODO Filter out assignees that have not contributed in currently active milestones
     return [...this.assigneeService.assignees, GithubUser.NO_ASSIGNEE];
+  }
+
+  getMilestonesForContributions(): Milestone[] {
+    const milestones = this.milestoneService.milestones;
+    return [...milestones, Milestone.PRWithoutMilestone, Milestone.IssueWithoutMilestone];
   }
 }
