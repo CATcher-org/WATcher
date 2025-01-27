@@ -67,7 +67,7 @@ export class FiltersService {
       type: TypeOptions.All,
       sort: { active: SortOptions.Id, direction: OrderOptions.Desc },
       labels: [],
-      milestones: this.milestoneService.milestones.map((milestone) => milestone.title),
+      milestones: this.getMilestonesForContributions().map((milestone) => milestone.title),
       deselectedLabels: new Set<string>(),
       itemsPerPage: 20,
       assignees: this.assigneeService.assignees.map((assignee) => assignee.login)
@@ -361,7 +361,8 @@ export class FiltersService {
     return [...this.assigneeService.assignees, GithubUser.NO_ASSIGNEE];
   }
 
-  getFilter(): Filter {
-    return this.filter$.value;
+  getMilestonesForContributions(): Milestone[] {
+    const milestones = this.milestoneService.milestones;
+    return [...milestones, Milestone.PRWithoutMilestone, Milestone.IssueWithoutMilestone];
   }
 }
