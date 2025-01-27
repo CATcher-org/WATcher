@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, pipe } from 'rxjs';
+import { OrderOptions, SortOptions, StatusOptions, TypeOptions } from '../constants/filter-options.constants';
 import { GithubUser } from '../models/github-user.model';
 import { SimpleLabel } from '../models/label.model';
 import { Milestone } from '../models/milestone.model';
 import { AssigneeService } from './assignee.service';
 import { LoggingService } from './logging.service';
 import { MilestoneService } from './milestone.service';
-import { StatusOptions, TypeOptions, SortOptions, OrderOptions } from '../constants/filter-options.constants';
 
 export type Filter = {
   title: string;
@@ -65,7 +65,7 @@ export class FiltersService {
       title: '',
       status: [StatusOptions.OpenPullRequests, StatusOptions.MergedPullRequests, StatusOptions.OpenIssues, StatusOptions.ClosedIssues],
       type: TypeOptions.All,
-      sort: { active: SortOptions.Status, direction: OrderOptions.Asc },
+      sort: { active: SortOptions.Id, direction: OrderOptions.Desc },
       labels: [],
       milestones: this.milestoneService.milestones.map((milestone) => milestone.title),
       deselectedLabels: new Set<string>(),
