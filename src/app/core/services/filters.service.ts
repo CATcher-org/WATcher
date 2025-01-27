@@ -8,6 +8,7 @@ import { Milestone } from '../models/milestone.model';
 import { AssigneeService } from './assignee.service';
 import { LoggingService } from './logging.service';
 import { MilestoneService } from './milestone.service';
+import { StatusOptions, TypeOptions, SortOptions, OrderOptions } from '../constants/filter-options.constants';
 
 export type Filter = {
   title: string;
@@ -35,9 +36,9 @@ export class FiltersService {
 
   readonly defaultFilter: Filter = {
     title: '',
-    status: ['open pullrequest', 'merged pullrequest', 'open issue', 'closed issue'],
-    type: 'all',
-    sort: { active: 'status', direction: 'asc' },
+    status: [StatusOptions.OpenPullRequests, StatusOptions.MergedPullRequests, StatusOptions.OpenIssues, StatusOptions.ClosedIssues],
+    type: TypeOptions.All,
+    sort: { active: SortOptions.Status, direction: OrderOptions.Asc },
     labels: [],
     milestones: [],
     hiddenLabels: new Set<string>(),
@@ -51,9 +52,9 @@ export class FiltersService {
   } = {
     currentlyActive: () => ({
       title: '',
-      status: ['open pullrequest', 'merged pullrequest', 'open issue', 'closed issue'],
-      type: 'all',
-      sort: { active: 'status', direction: 'asc' },
+      status: [StatusOptions.OpenPullRequests, StatusOptions.MergedPullRequests, StatusOptions.OpenIssues, StatusOptions.ClosedIssues],
+      type: TypeOptions.All,
+      sort: { active: SortOptions.Status, direction: OrderOptions.Asc },
       labels: [],
       milestones: this.getMilestonesForCurrentlyActive().map((milestone) => milestone.title),
       deselectedLabels: new Set<string>(),
@@ -62,9 +63,9 @@ export class FiltersService {
     }),
     contributions: () => ({
       title: '',
-      status: ['open pullrequest', 'merged pullrequest', 'open issue', 'closed issue'],
-      type: 'all',
-      sort: { active: 'id', direction: 'desc' },
+      status: [StatusOptions.OpenPullRequests, StatusOptions.MergedPullRequests, StatusOptions.OpenIssues, StatusOptions.ClosedIssues],
+      type: TypeOptions.All,
+      sort: { active: SortOptions.Status, direction: OrderOptions.Asc },
       labels: [],
       milestones: this.milestoneService.milestones.map((milestone) => milestone.title),
       deselectedLabels: new Set<string>(),
@@ -358,5 +359,9 @@ export class FiltersService {
   getAssigneesForCurrentlyActive(): GithubUser[] {
     // TODO Filter out assignees that have not contributed in currently active milestones
     return [...this.assigneeService.assignees, GithubUser.NO_ASSIGNEE];
+  }
+
+  getFilter(): Filter {
+    return this.filter$.value;
   }
 }
