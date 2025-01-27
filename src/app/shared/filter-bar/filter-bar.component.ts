@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, Type, ViewChild } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { AssigneeService } from '../../core/services/assignee.service';
@@ -9,6 +9,7 @@ import { MilestoneService } from '../../core/services/milestone.service';
 import { ViewService } from '../../core/services/view.service';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
+import { StatusOptions, TypeOptions, SortOptions, MilestoneOptions } from '../../core/constants/filter-options.constants';
 
 /**
  * This component is abstracted out filterbar used by both detailed-viewer page
@@ -30,6 +31,11 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   groupByEnum: typeof GroupBy = GroupBy;
 
   isMenuOpen = false;
+
+  statusOptions = StatusOptions;
+  typeOptions = TypeOptions;
+  sortOptions = SortOptions;
+  milestoneOptions = MilestoneOptions;
 
   /** Milestone subscription */
   milestoneSubscription: Subscription;
@@ -79,11 +85,11 @@ export class FilterBarComponent implements OnInit, OnDestroy {
    * Checks if program is filtering by type issue.
    */
   isFilterIssue() {
-    return this.filter.type === 'issue' || this.filter.type === 'all';
+    return this.filter.type === this.typeOptions.Issue || this.filter.type === this.typeOptions.All;
   }
 
   isFilterPullRequest() {
-    return this.filter.type === 'pullrequest' || this.filter.type === 'all';
+    return this.filter.type === this.typeOptions.PullRequests || this.filter.type === this.typeOptions.All;
   }
 
   /**
