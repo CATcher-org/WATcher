@@ -15,15 +15,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [16.x]
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install
-      - run: npm update
+      - run: npm install --legacy-peer-deps
+      - run: npm update --legacy-peer-deps
       - run: npm run lint
       - run: npm run build:prod:web
       - run: npm run test
@@ -36,15 +36,15 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [16.x]
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install
-      - run: npm update
+      - run: npm install --legacy-peer-deps
+      - run: npm update --legacy-peer-deps
       - run: npm run lint
       - run: npm run test
     # - run: npm test -- "--karma-config=./tests/karma.ci.conf.js" || npm test -- "--karma-config=./tests/karma.ci.conf.js"
@@ -53,15 +53,15 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [16.x]
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install
-      - run: npm update
+      - run: npm install --legacy-peer-deps
+      - run: npm update --legacy-peer-deps
       - run: npm run lint
       - run: npm run test
     # - run: npm test -- "--karma-config=./tests/karma.ci.conf.js"
