@@ -26,5 +26,5 @@ export enum OrderOptions {
 
 export enum MilestoneOptions {
   IssueWithoutMilestone = 'Issue without a milestone',
-  PullRequestWithoutMilestone = 'Pull Request without a milestone'
+  PullRequestWithoutMilestone = 'PR without a milestone'
 }
