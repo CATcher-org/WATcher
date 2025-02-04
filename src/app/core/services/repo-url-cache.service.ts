@@ -23,7 +23,7 @@ export class RepoUrlCacheService {
     }
   }
 
-  removeFromSuggetions(repo: string): void {
+  removeFromSuggestions(repo: string): void {
     const repoIndex = this.suggestions.indexOf(repo);
     this.suggestions.splice(repoIndex, 1);
     window.localStorage.setItem(RepoUrlCacheService.KEY_NAME, JSON.stringify(this.suggestions));
