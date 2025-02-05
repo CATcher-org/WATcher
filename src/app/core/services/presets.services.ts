@@ -15,7 +15,7 @@ export class PresetsService {
 
   savedPresets = new Map<string, Preset[]>();
   availablePresets: Preset[] = []; // the presets for this repo
-  currentPreset: Preset;
+  currentPreset = Preset;
 
   constructor(private logger: LoggingService) {
     // this.suggestions = JSON.parse(window.localStorage.getItem(FiltersSaveService.KEY_NAME)) || [];
