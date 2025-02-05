@@ -30,7 +30,7 @@ describe('ViewService', () => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     repoUrlCacheServiceSpy = jasmine.createSpyObj('RepoUrlCacheService', ['cache']);
     loggingServiceSpy = jasmine.createSpyObj('LoggingService', ['info']);
-    presetServiceSpy = jasmine.createSpyObj('PresetsService', ['savePreset', 'getSavedPresetsForCurrentRepo']);
+    presetServiceSpy = jasmine.createSpyObj('PresetsService', ['savePreset', 'getSavedPresetsForCurrentRepo', 'loadSavedPresets']);
 
     viewService = new ViewService(
       githubServiceSpy,
