@@ -10,6 +10,7 @@ import { ErrorMessageService } from './error-message.service';
 import { GithubService } from './github.service';
 import { LoggingService } from './logging.service';
 import { RepoUrlCacheService } from './repo-url-cache.service';
+import { PresetsService } from './presets.services';
 
 export const SESSION_AVALIABILITY_FIX_FAILED = 'Session Availability Fix failed.';
 
@@ -68,6 +69,7 @@ export class ViewService {
   constructor(
     private githubService: GithubService,
     private repoUrlCacheService: RepoUrlCacheService,
+    private filtersSaveService: PresetsService,
     public logger: LoggingService,
     private route: ActivatedRoute,
     private router: Router
@@ -92,6 +94,8 @@ export class ViewService {
       },
       queryParamsHandling: 'merge'
     });
+
+    this.filtersSaveService.loadSavedPresets(repo);
   }
 
   /**
