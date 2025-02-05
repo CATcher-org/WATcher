@@ -23,6 +23,10 @@ export type Filter = {
   assignees: string[];
 };
 
+type QueryParams = {
+  [x: string]: any;
+};
+
 @Injectable({
   providedIn: 'root'
 })

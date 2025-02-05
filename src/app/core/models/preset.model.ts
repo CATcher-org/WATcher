@@ -1,3 +1,4 @@
+import { Filter } from '../services/filters.service';
 import { Repo } from './repo.model';
 
 /**
@@ -6,13 +7,15 @@ import { Repo } from './repo.model';
  */
 export class Preset {
   repo: Repo;
-  filters: string;
+  filter: Filter;
   label: string;
 
+  static VERSION = 1;
+
   /** Creates a new Preset */
-  constructor(repo: Repo, filters: string, label: string) {
+  constructor(repo: Repo, filter: Filter, label: string) {
     this.repo = repo;
-    this.filters = filters;
+    this.filter = filter;
     this.label = label;
   }
 }

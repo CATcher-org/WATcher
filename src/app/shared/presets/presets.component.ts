@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PresetsSavePromptComponent } from './presets-save-prompt/presets-save-prompt.component';
 import { PresetsService } from '../../core/services/presets.services';
 import { ViewService } from '../../core/services/view.service';
+import { Preset } from '../../core/models/preset.model';
 
 export interface DialogData {
   label: string;
@@ -16,7 +17,7 @@ export interface DialogData {
   templateUrl: './presets.component.html',
   styleUrls: ['./presets.component.css']
 })
-export class PresetsComponent {
+export class PresetsComponent implements OnInit {
   constructor(public dialog: MatDialog, private presetsService: PresetsService, private viewService: ViewService) {}
 
   selected = false;
@@ -24,6 +25,8 @@ export class PresetsComponent {
   isChecked = false;
 
   label = '';
+
+  availablePresets: Preset[] = [];
 
   promptTitle() {
     const dialogRef = this.dialog.open(PresetsSavePromptComponent, {
@@ -42,15 +45,15 @@ export class PresetsComponent {
         // save the filter
         // get the URL
         // set in localstorage using filters-save.services.ts
-        this.presetsService.savePreset(this.viewService.currentRepo, {
-          filters: 'urlString',
-          label: this.label,
-          repo: this.viewService.currentRepo
-        });
+        this.presetsService.savePreset(this.viewService.currentRepo, result.label); // TODO: figure out why i can't use this.label.
       } else {
         // reset the label
         this.isChecked = false;
       }
     });
+  }
+
+  ngOnInit(): void {
+    this.availablePresets = this.presetsService.getSavedPresetsForCurrentRepo(this.viewService.currentRepo);
   }
 }

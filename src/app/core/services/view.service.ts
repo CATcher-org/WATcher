@@ -69,7 +69,7 @@ export class ViewService {
   constructor(
     private githubService: GithubService,
     private repoUrlCacheService: RepoUrlCacheService,
-    private filtersSaveService: PresetsService,
+    private presetsService: PresetsService,
     public logger: LoggingService,
     private route: ActivatedRoute,
     private router: Router
@@ -95,7 +95,7 @@ export class ViewService {
       queryParamsHandling: 'merge'
     });
 
-    this.filtersSaveService.loadSavedPresets(repo);
+    this.presetsService.loadSavedPresets(repo);
   }
 
   /**
