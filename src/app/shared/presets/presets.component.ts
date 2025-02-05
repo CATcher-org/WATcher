@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { FilterBarSavePromptComponent } from './filter-bar-save-prompt/filter-bar-save-prompt.component';
+import { PresetsSavePromptComponent } from './presets-save-prompt/presets-save-prompt.component';
 
 export interface DialogData {
   label: string;
@@ -10,11 +10,11 @@ export interface DialogData {
  * This component is abstracted out save-filter controls used by Issues-viewer
  */
 @Component({
-  selector: 'app-filter-save',
-  templateUrl: './filter-bar-saved.component.html',
-  styleUrls: ['./filter-bar-saved.component.css']
+  selector: 'app-presets',
+  templateUrl: './presets.component.html',
+  styleUrls: ['./presets.component.css']
 })
-export class FilterBarSavedComponent {
+export class PresetsComponent {
   constructor(public dialog: MatDialog) {}
 
   selected = false;
@@ -24,7 +24,7 @@ export class FilterBarSavedComponent {
   label = '';
 
   promptTitle() {
-    const dialogRef = this.dialog.open(FilterBarSavePromptComponent, {
+    const dialogRef = this.dialog.open(PresetsSavePromptComponent, {
       width: '250px',
       data: {
         label: this.label
