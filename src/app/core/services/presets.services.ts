@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { LoggingService } from './logging.service';
-import { FiltersService } from './filters.service';
-import { Repo } from '../models/repo.model';
 import { Preset } from '../models/preset.model';
+import { Repo } from '../models/repo.model';
+import { FiltersService } from './filters.service';
+import { LoggingService } from './logging.service';
 
 @Injectable({
   providedIn: 'root'
