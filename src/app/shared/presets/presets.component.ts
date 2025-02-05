@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PresetsSavePromptComponent } from './presets-save-prompt/presets-save-prompt.component';
 import { PresetsService } from '../../core/services/presets.services';
-import { ViewService } from '../../core/services/view.service';
 import { Preset } from '../../core/models/preset.model';
+import { ViewService } from '../../core/services/view.service';
 
 export interface DialogData {
   label: string;

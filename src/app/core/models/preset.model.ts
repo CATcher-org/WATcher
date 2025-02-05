@@ -6,11 +6,10 @@ import { Repo } from './repo.model';
  * Currently, the filters are saved as a URL-encoded string.
  */
 export class Preset {
+  static VERSION = 1;
   repo: Repo;
   filter: Filter;
   label: string;
-
-  static VERSION = 1;
 
   /** Creates a new Preset */
   constructor(repo: Repo, filter: Filter, label: string) {

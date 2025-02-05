@@ -2,15 +2,17 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { STORAGE_KEYS } from '../constants/storage-keys.constants';
 import { Repo } from '../models/repo.model';
 import { SessionData } from '../models/session.model';
 import { View } from '../models/view.model';
+
 import { ErrorMessageService } from './error-message.service';
 import { GithubService } from './github.service';
 import { LoggingService } from './logging.service';
-import { RepoUrlCacheService } from './repo-url-cache.service';
 import { PresetsService } from './presets.services';
+import { RepoUrlCacheService } from './repo-url-cache.service';
 
 export const SESSION_AVALIABILITY_FIX_FAILED = 'Session Availability Fix failed.';
 

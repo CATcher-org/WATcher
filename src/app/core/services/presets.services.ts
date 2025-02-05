@@ -1,12 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
-import { ViewService } from './view.service';
-import { Repo } from '../models/repo.model';
-import { Preset } from '../models/preset.model';
 import { LoggingService } from './logging.service';
 import { FiltersService } from './filters.service';
+import { Repo } from '../models/repo.model';
+import { Preset } from '../models/preset.model';
 
 @Injectable({
   providedIn: 'root'
