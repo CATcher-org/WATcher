@@ -76,4 +76,21 @@ describe('RepoUrlCacheService', () => {
       expect(filteredSuggestions).toBeInstanceOf(Observable);
     });
   });
+
+  describe('removeFromSuggestions()', () => {
+    it('should return without changing anything if repo is not in localStorage', () => {
+      localStorage.setItem(RepoUrlCacheService.KEY_NAME, JSON.stringify([repoNameOne]));
+      repoUrlCacheService = new RepoUrlCacheService();
+      const oldSuggestions = localStorage.getItem(RepoUrlCacheService.KEY_NAME);
+      repoUrlCacheService.removeFromSuggestions(repoNameTwo);
+      expect(localStorage.getItem(RepoUrlCacheService.KEY_NAME)).toEqual(oldSuggestions);
+    });
+
+    it('should be able to remove a repo if it is in localStorage', () => {
+      localStorage.setItem(RepoUrlCacheService.KEY_NAME, JSON.stringify([repoNameOne, repoNameTwo]));
+      repoUrlCacheService = new RepoUrlCacheService();
+      repoUrlCacheService.removeFromSuggestions(repoNameTwo);
+      expect(localStorage.getItem(RepoUrlCacheService.KEY_NAME)).toEqual(JSON.stringify([repoNameOne]));
+    });
+  });
 });
