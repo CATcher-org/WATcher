@@ -1,13 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSelectChange } from '@angular/material/select';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Preset } from '../../core/models/preset.model';
+import { LoggingService } from '../../core/services/logging.service';
 import { PresetsService } from '../../core/services/presets.services';
 import { ViewService } from '../../core/services/view.service';
 import { PresetsSavePromptComponent } from './presets-save-prompt/presets-save-prompt.component';
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
-import { MatSelectChange } from '@angular/material/select';
-import { LoggingService } from '../../core/services/logging.service';
 
 export interface DialogData {
   label: string;

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { Preset } from '../models/preset.model';
 import { Repo } from '../models/repo.model';
 import { FiltersService } from './filters.service';
 import { LoggingService } from './logging.service';
-import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

@@ -35,6 +35,17 @@ type QueryParams = {
  * Filters are subscribed to and emitted from this service
  */
 export class FiltersService {
+  constructor(
+    private logger: LoggingService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private milestoneService: MilestoneService,
+    private assigneeService: AssigneeService
+  ) {
+    this.filter$.subscribe((filter: Filter) => {
+      this.itemsPerPage = filter.itemsPerPage;
+    });
+  }
   public static readonly PRESET_VIEW_QUERY_PARAM_KEY = 'presetview';
   private itemsPerPage = 20;
 
@@ -90,16 +101,22 @@ export class FiltersService {
   private previousMilestonesLength = 0;
   private previousAssigneesLength = 0;
 
-  constructor(
-    private logger: LoggingService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private milestoneService: MilestoneService,
-    private assigneeService: AssigneeService
-  ) {
-    this.filter$.subscribe((filter: Filter) => {
-      this.itemsPerPage = filter.itemsPerPage;
-    });
+  static fromObject(object: any): Filter {
+    console.log({ object });
+    const filter: Filter = {
+      title: object.title,
+      status: object.status,
+      type: object.type,
+      sort: object.sort,
+      labels: object.labels,
+      milestones: object.milestones,
+      hiddenLabels: new Set(Object.keys(object.hiddenLabels).length ? object.hiddenLabels : undefined),
+      deselectedLabels: new Set(Object.keys(object.deselectedLabels).length ? object.deselectedLabels : undefined),
+      itemsPerPage: object.itemsPerPage,
+      assignees: object.assignees
+    };
+
+    return filter;
   }
 
   private pushFiltersToUrl(): void {
@@ -368,23 +385,5 @@ export class FiltersService {
   getMilestonesForContributions(): Milestone[] {
     const milestones = this.milestoneService.milestones;
     return [...milestones, Milestone.PRWithoutMilestone, Milestone.IssueWithoutMilestone];
-  }
-
-  static fromObject(object: any): Filter {
-    console.log({ object });
-    const filter: Filter = {
-      title: object.title,
-      status: object.status,
-      type: object.type,
-      sort: object.sort,
-      labels: object.labels,
-      milestones: object.milestones,
-      hiddenLabels: new Set(Object.keys(object.hiddenLabels).length ? object.hiddenLabels : undefined),
-      deselectedLabels: new Set(Object.keys(object.deselectedLabels).length ? object.deselectedLabels : undefined),
-      itemsPerPage: object.itemsPerPage,
-      assignees: object.assignees
-    };
-
-    return filter;
   }
 }
