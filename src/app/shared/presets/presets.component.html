@@ -2,10 +2,8 @@
   <mat-slide-toggle [(ngModel)]="isChecked" (click)="promptTitle()">Save your filters</mat-slide-toggle>
   <mat-form-field appearance="fill">
     <mat-label>Current preset</mat-label>
-    <mat-select [(value)]="selected">
-      <mat-option>Unsaved</mat-option>
-
-      <mat-option *ngFor="let preset of this.availablePresets">
+    <mat-select [(ngModel)]="selectedPresetId" (selectionChange)="onOptionSelected($event)">
+      <mat-option *ngFor="let preset of this.availablePresets" [value]="preset.id">
         {{ preset.label }}
       </mat-option>
     </mat-select>

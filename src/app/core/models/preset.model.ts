@@ -1,4 +1,4 @@
-import { Filter } from '../services/filters.service';
+import { Filter, FiltersService } from '../services/filters.service';
 import { Repo } from './repo.model';
 
 /**
@@ -10,11 +10,20 @@ export class Preset {
   repo: Repo;
   filter: Filter;
   label: string;
+  id: string; // current timestamp in ms as string
 
   /** Creates a new Preset */
   constructor(repo: Repo, filter: Filter, label: string) {
     this.repo = repo;
     this.filter = filter;
     this.label = label;
+    this.id = Date.now().toString();
+  }
+
+  static fromObject(object: any): Preset {
+    const repo = object.repo;
+    const filter = FiltersService.fromObject(object.filter);
+    const label = object.label;
+    return new Preset(repo, filter, label);
   }
 }

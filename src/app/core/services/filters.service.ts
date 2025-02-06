@@ -369,4 +369,22 @@ export class FiltersService {
     const milestones = this.milestoneService.milestones;
     return [...milestones, Milestone.PRWithoutMilestone, Milestone.IssueWithoutMilestone];
   }
+
+  static fromObject(object: any): Filter {
+    console.log({ object });
+    const filter: Filter = {
+      title: object.title,
+      status: object.status,
+      type: object.type,
+      sort: object.sort,
+      labels: object.labels,
+      milestones: object.milestones,
+      hiddenLabels: new Set(Object.keys(object.hiddenLabels).length ? object.hiddenLabels : undefined),
+      deselectedLabels: new Set(Object.keys(object.deselectedLabels).length ? object.deselectedLabels : undefined),
+      itemsPerPage: object.itemsPerPage,
+      assignees: object.assignees
+    };
+
+    return filter;
+  }
 }

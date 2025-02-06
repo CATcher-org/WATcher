@@ -1,9 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Preset } from '../../core/models/preset.model';
 import { PresetsService } from '../../core/services/presets.services';
 import { ViewService } from '../../core/services/view.service';
 import { PresetsSavePromptComponent } from './presets-save-prompt/presets-save-prompt.component';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { MatSelectChange } from '@angular/material/select';
+import { LoggingService } from '../../core/services/logging.service';
 
 export interface DialogData {
   label: string;
@@ -17,10 +21,15 @@ export interface DialogData {
   templateUrl: './presets.component.html',
   styleUrls: ['./presets.component.css']
 })
-export class PresetsComponent implements OnInit {
-  constructor(public dialog: MatDialog, private presetsService: PresetsService, private viewService: ViewService) {}
+export class PresetsComponent implements OnInit, OnDestroy {
+  constructor(
+    private logger: LoggingService,
+    public dialog: MatDialog,
+    private presetsService: PresetsService,
+    private viewService: ViewService
+  ) {}
 
-  selected = false;
+  selected = '';
 
   isChecked = false;
 
@@ -28,6 +37,11 @@ export class PresetsComponent implements OnInit {
 
   availablePresets: Preset[] = [];
 
+  selectedPresetId = '';
+  private unsubscribe$ = new Subject<void>();
+  /**
+   * Ask the user to save
+   */
   promptTitle() {
     const dialogRef = this.dialog.open(PresetsSavePromptComponent, {
       width: '250px',
@@ -53,7 +67,33 @@ export class PresetsComponent implements OnInit {
     });
   }
 
+  // on select
+  onOptionSelected(event: MatSelectChange) {
+    const changeToPresetId = event.value;
+    // todo: handle case where deselect
+    const preset = this.availablePresets.find((p) => p.id === changeToPresetId);
+
+    if (preset) {
+      this.presetsService.changeToPreset(preset);
+    } else {
+      this.logger.warn(`PresetComponent: Preset with id ${changeToPresetId} not found`);
+    }
+  }
+
   ngOnInit(): void {
+    // this.availablePresets = this.presetsService.getSavedPresetsForCurrentRepo(this.viewService.currentRepo);
+    this.presetsService.availablePresets$.pipe(takeUntil(this.unsubscribe$)).subscribe((availablePresets) => {
+      // Optionally filter them by the current repo
+
+      this.availablePresets = availablePresets;
+    });
+
+    // For an initial fetch (in case you have data from the start)
     this.availablePresets = this.presetsService.getSavedPresetsForCurrentRepo(this.viewService.currentRepo);
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }
