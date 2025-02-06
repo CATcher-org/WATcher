@@ -25,7 +25,7 @@ export class RepoUrlCacheService {
 
   removeFromSuggestions(repo: string): void {
     const repoIndex = this.suggestions.indexOf(repo);
-    if (repoIndex == -1) {
+    if (repoIndex === -1) {
       return;
     }
     this.suggestions.splice(repoIndex, 1);
