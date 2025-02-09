@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, pipe } from 'rxjs';
+import { OrderOptions, SortOptions, StatusOptions, TypeOptions } from '../constants/filter-options.constants';
 import { GithubUser } from '../models/github-user.model';
 import { SimpleLabel } from '../models/label.model';
 import { Milestone } from '../models/milestone.model';
@@ -35,9 +36,9 @@ export class FiltersService {
 
   readonly defaultFilter: Filter = {
     title: '',
-    status: ['open pullrequest', 'merged pullrequest', 'open issue', 'closed issue'],
-    type: 'all',
-    sort: { active: 'status', direction: 'asc' },
+    status: [StatusOptions.OpenPullRequests, StatusOptions.MergedPullRequests, StatusOptions.OpenIssues, StatusOptions.ClosedIssues],
+    type: TypeOptions.All,
+    sort: { active: SortOptions.Status, direction: OrderOptions.Asc },
     labels: [],
     milestones: [],
     hiddenLabels: new Set<string>(),
@@ -51,9 +52,9 @@ export class FiltersService {
   } = {
     currentlyActive: () => ({
       title: '',
-      status: ['open pullrequest', 'merged pullrequest', 'open issue', 'closed issue'],
-      type: 'all',
-      sort: { active: 'status', direction: 'asc' },
+      status: [StatusOptions.OpenPullRequests, StatusOptions.MergedPullRequests, StatusOptions.OpenIssues, StatusOptions.ClosedIssues],
+      type: TypeOptions.All,
+      sort: { active: SortOptions.Status, direction: OrderOptions.Asc },
       labels: [],
       milestones: this.getMilestonesForCurrentlyActive().map((milestone) => milestone.title),
       deselectedLabels: new Set<string>(),
@@ -62,11 +63,11 @@ export class FiltersService {
     }),
     contributions: () => ({
       title: '',
-      status: ['open pullrequest', 'merged pullrequest', 'open issue', 'closed issue'],
-      type: 'all',
-      sort: { active: 'id', direction: 'desc' },
+      status: [StatusOptions.OpenPullRequests, StatusOptions.MergedPullRequests, StatusOptions.OpenIssues, StatusOptions.ClosedIssues],
+      type: TypeOptions.All,
+      sort: { active: SortOptions.Id, direction: OrderOptions.Desc },
       labels: [],
-      milestones: this.milestoneService.milestones.map((milestone) => milestone.title),
+      milestones: this.getMilestonesForContributions().map((milestone) => milestone.title),
       deselectedLabels: new Set<string>(),
       itemsPerPage: 20,
       assignees: this.assigneeService.assignees.map((assignee) => assignee.login)
@@ -358,5 +359,10 @@ export class FiltersService {
   getAssigneesForCurrentlyActive(): GithubUser[] {
     // TODO Filter out assignees that have not contributed in currently active milestones
     return [...this.assigneeService.assignees, GithubUser.NO_ASSIGNEE];
+  }
+
+  getMilestonesForContributions(): Milestone[] {
+    const milestones = this.milestoneService.milestones;
+    return [...milestones, Milestone.PRWithoutMilestone, Milestone.IssueWithoutMilestone];
   }
 }
