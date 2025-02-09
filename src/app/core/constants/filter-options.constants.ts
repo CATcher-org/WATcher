@@ -32,7 +32,8 @@ export enum MilestoneOptions {
 }
 
 export const AssigneesFilter = {
-  no_assignees: 'no:assignee'
+  no_assignees: 'no:assignee',
+  unassigned: 'Unassigned'
 };
 
 export const StatusFilter = {

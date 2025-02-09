@@ -380,42 +380,40 @@ export class FiltersService {
   }
 
   getAssignees(assignees: string[]): string {
-    if (assignees.length !== this.assigneeService.assignees.length) {
-      return '';
-    } else {
-      // const labelled_assignees = assignees.map((assignee) => FilterOptions.assignee + assignee);
-      // return labelled_assignees.join(BooleanConjunctions.AND);
-
-      return assignees.reduce((acc, curr) => {
-        const assignee = FilterOptions.assignee + curr;
-        if (acc == '') {
-          return assignee;
+    var res = '';
+    for (let i = 0; i < assignees.length; i++) {
+      if (res === '') {
+        res = FilterOptions.assignee + assignees[i];
+      } else {
+        res += BooleanConjunctions.OR;
+        if (assignees[i] === AssigneesFilter.unassigned) {
+          res += AssigneesFilter.no_assignees;
+        } else {
+          res += FilterOptions.assignee + assignees[i];
         }
-        if (curr == 'Unassigned') {
-          return acc + BooleanConjunctions.AND + AssigneesFilter.no_assignees;
-        }
-        return acc + BooleanConjunctions.AND + assignee;
-      });
+      }
     }
+    return res;
   }
 
   getDeselectedLabels(deselectedLabels: Set<string>): string {
     const labelled_deselected_labels = Array.from(deselectedLabels).map(
       (label) => BooleanConjunctions.EXCLUDE + FilterOptions.label + label
     );
-    return labelled_deselected_labels.join(BooleanConjunctions.AND);
+    return labelled_deselected_labels.join(BooleanConjunctions.OR);
   }
 
   getLabels(labels: string[]): string {
     const labelled_labels = labels.map((label) => FilterOptions.label + label);
-    return labelled_labels.join(BooleanConjunctions.AND);
+    return labelled_labels.join(BooleanConjunctions.OR);
   }
 
   getMilestones(milestones: string[]): string {
     const labelled_milestones = milestones.map((milestone) =>
       MilestoneFilter.hasOwnProperty(milestone) ? MilestoneFilter[milestone] : FilterOptions.milestone + milestone
     );
-    return labelled_milestones.join(BooleanConjunctions.AND);
+    const res = labelled_milestones.join(BooleanConjunctions.OR);
+    return res;
   }
 
   getSort(sort: Sort): string {
@@ -437,7 +435,7 @@ export class FiltersService {
   }
 
   getEncodedFilter(): string {
-    var res = new Array(7);
+    var res = new Array(8);
     res[0] = this.getAssignees(this.filter$.value.assignees);
     res[1] = this.getDeselectedLabels(this.filter$.value.deselectedLabels);
     res[2] = this.getLabels(this.filter$.value.labels);
@@ -445,15 +443,17 @@ export class FiltersService {
     res[4] = this.getSort(this.filter$.value.sort);
     res[5] = this.getTypes(this.filter$.value.type);
     res[6] = this.getStatus(this.filter$.value.status);
-    console.log(res);
-    return res.reduce((acc, curr) => {
+    res[7] = this.filter$.value.title;
+
+    const final = res.reduce((acc, curr) => {
       if (curr == '') {
         return acc;
       }
       if (acc == '') {
-        return curr;
+        return '(' + curr + ')';
       }
-      return acc + BooleanConjunctions.AND + curr;
-    });
+      return acc + BooleanConjunctions.AND + '(' + curr + ')';
+    }, '');
+    return '(' + final + ')';
   }
 }
