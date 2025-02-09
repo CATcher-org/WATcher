@@ -3,18 +3,18 @@ import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, pipe } from 'rxjs';
 import {
-  MilestoneFilter,
-  OrderOptions,
-  SortOptions,
-  StatusOptions,
-  TypeOptions,
-  SortFilter,
-  StatusFilter,
-  TypeFilter,
-  FilterOptions,
+  AssigneesFilter,
   BooleanConjunctions,
+  FilterOptions,
+  MilestoneFilter,
   MilestoneOptions,
-  AssigneesFilter
+  OrderOptions,
+  SortFilter,
+  SortOptions,
+  StatusFilter,
+  StatusOptions,
+  TypeFilter,
+  TypeOptions
 } from '../constants/filter-options.constants';
 import { GithubUser } from '../models/github-user.model';
 import { SimpleLabel } from '../models/label.model';
@@ -380,7 +380,7 @@ export class FiltersService {
   }
 
   getAssignees(assignees: string[]): string {
-    var res = '';
+    let res = '';
     for (let i = 0; i < assignees.length; i++) {
       if (res === '') {
         res = FilterOptions.assignee + assignees[i];
@@ -435,7 +435,7 @@ export class FiltersService {
   }
 
   getEncodedFilter(): string {
-    var res = new Array(8);
+    const res = new Array(8);
     res[0] = this.getAssignees(this.filter$.value.assignees);
     res[1] = this.getDeselectedLabels(this.filter$.value.deselectedLabels);
     res[2] = this.getLabels(this.filter$.value.labels);
@@ -446,10 +446,10 @@ export class FiltersService {
     res[7] = this.filter$.value.title;
 
     const final = res.reduce((acc, curr) => {
-      if (curr == '') {
+      if (curr === '') {
         return acc;
       }
-      if (acc == '') {
+      if (acc === '') {
         return '(' + curr + ')';
       }
       return acc + BooleanConjunctions.AND + '(' + curr + ')';
