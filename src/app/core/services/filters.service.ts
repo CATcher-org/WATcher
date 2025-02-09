@@ -2,7 +2,20 @@ import { Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, pipe } from 'rxjs';
-import { OrderOptions, SortOptions, StatusOptions, TypeOptions } from '../constants/filter-options.constants';
+import {
+  MilestoneFilter,
+  OrderOptions,
+  SortOptions,
+  StatusOptions,
+  TypeOptions,
+  SortFilter,
+  StatusFilter,
+  TypeFilter,
+  FilterOptions,
+  BooleanConjunctions,
+  MilestoneOptions,
+  AssigneesFilter
+} from '../constants/filter-options.constants';
 import { GithubUser } from '../models/github-user.model';
 import { SimpleLabel } from '../models/label.model';
 import { Milestone } from '../models/milestone.model';
@@ -364,5 +377,83 @@ export class FiltersService {
   getMilestonesForContributions(): Milestone[] {
     const milestones = this.milestoneService.milestones;
     return [...milestones, Milestone.PRWithoutMilestone, Milestone.IssueWithoutMilestone];
+  }
+
+  getAssignees(assignees: string[]): string {
+    if (assignees.length !== this.assigneeService.assignees.length) {
+      return '';
+    } else {
+      // const labelled_assignees = assignees.map((assignee) => FilterOptions.assignee + assignee);
+      // return labelled_assignees.join(BooleanConjunctions.AND);
+
+      return assignees.reduce((acc, curr) => {
+        const assignee = FilterOptions.assignee + curr;
+        if (acc == '') {
+          return assignee;
+        }
+        if (curr == 'Unassigned') {
+          return acc + BooleanConjunctions.AND + AssigneesFilter.no_assignees;
+        }
+        return acc + BooleanConjunctions.AND + assignee;
+      });
+    }
+  }
+
+  getDeselectedLabels(deselectedLabels: Set<string>): string {
+    const labelled_deselected_labels = Array.from(deselectedLabels).map(
+      (label) => BooleanConjunctions.EXCLUDE + FilterOptions.label + label
+    );
+    return labelled_deselected_labels.join(BooleanConjunctions.AND);
+  }
+
+  getLabels(labels: string[]): string {
+    const labelled_labels = labels.map((label) => FilterOptions.label + label);
+    return labelled_labels.join(BooleanConjunctions.AND);
+  }
+
+  getMilestones(milestones: string[]): string {
+    const labelled_milestones = milestones.map((milestone) =>
+      MilestoneFilter.hasOwnProperty(milestone) ? MilestoneFilter[milestone] : FilterOptions.milestone + milestone
+    );
+    return labelled_milestones.join(BooleanConjunctions.AND);
+  }
+
+  getSort(sort: Sort): string {
+    // currently github only supports sorting by date
+    if (SortFilter.hasOwnProperty(sort.active)) {
+      return SortFilter[sort.active] + ':' + sort.direction;
+    } else {
+      return '';
+    }
+  }
+
+  getStatus(status: string[]): string {
+    const labelled_status = status.map((status) => StatusFilter[status]);
+    return labelled_status.join(BooleanConjunctions.OR);
+  }
+
+  getTypes(type: string): string {
+    return TypeFilter[type];
+  }
+
+  getEncodedFilter(): string {
+    var res = new Array(7);
+    res[0] = this.getAssignees(this.filter$.value.assignees);
+    res[1] = this.getDeselectedLabels(this.filter$.value.deselectedLabels);
+    res[2] = this.getLabels(this.filter$.value.labels);
+    res[3] = this.getMilestones(this.filter$.value.milestones);
+    res[4] = this.getSort(this.filter$.value.sort);
+    res[5] = this.getTypes(this.filter$.value.type);
+    res[6] = this.getStatus(this.filter$.value.status);
+    console.log(res);
+    return res.reduce((acc, curr) => {
+      if (curr == '') {
+        return acc;
+      }
+      if (acc == '') {
+        return curr;
+      }
+      return acc + BooleanConjunctions.AND + curr;
+    });
   }
 }

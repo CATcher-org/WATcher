@@ -163,6 +163,10 @@ export class HeaderComponent implements OnInit {
   }
 
   viewBrowser() {
+    console.log(this.filtersService.getEncodedFilter());
+    console.log(this.githubService.getRepoURL());
+    const encoded_filter_params = this.filtersService.getEncodedFilter();
+    window.open('https://github.com/'.concat(this.githubService.getRepoURL()).concat('/issues?q=').concat(encoded_filter_params));
     if (this.viewService.currentView === View.activityDashboard) {
       window.open(`https://github.com/${this.viewService.currentRepo.owner}/${this.viewService.currentRepo.name}/pulse`);
       return;
