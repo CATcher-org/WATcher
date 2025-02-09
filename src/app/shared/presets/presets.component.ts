@@ -8,6 +8,7 @@ import { LoggingService } from '../../core/services/logging.service';
 import { PresetsService } from '../../core/services/presets.services';
 import { ViewService } from '../../core/services/view.service';
 import { PresetsSavePromptComponent } from './presets-save-prompt/presets-save-prompt.component';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 export interface DialogData {
   label: string;
@@ -25,24 +26,29 @@ export class PresetsComponent implements OnInit, OnDestroy {
   constructor(
     private logger: LoggingService,
     public dialog: MatDialog,
-    private presetsService: PresetsService,
+    public presetsService: PresetsService,
     private viewService: ViewService
   ) {}
 
   selected = '';
-
-  isChecked = false;
-
+  public isChecked = false;
   label = '';
-
-  availablePresets: Preset[] = [];
-
-  selectedPresetId = '';
   private unsubscribe$ = new Subject<void>();
+
+  selectedPresetId: number;
   /**
    * Ask the user to save
    */
-  promptTitle() {
+  onSaveToggleClicked(event: MatSlideToggleChange) {
+    if (!event.checked) {
+      this.presetsService.deleteCurrentPreset();
+      this.isChecked = false;
+    } else {
+      this.promptSave();
+    }
+  }
+
+  promptSave() {
     const dialogRef = this.dialog.open(PresetsSavePromptComponent, {
       width: '250px',
       data: {
@@ -71,10 +77,14 @@ export class PresetsComponent implements OnInit, OnDestroy {
   onOptionSelected(event: MatSelectChange) {
     const changeToPresetId = event.value;
     // todo: handle case where deselect
-    const preset = this.availablePresets.find((p) => p.id === changeToPresetId);
+    const preset = this.presetsService.availablePresets$.value.find((p) => p.id === changeToPresetId);
 
     if (preset) {
+      console.log('CHANGING TO PRESET,', { preset });
       this.presetsService.changeToPreset(preset);
+      this.isChecked = true; // NOTE: changeToPreset() calls updateFilters() which will
+      // then set isChecked to false.
+      // we override this here to keep the checkbox checked.
     } else {
       this.logger.warn(`PresetComponent: Preset with id ${changeToPresetId} not found`);
     }
@@ -82,18 +92,21 @@ export class PresetsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // this.availablePresets = this.presetsService.getSavedPresetsForCurrentRepo(this.viewService.currentRepo);
-    this.presetsService.availablePresets$.pipe(takeUntil(this.unsubscribe$)).subscribe((availablePresets) => {
-      // Optionally filter them by the current repo
-
-      this.availablePresets = availablePresets;
-    });
-
-    // For an initial fetch (in case you have data from the start)
-    this.availablePresets = this.presetsService.getSavedPresetsForCurrentRepo(this.viewService.currentRepo);
+    // this.presetsService.availablePresets$.pipe(takeUntil(this.unsubscribe$)).subscribe((availablePresets) => {
+    //   // Optionally filter them by the current repo
+    //   this.availablePresets = availablePresets;
+    // });
+    // // For an initial fetch (in case you have data from the start)
+    // this.availablePresets = this.presetsService.getSavedPresetsForCurrentRepo(this.viewService.currentRepo);
   }
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+  }
+
+  // on any modifications, reset the selected preset
+  onFilterChange() {
+    this.isChecked = false;
   }
 }

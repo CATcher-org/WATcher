@@ -56,6 +56,10 @@ export class Repo {
 
     return false;
   }
+
+  public static fromObject(object: any): Repo {
+    return new Repo(object.owner, object.name);
+  }
 }
 
 const EMPTY_REPO = new Repo('', '');

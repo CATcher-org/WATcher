@@ -101,6 +101,14 @@ export class FiltersService {
   private previousMilestonesLength = 0;
   private previousAssigneesLength = 0;
 
+  /**
+   * Create a filter from a plain JSON object.
+   *
+   * TODO: https://github.com/CATcher-org/WATcher/issues/405
+   *
+   * @param object The object to create from e.g. from LocalStorage
+   * @returns
+   */
   static fromObject(object: any): Filter {
     console.log({ object });
     const filter: Filter = {
@@ -117,6 +125,70 @@ export class FiltersService {
     };
 
     return filter;
+  }
+
+  /**
+   * Checks to see if two filters are equal.
+   * TODO: https://github.com/CATcher-org/WATcher/issues/405
+   * @param a
+   * @param b
+   * @returns
+   */
+  public static isEqual(a: Filter, b: Filter): boolean {
+    // Compare simple scalar fields
+    if (a.title !== b.title) return false;
+    if (a.type !== b.type) return false;
+    if (a.itemsPerPage !== b.itemsPerPage) return false;
+
+    // Compare arrays ignoring order
+    if (!FiltersService.haveSameElements(a.status, b.status)) return false;
+    if (!FiltersService.haveSameElements(a.labels, b.labels)) return false;
+    if (!FiltersService.haveSameElements(a.milestones, b.milestones)) return false;
+    if (!FiltersService.haveSameElements(a.assignees, b.assignees)) return false;
+
+    // Compare sets
+    if (!FiltersService.areSetsEqual(a.hiddenLabels, b.hiddenLabels)) return false;
+    if (!FiltersService.areSetsEqual(a.deselectedLabels, b.deselectedLabels)) return false;
+
+    // Compare Angular Material Sort (shallow comparison is enough)
+    if (!FiltersService.compareMatSort(a.sort, b.sort)) return false;
+
+    return true;
+  }
+
+  /**
+   * Returns true if two arrays contain exactly the same elements (ignoring order).
+   */
+  private static haveSameElements(arr1: string[], arr2: string[]): boolean {
+    if (arr1.length !== arr2.length) return false;
+    const sorted1 = [...arr1].sort();
+    const sorted2 = [...arr2].sort();
+    return sorted1.every((val, idx) => val === sorted2[idx]);
+  }
+
+  /**
+   * Returns true if two sets contain exactly the same elements.
+   *
+   * TODO: https://github.com/CATcher-org/WATcher/issues/405
+   */
+  private static areSetsEqual(set1: Set<string>, set2: Set<string>): boolean {
+    if (set1.size !== set2.size) return false;
+    for (const item of set1) {
+      if (!set2.has(item)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Compare two Angular Material Sort objects for equality.
+   *
+   * TODO: https://github.com/CATcher-org/WATcher/issues/405
+   */
+  private static compareMatSort(s1: Sort, s2: Sort): boolean {
+    // Both 'active' and 'direction' are simple scalar fields
+    return s1.active === s2.active && s1.direction === s2.direction;
   }
 
   private pushFiltersToUrl(): void {

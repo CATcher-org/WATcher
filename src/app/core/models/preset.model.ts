@@ -13,17 +13,17 @@ export class Preset {
   id: string; // current timestamp in ms as string
 
   /** Creates a new Preset */
-  constructor(repo: Repo, filter: Filter, label: string) {
+  constructor(repo: Repo, filter: Filter, label: string, id = Date.now().toString()) {
     this.repo = repo;
     this.filter = filter;
     this.label = label;
-    this.id = Date.now().toString();
+    this.id = id;
   }
 
   static fromObject(object: any): Preset {
-    const repo = object.repo;
+    const repo = Repo.fromObject(object.repo);
     const filter = FiltersService.fromObject(object.filter);
     const label = object.label;
-    return new Preset(repo, filter, label);
+    return new Preset(repo, filter, label, object.id);
   }
 }

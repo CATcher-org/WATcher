@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Preset } from '../models/preset.model';
 import { Repo } from '../models/repo.model';
@@ -8,11 +8,11 @@ import { LoggingService } from './logging.service';
 @Injectable({
   providedIn: 'root'
 })
-export class PresetsService {
+export class PresetsService implements OnInit {
   static readonly KEY_NAME = 'savedPresets';
 
   savedPresets = new Map<string, Preset[]>();
-  currentPreset = Preset;
+  currentPreset: Preset;
 
   public availablePresets$ = new BehaviorSubject<Preset[]>([]);
 
@@ -42,6 +42,25 @@ export class PresetsService {
     }
 
     this.logger.info(`PresetsService: Loaded presets from local storage`, this.savedPresets);
+  }
+
+  ngOnInit(): void {
+    // subscribe to the filters.
+    // if the filters change AND it's not a preset, then the currentPreset should be undefined
+    this.filter.filter$.subscribe((filter) => {
+      // if we're already in a preset, don't run
+      if (this.currentPreset) {
+        return;
+      } // prevents infinite loop when preset applies filters --> this runs --> preset is updated again
+      const preset = this.availablePresets$.value.find((p) => FiltersService.isEqual(p.filter, filter));
+
+      if (!preset) {
+        this.currentPreset = undefined;
+      } else {
+        console.log('Preset found', { filter });
+        this.currentPreset = preset;
+      }
+    });
   }
 
   /**
@@ -78,7 +97,11 @@ export class PresetsService {
 
     this.logger.info(`PresetsService: Saved preset for ${repoKey}`);
 
+    this.availablePresets$.next(presets);
+
     this.writeSavedPresets();
+
+    this.changeToPreset(preset);
   }
 
   private writeSavedPresets() {
@@ -98,5 +121,21 @@ export class PresetsService {
     console.log({ f: preset.filter });
 
     this.filter.updateFilters(preset.filter);
+    this.currentPreset = preset;
+  }
+
+  public deleteCurrentPreset() {
+    const repoKey = this.currentPreset.repo.toString();
+    const presets = this.savedPresets.get(repoKey) || [];
+
+    const newPresets = presets.filter((p) => p.id !== this.currentPreset.id);
+    this.savedPresets.set(repoKey, newPresets);
+
+    this.availablePresets$.next(newPresets);
+
+    console.log({ repoKey, presets, newPresets });
+    this.currentPreset = undefined;
+
+    this.writeSavedPresets();
   }
 }
