@@ -1,0 +1,10 @@
+.full-width {
+  width: 100%;
+}
+
+.footer-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.25rem;
+}

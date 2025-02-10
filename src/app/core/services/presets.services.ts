@@ -8,11 +8,11 @@ import { LoggingService } from './logging.service';
 @Injectable({
   providedIn: 'root'
 })
-export class PresetsService implements OnInit {
+export class PresetsService {
   static readonly KEY_NAME = 'savedPresets';
 
   savedPresets = new Map<string, Preset[]>();
-  currentPreset: Preset;
+  currentPreset: Preset = undefined;
 
   public availablePresets$ = new BehaviorSubject<Preset[]>([]);
 
@@ -42,22 +42,16 @@ export class PresetsService implements OnInit {
     }
 
     this.logger.info(`PresetsService: Loaded presets from local storage`, this.savedPresets);
-  }
 
-  ngOnInit(): void {
-    // subscribe to the filters.
-    // if the filters change AND it's not a preset, then the currentPreset should be undefined
     this.filter.filter$.subscribe((filter) => {
-      // if we're already in a preset, don't run
-      if (this.currentPreset) {
-        return;
-      } // prevents infinite loop when preset applies filters --> this runs --> preset is updated again
+      console.log({ filter });
+      // check to see if there is a preset that matches this set of filters
       const preset = this.availablePresets$.value.find((p) => FiltersService.isEqual(p.filter, filter));
-
       if (!preset) {
+        this.logger.info(`PresetsService: Could not find a matching preset`);
         this.currentPreset = undefined;
       } else {
-        console.log('Preset found', { filter });
+        this.logger.info(`PresetsService: Found a matching preset`, preset);
         this.currentPreset = preset;
       }
     });
@@ -85,12 +79,11 @@ export class PresetsService implements OnInit {
    * @param repo The repo this preset is for. TODO: Do we want to just reference the repo object?
    * @param preset The preset to save. TODO: Do we want to just reference the filter object?
    */
-  public savePreset(repo: Repo, label: string) {
+  public savePreset(repo: Repo, label: string): Preset {
     const repoKey = repo.toString();
     const presets = this.savedPresets.get(repoKey) || [];
     const filter = this.filter.filter$.value;
 
-    console.log('Saved filter', { filter });
     const preset = new Preset(repo, filter, label);
     presets.push(preset);
     this.savedPresets.set(repoKey, presets); // update the existing presets
@@ -102,6 +95,8 @@ export class PresetsService implements OnInit {
     this.writeSavedPresets();
 
     this.changeToPreset(preset);
+
+    return preset;
   }
 
   private writeSavedPresets() {
@@ -118,8 +113,6 @@ export class PresetsService implements OnInit {
     // TODO: move PresetViews to this service
     this.filter.updatePresetView('custom');
 
-    console.log({ f: preset.filter });
-
     this.filter.updateFilters(preset.filter);
     this.currentPreset = preset;
   }
@@ -133,7 +126,6 @@ export class PresetsService implements OnInit {
 
     this.availablePresets$.next(newPresets);
 
-    console.log({ repoKey, presets, newPresets });
     this.currentPreset = undefined;
 
     this.writeSavedPresets();

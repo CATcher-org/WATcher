@@ -31,18 +31,17 @@ export class PresetsComponent implements OnInit, OnDestroy {
   ) {}
 
   selected = '';
-  public isChecked = false;
-  label = '';
+  // public isChecked = false;
   private unsubscribe$ = new Subject<void>();
 
-  selectedPresetId: number;
+  // selectedPresetId: string;
   /**
    * Ask the user to save
    */
   onSaveToggleClicked(event: MatSlideToggleChange) {
     if (!event.checked) {
       this.presetsService.deleteCurrentPreset();
-      this.isChecked = false;
+      // this.isChecked = false;
     } else {
       this.promptSave();
     }
@@ -50,44 +49,48 @@ export class PresetsComponent implements OnInit, OnDestroy {
 
   promptSave() {
     const dialogRef = this.dialog.open(PresetsSavePromptComponent, {
-      width: '250px',
-      data: {
-        label: this.label
-      }
+      width: '400px'
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log('The dialog was closed');
-
-      console.log({ result });
-
       if (result?.action === 'confirm') {
         // save the filter
         // get the URL
         // set in localstorage using filters-save.services.ts
-        this.presetsService.savePreset(this.viewService.currentRepo, result.label); // TODO: figure out why i can't use this.label.
+        const preset = this.presetsService.savePreset(this.viewService.currentRepo, result.data);
+        // update the dropdown to autoselect the new preset
+        // this.selectedPresetId = preset.id
       } else {
         // reset the label
-        this.isChecked = false;
+        // this.isChecked = false;
       }
     });
   }
 
   // on select
   onOptionSelected(event: MatSelectChange) {
-    const changeToPresetId = event.value;
-    // todo: handle case where deselect
-    const preset = this.presetsService.availablePresets$.value.find((p) => p.id === changeToPresetId);
-
+    const preset = event.value;
     if (preset) {
-      console.log('CHANGING TO PRESET,', { preset });
+      this.logger.info(`PresetComponent: Changing to preset`, preset);
       this.presetsService.changeToPreset(preset);
-      this.isChecked = true; // NOTE: changeToPreset() calls updateFilters() which will
+      // this.isChecked = true; // NOTE: changeToPreset() calls updateFilters() which will
       // then set isChecked to false.
       // we override this here to keep the checkbox checked.
     } else {
-      this.logger.warn(`PresetComponent: Preset with id ${changeToPresetId} not found`);
+      this.logger.warn(`PresetComponent: Preset not found`);
     }
+    // const changeToPresetId = event.value;
+    // // todo: handle case where deselect
+    // const preset = this.presetsService.availablePresets$.value.find((p) => p.id === changeToPresetId);
+
+    // if (preset) {
+    //   this.presetsService.changeToPreset(preset);
+    //   this.isChecked = true; // NOTE: changeToPreset() calls updateFilters() which will
+    //   // then set isChecked to false.
+    //   // we override this here to keep the checkbox checked.
+    // } else {
+    //   this.logger.warn(`PresetComponent: Preset with id ${changeToPresetId} not found`);
+    // }
   }
 
   ngOnInit(): void {
@@ -107,6 +110,6 @@ export class PresetsComponent implements OnInit, OnDestroy {
 
   // on any modifications, reset the selected preset
   onFilterChange() {
-    this.isChecked = false;
+    // this.isChecked = false;
   }
 }

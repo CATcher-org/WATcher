@@ -1,12 +1,14 @@
-<h1 mat-dialog-title>Hi there!</h1>
-<div mat-dialog-content>
-  <p>What's your favorite animal?</p>
-  <mat-form-field>
-    <mat-label>Favorite Animal</mat-label>
-    <input matInput [(ngModel)]="data.label" />
-  </mat-form-field>
-</div>
-<div mat-dialog-actions>
-  <button mat-button [mat-dialog-close]="{ action: 'cancel' }">Cancel</button>
-  <button mat-button [mat-dialog-close]="{ action: 'confirm', label: data.label }">Save</button>
-</div>
+<form (ngSubmit)="onSubmit($event)" [formGroup]="form">
+  <h1 mat-dialog-title>Save new preset</h1>
+  <div mat-dialog-content>
+    <p>Please enter a name for your preset.</p>
+    <mat-form-field class="full-width">
+      <mat-label>Name</mat-label>
+      <input formControlName="label" name="label" matInput required />
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions class="footer-buttons">
+    <button mat-button [mat-dialog-close]="{ action: 'cancel' }">Cancel</button>
+    <button type="submit" mat-button>Save</button>
+  </div>
+</form>

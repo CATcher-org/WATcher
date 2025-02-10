@@ -3,7 +3,7 @@
   flex-direction: row;
   justify-content: end;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 /* Note: deprecated - find a better way in future */

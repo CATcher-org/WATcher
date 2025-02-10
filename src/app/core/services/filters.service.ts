@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { ComponentFactoryResolver, Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, pipe } from 'rxjs';
@@ -309,6 +309,7 @@ export class FiltersService {
   }
 
   updateFilters(newFilters: Partial<Filter>): void {
+    console.log({ newFilters }, 'Updating filters');
     const nextDropdownFilter: Filter = {
       ...this.filter$.value,
       ...newFilters
