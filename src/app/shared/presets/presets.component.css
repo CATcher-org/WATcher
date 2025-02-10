@@ -5,9 +5,3 @@
   align-items: center;
   gap: 1.25rem;
 }
-
-/* Note: deprecated - find a better way in future */
-:host ::ng-deep .mat-form-field-infix {
-  /* Remove the top so that the elements look in line */
-  /* border-top: 0; */
-}
