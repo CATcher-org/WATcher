@@ -1,7 +1,9 @@
 <div class="wrapper">
-  <mat-slide-toggle [(ngModel)]="!!this.presetsService.currentPreset" (change)="onSaveToggleClicked($event)" labelPosition="before"
+  <!-- <mat-slide-toggle [(ngModel)]="!!this.presetsService.currentPreset" (change)="onSaveToggleClicked($event)" labelPosition="before"
     >Save your filters</mat-slide-toggle
-  >
+  > -->
+  <button mat-button color="warn" *ngIf="!!this.presetsService.currentPreset" (click)="onSaveButtonClicked()">Delete</button>
+  <button mat-raised-button color="primary" *ngIf="!this.presetsService.currentPreset" (click)="onSaveButtonClicked()">Save</button>
   <mat-form-field appearance="standard">
     <mat-label>Current preset</mat-label>
     <mat-select [(ngModel)]="this.presetsService.currentPreset" (selectionChange)="onOptionSelected($event)">

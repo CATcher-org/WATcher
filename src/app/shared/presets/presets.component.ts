@@ -38,8 +38,17 @@ export class PresetsComponent implements OnInit, OnDestroy {
   /**
    * Ask the user to save
    */
-  onSaveToggleClicked(event: MatSlideToggleChange) {
-    if (!event.checked) {
+  // onSaveToggleClicked(event: MatSlideToggleChange) {
+  //   if (!event.checked) {
+  //     this.presetsService.deleteCurrentPreset();
+  //     // this.isChecked = false;
+  //   } else {
+  //     this.promptSave();
+  //   }
+  // }
+
+  onSaveButtonClicked() {
+    if (this.presetsService.currentPreset) {
       this.presetsService.deleteCurrentPreset();
       // this.isChecked = false;
     } else {
