@@ -1,6 +1,7 @@
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { Group } from '../../core/models/github/group.interface';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-hidden-groups',
@@ -14,7 +15,15 @@ export class HiddenGroupsComponent {
   @ViewChild('assigneeCard') assigneeCardTemplate: TemplateRef<any>;
   @ViewChild('milestoneCard') milestoneCardTemplate: TemplateRef<any>;
 
+  private currentCardTemplate$ = new BehaviorSubject<TemplateRef<any>>(null);
+
   constructor(public groupingContextService: GroupingContextService) {}
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.currentCardTemplate$.next(this.getCardTemplate());
+    });
+  }
 
   getCardTemplate(): TemplateRef<any> {
     switch (this.groupingContextService.currGroupBy) {
