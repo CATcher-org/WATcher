@@ -1,7 +1,7 @@
+import { BehaviorSubject } from 'rxjs';
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { Group } from '../../core/models/github/group.interface';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-hidden-groups',
