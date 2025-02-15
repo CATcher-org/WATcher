@@ -132,6 +132,7 @@ export class ViewService {
     const isValidRepository = await this.githubService.isRepositoryPresent(owner, repo).toPromise();
     if (!isValidRepository) {
       this.isChangingRepo.next(false);
+      this.repoUrlCacheService.removeFromSuggestions(owner + '/' + repo);
       throw new Error(ErrorMessageService.repositoryNotPresentMessage());
     }
 
