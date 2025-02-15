@@ -1,5 +1,5 @@
+import { AfterViewInit, Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { Group } from '../../core/models/github/group.interface';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 
@@ -8,7 +8,7 @@ import { GroupBy, GroupingContextService } from '../../core/services/grouping/gr
   templateUrl: './hidden-groups.component.html',
   styleUrls: ['./hidden-groups.component.css']
 })
-export class HiddenGroupsComponent {
+export class HiddenGroupsComponent implements AfterViewInit {
   @Input() groups: Group[] = [];
 
   @ViewChild('defaultCard') defaultCardTemplate: TemplateRef<any>;
