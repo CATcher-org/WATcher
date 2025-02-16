@@ -454,6 +454,7 @@ export class FiltersService {
       }
       return acc + BooleanConjunctions.AND + '(' + curr + ')';
     }, '');
+
     return '(' + final + ')';
   }
 }
