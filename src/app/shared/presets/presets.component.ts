@@ -59,6 +59,8 @@ export class PresetsComponent implements OnInit, OnDestroy {
   promptSave() {
     const dialogRef = this.dialog.open(PresetsSavePromptComponent, {
       width: '400px'
+      // height: '500px'
+      // minHeight: "400px"
     });
 
     dialogRef.afterClosed().subscribe((result) => {

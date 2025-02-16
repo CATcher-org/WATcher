@@ -8,3 +8,7 @@
   justify-content: flex-end;
   gap: 1.25rem;
 }
+
+.mat-dialog-container {
+  overflow-y: hidden;
+}

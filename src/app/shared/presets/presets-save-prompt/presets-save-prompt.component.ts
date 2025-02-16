@@ -18,7 +18,8 @@ export class PresetsSavePromptComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      label: ['', Validators.required]
+      label: ['', Validators.required],
+      isGlobal: [false]
     });
   }
 
@@ -26,7 +27,8 @@ export class PresetsSavePromptComponent implements OnInit {
     event.preventDefault();
 
     if (this.form.valid) {
-      this.dialogRef.close({ action: 'confirm', data: this.form.value.label });
+      console.log(this.form.value);
+      this.dialogRef.close({ action: 'confirm', data: this.form.value });
     }
     // this.dialogRef.close({ action: 'confirm' });
   }

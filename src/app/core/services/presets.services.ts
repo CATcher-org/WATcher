@@ -15,6 +15,7 @@ export class PresetsService {
   currentPreset: Preset = undefined;
 
   public availablePresets$ = new BehaviorSubject<Preset[]>([]);
+  public availableGlobalPresets$ = new BehaviorSubject<Preset[]>([]);
 
   constructor(private logger: LoggingService, private filter: FiltersService) {
     // this.suggestions = JSON.parse(window.localStorage.getItem(FiltersSaveService.KEY_NAME)) || [];
@@ -79,24 +80,49 @@ export class PresetsService {
    * @param repo The repo this preset is for. TODO: Do we want to just reference the repo object?
    * @param preset The preset to save. TODO: Do we want to just reference the filter object?
    */
-  public savePreset(repo: Repo, label: string): Preset {
+  public savePreset(
+    repo: Repo,
+    data: {
+      label: string;
+      isGlobal: boolean;
+    }
+  ): Preset {
     const repoKey = repo.toString();
-    const presets = this.savedPresets.get(repoKey) || [];
+    const { label, isGlobal } = data;
     const filter = this.filter.filter$.value;
 
-    const preset = new Preset(repo, filter, label);
-    presets.push(preset);
-    this.savedPresets.set(repoKey, presets); // update the existing presets
+    // For Global Presets, we save them under the "global" key.
+    if (isGlobal) {
+      const globalPresets = this.savedPresets.get('global') || [];
 
-    this.logger.info(`PresetsService: Saved preset for ${repoKey}`);
+      const preset = new Preset({ repo, filter, label, id: Date.now().toString(), isGlobal });
+      globalPresets.push(preset);
+      this.savedPresets.set('global', globalPresets); // update the existing presets
 
-    this.availablePresets$.next(presets);
+      this.logger.info(`PresetsService: Saved global preset`);
 
-    this.writeSavedPresets();
+      this.availableGlobalPresets$.next(globalPresets);
 
-    this.changeToPreset(preset);
+      this.writeSavedPresets();
 
-    return preset;
+      this.changeToPreset(preset);
+      return preset;
+    } else {
+      const presets = this.savedPresets.get(repoKey) || [];
+
+      const preset = new Preset({ repo, filter, label, id: Date.now().toString(), isGlobal });
+      presets.push(preset);
+      this.savedPresets.set(repoKey, presets); // update the existing presets
+
+      this.logger.info(`PresetsService: Saved preset for ${repoKey}`);
+
+      this.availablePresets$.next(presets);
+
+      this.writeSavedPresets();
+
+      this.changeToPreset(preset);
+      return preset;
+    }
   }
 
   private writeSavedPresets() {
@@ -118,14 +144,22 @@ export class PresetsService {
   }
 
   public deleteCurrentPreset() {
-    const repoKey = this.currentPreset.repo.toString();
-    const presets = this.savedPresets.get(repoKey) || [];
+    if (this.currentPreset.isGlobal) {
+      const globalPresets = this.savedPresets.get('global') || [];
 
-    const newPresets = presets.filter((p) => p.id !== this.currentPreset.id);
-    this.savedPresets.set(repoKey, newPresets);
+      const newPresets = globalPresets.filter((p) => p.id !== this.currentPreset.id);
+      this.savedPresets.set('global', newPresets);
 
-    this.availablePresets$.next(newPresets);
+      this.availableGlobalPresets$.next(newPresets);
+    } else {
+      const repoKey = this.currentPreset.repo.toString();
+      const presets = this.savedPresets.get(repoKey) || [];
 
+      const newPresets = presets.filter((p) => p.id !== this.currentPreset.id);
+      this.savedPresets.set(repoKey, newPresets);
+
+      this.availablePresets$.next(newPresets);
+    }
     this.currentPreset = undefined;
 
     this.writeSavedPresets();
