@@ -9,7 +9,7 @@ export class Preset {
   static VERSION = 1;
   version = Preset.VERSION;
   repo: Repo;
-  filter: Partial<Filter>;
+  filter: Filter;
   label: string;
   id: string; // current timestamp in ms as string
 
@@ -57,9 +57,41 @@ export class Preset {
 
   static fromObject(object: any): Preset {
     const repo = Repo.fromObject(object.repo);
-    const filter = FiltersService.fromObject(object.filter);
+    const isGlobal = object.isGlobal || false;
+    const filter = FiltersService.fromObject(object.filter, isGlobal);
     const label = object.label;
     const version = object.version || -1;
+
     return new Preset({ repo, filter, label, id: object.id, version, isGlobal: object.isGlobal });
+  }
+
+  public toText(): string {
+    if (this.isGlobal) {
+      return this.summarizeGlobal();
+    } else {
+      return this.summarize();
+    }
+  }
+
+  /**
+   * Returns the filter as a summary string.
+   *
+   * TODO: https://github.com/CATcher-org/WATcher/issues/405
+   * This should be part of the filter model.
+   */
+  private summarize() {
+    const filter = this.filter;
+    return `status:${filter.status} + type:${filter.type} + sort:${filter.sort.active}-${filter.sort.direction} + labels:${filter.labels} + milestones:${filter.milestones} + hiddenLabels:${filter.hiddenLabels} + deselectedLabels:${filter.deselectedLabels} + itemsPerPage:${filter.itemsPerPage} + assignees:${filter.assignees}`;
+  }
+
+  /**
+   * Returns the filter as a summary string.
+   *
+   * TODO: https://github.com/CATcher-org/WATcher/issues/405
+   * This should be part of the filter model.
+   */
+  private summarizeGlobal() {
+    const filter = this.filter;
+    return `status:${filter.status} + type:${filter.type} + sort:${filter.sort.active}-${filter.sort.direction} + itemsPerPage:${filter.itemsPerPage}`;
   }
 }

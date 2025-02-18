@@ -9,6 +9,7 @@ import { Milestone } from '../models/milestone.model';
 import { AssigneeService } from './assignee.service';
 import { LoggingService } from './logging.service';
 import { MilestoneService } from './milestone.service';
+import { Preset } from '../models/preset.model';
 
 export type Filter = {
   title: string;
@@ -109,8 +110,9 @@ export class FiltersService {
    * @param object The object to create from e.g. from LocalStorage
    * @returns
    */
-  static fromObject(object: any): Filter {
+  static fromObject(object: any, isGlobal = false): Filter {
     console.log({ object });
+
     const filter: Filter = {
       title: object.title,
       status: object.status,
@@ -124,24 +126,38 @@ export class FiltersService {
       assignees: object.assignees
     };
 
+    if (isGlobal) {
+      filter.milestones = [];
+      filter.assignees = [];
+      filter.labels = [];
+      filter.hiddenLabels = new Set();
+      filter.deselectedLabels = new Set();
+    }
+
     return filter;
   }
 
   /**
    * Checks to see if two filters are equal.
    * TODO: https://github.com/CATcher-org/WATcher/issues/405
-   * @param a
-   * @param b
+   * @param a The filter that is set in the app
+   * @param b The filter that comes from saving a preset
    * @returns
    */
-  public static isEqual(a: Filter, b: Filter): boolean {
+  public static isPartOfPreset(a: Filter, preset: Preset): boolean {
+    // only compare if both objects have the key
     // Compare simple scalar fields
+    const b = preset.filter;
     if (a.title !== b.title) return false;
     if (a.type !== b.type) return false;
     if (a.itemsPerPage !== b.itemsPerPage) return false;
+    if (!FiltersService.haveSameElements(a.status, b.status)) return false;
+    // Compare Angular Material Sort (shallow comparison is enough)
+    if (!FiltersService.compareMatSort(a.sort, b.sort)) return false;
+
+    if (preset.isGlobal) return true;
 
     // Compare arrays ignoring order
-    if (!FiltersService.haveSameElements(a.status, b.status)) return false;
     if (!FiltersService.haveSameElements(a.labels, b.labels)) return false;
     if (!FiltersService.haveSameElements(a.milestones, b.milestones)) return false;
     if (!FiltersService.haveSameElements(a.assignees, b.assignees)) return false;
@@ -149,9 +165,6 @@ export class FiltersService {
     // Compare sets
     if (!FiltersService.areSetsEqual(a.hiddenLabels, b.hiddenLabels)) return false;
     if (!FiltersService.areSetsEqual(a.deselectedLabels, b.deselectedLabels)) return false;
-
-    // Compare Angular Material Sort (shallow comparison is enough)
-    if (!FiltersService.compareMatSort(a.sort, b.sort)) return false;
 
     return true;
   }

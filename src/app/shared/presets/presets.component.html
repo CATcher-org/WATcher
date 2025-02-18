@@ -5,9 +5,28 @@
   <mat-form-field appearance="standard">
     <mat-label>Current preset</mat-label>
     <mat-select [(ngModel)]="this.presetsService.currentPreset" (selectionChange)="onOptionSelected($event)">
-      <mat-option *ngFor="let preset of this.presetsService.availablePresets$.value" [value]="preset">
-        {{ preset.label }}
-      </mat-option>
+      <mat-optgroup [label]="'Global presets'">
+        <mat-option
+          *ngFor="let preset of this.presetsService.globalPresets$.value"
+          [value]="preset"
+          [matTooltip]="preset.toText()"
+          matTooltipPosition="left"
+        >
+          {{ preset.label }}
+        </mat-option>
+        <mat-option *ngIf="this.presetsService.globalPresets$.value.length == 0" [value]="undefined" disabled> -- none -- </mat-option>
+      </mat-optgroup>
+      <mat-optgroup [label]="'Repo-specific presets'">
+        <mat-option
+          *ngFor="let preset of this.presetsService.availablePresets$.value"
+          [value]="preset"
+          [matTooltip]="preset.toText()"
+          matTooltipPosition="left"
+        >
+          {{ preset.label }}
+        </mat-option>
+        <mat-option *ngIf="this.presetsService.availablePresets$.value.length == 0" [value]="undefined" disabled> -- none -- </mat-option>
+      </mat-optgroup>
     </mat-select>
   </mat-form-field>
   <button mat-button color="warn" *ngIf="!!this.presetsService.currentPreset" (click)="onSaveButtonClicked()">Delete</button>

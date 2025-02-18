@@ -2,7 +2,7 @@ import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Preset } from '../models/preset.model';
 import { Repo } from '../models/repo.model';
-import { FiltersService } from './filters.service';
+import { Filter, FiltersService } from './filters.service';
 import { LoggingService } from './logging.service';
 
 @Injectable({
@@ -10,24 +10,22 @@ import { LoggingService } from './logging.service';
 })
 export class PresetsService {
   static readonly KEY_NAME = 'savedPresets';
+  static readonly GLOBAL_NAME = 'globalPresets';
 
-  savedPresets = new Map<string, Preset[]>();
+  savedPresets = new Map<string, Preset[]>(); // Complete list of all saved presets, keyed by repo. The Global presets are also saved in this Map, keyed by "global".
   currentPreset: Preset = undefined;
 
-  public availablePresets$ = new BehaviorSubject<Preset[]>([]);
-  public availableGlobalPresets$ = new BehaviorSubject<Preset[]>([]);
+  public availablePresets$ = new BehaviorSubject<Preset[]>([]); // Repository-specific presets available for the current repo
+  public globalPresets$ = new BehaviorSubject<Preset[]>([]); // Global presets available for all repos
 
   constructor(private logger: LoggingService, private filter: FiltersService) {
-    // this.suggestions = JSON.parse(window.localStorage.getItem(FiltersSaveService.KEY_NAME)) || [];
+    // Load saved presets from local storage
+    const rawRepoPresets = window.localStorage.getItem(PresetsService.KEY_NAME);
+    const rawGlobalPresets = window.localStorage.getItem(PresetsService.GLOBAL_NAME);
 
-    // if savedFilters doesn't exist, initialize it to an empty object
-    // if (!window.localStorage.getItem(PresetsService.KEY_NAME)) {
-    //   window.localStorage.setItem(PresetsService.KEY_NAME, JSON.stringify([]));
-    // }
-
-    const rawData = window.localStorage.getItem(PresetsService.KEY_NAME);
-    if (rawData) {
-      const mapArray = JSON.parse(rawData);
+    // convert the raw json into a map of presets
+    if (rawRepoPresets) {
+      const mapArray = JSON.parse(rawRepoPresets);
       const unTypedMap = new Map<string, any[]>(mapArray); // from JSON.parse(...)
       const typedMap = new Map<string, Preset[]>();
 
@@ -42,19 +40,37 @@ export class PresetsService {
       this.savedPresets = new Map<string, Preset[]>();
     }
 
+    // convert the global presets into an array of presets
+    if (rawGlobalPresets) {
+      const globalPresets = JSON.parse(rawGlobalPresets).map((obj) => Preset.fromObject(obj));
+      this.globalPresets$.next(globalPresets);
+    } else {
+      this.globalPresets$.next([]);
+    }
+
     this.logger.info(`PresetsService: Loaded presets from local storage`, this.savedPresets);
 
+    // Initialize subscription to filters to check if this is a global preset or a local preset
     this.filter.filter$.subscribe((filter) => {
-      console.log({ filter });
-      // check to see if there is a preset that matches this set of filters
-      const preset = this.availablePresets$.value.find((p) => FiltersService.isEqual(p.filter, filter));
-      if (!preset) {
-        this.logger.info(`PresetsService: Could not find a matching preset`);
-        this.currentPreset = undefined;
-      } else {
-        this.logger.info(`PresetsService: Found a matching preset`, preset);
-        this.currentPreset = preset;
+      // check to see if it's a local preset first
+      const localPreset = this.availablePresets$.value.find((p) => FiltersService.isPartOfPreset(filter, p));
+      if (localPreset) {
+        this.logger.info(`PresetsService: Found a matching local preset`, localPreset);
+        this.currentPreset = localPreset;
+
+        return;
       }
+
+      const globalPreset = this.globalPresets$.value.find((p) => FiltersService.isPartOfPreset(filter, p));
+      if (globalPreset) {
+        this.logger.info(`PresetsService: Found a matching global preset`, globalPreset);
+        this.currentPreset = globalPreset;
+
+        return;
+      }
+
+      // No matching preset
+      this.currentPreset = undefined;
     });
   }
 
@@ -72,7 +88,9 @@ export class PresetsService {
   }
 
   getSavedPresetsForCurrentRepo(repo: Repo): Preset[] {
-    return this.savedPresets.get(repo.toString()) || [];
+    // concat global presets with repo-specific presets
+    const repoPresets = this.savedPresets.get(repo.toString()) || [];
+    return repoPresets;
   }
 
   /**
@@ -93,15 +111,13 @@ export class PresetsService {
 
     // For Global Presets, we save them under the "global" key.
     if (isGlobal) {
-      const globalPresets = this.savedPresets.get('global') || [];
-
       const preset = new Preset({ repo, filter, label, id: Date.now().toString(), isGlobal });
-      globalPresets.push(preset);
-      this.savedPresets.set('global', globalPresets); // update the existing presets
+      const existingGlobalPresets = this.globalPresets$.value;
+      const globalPresets = [...existingGlobalPresets, preset];
+      // this.savedPresets.set('global', globalPresets); // update the existing presets
 
       this.logger.info(`PresetsService: Saved global preset`);
-
-      this.availableGlobalPresets$.next(globalPresets);
+      this.globalPresets$.next(globalPresets);
 
       this.writeSavedPresets();
 
@@ -125,9 +141,13 @@ export class PresetsService {
     }
   }
 
+  /**
+   * Saves the current presets (held in savedPresets) to localStorage.
+   */
   private writeSavedPresets() {
     this.logger.info(`PresetsService: Saved to local storage`, this.savedPresets);
     window.localStorage.setItem(PresetsService.KEY_NAME, JSON.stringify(Array.from(this.savedPresets.entries())));
+    window.localStorage.setItem(PresetsService.GLOBAL_NAME, JSON.stringify(this.globalPresets$.value));
   }
 
   public getPresetById(repo: Repo, id: string): Preset | undefined {
@@ -139,18 +159,25 @@ export class PresetsService {
     // TODO: move PresetViews to this service
     this.filter.updatePresetView('custom');
 
+    if (preset.isGlobal) {
+      // delete the repo-specific filters
+      delete preset.filter.milestones;
+      delete preset.filter.assignees;
+      delete preset.filter.labels;
+      delete preset.filter.hiddenLabels;
+    }
+
     this.filter.updateFilters(preset.filter);
     this.currentPreset = preset;
   }
 
   public deleteCurrentPreset() {
     if (this.currentPreset.isGlobal) {
-      const globalPresets = this.savedPresets.get('global') || [];
+      const globalPresets = this.globalPresets$.value;
 
       const newPresets = globalPresets.filter((p) => p.id !== this.currentPreset.id);
-      this.savedPresets.set('global', newPresets);
 
-      this.availableGlobalPresets$.next(newPresets);
+      this.globalPresets$.next(newPresets);
     } else {
       const repoKey = this.currentPreset.repo.toString();
       const presets = this.savedPresets.get(repoKey) || [];
