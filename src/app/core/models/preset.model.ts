@@ -9,7 +9,7 @@ export class Preset {
   static VERSION = 1;
   version = Preset.VERSION;
   repo: Repo;
-  filter: Filter;
+  filter: Partial<Filter> | Filter;
   label: string;
   id: string; // current timestamp in ms as string
 
@@ -32,7 +32,7 @@ export class Preset {
     isGlobal = false
   }: {
     repo: Repo;
-    filter: Filter;
+    filter: Partial<Filter> | Filter;
     label: string;
     id?: string;
     version?: number;
@@ -41,14 +41,21 @@ export class Preset {
     this.repo = repo;
 
     if (isGlobal) {
-      filter.milestones = [];
-      filter.assignees = [];
-      filter.labels = [];
-      filter.hiddenLabels = new Set();
-      filter.deselectedLabels = new Set();
+      // filter.milestones = [];
+      // filter.assignees = [];
+      // filter.labels = [];
+      // filter.hiddenLabels = new Set();
+      // filter.deselectedLabels = new Set();
+      delete filter.milestones;
+      delete filter.assignees;
+      delete filter.labels;
+      delete filter.hiddenLabels;
+      delete filter.deselectedLabels;
+      this.filter = filter as Partial<Filter>;
+    } else {
+      this.filter = filter;
     }
 
-    this.filter = filter;
     this.label = label;
     this.id = id;
     this.version = version;

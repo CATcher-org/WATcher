@@ -107,7 +107,7 @@ export class PresetsService {
   ): Preset {
     const repoKey = repo.toString();
     const { label, isGlobal } = data;
-    const filter = this.filter.filter$.value;
+    const filter: Filter = { ...this.filter.filter$.value };
 
     // For Global Presets, we save them under the "global" key.
     if (isGlobal) {
@@ -116,7 +116,7 @@ export class PresetsService {
       const globalPresets = [...existingGlobalPresets, preset];
       // this.savedPresets.set('global', globalPresets); // update the existing presets
 
-      this.logger.info(`PresetsService: Saved global preset`);
+      this.logger.info(`PresetsService: Saved global preset`, { preset });
       this.globalPresets$.next(globalPresets);
 
       this.writeSavedPresets();
@@ -159,13 +159,13 @@ export class PresetsService {
     // TODO: move PresetViews to this service
     this.filter.updatePresetView('custom');
 
-    if (preset.isGlobal) {
-      // delete the repo-specific filters
-      delete preset.filter.milestones;
-      delete preset.filter.assignees;
-      delete preset.filter.labels;
-      delete preset.filter.hiddenLabels;
-    }
+    // if (preset.isGlobal) {
+    //   // delete the repo-specific filters
+    //   delete preset.filter.milestones;
+    //   delete preset.filter.assignees;
+    //   delete preset.filter.labels;
+    //   delete preset.filter.hiddenLabels;
+    // }
 
     this.filter.updateFilters(preset.filter);
     this.currentPreset = preset;

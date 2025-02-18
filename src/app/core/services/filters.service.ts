@@ -46,6 +46,8 @@ export class FiltersService {
     this.filter$.subscribe((filter: Filter) => {
       this.itemsPerPage = filter.itemsPerPage;
     });
+
+    console.log(`Initialized Filters to `, { filters: this.filter$.value });
   }
   public static readonly PRESET_VIEW_QUERY_PARAM_KEY = 'presetview';
   private itemsPerPage = 20;
@@ -110,31 +112,45 @@ export class FiltersService {
    * @param object The object to create from e.g. from LocalStorage
    * @returns
    */
-  static fromObject(object: any, isGlobal = false): Filter {
+  static fromObject(object: any, isGlobal = false): Partial<Filter> {
     console.log({ object });
 
-    const filter: Filter = {
-      title: object.title,
-      status: object.status,
-      type: object.type,
-      sort: object.sort,
-      labels: object.labels,
-      milestones: object.milestones,
-      hiddenLabels: new Set(Object.keys(object.hiddenLabels).length ? object.hiddenLabels : undefined),
-      deselectedLabels: new Set(Object.keys(object.deselectedLabels).length ? object.deselectedLabels : undefined),
-      itemsPerPage: object.itemsPerPage,
-      assignees: object.assignees
-    };
-
     if (isGlobal) {
-      filter.milestones = [];
-      filter.assignees = [];
-      filter.labels = [];
-      filter.hiddenLabels = new Set();
-      filter.deselectedLabels = new Set();
+      const filter: Partial<Filter> = {
+        title: object.title,
+        status: object.status,
+        type: object.type,
+        sort: object.sort,
+        itemsPerPage: object.itemsPerPage
+      };
+
+      return filter;
+    } else {
+      const filter: Filter = {
+        title: object.title,
+        status: object.status,
+        type: object.type,
+        sort: object.sort,
+        labels: object.labels,
+        milestones: object.milestones,
+        hiddenLabels: new Set(Object.keys(object.hiddenLabels).length ? object.hiddenLabels : undefined),
+        deselectedLabels: new Set(Object.keys(object.deselectedLabels).length ? object.deselectedLabels : undefined),
+        itemsPerPage: object.itemsPerPage,
+        assignees: object.assignees
+      };
+
+      return filter;
     }
 
-    return filter;
+    // if (isGlobal) {
+    //   filter.milestones = [];
+    //   filter.assignees = [];
+    //   filter.labels = [];
+    //   filter.hiddenLabels = new Set();
+    //   filter.deselectedLabels = new Set();
+    // }
+
+    // return filter;
   }
 
   /**
@@ -323,10 +339,12 @@ export class FiltersService {
 
   updateFilters(newFilters: Partial<Filter>): void {
     console.log({ newFilters }, 'Updating filters');
+    console.log({ oldFilters: this.filter$.value });
     const nextDropdownFilter: Filter = {
       ...this.filter$.value,
       ...newFilters
     };
+    console.log({ nextDropdownFilter });
     this.filter$.next(nextDropdownFilter);
     this.updatePresetViewFromFilters(newFilters);
     this.pushFiltersToUrl();
