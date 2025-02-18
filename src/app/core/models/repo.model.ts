@@ -5,14 +5,13 @@ import { ErrorMessageService } from '../services/error-message.service';
  * Repository url is owner/name.
  */
 export class Repo {
-  owner: string;
-  name: string;
-
   /** Creates a new Repo from owner and name strings. */
   constructor(owner: string, name: string) {
     this.owner = owner;
     this.name = name;
   }
+  owner: string;
+  name: string;
 
   /** Creates a new Repo from one repository url. */
   public static of(repoUrlInput: string) {
@@ -44,6 +43,10 @@ export class Repo {
     return formattedInput.split('/').slice(-2).join('/');
   }
 
+  public static fromObject(object: any): Repo {
+    return new Repo(object.owner, object.name);
+  }
+
   /** String representation of a Repo. */
   public toString(): string {
     return this.owner + '/' + this.name;
@@ -55,10 +58,6 @@ export class Repo {
     }
 
     return false;
-  }
-
-  public static fromObject(object: any): Repo {
-    return new Repo(object.owner, object.name);
   }
 }
 

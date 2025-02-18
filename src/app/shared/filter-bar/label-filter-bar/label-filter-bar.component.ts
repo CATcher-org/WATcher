@@ -26,7 +26,9 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
 
   constructor(private labelService: LabelService, private logger: LoggingService, private filtersService: FiltersService) {
     this.filtersService.filter$.subscribe((filter: Filter) => {
-      if (this.loaded == false) return;
+      if (this.loaded === false) {
+        return;
+      }
 
       this.selectedLabelNames = new Set<string>(filter.labels);
       this.deselectedLabelNames = filter.deselectedLabels;

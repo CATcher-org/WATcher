@@ -12,7 +12,7 @@ export class PresetsService {
   static readonly KEY_NAME = 'savedPresets';
   static readonly GLOBAL_NAME = 'globalPresets';
 
-  savedPresets = new Map<string, Preset[]>(); // Complete list of all saved presets, keyed by repo. The Global presets are also saved in this Map, keyed by "global".
+  savedPresets = new Map<string, Preset[]>(); // Complete list of all saved presets, keyed by repo.
   currentPreset: Preset = undefined;
 
   public availablePresets$ = new BehaviorSubject<Preset[]>([]); // Repository-specific presets available for the current repo

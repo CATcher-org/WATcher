@@ -6,10 +6,10 @@ import { OrderOptions, SortOptions, StatusOptions, TypeOptions } from '../consta
 import { GithubUser } from '../models/github-user.model';
 import { SimpleLabel } from '../models/label.model';
 import { Milestone } from '../models/milestone.model';
+import { Preset } from '../models/preset.model';
 import { AssigneeService } from './assignee.service';
 import { LoggingService } from './logging.service';
 import { MilestoneService } from './milestone.service';
-import { Preset } from '../models/preset.model';
 
 export type Filter = {
   title: string;
@@ -164,23 +164,45 @@ export class FiltersService {
     // only compare if both objects have the key
     // Compare simple scalar fields
     const b = preset.filter;
-    if (a.title !== b.title) return false;
-    if (a.type !== b.type) return false;
-    if (a.itemsPerPage !== b.itemsPerPage) return false;
-    if (!FiltersService.haveSameElements(a.status, b.status)) return false;
+    if (a.title !== b.title) {
+      return false;
+    }
+    if (a.type !== b.type) {
+      return false;
+    }
+    if (a.itemsPerPage !== b.itemsPerPage) {
+      return false;
+    }
+    if (!FiltersService.haveSameElements(a.status, b.status)) {
+      return false;
+    }
     // Compare Angular Material Sort (shallow comparison is enough)
-    if (!FiltersService.compareMatSort(a.sort, b.sort)) return false;
+    if (!FiltersService.compareMatSort(a.sort, b.sort)) {
+      return false;
+    }
 
-    if (preset.isGlobal) return true;
+    if (preset.isGlobal) {
+      return true;
+    }
 
     // Compare arrays ignoring order
-    if (!FiltersService.haveSameElements(a.labels, b.labels)) return false;
-    if (!FiltersService.haveSameElements(a.milestones, b.milestones)) return false;
-    if (!FiltersService.haveSameElements(a.assignees, b.assignees)) return false;
+    if (!FiltersService.haveSameElements(a.labels, b.labels)) {
+      return false;
+    }
+    if (!FiltersService.haveSameElements(a.milestones, b.milestones)) {
+      return false;
+    }
+    if (!FiltersService.haveSameElements(a.assignees, b.assignees)) {
+      return false;
+    }
 
     // Compare sets
-    if (!FiltersService.areSetsEqual(a.hiddenLabels, b.hiddenLabels)) return false;
-    if (!FiltersService.areSetsEqual(a.deselectedLabels, b.deselectedLabels)) return false;
+    if (!FiltersService.areSetsEqual(a.hiddenLabels, b.hiddenLabels)) {
+      return false;
+    }
+    if (!FiltersService.areSetsEqual(a.deselectedLabels, b.deselectedLabels)) {
+      return false;
+    }
 
     return true;
   }
@@ -189,7 +211,9 @@ export class FiltersService {
    * Returns true if two arrays contain exactly the same elements (ignoring order).
    */
   private static haveSameElements(arr1: string[], arr2: string[]): boolean {
-    if (arr1.length !== arr2.length) return false;
+    if (arr1.length !== arr2.length) {
+      return false;
+    }
     const sorted1 = [...arr1].sort();
     const sorted2 = [...arr2].sort();
     return sorted1.every((val, idx) => val === sorted2[idx]);
@@ -201,7 +225,9 @@ export class FiltersService {
    * TODO: https://github.com/CATcher-org/WATcher/issues/405
    */
   private static areSetsEqual(set1: Set<string>, set2: Set<string>): boolean {
-    if (set1.size !== set2.size) return false;
+    if (set1.size !== set2.size) {
+      return false;
+    }
     for (const item of set1) {
       if (!set2.has(item)) {
         return false;
