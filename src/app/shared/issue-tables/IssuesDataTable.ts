@@ -77,11 +77,12 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
             groupFilterAsGithubUser.filter((githubUser) => this.group?.equals(githubUser)).length !== 0 ||
             groupFilterAsMilestone.filter((milestone) => this.group?.equals(milestone)).length !== 0;
 
-          let data = <Issue[]>Object.values(this.issueService.issues$.getValue()).reverse();
-
           if (!isGroupInFilter) {
-            data = [];
+            this.count = 0;
+            return [];
           }
+
+          let data = <Issue[]>Object.values(this.issueService.issues$.getValue()).reverse();
 
           if (this.defaultFilter) {
             data = data.filter(this.defaultFilter);
