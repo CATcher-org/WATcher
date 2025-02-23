@@ -9,7 +9,7 @@
   "workspaceFolder": "/WATcher", // Set the workspace folder
   "workspaceMount": "source=${localWorkspaceFolder},target=${containerWorkspaceFolder},type=bind",
   "mounts": [
-    "source=watcher-node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
+    "source=WATcher-node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
   ],
   "runArgs": [
     "--name=WATcher-development" // Set the container name
@@ -24,7 +24,8 @@
       "extensions": [
         "graphql.vscode-graphql-syntax",
         "ms-playwright.playwright",
-        "github.vscode-github-actions"
+        "github.vscode-github-actions",
+        "eamodio.gitlens"
       ]
     }
   },
