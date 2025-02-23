@@ -8,18 +8,24 @@
   },
   "workspaceFolder": "/WATcher", // Set the workspace folder
   "workspaceMount": "source=${localWorkspaceFolder},target=${containerWorkspaceFolder},type=bind",
-  "mounts": ["source=watcher-node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume"],
+  "mounts": [
+    "source=watcher-node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
+  ],
   "runArgs": [
     "--name=WATcher-development" // Set the container name
   ],
   "onCreateCommand": "sudo chown -R node:node ${containerWorkspaceFolder}/*",
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "bash -c 'npm install --legacy-peer-deps --verbose'", // Install dependencies
-  "postStartCommand": "bash -c 'npm run ng:serve:web'", // Start the app
+  // "postCreateCommand": "npm install --legacy-peer-deps", // Install dependencies
+  // "postStartCommand": "npm run ng:serve:web", // Start the app
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
-      "extensions": ["graphql.vscode-graphql-syntax", "ms-playwright.playwright", "github.vscode-github-actions"]
+      "extensions": [
+        "graphql.vscode-graphql-syntax",
+        "ms-playwright.playwright",
+        "github.vscode-github-actions"
+      ]
     }
   },
   "containerEnv": {
