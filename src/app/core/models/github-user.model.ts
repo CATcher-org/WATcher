@@ -52,6 +52,22 @@ export class GithubUser implements RawGithubUser, Group {
     Object.assign(this, rawData);
   }
 
+  static fromUsername(username: string) {
+    return new GithubUser({
+      login: username,
+      avatar_url: '',
+      created_at: '',
+      html_url: '',
+      name: '',
+      node_id: '',
+      two_factor_authentication: false,
+      site_admin: false,
+      type: '',
+      updated_at: '',
+      url: ''
+    });
+  }
+
   equals(other: any) {
     if (!(other instanceof GithubUser)) {
       return false;

@@ -14,6 +14,8 @@ import { FilterableSource } from './filterableTypes';
 import { paginateData } from './issue-paginator';
 import { applySort } from './issue-sorter';
 import { applySearchFilter } from './search-filter';
+import { GithubUser } from '../../core/models/github-user.model';
+import { Milestone } from '../../core/models/milestone.model';
 
 export class IssuesDataTable extends DataSource<Issue> implements FilterableSource {
   public count = 0;
@@ -63,7 +65,24 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
       .pipe(
         // maps each change in display value to new issue ordering or filtering
         map(() => {
+          // check if the current group is in the filter
+          const groupFilterAsGithubUser = this.filter.assignees.map((selectedAssignee) => {
+            return GithubUser.fromUsername(selectedAssignee);
+          });
+          const groupFilterAsMilestone = this.filter.milestones.map((selectedMilestone) => {
+            return Milestone.fromTitle(selectedMilestone);
+          });
+
+          const isGroupInFilter =
+            groupFilterAsGithubUser.filter((githubUser) => this.group?.equals(githubUser)).length !== 0 ||
+            groupFilterAsMilestone.filter((milestone) => this.group?.equals(milestone)).length !== 0;
+
           let data = <Issue[]>Object.values(this.issueService.issues$.getValue()).reverse();
+
+          if (!isGroupInFilter) {
+            data = [];
+          }
+
           if (this.defaultFilter) {
             data = data.filter(this.defaultFilter);
           }
