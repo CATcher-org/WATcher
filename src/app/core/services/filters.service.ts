@@ -380,81 +380,85 @@ export class FiltersService {
   }
 
   getAssignees(assignees: string[]): string {
-    let res = '';
-    for (let i = 0; i < assignees.length; i++) {
-      if (res === '') {
-        res = FilterOptions.assignee + assignees[i];
-      } else {
-        res += BooleanConjunctions.OR;
-        if (assignees[i] === AssigneesFilter.unassigned) {
-          res += AssigneesFilter.no_assignees;
-        } else {
-          res += FilterOptions.assignee + assignees[i];
-        }
-      }
-    }
-    return res;
+    return assignees
+      .map((assignee) => (assignee === AssigneesFilter.unassigned ? AssigneesFilter.no_assignees : FilterOptions.assignee + assignee))
+      .join(BooleanConjunctions.OR);
   }
 
   getDeselectedLabels(deselectedLabels: Set<string>): string {
-    const labelled_deselected_labels = Array.from(deselectedLabels).map(
-      (label) => BooleanConjunctions.EXCLUDE + FilterOptions.label + label
-    );
-    return labelled_deselected_labels.join(BooleanConjunctions.OR);
+    return Array.from(deselectedLabels)
+      .map((label) => BooleanConjunctions.EXCLUDE + FilterOptions.label + label)
+      .join(BooleanConjunctions.OR);
   }
 
   getLabels(labels: string[]): string {
-    const labelled_labels = labels.map((label) => FilterOptions.label + label);
-    return labelled_labels.join(BooleanConjunctions.OR);
+    return labels.map((label) => FilterOptions.label + label).join(BooleanConjunctions.OR);
   }
 
   getMilestones(milestones: string[]): string {
-    const labelled_milestones = milestones.map((milestone) =>
-      MilestoneFilter.hasOwnProperty(milestone) ? MilestoneFilter[milestone] : FilterOptions.milestone + milestone
-    );
-    const res = labelled_milestones.join(BooleanConjunctions.OR);
-    return res;
+    return milestones
+      .map((milestone) => (MilestoneFilter.hasOwnProperty(milestone) ? MilestoneFilter[milestone] : FilterOptions.milestone + milestone))
+      .join(BooleanConjunctions.OR);
   }
 
   getSort(sort: Sort): string {
-    // currently github only supports sorting by date
-    if (SortFilter.hasOwnProperty(sort.active)) {
-      return SortFilter[sort.active] + ':' + sort.direction;
-    } else {
-      return '';
-    }
+    return SortFilter.hasOwnProperty(sort.active) ? SortFilter[sort.active] + ':' + sort.direction : '';
   }
 
   getStatus(status: string[]): string {
-    const labelled_status = status.map((status) => StatusFilter[status]);
-    return labelled_status.join(BooleanConjunctions.OR);
+    return status.map((status) => StatusFilter[status]).join(BooleanConjunctions.OR);
   }
 
   getTypes(type: string): string {
     return TypeFilter[type];
   }
 
+  getAuthors(assignees: string[]): string {
+    return assignees.map((assignee) => 'author:' + assignee).join(BooleanConjunctions.OR);
+  }
+
   getEncodedFilter(): string {
-    const res = new Array(8);
-    res[0] = this.getAssignees(this.filter$.value.assignees);
-    res[1] = this.getDeselectedLabels(this.filter$.value.deselectedLabels);
-    res[2] = this.getLabels(this.filter$.value.labels);
-    res[3] = this.getMilestones(this.filter$.value.milestones);
-    res[4] = this.getSort(this.filter$.value.sort);
-    res[5] = this.getTypes(this.filter$.value.type);
-    res[6] = this.getStatus(this.filter$.value.status);
-    res[7] = this.filter$.value.title;
+    const res = [
+      '',
+      this.getDeselectedLabels(this.filter$.value.deselectedLabels),
+      this.getLabels(this.filter$.value.labels),
+      this.getMilestones(this.filter$.value.milestones),
+      this.getSort(this.filter$.value.sort),
+      this.getTypes(this.filter$.value.type),
+      this.getOpenAndClosedPRFilter(this.filter$.value.assignees, this.filter$.value.status),
+      this.filter$.value.title
+    ];
 
-    const final = res.reduce((acc, curr) => {
-      if (curr === '') {
-        return acc;
-      }
-      if (acc === '') {
-        return '(' + curr + ')';
-      }
-      return acc + BooleanConjunctions.AND + '(' + curr + ')';
-    }, '');
+    return res
+      .filter((curr) => curr !== '')
+      .map((curr) => '(' + curr + ')')
+      .join(BooleanConjunctions.AND);
+  }
 
-    return '(' + final + ')';
+  getOpenAndClosedPRFilter(assignees: string[], status: string[]): string {
+    return assignees
+      .map((assignee) => this.getStatusFilter(status, assignee))
+      .filter((filter) => filter !== '')
+      .join(BooleanConjunctions.OR);
+  }
+
+  private getStatusFilter(statuses: string[], assignee: string): string {
+    return statuses
+      .map((status) => {
+        if (
+          status === StatusOptions.OpenPullRequests ||
+          status === StatusOptions.MergedPullRequests ||
+          status === StatusOptions.ClosedPullRequests
+        ) {
+          return assignee !== AssigneesFilter.unassigned ? `(author:${assignee} AND ${StatusFilter[status]})` : '';
+        } else if (status === StatusOptions.OpenIssues || status === StatusOptions.ClosedIssues) {
+          return assignee === AssigneesFilter.unassigned
+            ? `(${StatusFilter[status]} AND ${AssigneesFilter.no_assignees})`
+            : `(${StatusFilter[status]} AND assignee:${assignee})`;
+        }
+        return '';
+      })
+      .filter((filter) => filter !== '')
+      .join(BooleanConjunctions.OR);
   }
 }
