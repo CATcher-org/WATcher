@@ -1,0 +1,35 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
+{
+	"name": "WATcher-development",
+	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	"build": {
+		"dockerfile": "Dockerfile",
+		"context": ".."
+	},
+	"workspaceFolder": "/WATcher", // Set the workspace folder
+	"workspaceMount": "source=${localWorkspaceFolder},target=${containerWorkspaceFolder},type=bind",
+	"mounts": [
+		"source=watcher-node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
+	],
+	"runArgs": [
+		"--name=WATcher-development" // Set the container name
+	],
+	"onCreateCommand": "sudo chown -R node:node ${containerWorkspaceFolder}/*",
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "bash -c 'npm install --legacy-peer-deps --verbose'", // Install dependencies
+	"postStartCommand": "bash -c 'npm run ng:serve:web'", // Start the app
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"graphql.vscode-graphql-syntax",
+				"ms-playwright.playwright",
+				"esbenp.prettier-vscode",
+				"github.vscode-github-actions"
+			]
+		}
+	}
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
+}
