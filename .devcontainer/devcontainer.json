@@ -12,10 +12,12 @@
   "runArgs": [
     "--name=WATcher-development" // Set the container name
   ],
-  "onCreateCommand": "sudo chown -R node:node ${containerWorkspaceFolder}/*",
+  "onCreateCommand": {
+    "Giving rw permissions to mounted dir": "sudo chown -R node:node ${containerWorkspaceFolder}/*",
+    "Adding WATcher as upstream": "git remote add upstream https://github.com/CATcher-org/WATcher.git || echo 'already exists'"
+  },
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "npm install --legacy-peer-deps", // Install dependencies
-  // Configure tool-specific properties.
   "customizations": {
     "vscode": {
       "extensions": ["graphql.vscode-graphql-syntax", "github.vscode-github-actions", "eamodio.gitlens", "esbenp.prettier-vscode"],
