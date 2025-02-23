@@ -6,6 +6,7 @@ import { View } from '../../src/app/core/models/view.model';
 import { ErrorMessageService } from '../../src/app/core/services/error-message.service';
 import { GithubService } from '../../src/app/core/services/github.service';
 import { LoggingService } from '../../src/app/core/services/logging.service';
+import { PresetsService } from '../../src/app/core/services/presets.services';
 import { RepoUrlCacheService } from '../../src/app/core/services/repo-url-cache.service';
 import { ViewService } from '../../src/app/core/services/view.service';
 import { CATCHER_REPO, WATCHER_REPO } from '../constants/session.constants';
@@ -16,7 +17,7 @@ let repoUrlCacheServiceSpy: jasmine.SpyObj<RepoUrlCacheService>;
 let loggingServiceSpy: jasmine.SpyObj<LoggingService>;
 let routerSpy: jasmine.SpyObj<Router>;
 let activatedRouteSpy: jasmine.SpyObj<ActivatedRoute>;
-
+let presetServiceSpy: jasmine.SpyObj<PresetsService>;
 describe('ViewService', () => {
   beforeEach(() => {
     githubServiceSpy = jasmine.createSpyObj('GithubService', [
@@ -29,7 +30,16 @@ describe('ViewService', () => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     repoUrlCacheServiceSpy = jasmine.createSpyObj('RepoUrlCacheService', ['cache', 'removeFromSuggestions']);
     loggingServiceSpy = jasmine.createSpyObj('LoggingService', ['info']);
-    viewService = new ViewService(githubServiceSpy, repoUrlCacheServiceSpy, loggingServiceSpy, activatedRouteSpy, routerSpy);
+    presetServiceSpy = jasmine.createSpyObj('PresetsService', ['savePreset', 'getSavedPresetsForCurrentRepo', 'loadSavedPresets']);
+
+    viewService = new ViewService(
+      githubServiceSpy,
+      repoUrlCacheServiceSpy,
+      presetServiceSpy,
+      loggingServiceSpy,
+      activatedRouteSpy,
+      routerSpy
+    );
   });
 
   describe('setRepository(Repo, Repo[])', () => {

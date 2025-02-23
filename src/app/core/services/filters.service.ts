@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { ComponentFactoryResolver, Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, pipe } from 'rxjs';
@@ -6,6 +6,7 @@ import { OrderOptions, SortOptions, StatusOptions, TypeOptions } from '../consta
 import { GithubUser } from '../models/github-user.model';
 import { SimpleLabel } from '../models/label.model';
 import { Milestone } from '../models/milestone.model';
+import { Preset } from '../models/preset.model';
 import { AssigneeService } from './assignee.service';
 import { LoggingService } from './logging.service';
 import { MilestoneService } from './milestone.service';
@@ -23,6 +24,10 @@ export type Filter = {
   assignees: string[];
 };
 
+type QueryParams = {
+  [x: string]: any;
+};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -31,6 +36,19 @@ export type Filter = {
  * Filters are subscribed to and emitted from this service
  */
 export class FiltersService {
+  constructor(
+    private logger: LoggingService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private milestoneService: MilestoneService,
+    private assigneeService: AssigneeService
+  ) {
+    this.filter$.subscribe((filter: Filter) => {
+      this.itemsPerPage = filter.itemsPerPage;
+    });
+
+    console.log(`Initialized Filters to `, { filters: this.filter$.value });
+  }
   public static readonly PRESET_VIEW_QUERY_PARAM_KEY = 'presetview';
   private itemsPerPage = 20;
 
@@ -86,16 +104,146 @@ export class FiltersService {
   private previousMilestonesLength = 0;
   private previousAssigneesLength = 0;
 
-  constructor(
-    private logger: LoggingService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private milestoneService: MilestoneService,
-    private assigneeService: AssigneeService
-  ) {
-    this.filter$.subscribe((filter: Filter) => {
-      this.itemsPerPage = filter.itemsPerPage;
-    });
+  /**
+   * Create a filter from a plain JSON object.
+   *
+   * TODO: https://github.com/CATcher-org/WATcher/issues/405
+   *
+   * @param object The object to create from e.g. from LocalStorage
+   * @returns
+   */
+  static fromObject(object: any, isGlobal = false): Partial<Filter> {
+    console.log({ object });
+
+    if (isGlobal) {
+      const filter: Partial<Filter> = {
+        title: object.title,
+        status: object.status,
+        type: object.type,
+        sort: object.sort,
+        itemsPerPage: object.itemsPerPage
+      };
+
+      return filter;
+    } else {
+      const filter: Filter = {
+        title: object.title,
+        status: object.status,
+        type: object.type,
+        sort: object.sort,
+        labels: object.labels,
+        milestones: object.milestones,
+        hiddenLabels: new Set(Object.keys(object.hiddenLabels).length ? object.hiddenLabels : undefined),
+        deselectedLabels: new Set(Object.keys(object.deselectedLabels).length ? object.deselectedLabels : undefined),
+        itemsPerPage: object.itemsPerPage,
+        assignees: object.assignees
+      };
+
+      return filter;
+    }
+
+    // if (isGlobal) {
+    //   filter.milestones = [];
+    //   filter.assignees = [];
+    //   filter.labels = [];
+    //   filter.hiddenLabels = new Set();
+    //   filter.deselectedLabels = new Set();
+    // }
+
+    // return filter;
+  }
+
+  /**
+   * Checks to see if two filters are equal.
+   * TODO: https://github.com/CATcher-org/WATcher/issues/405
+   * @param a The filter that is set in the app
+   * @param b The filter that comes from saving a preset
+   * @returns
+   */
+  public static isPartOfPreset(a: Filter, preset: Preset): boolean {
+    // only compare if both objects have the key
+    // Compare simple scalar fields
+    const b = preset.filter;
+    if (a.title !== b.title) {
+      return false;
+    }
+    if (a.type !== b.type) {
+      return false;
+    }
+    if (a.itemsPerPage !== b.itemsPerPage) {
+      return false;
+    }
+    if (!FiltersService.haveSameElements(a.status, b.status)) {
+      return false;
+    }
+    // Compare Angular Material Sort (shallow comparison is enough)
+    if (!FiltersService.compareMatSort(a.sort, b.sort)) {
+      return false;
+    }
+
+    if (preset.isGlobal) {
+      return true;
+    }
+
+    // Compare arrays ignoring order
+    if (!FiltersService.haveSameElements(a.labels, b.labels)) {
+      return false;
+    }
+    if (!FiltersService.haveSameElements(a.milestones, b.milestones)) {
+      return false;
+    }
+    if (!FiltersService.haveSameElements(a.assignees, b.assignees)) {
+      return false;
+    }
+
+    // Compare sets
+    if (!FiltersService.areSetsEqual(a.hiddenLabels, b.hiddenLabels)) {
+      return false;
+    }
+    if (!FiltersService.areSetsEqual(a.deselectedLabels, b.deselectedLabels)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Returns true if two arrays contain exactly the same elements (ignoring order).
+   */
+  private static haveSameElements(arr1: string[], arr2: string[]): boolean {
+    if (arr1.length !== arr2.length) {
+      return false;
+    }
+    const sorted1 = [...arr1].sort();
+    const sorted2 = [...arr2].sort();
+    return sorted1.every((val, idx) => val === sorted2[idx]);
+  }
+
+  /**
+   * Returns true if two sets contain exactly the same elements.
+   *
+   * TODO: https://github.com/CATcher-org/WATcher/issues/405
+   */
+  private static areSetsEqual(set1: Set<string>, set2: Set<string>): boolean {
+    if (set1.size !== set2.size) {
+      return false;
+    }
+    for (const item of set1) {
+      if (!set2.has(item)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Compare two Angular Material Sort objects for equality.
+   *
+   * TODO: https://github.com/CATcher-org/WATcher/issues/405
+   */
+  private static compareMatSort(s1: Sort, s2: Sort): boolean {
+    // Both 'active' and 'direction' are simple scalar fields
+    return s1.active === s2.active && s1.direction === s2.direction;
   }
 
   private pushFiltersToUrl(): void {
@@ -216,10 +364,13 @@ export class FiltersService {
   }
 
   updateFilters(newFilters: Partial<Filter>): void {
+    console.log({ newFilters }, 'Updating filters');
+    console.log({ oldFilters: this.filter$.value });
     const nextDropdownFilter: Filter = {
       ...this.filter$.value,
       ...newFilters
     };
+    console.log({ nextDropdownFilter });
     this.filter$.next(nextDropdownFilter);
     this.updatePresetViewFromFilters(newFilters);
     this.pushFiltersToUrl();
