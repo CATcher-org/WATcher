@@ -18,13 +18,7 @@
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
-      "extensions": [
-        "graphql.vscode-graphql-syntax",
-        "ms-playwright.playwright",
-        "github.vscode-github-actions",
-        "eamodio.gitlens",
-        "esbenp.prettier-vscode"
-      ],
+      "extensions": ["graphql.vscode-graphql-syntax", "github.vscode-github-actions", "eamodio.gitlens", "esbenp.prettier-vscode"],
       "settings": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
       }
