@@ -2,8 +2,10 @@ import { DataSource } from '@angular/cdk/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { GithubUser } from '../../core/models/github-user.model';
 import { Group } from '../../core/models/github/group.interface';
 import { Issue } from '../../core/models/issue.model';
+import { Milestone } from '../../core/models/milestone.model';
 import { AssigneeService } from '../../core/services/assignee.service';
 import { Filter, FiltersService } from '../../core/services/filters.service';
 import { GroupingContextService } from '../../core/services/grouping/grouping-context.service';
@@ -14,8 +16,6 @@ import { FilterableSource } from './filterableTypes';
 import { paginateData } from './issue-paginator';
 import { applySort } from './issue-sorter';
 import { applySearchFilter } from './search-filter';
-import { GithubUser } from '../../core/models/github-user.model';
-import { Milestone } from '../../core/models/milestone.model';
 
 export class IssuesDataTable extends DataSource<Issue> implements FilterableSource {
   public count = 0;
