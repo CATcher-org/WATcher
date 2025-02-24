@@ -52,6 +52,21 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
     this.issueService.stopPollIssues();
   }
 
+  private static isGroupInFilter(group: Group, filter: Filter): boolean {
+    const groupFilterAsGithubUser = filter.assignees.map((selectedAssignee) => {
+      return GithubUser.fromUsername(selectedAssignee);
+    });
+    const groupFilterAsMilestone = filter.milestones.map((selectedMilestone) => {
+      return Milestone.fromTitle(selectedMilestone);
+    });
+
+    const isGroupInFilter =
+      groupFilterAsGithubUser.some((githubUser) => group?.equals(githubUser)) ||
+      groupFilterAsMilestone.some((milestone) => group?.equals(milestone));
+
+    return isGroupInFilter;
+  }
+
   loadIssues() {
     let page;
     if (this.paginator !== undefined) {
@@ -65,25 +80,12 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
       .pipe(
         // maps each change in display value to new issue ordering or filtering
         map(() => {
-          // check if the current group is in the filter
-          const groupFilterAsGithubUser = this.filter.assignees.map((selectedAssignee) => {
-            return GithubUser.fromUsername(selectedAssignee);
-          });
-          const groupFilterAsMilestone = this.filter.milestones.map((selectedMilestone) => {
-            return Milestone.fromTitle(selectedMilestone);
-          });
-
-          const isGroupInFilter =
-            groupFilterAsGithubUser.filter((githubUser) => this.group?.equals(githubUser)).length !== 0 ||
-            groupFilterAsMilestone.filter((milestone) => this.group?.equals(milestone)).length !== 0;
-
-          if (!isGroupInFilter) {
+          if (!IssuesDataTable.isGroupInFilter(this.group, this.filter)) {
             this.count = 0;
             return [];
           }
 
           let data = <Issue[]>Object.values(this.issueService.issues$.getValue()).reverse();
-
           if (this.defaultFilter) {
             data = data.filter(this.defaultFilter);
           }
