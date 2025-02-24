@@ -25,6 +25,21 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
 
   public isLoading$ = this.issueService.isLoading.asObservable();
 
+  private static isGroupInFilter(group: Group, filter: Filter): boolean {
+    const groupFilterAsGithubUser = filter.assignees.map((selectedAssignee) => {
+      return GithubUser.fromUsername(selectedAssignee);
+    });
+    const groupFilterAsMilestone = filter.milestones.map((selectedMilestone) => {
+      return Milestone.fromTitle(selectedMilestone);
+    });
+
+    const isGroupInFilter =
+      groupFilterAsGithubUser.some((githubUser) => group?.equals(githubUser)) ||
+      groupFilterAsMilestone.some((milestone) => group?.equals(milestone));
+
+    return isGroupInFilter;
+  }
+
   constructor(
     private issueService: IssueService,
     private groupingContextService: GroupingContextService,
@@ -50,21 +65,6 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
       this.issueSubscription.unsubscribe();
     }
     this.issueService.stopPollIssues();
-  }
-
-  private static isGroupInFilter(group: Group, filter: Filter): boolean {
-    const groupFilterAsGithubUser = filter.assignees.map((selectedAssignee) => {
-      return GithubUser.fromUsername(selectedAssignee);
-    });
-    const groupFilterAsMilestone = filter.milestones.map((selectedMilestone) => {
-      return Milestone.fromTitle(selectedMilestone);
-    });
-
-    const isGroupInFilter =
-      groupFilterAsGithubUser.some((githubUser) => group?.equals(githubUser)) ||
-      groupFilterAsMilestone.some((milestone) => group?.equals(milestone));
-
-    return isGroupInFilter;
   }
 
   loadIssues() {

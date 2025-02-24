@@ -52,9 +52,9 @@ export class GithubUser implements RawGithubUser, Group {
     Object.assign(this, rawData);
   }
 
-  /* 
-  This method is used to enable comparisons between 
-  a Group and the filtering criteria, which is stored 
+  /*
+  This method is used to enable comparisons between
+  a Group and the filtering criteria, which is stored
   as a string, in IssuesDataTable.ts
   */
   static fromUsername(username: string) {
