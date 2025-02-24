@@ -2,7 +2,20 @@ import { Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, pipe } from 'rxjs';
-import { OrderOptions, SortOptions, StatusOptions, TypeOptions } from '../constants/filter-options.constants';
+import {
+  AssigneesFilter,
+  BooleanConjunctions,
+  FilterOptions,
+  MilestoneFilter,
+  MilestoneOptions,
+  OrderOptions,
+  SortFilter,
+  SortOptions,
+  StatusFilter,
+  StatusOptions,
+  TypeFilter,
+  TypeOptions
+} from '../constants/filter-options.constants';
 import { GithubUser } from '../models/github-user.model';
 import { SimpleLabel } from '../models/label.model';
 import { Milestone } from '../models/milestone.model';
@@ -364,5 +377,88 @@ export class FiltersService {
   getMilestonesForContributions(): Milestone[] {
     const milestones = this.milestoneService.milestones;
     return [...milestones, Milestone.PRWithoutMilestone, Milestone.IssueWithoutMilestone];
+  }
+
+  getAssignees(assignees: string[]): string {
+    return assignees
+      .map((assignee) => (assignee === AssigneesFilter.unassigned ? AssigneesFilter.no_assignees : FilterOptions.assignee + assignee))
+      .join(BooleanConjunctions.OR);
+  }
+
+  getDeselectedLabels(deselectedLabels: Set<string>): string {
+    return Array.from(deselectedLabels)
+      .map((label) => BooleanConjunctions.EXCLUDE + FilterOptions.label + label)
+      .join(BooleanConjunctions.OR);
+  }
+
+  getLabels(labels: string[]): string {
+    return labels.map((label) => FilterOptions.label + label).join(BooleanConjunctions.OR);
+  }
+
+  getMilestones(milestones: string[]): string {
+    return milestones
+      .map((milestone) => (MilestoneFilter.hasOwnProperty(milestone) ? MilestoneFilter[milestone] : FilterOptions.milestone + milestone))
+      .join(BooleanConjunctions.OR);
+  }
+
+  getSort(sort: Sort): string {
+    return SortFilter.hasOwnProperty(sort.active) ? SortFilter[sort.active] + ':' + sort.direction : '';
+  }
+
+  getStatus(status: string[]): string {
+    return status.map((status) => StatusFilter[status]).join(BooleanConjunctions.OR);
+  }
+
+  getTypes(type: string): string {
+    return TypeFilter[type];
+  }
+
+  getAuthors(assignees: string[]): string {
+    return assignees.map((assignee) => 'author:' + assignee).join(BooleanConjunctions.OR);
+  }
+
+  getEncodedFilter(): string {
+    const res = [
+      '',
+      this.getDeselectedLabels(this.filter$.value.deselectedLabels),
+      this.getLabels(this.filter$.value.labels),
+      this.getMilestones(this.filter$.value.milestones),
+      this.getSort(this.filter$.value.sort),
+      this.getTypes(this.filter$.value.type),
+      this.getOpenAndClosedPRFilter(this.filter$.value.assignees, this.filter$.value.status),
+      this.filter$.value.title
+    ];
+
+    return res
+      .filter((curr) => curr !== '')
+      .map((curr) => '(' + curr + ')')
+      .join(BooleanConjunctions.AND);
+  }
+
+  getOpenAndClosedPRFilter(assignees: string[], status: string[]): string {
+    return assignees
+      .map((assignee) => this.getStatusFilter(status, assignee))
+      .filter((filter) => filter !== '')
+      .join(BooleanConjunctions.OR);
+  }
+
+  private getStatusFilter(statuses: string[], assignee: string): string {
+    return statuses
+      .map((status) => {
+        if (
+          status === StatusOptions.OpenPullRequests ||
+          status === StatusOptions.MergedPullRequests ||
+          status === StatusOptions.ClosedPullRequests
+        ) {
+          return assignee !== AssigneesFilter.unassigned ? `(author:${assignee} AND ${StatusFilter[status]})` : '';
+        } else if (status === StatusOptions.OpenIssues || status === StatusOptions.ClosedIssues) {
+          return assignee === AssigneesFilter.unassigned
+            ? `(${StatusFilter[status]} AND ${AssigneesFilter.no_assignees})`
+            : `(${StatusFilter[status]} AND assignee:${assignee})`;
+        }
+        return '';
+      })
+      .filter((filter) => filter !== '')
+      .join(BooleanConjunctions.OR);
   }
 }
