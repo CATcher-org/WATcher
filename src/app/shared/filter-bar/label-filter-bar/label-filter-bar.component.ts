@@ -117,13 +117,15 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
   updateSelection(): void {
     this.filtersService.updateFilters({
       labels: Array.from(this.selectedLabelNames),
-      deselectedLabels: this.deselectedLabelNames
+      deselectedLabels: this.deselectedLabelNames,
+      hiddenLabels: this.hiddenLabelNames
     });
   }
 
-  removeAllSelection(): void {
+  resetSelection(): void {
     this.selectedLabelNames = new Set<string>();
     this.deselectedLabelNames = new Set<string>();
+    this.hiddenLabelNames = new Set<string>();
     this.updateSelection();
   }
 }
