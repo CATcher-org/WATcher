@@ -379,53 +379,53 @@ export class FiltersService {
     return [...milestones, Milestone.PRWithoutMilestone, Milestone.IssueWithoutMilestone];
   }
 
-  getAssignees(assignees: string[]): string {
+  private getGhFilterAssignees(assignees: string[]): string {
     return assignees
       .map((assignee) => (assignee === AssigneesFilter.unassigned ? AssigneesFilter.no_assignees : FilterOptions.assignee + assignee))
       .join(BooleanConjunctions.OR);
   }
 
-  getDeselectedLabels(deselectedLabels: Set<string>): string {
+  private getGhFilterDeselectedLabels(deselectedLabels: Set<string>): string {
     return Array.from(deselectedLabels)
-      .map((label) => BooleanConjunctions.EXCLUDE + FilterOptions.label + label)
-      .join(BooleanConjunctions.OR);
+      .map((label) => BooleanConjunctions.EXCLUDE + FilterOptions.label + `\"${label}\"`)
+      .join(BooleanConjunctions.AND);
   }
 
-  getLabels(labels: string[]): string {
-    return labels.map((label) => FilterOptions.label + label).join(BooleanConjunctions.OR);
+  private getGhFilterLabels(labels: string[]): string {
+    return labels.map((label) => FilterOptions.label + `\"${label}\"`).join(BooleanConjunctions.AND);
   }
 
-  getMilestones(milestones: string[]): string {
+  private getGhFilterMilestones(milestones: string[]): string {
     return milestones
       .map((milestone) => (MilestoneFilter.hasOwnProperty(milestone) ? MilestoneFilter[milestone] : FilterOptions.milestone + milestone))
       .join(BooleanConjunctions.OR);
   }
 
-  getSort(sort: Sort): string {
+  private getGhFilterSort(sort: Sort): string {
     return SortFilter.hasOwnProperty(sort.active) ? SortFilter[sort.active] + ':' + sort.direction : '';
   }
 
-  getStatus(status: string[]): string {
+  private getGhFilterStatus(status: string[]): string {
     return status.map((status) => StatusFilter[status]).join(BooleanConjunctions.OR);
   }
 
-  getTypes(type: string): string {
+  private getGhFilterTypes(type: string): string {
     return TypeFilter[type];
   }
 
-  getAuthors(assignees: string[]): string {
+  private getGhFilterAuthors(assignees: string[]): string {
     return assignees.map((assignee) => 'author:' + assignee).join(BooleanConjunctions.OR);
   }
 
   getEncodedFilter(): string {
     const res = [
       '',
-      this.getDeselectedLabels(this.filter$.value.deselectedLabels),
-      this.getLabels(this.filter$.value.labels),
-      this.getMilestones(this.filter$.value.milestones),
-      this.getSort(this.filter$.value.sort),
-      this.getTypes(this.filter$.value.type),
-      this.getOpenAndClosedPRFilter(this.filter$.value.assignees, this.filter$.value.status),
+      this.getGhFilterDeselectedLabels(this.filter$.value.deselectedLabels),
+      this.getGhFilterLabels(this.filter$.value.labels),
+      this.getGhFilterMilestones(this.filter$.value.milestones),
+      this.getGhFilterSort(this.filter$.value.sort),
+      this.getGhFilterTypes(this.filter$.value.type),
+      this.getGhFilterOpenAndClosedPR(this.filter$.value.assignees, this.filter$.value.status),
       this.filter$.value.title
     ];
 
@@ -435,30 +435,61 @@ export class FiltersService {
       .join(BooleanConjunctions.AND);
   }
 
-  getOpenAndClosedPRFilter(assignees: string[], status: string[]): string {
-    return assignees
-      .map((assignee) => this.getStatusFilter(status, assignee))
-      .filter((filter) => filter !== '')
-      .join(BooleanConjunctions.OR);
-  }
+  // private getGhFilterOpenAndClosedPR(assignees: string[], status: string[]): string {
+  //   return assignees
+  //     .map((assignee) => this.getStatusFilter(status, assignee))
+  //     .filter((filter) => filter !== '')
+  //     .join(BooleanConjunctions.OR);
+  // }
 
-  private getStatusFilter(statuses: string[], assignee: string): string {
-    return statuses
-      .map((status) => {
-        if (
-          status === StatusOptions.OpenPullRequests ||
-          status === StatusOptions.MergedPullRequests ||
-          status === StatusOptions.ClosedPullRequests
-        ) {
-          return assignee !== AssigneesFilter.unassigned ? `(author:${assignee} AND ${StatusFilter[status]})` : '';
-        } else if (status === StatusOptions.OpenIssues || status === StatusOptions.ClosedIssues) {
-          return assignee === AssigneesFilter.unassigned
-            ? `(${StatusFilter[status]} AND ${AssigneesFilter.no_assignees})`
-            : `(${StatusFilter[status]} AND assignee:${assignee})`;
-        }
-        return '';
-      })
-      .filter((filter) => filter !== '')
-      .join(BooleanConjunctions.OR);
+  // private getStatusFilter(statuses: string[], assignee: string): string {
+  //   return statuses
+  //     .map((status) => {
+  //       if (
+  //         status === StatusOptions.OpenPullRequests ||
+  //         status === StatusOptions.MergedPullRequests ||
+  //         status === StatusOptions.ClosedPullRequests
+  //       ) {
+  //         return assignee !== AssigneesFilter.unassigned ? `(author:${assignee} AND ${StatusFilter[status]})` : '';
+  //       } else if (status === StatusOptions.OpenIssues || status === StatusOptions.ClosedIssues) {
+  //         return assignee === AssigneesFilter.unassigned
+  //           ? `(${StatusFilter[status]} AND ${AssigneesFilter.no_assignees})`
+  //           : `(${StatusFilter[status]} AND assignee:${assignee})`;
+  //       }
+  //       return '';
+  //     })
+  //     .filter((filter) => filter !== '')
+  //     .join(BooleanConjunctions.OR);
+  // }
+  private getGhFilterOpenAndClosedPR(assignees: string[], status: string[]): string {
+    const toState = (stat: string): string => {
+      switch (stat) {
+        case StatusOptions.OpenPullRequests:
+        case StatusOptions.OpenIssues:
+          return 'is:open';
+        case StatusOptions.MergedPullRequests:
+          return 'is:merged';
+        case StatusOptions.ClosedPullRequests:
+        case StatusOptions.ClosedIssues:
+          return 'is:closed';
+        default:
+          return '';
+      }
+    };
+
+    const isIssue = (stat: string): boolean => stat === StatusOptions.OpenIssues || stat === StatusOptions.ClosedIssues;
+
+    const prFilter = status.filter((stat) => !isIssue(stat)).map(toState);
+    const issueFilter = status.filter(isIssue).map(toState);
+
+    if (prFilter.length === 0 && prFilter.length === 0) return '';
+
+    const asAuthors = assignees.filter((assignee) => assignee !== AssigneesFilter.unassigned).map((assignee) => `author:${assignee}`);
+    const asAssignees = assignees.map((assignee) => (assignee === AssigneesFilter.unassigned ? 'no:assignee' : `assignee:${assignee}`));
+
+    const issueRelatedQuery = `(is:issue (${issueFilter.join(BooleanConjunctions.OR)}) (${asAssignees.join(BooleanConjunctions.OR)}))`;
+    const prRelatedQuery = `(is:pr (${prFilter.join(BooleanConjunctions.OR)}) (${asAuthors.join(BooleanConjunctions.OR)}))`;
+
+    return issueRelatedQuery + BooleanConjunctions.OR + prRelatedQuery;
   }
 }
