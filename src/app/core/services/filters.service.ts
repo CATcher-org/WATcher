@@ -405,16 +405,8 @@ export class FiltersService {
     return SortFilter.hasOwnProperty(sort.active) ? SortFilter[sort.active] + ':' + sort.direction : '';
   }
 
-  private getGhFilterStatus(status: string[]): string {
-    return status.map((status) => StatusFilter[status]).join(BooleanConjunctions.OR);
-  }
-
   private getGhFilterTypes(type: string): string {
     return TypeFilter[type];
-  }
-
-  private getGhFilterAuthors(assignees: string[]): string {
-    return assignees.map((assignee) => 'author:' + assignee).join(BooleanConjunctions.OR);
   }
 
   getEncodedFilter(): string {
@@ -435,32 +427,6 @@ export class FiltersService {
       .join(BooleanConjunctions.AND);
   }
 
-  // private getGhFilterOpenAndClosedPR(assignees: string[], status: string[]): string {
-  //   return assignees
-  //     .map((assignee) => this.getStatusFilter(status, assignee))
-  //     .filter((filter) => filter !== '')
-  //     .join(BooleanConjunctions.OR);
-  // }
-
-  // private getStatusFilter(statuses: string[], assignee: string): string {
-  //   return statuses
-  //     .map((status) => {
-  //       if (
-  //         status === StatusOptions.OpenPullRequests ||
-  //         status === StatusOptions.MergedPullRequests ||
-  //         status === StatusOptions.ClosedPullRequests
-  //       ) {
-  //         return assignee !== AssigneesFilter.unassigned ? `(author:${assignee} AND ${StatusFilter[status]})` : '';
-  //       } else if (status === StatusOptions.OpenIssues || status === StatusOptions.ClosedIssues) {
-  //         return assignee === AssigneesFilter.unassigned
-  //           ? `(${StatusFilter[status]} AND ${AssigneesFilter.no_assignees})`
-  //           : `(${StatusFilter[status]} AND assignee:${assignee})`;
-  //       }
-  //       return '';
-  //     })
-  //     .filter((filter) => filter !== '')
-  //     .join(BooleanConjunctions.OR);
-  // }
   private getGhFilterOpenAndClosedPR(assignees: string[], status: string[]): string {
     const toState = (stat: string): string => {
       switch (stat) {
@@ -482,7 +448,9 @@ export class FiltersService {
     const prFilter = status.filter((stat) => !isIssue(stat)).map(toState);
     const issueFilter = status.filter(isIssue).map(toState);
 
-    if (prFilter.length === 0 && prFilter.length === 0) return '';
+    if (prFilter.length === 0 && prFilter.length === 0) {
+      return '';
+    }
 
     const asAuthors = assignees.filter((assignee) => assignee !== AssigneesFilter.unassigned).map((assignee) => `author:${assignee}`);
     const asAssignees = assignees.map((assignee) => (assignee === AssigneesFilter.unassigned ? 'no:assignee' : `assignee:${assignee}`));
