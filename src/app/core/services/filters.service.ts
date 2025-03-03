@@ -2,7 +2,20 @@ import { Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, pipe } from 'rxjs';
-import { OrderOptions, SortOptions, StatusOptions, TypeOptions } from '../constants/filter-options.constants';
+import {
+  AssigneesFilter,
+  BooleanConjunctions,
+  FilterOptions,
+  MilestoneFilter,
+  MilestoneOptions,
+  OrderOptions,
+  SortFilter,
+  SortOptions,
+  StatusFilter,
+  StatusOptions,
+  TypeFilter,
+  TypeOptions
+} from '../constants/filter-options.constants';
 import { GithubUser } from '../models/github-user.model';
 import { SimpleLabel } from '../models/label.model';
 import { Milestone } from '../models/milestone.model';
@@ -364,5 +377,87 @@ export class FiltersService {
   getMilestonesForContributions(): Milestone[] {
     const milestones = this.milestoneService.milestones;
     return [...milestones, Milestone.PRWithoutMilestone, Milestone.IssueWithoutMilestone];
+  }
+
+  private getGhFilterAssignees(assignees: string[]): string {
+    return assignees
+      .map((assignee) => (assignee === AssigneesFilter.unassigned ? AssigneesFilter.no_assignees : FilterOptions.assignee + assignee))
+      .join(BooleanConjunctions.OR);
+  }
+
+  private getGhFilterDeselectedLabels(deselectedLabels: Set<string>): string {
+    return Array.from(deselectedLabels)
+      .map((label) => BooleanConjunctions.EXCLUDE + FilterOptions.label + `\"${label}\"`)
+      .join(BooleanConjunctions.AND);
+  }
+
+  private getGhFilterLabels(labels: string[]): string {
+    return labels.map((label) => FilterOptions.label + `\"${label}\"`).join(BooleanConjunctions.AND);
+  }
+
+  private getGhFilterMilestones(milestones: string[]): string {
+    return milestones
+      .map((milestone) => (MilestoneFilter.hasOwnProperty(milestone) ? MilestoneFilter[milestone] : FilterOptions.milestone + milestone))
+      .join(BooleanConjunctions.OR);
+  }
+
+  private getGhFilterSort(sort: Sort): string {
+    return SortFilter.hasOwnProperty(sort.active) ? SortFilter[sort.active] + ':' + sort.direction : '';
+  }
+
+  private getGhFilterTypes(type: string): string {
+    return TypeFilter[type];
+  }
+
+  getEncodedFilter(): string {
+    const res = [
+      '',
+      this.getGhFilterDeselectedLabels(this.filter$.value.deselectedLabels),
+      this.getGhFilterLabels(this.filter$.value.labels),
+      this.getGhFilterMilestones(this.filter$.value.milestones),
+      this.getGhFilterSort(this.filter$.value.sort),
+      this.getGhFilterTypes(this.filter$.value.type),
+      this.getGhFilterOpenAndClosedPR(this.filter$.value.assignees, this.filter$.value.status),
+      this.filter$.value.title
+    ];
+
+    return res
+      .filter((curr) => curr !== '')
+      .map((curr) => '(' + curr + ')')
+      .join(BooleanConjunctions.AND);
+  }
+
+  private getGhFilterOpenAndClosedPR(assignees: string[], status: string[]): string {
+    const toState = (stat: string): string => {
+      switch (stat) {
+        case StatusOptions.OpenPullRequests:
+        case StatusOptions.OpenIssues:
+          return 'is:open';
+        case StatusOptions.MergedPullRequests:
+          return 'is:merged';
+        case StatusOptions.ClosedPullRequests:
+        case StatusOptions.ClosedIssues:
+          return 'is:closed';
+        default:
+          return '';
+      }
+    };
+
+    const isIssue = (stat: string): boolean => stat === StatusOptions.OpenIssues || stat === StatusOptions.ClosedIssues;
+
+    const prFilter = status.filter((stat) => !isIssue(stat)).map(toState);
+    const issueFilter = status.filter(isIssue).map(toState);
+
+    if (prFilter.length === 0 && prFilter.length === 0) {
+      return '';
+    }
+
+    const asAuthors = assignees.filter((assignee) => assignee !== AssigneesFilter.unassigned).map((assignee) => `author:${assignee}`);
+    const asAssignees = assignees.map((assignee) => (assignee === AssigneesFilter.unassigned ? 'no:assignee' : `assignee:${assignee}`));
+
+    const issueRelatedQuery = `(is:issue (${issueFilter.join(BooleanConjunctions.OR)}) (${asAssignees.join(BooleanConjunctions.OR)}))`;
+    const prRelatedQuery = `(is:pr (${prFilter.join(BooleanConjunctions.OR)}) (${asAuthors.join(BooleanConjunctions.OR)}))`;
+
+    return issueRelatedQuery + BooleanConjunctions.OR + prRelatedQuery;
   }
 }
