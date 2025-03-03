@@ -68,7 +68,11 @@ describe('LabelFilterBarComponent', () => {
       component.hide(label);
 
       expect(component.hiddenLabelNames).toContain(label);
-      expect(filtersServiceSpy.updateFilters).toHaveBeenCalledWith({ hiddenLabels: component.hiddenLabelNames });
+      expect(filtersServiceSpy.updateFilters).toHaveBeenCalledWith({
+        hiddenLabels: component.hiddenLabelNames,
+        labels: [],
+        deselectedLabels: new Set<string>([])
+      });
     });
   });
 
@@ -81,7 +85,11 @@ describe('LabelFilterBarComponent', () => {
       component.show(label);
 
       expect(component.hiddenLabelNames).not.toContain(label);
-      expect(filtersServiceSpy.updateFilters).toHaveBeenCalledWith({ hiddenLabels: component.hiddenLabelNames });
+      expect(filtersServiceSpy.updateFilters).toHaveBeenCalledWith({
+        hiddenLabels: new Set<string>([]),
+        labels: [],
+        deselectedLabels: new Set<string>([])
+      });
     });
   });
 
@@ -139,6 +147,8 @@ describe('LabelFilterBarComponent', () => {
       expect(component.selectedLabelNames).toEqual(new Set<string>());
       expect(component.deselectedLabelNames).toEqual(new Set<string>());
       expect(component.hiddenLabelNames).toEqual(new Set<string>());
+
+      expect(component.isDefault).toBeTrue();
     });
   });
 });

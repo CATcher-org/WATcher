@@ -44,6 +44,7 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
         this.hiddenLabelNames = this.filtersService.filter$.value.hiddenLabels;
         this.loaded = true;
 
+        // set the default based on the initial round of filters
         this.isDefault = this.selectedLabelNames.size === 0 && this.deselectedLabelNames.size === 0 && this.hiddenLabelNames.size === 0;
       });
     });
@@ -59,8 +60,7 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     this.hiddenLabelNames.add(label);
-    this.isDefault = false;
-    this.filtersService.updateFilters({ hiddenLabels: this.hiddenLabelNames });
+    this.updateSelection();
   }
 
   /** Show labels that were hidden */
@@ -70,7 +70,6 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
     }
     this.hiddenLabelNames.delete(label);
     this.updateSelection();
-    this.isDefault = this.selectedLabelNames.size === 0 && this.deselectedLabelNames.size === 0 && this.hiddenLabelNames.size === 0;
   }
 
   /**
@@ -87,7 +86,6 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
     } else {
       this.selectedLabelNames.add(label.name);
     }
-    this.isDefault = this.selectedLabelNames.size === 0 && this.deselectedLabelNames.size === 0 && this.hiddenLabelNames.size === 0;
     this.updateSelection();
   }
 
@@ -127,6 +125,8 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
       deselectedLabels: this.deselectedLabelNames,
       hiddenLabels: this.hiddenLabelNames
     });
+
+    this.isDefault = this.selectedLabelNames.size === 0 && this.deselectedLabelNames.size === 0 && this.hiddenLabelNames.size === 0;
   }
 
   resetSelection(): void {
