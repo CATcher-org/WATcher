@@ -13,7 +13,7 @@
       <input #input matInput placeholder="Find labels" />
     </mat-form-field>
 
-    <button mat-button (click)="resetSelection()" [disabled]="isDefault">Reset</button>
+    <button mat-button (click)="removeAllSelection()">Remove all</button>
 
     <div *ngIf="!hasLabels(input.value)" class="no-labels">No Labels Found!</div>
 

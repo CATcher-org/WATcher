@@ -68,11 +68,7 @@ describe('LabelFilterBarComponent', () => {
       component.hide(label);
 
       expect(component.hiddenLabelNames).toContain(label);
-      expect(filtersServiceSpy.updateFilters).toHaveBeenCalledWith({
-        hiddenLabels: component.hiddenLabelNames,
-        labels: [],
-        deselectedLabels: new Set<string>([])
-      });
+      expect(filtersServiceSpy.updateFilters).toHaveBeenCalledWith({ hiddenLabels: component.hiddenLabelNames });
     });
   });
 
@@ -85,11 +81,7 @@ describe('LabelFilterBarComponent', () => {
       component.show(label);
 
       expect(component.hiddenLabelNames).not.toContain(label);
-      expect(filtersServiceSpy.updateFilters).toHaveBeenCalledWith({
-        hiddenLabels: new Set<string>([]),
-        labels: [],
-        deselectedLabels: new Set<string>([])
-      });
+      expect(filtersServiceSpy.updateFilters).toHaveBeenCalledWith({ hiddenLabels: component.hiddenLabelNames });
     });
   });
 
@@ -125,30 +117,21 @@ describe('LabelFilterBarComponent', () => {
   });
 
   describe('updateSelection', () => {
-    it('should update filters service with selected and hidden labels', () => {
+    it('should update filters service with selected labels', () => {
       const selectedLabels = [LABEL_NAME_SEVERITY_HIGH, LABEL_NAME_SEVERITY_LOW];
-      const hiddenLabels = [LABEL_NAME_SEVERITY_HIGH];
       component.selectedLabelNames = new Set<string>(selectedLabels);
-      component.hiddenLabelNames = new Set<string>(hiddenLabels);
 
       component.updateSelection();
 
-      expect(filtersServiceSpy.updateFilters).toHaveBeenCalledWith({
-        labels: selectedLabels,
-        deselectedLabels: new Set<string>(),
-        hiddenLabels: new Set<string>(hiddenLabels)
-      });
+      expect(filtersServiceSpy.updateFilters).toHaveBeenCalledWith({ labels: selectedLabels, deselectedLabels: new Set<string>() });
     });
   });
 
-  describe('resetAll', () => {
+  describe('removeAllSelection', () => {
     it('should deselect all labels and update the filter', () => {
-      component.resetSelection();
+      component.removeAllSelection();
       expect(component.selectedLabelNames).toEqual(new Set<string>());
       expect(component.deselectedLabelNames).toEqual(new Set<string>());
-      expect(component.hiddenLabelNames).toEqual(new Set<string>());
-
-      expect(component.isDefault).toBeTrue();
     });
   });
 });
