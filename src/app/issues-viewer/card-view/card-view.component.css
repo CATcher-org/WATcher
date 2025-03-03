@@ -1,6 +1,6 @@
 .card-column {
   margin: 8px;
-  height: 77vh;
+  /* height: 77vh; */
   display: flex;
   flex-direction: column;
 }

@@ -4,19 +4,21 @@
   </div>
 
   <ng-template #elseBlock>
-    <app-filter-bar [views$]="views"></app-filter-bar>
+    <div class="container">
+      <app-filter-bar [views$]="views"></app-filter-bar>
 
-    <div class="wrapper">
-      <app-card-view
-        *ngFor="let group of this.groupService.groups"
-        class="issue-table"
-        #card
-        [ngStyle]="{ display: card.isLoading || card.issueLength > 0 ? 'initial' : 'none' }"
-        [group]="group"
-        [headers]="this.displayedColumns"
-        (issueLengthChange)="this.groupService.updateHiddenGroups($event, group)"
-      ></app-card-view>
-      <app-hidden-groups [groups]="this.groupService.hiddenGroups"></app-hidden-groups>
+      <div class="wrapper">
+        <app-card-view
+          *ngFor="let group of this.groupService.groups"
+          class="issue-table"
+          #card
+          [ngStyle]="{ display: card.isLoading || card.issueLength > 0 ? 'initial' : 'none' }"
+          [group]="group"
+          [headers]="this.displayedColumns"
+          (issueLengthChange)="this.groupService.updateHiddenGroups($event, group)"
+        ></app-card-view>
+        <app-hidden-groups [groups]="this.groupService.hiddenGroups"></app-hidden-groups>
+      </div>
     </div>
   </ng-template>
 </div>
