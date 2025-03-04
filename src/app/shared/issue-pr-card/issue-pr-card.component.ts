@@ -38,7 +38,7 @@ export class IssuePrCardComponent {
   getIssueOpenOrCloseColorCSSClass() {
     if (this.issue.state === 'OPEN') {
       if (this.issue.isDraft) {
-        return 'grey';
+        return 'border-gray';
       } else {
         return 'border-green';
       }
