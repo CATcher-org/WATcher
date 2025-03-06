@@ -23,6 +23,11 @@ export class RepoUrlCacheService {
     }
   }
 
+  removeFromSuggestions(repo: string): void {
+    this.suggestions = this.suggestions.filter(r => r !== repo);
+    window.localStorage.setItem(RepoUrlCacheService.KEY_NAME, JSON.stringify(this.suggestions));
+  }
+
   getFilteredSuggestions(control: AbstractControl): Observable<string[]> {
     // Ref: https://v10.material.angular.io/components/autocomplete/overview
     return control.valueChanges.pipe(

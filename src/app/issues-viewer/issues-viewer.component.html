@@ -1,10 +1,10 @@
-<div>
+<div class="issues-viewer">
   <div class="loading-spinner" *ngIf="(this.viewService.isChangingRepo | async) || this.groupService.groups.length === 0; else elseBlock">
     <mat-progress-spinner color="primary" mode="indeterminate" diameter="50" strokeWidth="5"> </mat-progress-spinner>
   </div>
 
   <ng-template #elseBlock>
-    <app-filter-bar [views$]="views"></app-filter-bar>
+    <app-filter-bar [views$]="views" style="flex: 0 0 auto"></app-filter-bar>
 
     <div class="wrapper">
       <app-card-view
