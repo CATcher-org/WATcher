@@ -379,12 +379,6 @@ export class FiltersService {
     return [...milestones, Milestone.PRWithoutMilestone, Milestone.IssueWithoutMilestone];
   }
 
-  private getGhFilterAssignees(assignees: string[]): string {
-    return assignees
-      .map((assignee) => (assignee === AssigneesFilter.unassigned ? AssigneesFilter.no_assignees : FilterOptions.assignee + assignee))
-      .join(BooleanConjunctions.OR);
-  }
-
   private getGhFilterDeselectedLabels(deselectedLabels: Set<string>): string {
     return Array.from(deselectedLabels)
       .map((label) => BooleanConjunctions.EXCLUDE + FilterOptions.label + `\"${label}\"`)
@@ -409,6 +403,10 @@ export class FiltersService {
     return TypeFilter[type];
   }
 
+  /**
+   * Returns the encoded filter string for the GitHub search using url queries
+   * @returns Encoded filter string
+   */
   getEncodedFilter(): string {
     const res = [
       '',
@@ -452,11 +450,19 @@ export class FiltersService {
       return '';
     }
 
-    const asAuthors = assignees.filter((assignee) => assignee !== AssigneesFilter.unassigned).map((assignee) => `author:${assignee}`);
-    const asAssignees = assignees.map((assignee) => (assignee === AssigneesFilter.unassigned ? 'no:assignee' : `assignee:${assignee}`));
+    const asAuthors = assignees
+      .filter((assignee) => assignee !== AssigneesFilter.unassigned)
+      .map((assignee) => FilterOptions.author + assignee);
+    const asAssignees = assignees.map((assignee) =>
+      assignee === AssigneesFilter.unassigned ? AssigneesFilter.no_assignees : FilterOptions.assignee + assignee
+    );
 
-    const issueRelatedQuery = `(is:issue (${issueFilter.join(BooleanConjunctions.OR)}) (${asAssignees.join(BooleanConjunctions.OR)}))`;
-    const prRelatedQuery = `(is:pr (${prFilter.join(BooleanConjunctions.OR)}) (${asAuthors.join(BooleanConjunctions.OR)}))`;
+    const issueRelatedQuery = `(${TypeFilter[TypeOptions.Issue]} (${issueFilter.join(BooleanConjunctions.OR)}) (${asAssignees.join(
+      BooleanConjunctions.OR
+    )}))`;
+    const prRelatedQuery = `(${TypeFilter[TypeOptions.PullRequests]} (${prFilter.join(BooleanConjunctions.OR)}) (${asAuthors.join(
+      BooleanConjunctions.OR
+    )}))`;
 
     return issueRelatedQuery + BooleanConjunctions.OR + prRelatedQuery;
   }

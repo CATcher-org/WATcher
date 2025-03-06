@@ -62,7 +62,8 @@ export const MilestoneFilter = {
 export const FilterOptions = {
   assignee: 'assignee:',
   label: 'label:',
-  milestone: 'milestone:'
+  milestone: 'milestone:',
+  author: 'author:'
 };
 
 export const BooleanConjunctions = {
