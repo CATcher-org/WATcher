@@ -3,7 +3,7 @@ import { AssigneeService } from '../../src/app/core/services/assignee.service';
 import { FiltersService } from '../../src/app/core/services/filters.service';
 import { LoggingService } from '../../src/app/core/services/logging.service';
 import { MilestoneService } from '../../src/app/core/services/milestone.service';
-import { CHANGED_FILTER, DEFAULT_FILTER } from '../constants/filter.constants';
+import { CHANGED_FILTER, DEFAULT_FILTER, ENCODED_FILTER, ENCODED_FILTER_STRING } from '../constants/filter.constants';
 
 let filtersService: FiltersService;
 let loggingServiceSpy: jasmine.SpyObj<LoggingService>;
@@ -128,6 +128,15 @@ describe('FiltersService', () => {
         expect(filter.hiddenLabels).toEqual(new Set(['aspect-testing']));
         done();
       });
+    });
+  });
+
+  describe('.getEncodedFilter', () => {
+    it('should correctly encode filters', () => {
+      filtersService.updateFilters(ENCODED_FILTER);
+      const encodedFilter = filtersService.getEncodedFilter();
+
+      expect(encodedFilter).toEqual(ENCODED_FILTER_STRING);
     });
   });
 });
