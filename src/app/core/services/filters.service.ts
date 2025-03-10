@@ -423,6 +423,8 @@ export class FiltersService {
       this.getGhFilterSort(this.filter$.value.sort),
       this.getGhFilterTypes(this.filter$.value.type),
       this.getGhFilterOpenAndClosedPR(this.filter$.value.assignees, this.filter$.value.status),
+
+      // Github search as of now does not support searching for title with partial words. Results might not be as expected.
       this.filter$.value.title
     ];
 
