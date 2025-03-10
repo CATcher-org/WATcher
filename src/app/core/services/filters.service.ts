@@ -246,6 +246,28 @@ export class FiltersService {
     return s1.active === s2.active && s1.direction === s2.direction;
   }
 
+  /**
+   * Create a deep copy of a filter. For use when setting filters from presets.
+   *
+   * @param original
+   * @returns A deep copied version of the filter
+   */
+  public static createDeepCopy(original: Filter | Partial<Filter>): Filter {
+    return {
+      title: original.title,
+      status: [...original.status],
+      type: original.type,
+      sort: { ...original.sort }, // assuming Sort is a simple object (no nested Sets or Maps)
+      labels: original.labels ? [...original.labels] : [],
+      milestones: original.milestones ? [...original.milestones] : [],
+      itemsPerPage: original.itemsPerPage,
+      assignees: [...original.assignees],
+      // deep-copying Sets by creating new Set instances
+      hiddenLabels: new Set(original.hiddenLabels),
+      deselectedLabels: new Set(original.deselectedLabels)
+    };
+  }
+
   private pushFiltersToUrl(): void {
     const queryParams = { ...this.route.snapshot.queryParams };
 
@@ -364,13 +386,10 @@ export class FiltersService {
   }
 
   updateFilters(newFilters: Partial<Filter>): void {
-    console.log({ newFilters }, 'Updating filters');
-    console.log({ oldFilters: this.filter$.value });
     const nextDropdownFilter: Filter = {
       ...this.filter$.value,
       ...newFilters
     };
-    console.log({ nextDropdownFilter });
     this.filter$.next(nextDropdownFilter);
     this.updatePresetViewFromFilters(newFilters);
     this.pushFiltersToUrl();

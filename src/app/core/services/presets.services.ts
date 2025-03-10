@@ -146,7 +146,12 @@ export class PresetsService {
    */
   private writeSavedPresets() {
     this.logger.info(`PresetsService: Saved to local storage`, this.savedPresets);
-    window.localStorage.setItem(PresetsService.KEY_NAME, JSON.stringify(Array.from(this.savedPresets.entries())));
+
+    const stringifiedPresets = JSON.stringify(Array.from(this.savedPresets.entries()), (key, value) =>
+      value instanceof Set ? Array.from(value) : value
+    );
+
+    window.localStorage.setItem(PresetsService.KEY_NAME, stringifiedPresets);
     window.localStorage.setItem(PresetsService.GLOBAL_NAME, JSON.stringify(this.globalPresets$.value));
   }
 
@@ -167,7 +172,10 @@ export class PresetsService {
     //   delete preset.filter.hiddenLabels;
     // }
 
-    this.filter.updateFilters(preset.filter);
+    // copy the filter into a new object so it is not a refernnce
+    const newFilter = FiltersService.createDeepCopy(preset.filter);
+
+    this.filter.updateFilters(newFilter);
     this.currentPreset = preset;
   }
 
