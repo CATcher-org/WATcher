@@ -5,7 +5,11 @@
   </mat-card>
   <div class="scrollable-container">
     <div *ngFor="let group of groups">
-      <ng-container [ngTemplateOutlet]="getCardTemplate()" [ngTemplateOutletContext]="{ $implicit: group }"></ng-container>
+      <ng-container
+        *ngIf="currentCardTemplate$ | async as template"
+        [ngTemplateOutlet]="template"
+        [ngTemplateOutletContext]="{ $implicit: group }"
+      ></ng-container>
     </div>
   </div>
 </div>

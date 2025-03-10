@@ -22,6 +22,8 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
   hiddenLabelNames: Set<string> = new Set();
   loaded = false;
 
+  isDefault = true;
+
   labelSubscription: Subscription;
 
   constructor(private labelService: LabelService, private logger: LoggingService, private filtersService: FiltersService) {
@@ -51,6 +53,9 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
         this.deselectedLabelNames = this.filtersService.filter$.value.deselectedLabels;
         this.hiddenLabelNames = this.filtersService.filter$.value.hiddenLabels;
         this.loaded = true;
+
+        // set the default based on the initial round of filters
+        this.isDefault = this.selectedLabelNames.size === 0 && this.deselectedLabelNames.size === 0 && this.hiddenLabelNames.size === 0;
       });
     });
   }
@@ -65,7 +70,7 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     this.hiddenLabelNames.add(label);
-    this.filtersService.updateFilters({ hiddenLabels: this.hiddenLabelNames });
+    this.updateSelection();
   }
 
   /** Show labels that were hidden */
@@ -74,7 +79,7 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
       return;
     }
     this.hiddenLabelNames.delete(label);
-    this.filtersService.updateFilters({ hiddenLabels: this.hiddenLabelNames });
+    this.updateSelection();
   }
 
   /**
@@ -127,13 +132,19 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
   updateSelection(): void {
     this.filtersService.updateFilters({
       labels: Array.from(this.selectedLabelNames),
-      deselectedLabels: this.deselectedLabelNames
+      deselectedLabels: this.deselectedLabelNames,
+      hiddenLabels: this.hiddenLabelNames
     });
+
+    this.isDefault = this.selectedLabelNames.size === 0 && this.deselectedLabelNames.size === 0 && this.hiddenLabelNames.size === 0;
   }
 
-  removeAllSelection(): void {
+  resetSelection(): void {
     this.selectedLabelNames = new Set<string>();
     this.deselectedLabelNames = new Set<string>();
+    this.hiddenLabelNames = new Set<string>();
+
+    this.isDefault = true;
     this.updateSelection();
   }
 }
