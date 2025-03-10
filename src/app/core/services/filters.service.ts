@@ -391,7 +391,9 @@ export class FiltersService {
 
   private getGhFilterMilestones(milestones: string[]): string {
     return milestones
-      .map((milestone) => (MilestoneFilter.hasOwnProperty(milestone) ? MilestoneFilter[milestone] : FilterOptions.milestone + milestone))
+      .map((milestone) =>
+        MilestoneFilter.hasOwnProperty(milestone) ? MilestoneFilter[milestone] : FilterOptions.milestone + `\"${milestone}\"`
+      )
       .join(BooleanConjunctions.OR);
   }
 
@@ -404,7 +406,12 @@ export class FiltersService {
   }
 
   /**
-   * Returns the encoded filter string for the GitHub search using url queries
+   * Returns the encoded filter string for the GitHub search using url queries.
+   * Currently GithHub's search functionality only support whole words rather than partial
+   * While we still search for the string that is input the input box, the results might
+   * not be as expected in GitHub.
+   * Reference: https://github.com/CATcher-org/WATcher/issues/425
+   *
    * @returns Encoded filter string
    */
   getEncodedFilter(): string {
@@ -446,7 +453,7 @@ export class FiltersService {
     const prFilter = status.filter((stat) => !isIssue(stat)).map(toState);
     const issueFilter = status.filter(isIssue).map(toState);
 
-    if (prFilter.length === 0 && prFilter.length === 0) {
+    if (prFilter.length === 0) {
       return '';
     }
 
