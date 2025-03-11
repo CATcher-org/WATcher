@@ -4,7 +4,11 @@
   > -->
   <mat-form-field appearance="standard">
     <mat-label>Current preset</mat-label>
-    <mat-select [(ngModel)]="this.presetsService.currentPreset" (selectionChange)="onOptionSelected($event)">
+    <mat-select
+      [(ngModel)]="this.presetsService.currentPreset"
+      (selectionChange)="onOptionSelected($event)"
+      (openedChange)="onSelectOpened($event)"
+    >
       <mat-optgroup [label]="'Global presets'">
         <mat-option
           *ngFor="let preset of this.presetsService.globalPresets$.value"
@@ -12,7 +16,12 @@
           [matTooltip]="preset.toText()"
           matTooltipPosition="left"
         >
-          {{ preset.label }}
+          <div class="option-wrapper">
+            {{ preset.label }}
+            <button mat-button *ngIf="isMenuOpen">
+              <mat-icon aria-hidden="false" aria-label="Example home icon" style="margin: 0" color="warn">delete_outline</mat-icon>
+            </button>
+          </div>
         </mat-option>
         <mat-option *ngIf="this.presetsService.globalPresets$.value.length == 0" [value]="undefined" disabled> -- none -- </mat-option>
       </mat-optgroup>
@@ -23,12 +32,17 @@
           [matTooltip]="preset.toText()"
           matTooltipPosition="left"
         >
-          {{ preset.label }}
+          <div class="option-wrapper">
+            {{ preset.label }}
+            <button mat-button *ngIf="isMenuOpen">
+              <mat-icon aria-hidden="false" aria-label="Example home icon" style="margin: 0" color="warn">delete_outline</mat-icon>
+            </button>
+          </div>
         </mat-option>
         <mat-option *ngIf="this.presetsService.availablePresets$.value.length == 0" [value]="undefined" disabled> -- none -- </mat-option>
       </mat-optgroup>
     </mat-select>
   </mat-form-field>
-  <button mat-button color="warn" *ngIf="!!this.presetsService.currentPreset" (click)="onSaveButtonClicked()">Delete</button>
-  <button mat-raised-button color="primary" *ngIf="!this.presetsService.currentPreset" (click)="onSaveButtonClicked()">Save</button>
+  <!-- <button mat-button color="warn" *ngIf="!!this.presetsService.currentPreset" (click)="onSaveButtonClicked()">Delete</button> -->
+  <button mat-raised-button color="primary" (click)="onSaveButtonClicked()">Save</button>
 </div>

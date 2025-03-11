@@ -121,7 +121,7 @@ export class PresetsService {
 
       this.writeSavedPresets();
 
-      this.changeToPreset(preset);
+      // this.changeToPreset(preset);
       return preset;
     } else {
       const presets = this.savedPresets.get(repoKey) || [];
@@ -136,7 +136,7 @@ export class PresetsService {
 
       this.writeSavedPresets();
 
-      this.changeToPreset(preset);
+      // this.changeToPreset(preset);
       return preset;
     }
   }

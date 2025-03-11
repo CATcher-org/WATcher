@@ -50,9 +50,11 @@ export class FiltersService {
     console.log(`Initialized Filters to `, { filters: this.filter$.value });
   }
   public static readonly PRESET_VIEW_QUERY_PARAM_KEY = 'presetview';
-  private itemsPerPage = 20;
 
-  readonly defaultFilter: Filter = {
+  private static ITEMS_PER_PAGE = 20;
+  private itemsPerPage = FiltersService.ITEMS_PER_PAGE;
+
+  static readonly DEFAULT_FILTER: Filter = {
     title: '',
     status: [StatusOptions.OpenPullRequests, StatusOptions.MergedPullRequests, StatusOptions.OpenIssues, StatusOptions.ClosedIssues],
     type: TypeOptions.All,
@@ -61,7 +63,7 @@ export class FiltersService {
     milestones: [],
     hiddenLabels: new Set<string>(),
     deselectedLabels: new Set<string>(),
-    itemsPerPage: this.itemsPerPage,
+    itemsPerPage: FiltersService.ITEMS_PER_PAGE,
     assignees: []
   };
 
@@ -96,7 +98,7 @@ export class FiltersService {
   // List of keys in the new filter change that causes current filter to not qualify to be a preset view.
   readonly presetChangingKeys = new Set<string>(['status', 'type', 'sort', 'milestones', 'labels', 'deselectedLabels', 'assignees']);
 
-  public filter$ = new BehaviorSubject<Filter>(this.defaultFilter);
+  public filter$ = new BehaviorSubject<Filter>(FiltersService.DEFAULT_FILTER);
   // Either 'currentlyActive', 'contributions', or 'custom'.
   public presetView$ = new BehaviorSubject<string>('currentlyActive');
 
@@ -252,20 +254,52 @@ export class FiltersService {
    * @param original
    * @returns A deep copied version of the filter
    */
-  public static createDeepCopy(original: Filter | Partial<Filter>): Filter {
-    return {
-      title: original.title,
-      status: [...original.status],
-      type: original.type,
-      sort: { ...original.sort }, // assuming Sort is a simple object (no nested Sets or Maps)
-      labels: original.labels ? [...original.labels] : [],
-      milestones: original.milestones ? [...original.milestones] : [],
-      itemsPerPage: original.itemsPerPage,
-      assignees: [...original.assignees],
-      // deep-copying Sets by creating new Set instances
-      hiddenLabels: new Set(original.hiddenLabels),
-      deselectedLabels: new Set(original.deselectedLabels)
-    };
+  public static createDeepCopy(original: Filter | Partial<Filter>): Filter | Partial<Filter> {
+    const filter: Partial<Filter> = {};
+
+    if (original.title) {
+      filter.title = original.title;
+    }
+
+    if (original.status) {
+      filter.status = [...original.status];
+    }
+
+    if (original.type) {
+      filter.type = original.type;
+    }
+
+    if (original.sort) {
+      filter.sort = { ...original.sort };
+    }
+
+    if (original.labels) {
+      filter.labels = [...original.labels];
+    }
+
+    if (original.milestones) {
+      filter.milestones = [...original.milestones];
+    }
+
+    if (original.itemsPerPage) {
+      filter.itemsPerPage = original.itemsPerPage;
+    }
+
+    if (original.assignees) {
+      filter.assignees = [...original.assignees];
+    }
+
+    if (original.hiddenLabels) {
+      filter.hiddenLabels = new Set(original.hiddenLabels);
+    }
+
+    if (original.deselectedLabels) {
+      filter.deselectedLabels = new Set(original.deselectedLabels);
+    }
+
+    const isPartial = Object.keys(original).length !== Object.keys(FiltersService.DEFAULT_FILTER).length;
+
+    return filter;
   }
 
   private pushFiltersToUrl(): void {
@@ -325,14 +359,14 @@ export class FiltersService {
   }
 
   clearFilters(): void {
-    this.updateFilters(this.defaultFilter);
+    this.updateFilters(FiltersService.DEFAULT_FILTER);
     this.updatePresetView('currentlyActive');
     this.previousMilestonesLength = 0;
     this.previousAssigneesLength = 0;
   }
 
   initializeFromURLParams() {
-    const nextFilter: Filter = this.defaultFilter;
+    const nextFilter: Filter = FiltersService.DEFAULT_FILTER;
     const queryParams = this.route.snapshot.queryParamMap;
     try {
       for (const filterName of Object.keys(nextFilter)) {

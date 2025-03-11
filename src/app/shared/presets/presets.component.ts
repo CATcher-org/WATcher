@@ -33,6 +33,7 @@ export class PresetsComponent implements OnInit, OnDestroy {
   selected = '';
   // public isChecked = false;
   private unsubscribe$ = new Subject<void>();
+  private isMenuOpen = false;
 
   // selectedPresetId: string;
   /**
@@ -48,12 +49,15 @@ export class PresetsComponent implements OnInit, OnDestroy {
   // }
 
   onSaveButtonClicked() {
-    if (this.presetsService.currentPreset) {
-      this.presetsService.deleteCurrentPreset();
-      // this.isChecked = false;
-    } else {
-      this.promptSave();
-    }
+    // if (this.presetsService.currentPreset) {
+    //   this.presetsService.deleteCurrentPreset();
+    //   // this.isChecked = false;
+    // } else {
+    //   this.promptSave();
+    // }
+
+    // allow them to save duplicates (OR NOT?)
+    this.promptSave();
   }
 
   promptSave() {
@@ -69,6 +73,7 @@ export class PresetsComponent implements OnInit, OnDestroy {
         // get the URL
         // set in localstorage using filters-save.services.ts
         const preset = this.presetsService.savePreset(this.viewService.currentRepo, result.data);
+        this.presetsService.changeToPreset(preset);
         // update the dropdown to autoselect the new preset
         // this.selectedPresetId = preset.id
       } else {
@@ -102,6 +107,11 @@ export class PresetsComponent implements OnInit, OnDestroy {
     // } else {
     //   this.logger.warn(`PresetComponent: Preset with id ${changeToPresetId} not found`);
     // }
+  }
+
+  onSelectOpened(event: boolean) {
+    console.log({ event });
+    this.isMenuOpen = event;
   }
 
   ngOnInit(): void {
