@@ -257,7 +257,8 @@ export class FiltersService {
   public static createDeepCopy(original: Filter | Partial<Filter>): Filter | Partial<Filter> {
     const filter: Partial<Filter> = {};
 
-    if (original.title) {
+    if (original.title != undefined) {
+      // string can be empty, is falsy value
       filter.title = original.title;
     }
 
@@ -299,7 +300,11 @@ export class FiltersService {
 
     const isPartial = Object.keys(original).length !== Object.keys(FiltersService.DEFAULT_FILTER).length;
 
-    return filter;
+    if (isPartial) {
+      return filter as Partial<Filter>;
+    } else {
+      return filter as Filter;
+    }
   }
 
   private pushFiltersToUrl(): void {
