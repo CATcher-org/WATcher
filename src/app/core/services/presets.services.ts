@@ -214,18 +214,18 @@ export class PresetsService {
     this.currentPreset = preset;
   }
 
-  public deleteCurrentPreset() {
-    if (this.currentPreset.isGlobal) {
+  public deletePreset(preset: Preset) {
+    if (preset.isGlobal) {
       const globalPresets = this.globalPresets$.value;
 
-      const newPresets = globalPresets.filter((p) => p.id !== this.currentPreset.id);
+      const newPresets = globalPresets.filter((p) => p.id !== preset.id);
 
       this.globalPresets$.next(newPresets);
     } else {
-      const repoKey = this.currentPreset.repo.toString();
+      const repoKey = preset.repo.toString();
       const presets = this.savedPresets.get(repoKey) || [];
 
-      const newPresets = presets.filter((p) => p.id !== this.currentPreset.id);
+      const newPresets = presets.filter((p) => p.id !== preset.id);
       this.savedPresets.set(repoKey, newPresets);
 
       this.availablePresets$.next(newPresets);

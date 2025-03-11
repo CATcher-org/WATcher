@@ -62,6 +62,13 @@ export class PresetsComponent implements OnInit, OnDestroy {
     this.promptSave();
   }
 
+  onDeleteButtonClicked(event: MouseEvent, preset: Preset) {
+    console.log({ event, preset });
+    event.preventDefault();
+    event.stopPropagation();
+    this.presetsService.deletePreset(preset);
+  }
+
   promptSave() {
     const dialogRef = this.dialog.open(PresetsSavePromptComponent, {
       width: '400px'

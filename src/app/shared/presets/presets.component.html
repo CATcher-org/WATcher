@@ -18,7 +18,7 @@
         >
           <div class="option-wrapper">
             {{ preset.label }}
-            <button mat-button *ngIf="isMenuOpen">
+            <button mat-button *ngIf="isMenuOpen" (click)="onDeleteButtonClicked($event, preset)">
               <mat-icon aria-hidden="false" aria-label="Example home icon" style="margin: 0" color="warn">delete_outline</mat-icon>
             </button>
           </div>
@@ -34,7 +34,7 @@
         >
           <div class="option-wrapper">
             {{ preset.label }}
-            <button mat-button *ngIf="isMenuOpen">
+            <button mat-button *ngIf="isMenuOpen" (click)="onDeleteButtonClicked($event, preset)">
               <mat-icon aria-hidden="false" aria-label="Example home icon" style="margin: 0" color="warn">delete_outline</mat-icon>
             </button>
           </div>
