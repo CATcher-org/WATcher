@@ -46,8 +46,6 @@ export class FiltersService {
     this.filter$.subscribe((filter: Filter) => {
       this.itemsPerPage = filter.itemsPerPage;
     });
-
-    console.log(`Initialized Filters to `, { filters: this.filter$.value });
   }
   public static readonly PRESET_VIEW_QUERY_PARAM_KEY = 'presetview';
 
@@ -115,8 +113,6 @@ export class FiltersService {
    * @returns
    */
   static fromObject(object: any, isGlobal = false): Partial<Filter> {
-    console.log({ object });
-
     if (isGlobal) {
       const filter: Partial<Filter> = {
         title: object.title,

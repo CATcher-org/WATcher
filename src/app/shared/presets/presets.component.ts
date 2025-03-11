@@ -63,7 +63,6 @@ export class PresetsComponent implements OnInit, OnDestroy {
   }
 
   onDeleteButtonClicked(event: MouseEvent, preset: Preset) {
-    console.log({ event, preset });
     event.preventDefault();
     event.stopPropagation();
     this.presetsService.deletePreset(preset);
@@ -121,7 +120,6 @@ export class PresetsComponent implements OnInit, OnDestroy {
   }
 
   onSelectOpened(event: boolean) {
-    console.log({ event });
     this.isMenuOpen = event;
   }
 
