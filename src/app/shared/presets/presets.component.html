@@ -3,7 +3,10 @@
     >Save your filters</mat-slide-toggle
   > -->
   <mat-form-field appearance="standard">
-    <mat-label>Current preset</mat-label>
+    <mat-label
+      >Current preset
+      <span *ngIf="this.presetsService.currentPreset && this.presetsService.currentPreset.isGlobal"> (global) </span></mat-label
+    >
     <mat-select
       [(ngModel)]="this.presetsService.currentPreset"
       (selectionChange)="onOptionSelected($event)"
