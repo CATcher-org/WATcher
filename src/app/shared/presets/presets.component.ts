@@ -5,11 +5,11 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Preset } from '../../core/models/preset.model';
+import { GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { PresetsService } from '../../core/services/presets.services';
 import { ViewService } from '../../core/services/view.service';
 import { PresetsSavePromptComponent } from './presets-save-prompt/presets-save-prompt.component';
-import { GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 
 export interface DialogData {
   label: string;

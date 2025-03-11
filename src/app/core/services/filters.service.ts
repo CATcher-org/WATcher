@@ -50,7 +50,6 @@ export class FiltersService {
   public static readonly PRESET_VIEW_QUERY_PARAM_KEY = 'presetview';
 
   private static ITEMS_PER_PAGE = 20;
-  private itemsPerPage = FiltersService.ITEMS_PER_PAGE;
 
   static readonly DEFAULT_FILTER: Filter = {
     title: '',
@@ -64,6 +63,8 @@ export class FiltersService {
     itemsPerPage: FiltersService.ITEMS_PER_PAGE,
     assignees: []
   };
+
+  private itemsPerPage = FiltersService.ITEMS_PER_PAGE;
 
   readonly presetViews: {
     [key: string]: () => Partial<Filter>;
@@ -253,7 +254,7 @@ export class FiltersService {
   public static createDeepCopy(original: Filter | Partial<Filter>): Filter | Partial<Filter> {
     const filter: Partial<Filter> = {};
 
-    if (original.title != undefined) {
+    if (original.title !== undefined) {
       // string can be empty, is falsy value
       filter.title = original.title;
     }
