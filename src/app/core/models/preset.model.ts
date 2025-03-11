@@ -1,4 +1,5 @@
 import { Filter, FiltersService } from '../services/filters.service';
+import { GroupBy } from '../services/grouping/grouping-context.service';
 import { Repo } from './repo.model';
 
 /**
@@ -6,7 +7,7 @@ import { Repo } from './repo.model';
  * Currently, the filters are saved as a URL-encoded string.
  */
 export class Preset {
-  static VERSION = 1;
+  static VERSION = 2;
   version = Preset.VERSION;
   repo: Repo;
   filter: Partial<Filter> | Filter;
@@ -15,6 +16,8 @@ export class Preset {
 
   // If the preset is global, it will be available for all repos, and we will not save Milestone, Assignees and Labels.
   isGlobal: boolean;
+
+  groupBy: GroupBy;
 
   /** Creates a new Preset */
   // constructor(repo: Repo, filter: Filter, label: string, id = Date.now().toString(), version = Preset.VERSION) {
@@ -29,7 +32,8 @@ export class Preset {
     label,
     id = Date.now().toString(),
     version = Preset.VERSION,
-    isGlobal = false
+    isGlobal = false,
+    groupBy
   }: {
     repo: Repo;
     filter: Partial<Filter> | Filter;
@@ -37,6 +41,7 @@ export class Preset {
     id?: string;
     version?: number;
     isGlobal: boolean;
+    groupBy: GroupBy;
   }) {
     this.repo = repo;
 
@@ -60,6 +65,7 @@ export class Preset {
     this.id = id;
     this.version = version;
     this.isGlobal = isGlobal;
+    this.groupBy = groupBy;
   }
 
   static fromObject(object: any): Preset {
@@ -67,9 +73,15 @@ export class Preset {
     const isGlobal = object.isGlobal || false;
     const filter = FiltersService.fromObject(object.filter, isGlobal);
     const label = object.label;
-    const version = object.version || -1;
+    let version = object.version || -1;
 
-    return new Preset({ repo, filter, label, id: object.id, version, isGlobal: object.isGlobal });
+    const groupBy = object.groupBy || GroupBy.Assignee;
+
+    if (version === 1) {
+      version = 2;
+    }
+
+    return new Preset({ repo, filter, label, id: object.id, version, isGlobal: object.isGlobal, groupBy });
   }
 
   public toText(): string {

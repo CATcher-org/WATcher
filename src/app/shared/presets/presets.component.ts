@@ -9,6 +9,7 @@ import { LoggingService } from '../../core/services/logging.service';
 import { PresetsService } from '../../core/services/presets.services';
 import { ViewService } from '../../core/services/view.service';
 import { PresetsSavePromptComponent } from './presets-save-prompt/presets-save-prompt.component';
+import { GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 
 export interface DialogData {
   label: string;
@@ -27,6 +28,7 @@ export class PresetsComponent implements OnInit, OnDestroy {
     private logger: LoggingService,
     public dialog: MatDialog,
     public presetsService: PresetsService,
+    public groupingContextService: GroupingContextService,
     private viewService: ViewService
   ) {}
 
@@ -72,7 +74,9 @@ export class PresetsComponent implements OnInit, OnDestroy {
         // save the filter
         // get the URL
         // set in localstorage using filters-save.services.ts
-        const preset = this.presetsService.savePreset(this.viewService.currentRepo, result.data);
+
+        const groupBy = this.groupingContextService.currGroupBy;
+        const preset = this.presetsService.savePreset(this.viewService.currentRepo, groupBy, result.data);
         this.presetsService.changeToPreset(preset);
         // update the dropdown to autoselect the new preset
         // this.selectedPresetId = preset.id

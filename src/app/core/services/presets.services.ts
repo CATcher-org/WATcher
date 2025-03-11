@@ -4,6 +4,7 @@ import { Preset } from '../models/preset.model';
 import { Repo } from '../models/repo.model';
 import { Filter, FiltersService } from './filters.service';
 import { LoggingService } from './logging.service';
+import { GroupBy, GroupingContextService } from './grouping/grouping-context.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class PresetsService {
   public availablePresets$ = new BehaviorSubject<Preset[]>([]); // Repository-specific presets available for the current repo
   public globalPresets$ = new BehaviorSubject<Preset[]>([]); // Global presets available for all repos
 
-  constructor(private logger: LoggingService, private filter: FiltersService) {
+  constructor(private logger: LoggingService, private filter: FiltersService, private groupingContextService: GroupingContextService) {
     // Load saved presets from local storage
     const rawRepoPresets = window.localStorage.getItem(PresetsService.KEY_NAME);
     const rawGlobalPresets = window.localStorage.getItem(PresetsService.GLOBAL_NAME);
@@ -53,17 +54,21 @@ export class PresetsService {
     // Initialize subscription to filters to check if this is a global preset or a local preset
     this.filter.filter$.subscribe((filter) => {
       // check to see if it's a local preset first
-      const localPreset = this.availablePresets$.value.find((p) => FiltersService.isPartOfPreset(filter, p));
+      const localPreset = this.availablePresets$.value.find(
+        (p) => FiltersService.isPartOfPreset(filter, p) && this.groupingContextService.currGroupBy === p.groupBy
+      );
       if (localPreset) {
-        this.logger.info(`PresetsService: Found a matching local preset`, localPreset);
+        this.logger.info(`PresetsService: Found a matching local preset from a change in filters`, localPreset);
         this.currentPreset = localPreset;
 
         return;
       }
 
-      const globalPreset = this.globalPresets$.value.find((p) => FiltersService.isPartOfPreset(filter, p));
+      const globalPreset = this.globalPresets$.value.find(
+        (p) => FiltersService.isPartOfPreset(filter, p) && this.groupingContextService.currGroupBy === p.groupBy
+      );
       if (globalPreset) {
-        this.logger.info(`PresetsService: Found a matching global preset`, globalPreset);
+        this.logger.info(`PresetsService: Found a matching global preset from a change in filters`, globalPreset);
         this.currentPreset = globalPreset;
 
         return;
@@ -72,6 +77,32 @@ export class PresetsService {
       // No matching preset
       this.currentPreset = undefined;
     });
+
+    // Note: I wrote the below code as I thought we need to refresh the currently active preset when the groupBy changes.
+    // However, it turns out that changing the group by pushes an update to the filter observable, which triggers the above subscription to run.
+    // Hence, the below is actually not needed.
+
+    // this.groupingContextService.currGroupBy$.subscribe((groupBy) => {
+    //   // check to see if it's a local preset first
+    //   const localPreset = this.availablePresets$.value.find((p) => FiltersService.isPartOfPreset(this.filter.filter$.value, p) && this.groupingContextService.currGroupBy === p.groupBy);
+    //   if (localPreset) {
+    //     this.logger.info(`PresetsService: Found a matching local preset from a change in groupBy`, localPreset);
+    //     this.currentPreset = localPreset;
+
+    //     return;
+    //   }
+
+    //   const globalPreset = this.globalPresets$.value.find((p) => FiltersService.isPartOfPreset(this.filter.filter$.value, p) && this.groupingContextService.currGroupBy === p.groupBy);
+    //   if (globalPreset) {
+    //     this.logger.info(`PresetsService: Found a matching global preset from a change in groupBy`, globalPreset);
+    //     this.currentPreset = globalPreset;
+
+    //     return;
+    //   }
+
+    //   // No matching preset
+    //   this.currentPreset = undefined;
+    // })
   }
 
   /**
@@ -100,6 +131,7 @@ export class PresetsService {
    */
   public savePreset(
     repo: Repo,
+    groupBy: GroupBy,
     data: {
       label: string;
       isGlobal: boolean;
@@ -111,7 +143,7 @@ export class PresetsService {
 
     // For Global Presets, we save them under the "global" key.
     if (isGlobal) {
-      const preset = new Preset({ repo, filter, label, id: Date.now().toString(), isGlobal });
+      const preset = new Preset({ repo, filter, label, id: Date.now().toString(), isGlobal, groupBy });
       const existingGlobalPresets = this.globalPresets$.value;
       const globalPresets = [...existingGlobalPresets, preset];
       // this.savedPresets.set('global', globalPresets); // update the existing presets
@@ -126,7 +158,7 @@ export class PresetsService {
     } else {
       const presets = this.savedPresets.get(repoKey) || [];
 
-      const preset = new Preset({ repo, filter, label, id: Date.now().toString(), isGlobal });
+      const preset = new Preset({ repo, filter, label, id: Date.now().toString(), isGlobal, groupBy });
       presets.push(preset);
       this.savedPresets.set(repoKey, presets); // update the existing presets
 
@@ -175,7 +207,10 @@ export class PresetsService {
     // copy the filter into a new object so it is not a refernnce
     const newFilter = FiltersService.createDeepCopy(preset.filter);
 
+    this.logger.info(`PresetsService: Changing to preset`, preset);
+
     this.filter.updateFilters(newFilter);
+    this.groupingContextService.setCurrentGroupingType(preset.groupBy);
     this.currentPreset = preset;
   }
 
