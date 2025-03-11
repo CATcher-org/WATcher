@@ -100,7 +100,7 @@ export class Preset {
    */
   private summarize() {
     const filter = this.filter;
-    return `status:${filter.status} + type:${filter.type} + sort:${filter.sort.active}-${filter.sort.direction} + labels:${filter.labels} + milestones:${filter.milestones} + hiddenLabels:${filter.hiddenLabels} + deselectedLabels:${filter.deselectedLabels} + itemsPerPage:${filter.itemsPerPage} + assignees:${filter.assignees}`;
+    return `search:${filter.title} + status:${filter.status} + type:${filter.type} + sort:${filter.sort.active}-${filter.sort.direction} + labels:${filter.labels} + milestones:${filter.milestones} + hiddenLabels:${filter.hiddenLabels} + deselectedLabels:${filter.deselectedLabels} + itemsPerPage:${filter.itemsPerPage} + assignees:${filter.assignees}`;
   }
 
   /**
@@ -111,6 +111,6 @@ export class Preset {
    */
   private summarizeGlobal() {
     const filter = this.filter;
-    return `status:${filter.status} + type:${filter.type} + sort:${filter.sort.active}-${filter.sort.direction} + itemsPerPage:${filter.itemsPerPage}`;
+    return `search:${filter.title} + status:${filter.status} + type:${filter.type} + sort:${filter.sort.active}-${filter.sort.direction} + itemsPerPage:${filter.itemsPerPage}`;
   }
 }
