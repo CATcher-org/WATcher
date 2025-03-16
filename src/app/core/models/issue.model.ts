@@ -5,7 +5,15 @@ import { GithubLabel } from './github/github-label.model';
 import { HiddenData } from './hidden-data.model';
 import { Milestone } from './milestone.model';
 
+type ReviewDecisionType = typeof Issue.ReviewDecision[keyof typeof Issue.ReviewDecision];
+
 export class Issue {
+  static readonly ReviewDecision = {
+    CHANGES_REQUESTED: 'CHANGES_REQUESTED',
+    APPROVED: 'APPROVED',
+    REVIEW_REQUIRED: 'REVIEW_REQUIRED'
+  } as const;
+
   /** Basic Fields */
   readonly globalId: string;
   readonly id: number;
@@ -28,6 +36,8 @@ export class Issue {
   assignees?: string[];
   labels?: string[];
   githubLabels?: GithubLabel[];
+  reviewers?: string[];
+  reviewDecision: ReviewDecisionType;
 
   /**
    * Formats the text to create space at the end of the user input to prevent any issues with
