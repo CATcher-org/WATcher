@@ -44,6 +44,10 @@ export class Repo {
     return formattedInput.split('/').slice(-2).join('/');
   }
 
+  public static fromObject(object: any): Repo {
+    return new Repo(object.owner, object.name);
+  }
+
   /** String representation of a Repo. */
   public toString(): string {
     return this.owner + '/' + this.name;
