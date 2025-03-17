@@ -59,6 +59,10 @@ export abstract class Preset<T> {
   protected summarize() {
     return 'Method not implemented!';
   }
+
+  public isGlobal(): boolean {
+    return this instanceof GlobalPreset;
+  }
 }
 
 export class GlobalPreset extends Preset<Partial<Filter>> {

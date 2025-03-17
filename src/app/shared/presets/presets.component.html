@@ -5,9 +5,7 @@
   <mat-form-field appearance="standard">
     <mat-label
       >Current preset
-      <span *ngIf="this.presetsService.currentPreset && this.presetsService.currentPreset; instanceof: GlobalPreset">
-        (global)
-      </span></mat-label
+      <span *ngIf="this.presetsService.currentPreset && this.presetsService.currentPreset.isGlobal()"> (global) </span></mat-label
     >
     <mat-select
       [(ngModel)]="this.presetsService.currentPreset"
