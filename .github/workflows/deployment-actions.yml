@@ -6,8 +6,8 @@
 name: Version Deployment
 
 on:
-  push:
-    branches: deploy
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
   deploy_web:

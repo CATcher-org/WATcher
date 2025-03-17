@@ -2,7 +2,20 @@ import { ComponentFactoryResolver, Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, pipe } from 'rxjs';
-import { OrderOptions, SortOptions, StatusOptions, TypeOptions } from '../constants/filter-options.constants';
+import {
+  AssigneesFilter,
+  BooleanConjunctions,
+  FilterOptions,
+  MilestoneFilter,
+  MilestoneOptions,
+  OrderOptions,
+  SortFilter,
+  SortOptions,
+  StatusFilter,
+  StatusOptions,
+  TypeFilter,
+  TypeOptions
+} from '../constants/filter-options.constants';
 import { GithubUser } from '../models/github-user.model';
 import { SimpleLabel } from '../models/label.model';
 import { Milestone } from '../models/milestone.model';
@@ -570,5 +583,102 @@ export class FiltersService {
   getMilestonesForContributions(): Milestone[] {
     const milestones = this.milestoneService.milestones;
     return [...milestones, Milestone.PRWithoutMilestone, Milestone.IssueWithoutMilestone];
+  }
+
+  private getGhFilterDeselectedLabels(deselectedLabels: Set<string>): string {
+    return Array.from(deselectedLabels)
+      .map((label) => BooleanConjunctions.EXCLUDE + FilterOptions.label + `\"${label}\"`)
+      .join(BooleanConjunctions.AND);
+  }
+
+  private getGhFilterLabels(labels: string[]): string {
+    return labels.map((label) => FilterOptions.label + `\"${label}\"`).join(BooleanConjunctions.AND);
+  }
+
+  private getGhFilterMilestones(milestones: string[]): string {
+    return milestones
+      .map((milestone) =>
+        MilestoneFilter.hasOwnProperty(milestone) ? MilestoneFilter[milestone] : FilterOptions.milestone + `\"${milestone}\"`
+      )
+      .join(BooleanConjunctions.OR);
+  }
+
+  private getGhFilterSort(sort: Sort): string {
+    return SortFilter.hasOwnProperty(sort.active) ? SortFilter[sort.active] + ':' + sort.direction : '';
+  }
+
+  private getGhFilterTypes(type: string): string {
+    return TypeFilter[type];
+  }
+
+  /**
+   * Returns the encoded filter string for the GitHub search using url queries.
+   * Currently GithHub's search functionality only support whole words rather than partial
+   * While we still search for the string that is input the input box, the results might
+   * not be as expected in GitHub.
+   * Reference: https://github.com/CATcher-org/WATcher/issues/425
+   *
+   * @returns Encoded filter string
+   */
+  getEncodedFilter(): string {
+    const res = [
+      '',
+      this.getGhFilterDeselectedLabels(this.filter$.value.deselectedLabels),
+      this.getGhFilterLabels(this.filter$.value.labels),
+      this.getGhFilterMilestones(this.filter$.value.milestones),
+      this.getGhFilterSort(this.filter$.value.sort),
+      this.getGhFilterTypes(this.filter$.value.type),
+      this.getGhFilterOpenAndClosedPR(this.filter$.value.assignees, this.filter$.value.status),
+
+      // Github search as of now does not support searching for title with partial words. Results might not be as expected.
+      this.filter$.value.title
+    ];
+
+    return res
+      .filter((curr) => curr !== '')
+      .map((curr) => '(' + curr + ')')
+      .join(BooleanConjunctions.AND);
+  }
+
+  private getGhFilterOpenAndClosedPR(assignees: string[], status: string[]): string {
+    const toState = (stat: string): string => {
+      switch (stat) {
+        case StatusOptions.OpenPullRequests:
+        case StatusOptions.OpenIssues:
+          return 'is:open';
+        case StatusOptions.MergedPullRequests:
+          return 'is:merged';
+        case StatusOptions.ClosedPullRequests:
+        case StatusOptions.ClosedIssues:
+          return 'is:closed';
+        default:
+          return '';
+      }
+    };
+
+    const isIssue = (stat: string): boolean => stat === StatusOptions.OpenIssues || stat === StatusOptions.ClosedIssues;
+
+    const prFilter = status.filter((stat) => !isIssue(stat)).map(toState);
+    const issueFilter = status.filter(isIssue).map(toState);
+
+    if (prFilter.length === 0) {
+      return '';
+    }
+
+    const asAuthors = assignees
+      .filter((assignee) => assignee !== AssigneesFilter.unassigned)
+      .map((assignee) => FilterOptions.author + assignee);
+    const asAssignees = assignees.map((assignee) =>
+      assignee === AssigneesFilter.unassigned ? AssigneesFilter.no_assignees : FilterOptions.assignee + assignee
+    );
+
+    const issueRelatedQuery = `(${TypeFilter[TypeOptions.Issue]} (${issueFilter.join(BooleanConjunctions.OR)}) (${asAssignees.join(
+      BooleanConjunctions.OR
+    )}))`;
+    const prRelatedQuery = `(${TypeFilter[TypeOptions.PullRequests]} (${prFilter.join(BooleanConjunctions.OR)}) (${asAuthors.join(
+      BooleanConjunctions.OR
+    )}))`;
+
+    return issueRelatedQuery + BooleanConjunctions.OR + prRelatedQuery;
   }
 }
