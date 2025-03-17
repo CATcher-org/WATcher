@@ -100,7 +100,16 @@ export class Preset {
    */
   private summarize() {
     const filter = this.filter;
-    return `search:${filter.title} + status:${filter.status} + type:${filter.type} + sort:${filter.sort.active}-${filter.sort.direction} + labels:${filter.labels} + milestones:${filter.milestones} + hiddenLabels:${filter.hiddenLabels} + deselectedLabels:${filter.deselectedLabels} + itemsPerPage:${filter.itemsPerPage} + assignees:${filter.assignees}`;
+    return `Search terms: ${filter.title}
+            Status: ${filter.status}
+            Type: ${filter.type}
+            Sort: ${filter.sort.active}-${filter.sort.direction}
+            Labels: ${filter.labels.join(', ')}
+            Milestones: ${filter.milestones.join(', ')}
+            Hidden Labels: ${[filter.hiddenLabels ? Array.from(filter.hiddenLabels) : ''].join(', ')}
+            Deselected Labels: ${[filter.deselectedLabels ? Array.from(filter.deselectedLabels) : ''].join(', ')}
+            Items per Page: ${filter.itemsPerPage}
+            Assignees: ${filter.assignees.join(', ')}`;
   }
 
   /**
@@ -111,6 +120,10 @@ export class Preset {
    */
   private summarizeGlobal() {
     const filter = this.filter;
-    return `search:${filter.title} + status:${filter.status} + type:${filter.type} + sort:${filter.sort.active}-${filter.sort.direction} + itemsPerPage:${filter.itemsPerPage}`;
+    return `Search: ${filter.title}
+            Status: ${filter.status}
+            Type: ${filter.type}
+            Sort: ${filter.sort.active}-${filter.sort.direction}
+            Items per Page: ${filter.itemsPerPage}`;
   }
 }
