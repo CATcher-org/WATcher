@@ -4,7 +4,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Preset } from '../../core/models/preset.model';
+import { EitherOrPreset, Preset } from '../../core/models/preset.model';
 import { GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { PresetsService } from '../../core/services/presets.services';
@@ -62,7 +62,7 @@ export class PresetsComponent implements OnInit, OnDestroy {
     this.promptSave();
   }
 
-  onDeleteButtonClicked(event: MouseEvent, preset: Preset) {
+  onDeleteButtonClicked(event: MouseEvent, preset: EitherOrPreset) {
     event.preventDefault();
     event.stopPropagation();
     this.presetsService.deletePreset(preset);

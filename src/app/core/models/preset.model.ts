@@ -6,73 +6,53 @@ import { Repo } from './repo.model';
  * Represents a set of filters.
  * Currently, the filters are saved as a URL-encoded string.
  */
-export class Preset {
+export abstract class Preset<T> {
   repo: Repo;
-  filter: Partial<Filter> | Filter;
+  filter: T;
   label: string;
   id: string; // current timestamp in ms as string
 
   // If the preset is global, it will be available for all repos, and we will not save Milestone, Assignees and Labels.
-  isGlobal: boolean;
+  // isGlobal: boolean;
 
   groupBy: GroupBy;
 
-  constructor({
-    repo,
-    filter,
-    label,
-    id = Date.now().toString(),
-    isGlobal = false,
-    groupBy
-  }: {
-    repo: Repo;
-    filter: Partial<Filter> | Filter;
-    label: string;
-    id?: string;
-    isGlobal: boolean;
-    groupBy: GroupBy;
-  }) {
+  constructor({ repo, label, id = Date.now().toString(), groupBy }: { repo: Repo; label: string; id?: string; groupBy: GroupBy }) {
     this.repo = repo;
 
-    if (isGlobal) {
-      // filter.milestones = [];
-      // filter.assignees = [];
-      // filter.labels = [];
-      // filter.hiddenLabels = new Set();
-      // filter.deselectedLabels = new Set();
-      delete filter.milestones;
-      delete filter.assignees;
-      delete filter.labels;
-      delete filter.hiddenLabels;
-      delete filter.deselectedLabels;
-      this.filter = filter as Partial<Filter>;
-    } else {
-      this.filter = filter;
-    }
+    // if (isGlobal) {
+    //   // filter.milestones = [];
+    //   // filter.assignees = [];
+    //   // filter.labels = [];
+    //   // filter.hiddenLabels = new Set();
+    //   // filter.deselectedLabels = new Set();
+    //   delete filter.milestones;
+    //   delete filter.assignees;
+    //   delete filter.labels;
+    //   delete filter.hiddenLabels;
+    //   delete filter.deselectedLabels;
+    //   this.filter = filter as Partial<Filter>;
+    // } else {
+    //   this.filter = filter;
+    // }
 
     this.label = label;
     this.id = id;
-    this.isGlobal = isGlobal;
+    // this.isGlobal = isGlobal;
     this.groupBy = groupBy;
   }
 
-  static fromObject(object: any): Preset {
-    const repo = Repo.fromObject(object.repo);
-    const isGlobal = object.isGlobal || false;
-    const filter = FiltersService.fromObject(object.filter, isGlobal);
-    const label = object.label;
-
-    const groupBy = object.groupBy || GroupBy.Assignee;
-
-    return new Preset({ repo, filter, label, id: object.id, isGlobal: object.isGlobal, groupBy });
+  static fromObject(object: any): any {
+    // const repo = Repo.fromObject(object.repo);
+    // const isGlobal = object.isGlobal || false;
+    // const filter = FiltersService.fromObject(object.filter, isGlobal);
+    // const label = object.label;
+    // const groupBy = object.groupBy || GroupBy.Assignee;
+    // return new Preset({ repo, label, id: object.id, groupBy });
   }
 
   public toText(): string {
-    if (this.isGlobal) {
-      return this.summarizeGlobal();
-    } else {
-      return this.summarize();
-    }
+    return this.summarize();
   }
 
   /**
@@ -81,7 +61,73 @@ export class Preset {
    * TODO: https://github.com/CATcher-org/WATcher/issues/405
    * This should be part of the filter model.
    */
-  private summarize() {
+  protected summarize() {
+    return 'Method not implemented!';
+  }
+}
+
+export class GlobalPreset extends Preset<Partial<Filter>> {
+  constructor({
+    repo,
+    filter,
+    label,
+    id = Date.now().toString(),
+    groupBy
+  }: {
+    repo: Repo;
+    filter: Partial<Filter>;
+    label: string;
+    id?: string;
+    groupBy: GroupBy;
+  }) {
+    super({ repo, label, id, groupBy });
+    this.filter = filter;
+  }
+
+  protected summarize() {
+    const filter = this.filter;
+    return `Search: ${filter.title}
+            Status: ${filter.status}
+            Type: ${filter.type}
+            Sort: ${filter.sort.active}-${filter.sort.direction}
+            Items per Page: ${filter.itemsPerPage}`;
+  }
+
+  static fromObject(object: any): Preset<Partial<Filter>> {
+    const repo = Repo.fromObject(object.repo);
+    const filter = FiltersService.fromObject(object.filter, true);
+    const label = object.label;
+
+    const groupBy = object.groupBy || GroupBy.Assignee;
+
+    return new GlobalPreset({ repo, filter, label, id: object.id, groupBy });
+  }
+}
+
+export class LocalPreset extends Preset<Filter> {
+  constructor({
+    repo,
+    filter,
+    label,
+    id = Date.now().toString(),
+    groupBy
+  }: {
+    repo: Repo;
+    filter: Filter;
+    label: string;
+    id?: string;
+    groupBy: GroupBy;
+  }) {
+    super({ repo, label, id, groupBy });
+    this.filter = filter;
+  }
+  /**
+   * Returns the filter as a summary string.
+   *
+   * TODO: https://github.com/CATcher-org/WATcher/issues/405
+   * This should be part of the filter model.
+   */
+  protected summarize() {
     const filter = this.filter;
     return `Search terms: ${filter.title}
             Status: ${filter.status}
@@ -95,18 +141,18 @@ export class Preset {
             Assignees: ${filter.assignees.join(', ')}`;
   }
 
-  /**
-   * Returns the filter as a summary string.
-   *
-   * TODO: https://github.com/CATcher-org/WATcher/issues/405
-   * This should be part of the filter model.
-   */
-  private summarizeGlobal() {
-    const filter = this.filter;
-    return `Search: ${filter.title}
-            Status: ${filter.status}
-            Type: ${filter.type}
-            Sort: ${filter.sort.active}-${filter.sort.direction}
-            Items per Page: ${filter.itemsPerPage}`;
+  static fromObject(object: any): LocalPreset {
+    const repo = Repo.fromObject(object.repo);
+
+    // TODO: When refactoring out filter, we will want to have tow different methods for fromObject
+    const filter = FiltersService.fromObject(object.filter, false) as Filter;
+
+    const label = object.label;
+
+    const groupBy = object.groupBy || GroupBy.Assignee;
+
+    return new LocalPreset({ repo, filter, label, id: object.id, groupBy });
   }
 }
+
+export type EitherOrPreset = GlobalPreset | LocalPreset;

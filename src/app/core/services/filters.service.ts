@@ -19,7 +19,7 @@ import {
 import { GithubUser } from '../models/github-user.model';
 import { SimpleLabel } from '../models/label.model';
 import { Milestone } from '../models/milestone.model';
-import { Preset } from '../models/preset.model';
+import { EitherOrPreset, GlobalPreset, Preset } from '../models/preset.model';
 import { AssigneeService } from './assignee.service';
 import { LoggingService } from './logging.service';
 import { MilestoneService } from './milestone.service';
@@ -126,7 +126,7 @@ export class FiltersService {
    * @param object The object to create from e.g. from LocalStorage
    * @returns
    */
-  static fromObject(object: any, isGlobal = false): Partial<Filter> {
+  static fromObject(object: any, isGlobal = false): Partial<Filter> | Filter {
     if (isGlobal) {
       const filter: Partial<Filter> = {
         title: object.title,
@@ -172,7 +172,7 @@ export class FiltersService {
    * @param b The filter that comes from saving a preset
    * @returns
    */
-  public static isPartOfPreset(a: Filter, preset: Preset): boolean {
+  public static isPartOfPreset(a: Filter, preset: EitherOrPreset): boolean {
     // only compare if both objects have the key
     // Compare simple scalar fields
     const b = preset.filter;
@@ -193,7 +193,7 @@ export class FiltersService {
       return false;
     }
 
-    if (preset.isGlobal) {
+    if (preset instanceof GlobalPreset) {
       return true;
     }
 
