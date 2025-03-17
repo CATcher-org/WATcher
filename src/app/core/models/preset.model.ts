@@ -42,13 +42,8 @@ export abstract class Preset<T> {
     this.groupBy = groupBy;
   }
 
-  static fromObject(object: any): any {
-    // const repo = Repo.fromObject(object.repo);
-    // const isGlobal = object.isGlobal || false;
-    // const filter = FiltersService.fromObject(object.filter, isGlobal);
-    // const label = object.label;
-    // const groupBy = object.groupBy || GroupBy.Assignee;
-    // return new Preset({ repo, label, id: object.id, groupBy });
+  static fromObject<T>(object: any): Preset<any> {
+    throw new Error('Must be implemented in derived class');
   }
 
   public toText(): string {
@@ -84,15 +79,6 @@ export class GlobalPreset extends Preset<Partial<Filter>> {
     this.filter = filter;
   }
 
-  protected summarize() {
-    const filter = this.filter;
-    return `Search: ${filter.title}
-            Status: ${filter.status}
-            Type: ${filter.type}
-            Sort: ${filter.sort.active}-${filter.sort.direction}
-            Items per Page: ${filter.itemsPerPage}`;
-  }
-
   static fromObject(object: any): Preset<Partial<Filter>> {
     const repo = Repo.fromObject(object.repo);
     const filter = FiltersService.fromObject(object.filter, true);
@@ -101,6 +87,15 @@ export class GlobalPreset extends Preset<Partial<Filter>> {
     const groupBy = object.groupBy || GroupBy.Assignee;
 
     return new GlobalPreset({ repo, filter, label, id: object.id, groupBy });
+  }
+
+  protected summarize() {
+    const filter = this.filter;
+    return `Search: ${filter.title}
+            Status: ${filter.status}
+            Type: ${filter.type}
+            Sort: ${filter.sort.active}-${filter.sort.direction}
+            Items per Page: ${filter.itemsPerPage}`;
   }
 }
 
@@ -121,6 +116,20 @@ export class LocalPreset extends Preset<Filter> {
     super({ repo, label, id, groupBy });
     this.filter = filter;
   }
+
+  static fromObject(object: any): LocalPreset {
+    const repo = Repo.fromObject(object.repo);
+
+    // TODO: When refactoring out filter, we will want to have tow different methods for fromObject
+    const filter = FiltersService.fromObject(object.filter, false) as Filter;
+
+    const label = object.label;
+
+    const groupBy = object.groupBy || GroupBy.Assignee;
+
+    return new LocalPreset({ repo, filter, label, id: object.id, groupBy });
+  }
+
   /**
    * Returns the filter as a summary string.
    *
@@ -139,19 +148,6 @@ export class LocalPreset extends Preset<Filter> {
             Deselected Labels: ${[filter.deselectedLabels ? Array.from(filter.deselectedLabels) : ''].join(', ')}
             Items per Page: ${filter.itemsPerPage}
             Assignees: ${filter.assignees.join(', ')}`;
-  }
-
-  static fromObject(object: any): LocalPreset {
-    const repo = Repo.fromObject(object.repo);
-
-    // TODO: When refactoring out filter, we will want to have tow different methods for fromObject
-    const filter = FiltersService.fromObject(object.filter, false) as Filter;
-
-    const label = object.label;
-
-    const groupBy = object.groupBy || GroupBy.Assignee;
-
-    return new LocalPreset({ repo, filter, label, id: object.id, groupBy });
   }
 }
 
