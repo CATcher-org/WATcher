@@ -5,7 +5,7 @@ import { GithubLabel } from './github/github-label.model';
 import { HiddenData } from './hidden-data.model';
 import { Milestone } from './milestone.model';
 
-type ReviewDecisionType = typeof Issue.ReviewDecision[keyof typeof Issue.ReviewDecision];
+export type ReviewDecisionType = typeof Issue.ReviewDecision[keyof typeof Issue.ReviewDecision];
 
 export class Issue {
   static readonly ReviewDecision = {
@@ -37,7 +37,7 @@ export class Issue {
   labels?: string[];
   githubLabels?: GithubLabel[];
   reviewers?: string[];
-  reviewDecision: ReviewDecisionType;
+  reviewDecision?: ReviewDecisionType;
 
   /**
    * Formats the text to create space at the end of the user input to prevent any issues with
