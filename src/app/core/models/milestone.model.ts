@@ -18,6 +18,15 @@ export class Milestone implements Group {
     this.number = milestone.number ? +milestone.number : undefined;
   }
 
+  /*
+  This method is used to enable comparisons between
+  a Group and the filtering criteria, which is stored
+  as a string, in IssuesDataTable.ts
+  */
+  static fromTitle(title: string): Milestone {
+    return new Milestone({ title, state: '' });
+  }
+
   public equals(other: any) {
     if (!(other instanceof Milestone)) {
       return false;
