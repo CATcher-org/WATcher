@@ -7,8 +7,6 @@ import { Repo } from './repo.model';
  * Currently, the filters are saved as a URL-encoded string.
  */
 export class Preset {
-  static VERSION = 2;
-  version = Preset.VERSION;
   repo: Repo;
   filter: Partial<Filter> | Filter;
   label: string;
@@ -19,19 +17,11 @@ export class Preset {
 
   groupBy: GroupBy;
 
-  /** Creates a new Preset */
-  // constructor(repo: Repo, filter: Filter, label: string, id = Date.now().toString(), version = Preset.VERSION) {
-  //   this.repo = repo;
-  //   this.filter = filter;
-  //   this.label = label;
-  //   this.id = id;
-  // }
   constructor({
     repo,
     filter,
     label,
     id = Date.now().toString(),
-    version = Preset.VERSION,
     isGlobal = false,
     groupBy
   }: {
@@ -39,7 +29,6 @@ export class Preset {
     filter: Partial<Filter> | Filter;
     label: string;
     id?: string;
-    version?: number;
     isGlobal: boolean;
     groupBy: GroupBy;
   }) {
@@ -63,7 +52,6 @@ export class Preset {
 
     this.label = label;
     this.id = id;
-    this.version = version;
     this.isGlobal = isGlobal;
     this.groupBy = groupBy;
   }
@@ -73,15 +61,10 @@ export class Preset {
     const isGlobal = object.isGlobal || false;
     const filter = FiltersService.fromObject(object.filter, isGlobal);
     const label = object.label;
-    let version = object.version || -1;
 
     const groupBy = object.groupBy || GroupBy.Assignee;
 
-    if (version === 1) {
-      version = 2;
-    }
-
-    return new Preset({ repo, filter, label, id: object.id, version, isGlobal: object.isGlobal, groupBy });
+    return new Preset({ repo, filter, label, id: object.id, isGlobal: object.isGlobal, groupBy });
   }
 
   public toText(): string {
