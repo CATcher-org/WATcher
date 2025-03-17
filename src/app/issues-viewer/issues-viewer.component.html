@@ -6,7 +6,7 @@
   <ng-template #elseBlock>
     <app-filter-bar [views$]="views"></app-filter-bar>
 
-    <div class="wrapper">
+    <div class="wrapper" cdkDropListGroup>
       <app-card-view
         *ngFor="let group of this.groupService.groups"
         class="issue-table"

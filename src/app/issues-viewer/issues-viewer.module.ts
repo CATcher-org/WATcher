@@ -6,9 +6,10 @@ import { CardViewComponent } from './card-view/card-view.component';
 import { HiddenGroupsComponent } from './hidden-groups/hidden-groups.component';
 import { IssuesViewerRoutingModule } from './issues-viewer-routing.module';
 import { IssuesViewerComponent } from './issues-viewer.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
-  imports: [FilterBarModule, IssuesViewerRoutingModule, IssuesPrCardModule, SharedModule],
+  imports: [DragDropModule, FilterBarModule, IssuesViewerRoutingModule, IssuesPrCardModule, SharedModule],
   declarations: [IssuesViewerComponent, CardViewComponent, HiddenGroupsComponent],
   exports: [IssuesViewerComponent, CardViewComponent]
 })

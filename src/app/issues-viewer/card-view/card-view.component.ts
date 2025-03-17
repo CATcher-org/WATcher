@@ -22,6 +22,9 @@ import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
 import { FilterableComponent, FilterableSource } from '../../shared/issue-tables/filterableTypes';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { GithubUser } from '../../core/models/github-user.model';
+import { Milestone } from '../../core/models/milestone.model';
 
 @Component({
   selector: 'app-card-view',
@@ -136,5 +139,13 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
 
   retrieveFilterable(): FilterableSource {
     return this.issues;
+  }
+
+  drop(event: CdkDragDrop<Group>) {
+    if (event.container.data instanceof GithubUser) {
+      const assigneeToRemove = event.previousContainer.data;
+      const assigneeToAdd = event.container.data;
+    } else if (event.container.data instanceof Milestone) {
+    }
   }
 }

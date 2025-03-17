@@ -1,4 +1,4 @@
-<div class="card-column">
+<div class="card-column" cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]="group">
   <ng-container
     [ngTemplateOutlet]="getHeaderTemplate() || defaultHeader"
     [ngTemplateOutletContext]="{ $implicit: this.group }"
