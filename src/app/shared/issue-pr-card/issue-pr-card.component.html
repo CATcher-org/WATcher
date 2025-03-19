@@ -4,12 +4,17 @@
       <app-issue-pr-card-header [issue]="issue" (click)="viewIssueInBrowser($event)"></app-issue-pr-card-header>
     </span>
   </a>
-  <mat-card-content>
-    <app-issue-pr-card-milestone
-      [milestone]="issue.milestone"
-      [repoHasMilestones]="!milestoneService.hasNoMilestones"
-      (click)="viewMilestoneInBrowser($event)"
-    ></app-issue-pr-card-milestone>
-    <app-issue-pr-card-labels [labels]="issue.githubLabels" [labelSet]="filter?.hiddenLabels"></app-issue-pr-card-labels>
+  <mat-card-content class="content">
+    <div class="milestone-labels">
+      <app-issue-pr-card-milestone
+        [milestone]="issue.milestone"
+        [repoHasMilestones]="!milestoneService.hasNoMilestones"
+        (click)="viewMilestoneInBrowser($event)"
+      ></app-issue-pr-card-milestone>
+      <app-issue-pr-card-labels [labels]="issue.githubLabels" [labelSet]="filter?.hiddenLabels"></app-issue-pr-card-labels>
+    </div>
+    <div class="review-decision">
+      <app-issue-pr-card-review-decision [reviewDecision]="issue.reviewDecision"></app-issue-pr-card-review-decision>
+    </div>
   </mat-card-content>
 </mat-card>
