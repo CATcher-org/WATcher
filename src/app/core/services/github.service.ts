@@ -28,12 +28,12 @@ import RestGithubIssueFilter from '../models/github/github-issue-filter.model';
 import { GithubIssue } from '../models/github/github-issue.model';
 import { GithubResponse } from '../models/github/github-response.model';
 import { GithubRelease } from '../models/github/github.release';
+import { Issue } from '../models/issue.model';
+import { Milestone } from '../models/milestone.model';
 import { SessionData } from '../models/session.model';
 import { ERRORCODE_NOT_FOUND, ErrorHandlingService } from './error-handling.service';
 import { ErrorMessageService } from './error-message.service';
 import { LoggingService } from './logging.service';
-import { Issue } from '../models/issue.model';
-import { Milestone } from '../models/milestone.model';
 
 const { Octokit } = require('@octokit/rest');
 

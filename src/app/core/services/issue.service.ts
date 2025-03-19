@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, Subscription, throwError, timer } from 'rxjs';
 import { catchError, exhaustMap, finalize, map } from 'rxjs/operators';
+import { GithubUser } from '../models/github-user.model';
 import RestGithubIssueFilter from '../models/github/github-issue-filter.model';
 import { GithubIssue } from '../models/github/github-issue.model';
 import { Issue, Issues, IssuesFilter } from '../models/issue.model';
+import { Milestone } from '../models/milestone.model';
 import { View } from '../models/view.model';
 import { GithubService } from './github.service';
 import { UserService } from './user.service';
 import { ViewService } from './view.service';
-import { Milestone } from '../models/milestone.model';
-import { GithubUser } from '../models/github-user.model';
 
 @Injectable({
   providedIn: 'root'
