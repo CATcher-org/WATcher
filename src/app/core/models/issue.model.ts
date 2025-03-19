@@ -37,7 +37,7 @@ export class Issue {
   labels?: string[];
   githubLabels?: GithubLabel[];
   reviewers?: string[];
-  reviewDecision?: ReviewDecisionType;
+  reviewDecision?: ReviewDecisionType | null;
 
   /**
    * Formats the text to create space at the end of the user input to prevent any issues with
@@ -98,6 +98,7 @@ export class Issue {
     this.author = githubIssue.user.login;
     // this.githubIssue = githubIssue;
     this.isDraft = githubIssue.isDraft;
+    this.reviewDecision = githubIssue.reviewDecision;
 
     this.assignees = githubIssue.assignees.map((assignee) => assignee.login);
     this.githubLabels = githubIssue.labels;

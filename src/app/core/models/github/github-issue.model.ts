@@ -32,7 +32,7 @@ export class GithubIssue {
   isDraft: boolean;
 
   reviewers?: string[];
-  reviewDecision?: ReviewDecisionType;
+  reviewDecision?: ReviewDecisionType | null;
 
   constructor(githubIssue: {}) {
     Object.assign(this, githubIssue);
