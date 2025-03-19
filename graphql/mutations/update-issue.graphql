@@ -1,0 +1,29 @@
+mutation UpdateIssueAssignees($input: UpdateIssueInput!, $commentCursor: String) {
+  updateIssue(input: $input) {
+    issue {
+      ...issue
+      labels(first: 100) {
+        edges {
+          node {
+            ...issueLabel
+          }
+        }
+      }
+      assignees(first: 100) {
+        edges {
+          node {
+            ...issueAssignee
+          }
+        }
+      }
+      comments(first: 100, after: $commentCursor) {
+        edges {
+          cursor
+          node {
+            ...issueComment
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,3 +1,4 @@
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import {
   AfterViewInit,
   Component,
@@ -12,8 +13,10 @@ import {
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { Observable, Subscription } from 'rxjs';
+import { GithubUser } from '../../core/models/github-user.model';
 import { Group } from '../../core/models/github/group.interface';
 import { Issue } from '../../core/models/issue.model';
+import { Milestone } from '../../core/models/milestone.model';
 import { AssigneeService } from '../../core/services/assignee.service';
 import { FiltersService } from '../../core/services/filters.service';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
@@ -96,11 +99,8 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
       this.issuesLengthSubscription = this.issues$.subscribe(() => {
         this.issueLength = this.issues.count;
         this.issueLengthChange.emit(this.issueLength);
-      });
-
-      // Emit event when loading state changes
-      this.issuesLoadingStateSubscription = this.issues.isLoading$.subscribe((isLoadingUpdate) => {
-        this.isLoading = isLoadingUpdate;
+        // Set loading to false when issues change
+        this.isLoading = false;
       });
     });
   }
@@ -136,5 +136,44 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
 
   retrieveFilterable(): FilterableSource {
     return this.issues;
+  }
+
+  drop(event: CdkDragDrop<Group>) {
+    // Enforce that the item being dragged is an issue
+    if (!(event.item.data instanceof Issue)) {
+      return;
+    }
+    const issue: Issue = event.item.data;
+    // If the item is being dropped in the same container, do nothing
+    if (event.previousContainer === event.container) {
+      return;
+    }
+
+    this.isLoading = true;
+
+    if (event.container.data instanceof GithubUser && event.previousContainer.data instanceof GithubUser) {
+      const assigneeToRemove = event.previousContainer.data;
+      const assigneeToAdd = event.container.data;
+      const assignees = this.assigneeService.assignees.filter((assignee) => issue.assignees.includes(assignee.login));
+
+      if (assigneeToRemove !== GithubUser.NO_ASSIGNEE) {
+        const index = assignees.findIndex((assignee) => assignee.login === assigneeToRemove.login);
+        if (index !== -1) {
+          assignees.splice(index, 1);
+        }
+      }
+      if (assigneeToAdd !== GithubUser.NO_ASSIGNEE) {
+        assignees.push(assigneeToAdd);
+      }
+
+      this.issueService.updateIssue(issue, assignees, issue.milestone).subscribe();
+    } else if (event.container.data instanceof Milestone) {
+      // assigneeIds is a mandatory field for the updateIssue mutation
+      const assignees = this.assigneeService.assignees.filter((assignee) => issue.assignees.includes(assignee.login));
+
+      const milestoneToAdd = event.container.data;
+
+      this.issueService.updateIssue(issue, assignees, milestoneToAdd).subscribe();
+    }
   }
 }

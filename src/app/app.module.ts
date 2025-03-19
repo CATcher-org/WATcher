@@ -92,11 +92,9 @@ export class AppModule {
       operation.setContext({ start: performance.now() });
       this.logger.info('AppModule: GraphQL request', operation.getContext());
       return forward(operation).map((result) => {
+        // Log the response time
         const time = performance.now() - operation.getContext().start;
         this.logger.info('AppModule: GraphQL response', operation.getContext(), `in ${Math.round(time)}ms`);
-        const repo = operation.getContext().response.body.data.repository;
-        const item = Object.keys(repo)[0];
-        this.logger.debug('AppModule: GraphQL response body', item, repo[item].edges.length, repo[item].edges);
         return result;
       });
     });
@@ -114,6 +112,7 @@ export class AppModule {
         possibleTypes[type.name] = type.possibleTypes.map((possibleType: any) => possibleType.name);
       }
     });
+
     const cache = new InMemoryCache({ possibleTypes });
     this.apollo.create({
       link: link,

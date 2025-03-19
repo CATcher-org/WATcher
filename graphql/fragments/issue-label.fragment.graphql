@@ -1,4 +1,5 @@
 fragment issueLabel on Label {
   color
   name
+  id
 }

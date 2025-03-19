@@ -80,3 +80,28 @@
 .scrollable-container::after {
   position: sticky;
 }
+
+/* This is when the card is being dragged over this list */
+.cdk-drop-list-dragging {
+  opacity: 0.5;
+}
+
+.overlay {
+  display: none;
+}
+
+/* This is when the card is being dragged over this list */
+.cdk-drop-list-dragging > .overlay {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 2px dashed black;
+  border-radius: 5px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  z-index: 1000;
+}

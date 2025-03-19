@@ -22,7 +22,8 @@
 </ng-template>
 
 <ng-template #assigneeCard let-assignee>
-  <mat-card>
+  <mat-card cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]="assignee">
+    <div class="overlay"></div>
     <mar-card-header class="mat-card-header">
       <div
         mat-card-avatar
@@ -37,7 +38,8 @@
 </ng-template>
 
 <ng-template #milestoneCard let-milestone>
-  <mat-card>
+  <mat-card cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]="milestone">
+    <div class="overlay"></div>
     <mar-card-header class="mat-card-header">
       <mat-card-title>{{ milestone.title }}</mat-card-title>
     </mar-card-header>

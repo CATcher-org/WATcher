@@ -12,7 +12,9 @@ import {
   FetchIssues,
   FetchIssuesQuery,
   FetchPullRequests,
-  FetchPullRequestsQuery
+  FetchPullRequestsQuery,
+  UpdateIssueAssignees,
+  UpdateIssueAssigneesMutation
 } from '../../../../graphql/graphql-types';
 import { AppConfig } from '../../../environments/environment';
 import { getNumberOfPages } from '../../shared/lib/github-paginator-parser';
@@ -26,6 +28,8 @@ import RestGithubIssueFilter from '../models/github/github-issue-filter.model';
 import { GithubIssue } from '../models/github/github-issue.model';
 import { GithubResponse } from '../models/github/github-response.model';
 import { GithubRelease } from '../models/github/github.release';
+import { Issue } from '../models/issue.model';
+import { Milestone } from '../models/milestone.model';
 import { SessionData } from '../models/session.model';
 import { ERRORCODE_NOT_FOUND, ErrorHandlingService } from './error-handling.service';
 import { ErrorMessageService } from './error-message.service';
@@ -226,7 +230,7 @@ export class GithubService {
    * @param id - The issue id.
    * @returns Observable<GithubGraphqlIssue> that represents the response object.
    */
-  fetchIssueGraphql(id: number): Observable<GithubGraphqlIssue> {
+  fetchIssueGraphql(id: number): Observable<GithubIssue> {
     if (this.issueQueryRefs.get(id) === undefined) {
       const newQueryRef = this.apollo.watchQuery<FetchIssueQuery>({
         query: FetchIssue,
@@ -589,5 +593,38 @@ export class GithubService {
     queryWith(null);
 
     return behaviorSubject.asObservable();
+  }
+
+  /**
+   * Updates the assignees of an issue using GraphQL mutation.
+   * @param issue - The issue object to update
+   * @param assignees - Array of assignees to set
+   * @returns Observable<GithubGraphqlIssue> that represents the updated issue
+   */
+  updateIssueAssignees(issue: Issue, assignees: GithubUser[], milestone: Milestone): Observable<GithubIssue> {
+    // Log the input values for debugging
+    return this.apollo
+      .mutate<UpdateIssueAssigneesMutation>({
+        mutation: UpdateIssueAssignees,
+        variables: {
+          input: {
+            id: issue.globalId,
+            assigneeIds: assignees.map((assignee) => assignee.node_id),
+            projectIds: [],
+            labelIds: issue.githubLabels?.map((label) => label.id) || [],
+            milestoneId: milestone.id
+          }
+        }
+      })
+      .pipe(
+        map((result: ApolloQueryResult<UpdateIssueAssigneesMutation>) => {
+          console.log('GITHUB ISSUE', result.data.updateIssue.issue);
+          return new GithubGraphqlIssueOrPr(result.data.updateIssue.issue);
+        }),
+        catchError((error) => {
+          this.errorHandlingService.handleError(error);
+          return throwError(() => error);
+        })
+      );
   }
 }

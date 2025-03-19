@@ -1,3 +1,4 @@
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared.module';
 import { IssuePrCardHeaderComponent } from './issue-pr-card-header/issue-pr-card-header.component';
@@ -6,7 +7,7 @@ import { IssuePrCardMilestoneComponent } from './issue-pr-card-milestone/issue-p
 import { IssuePrCardComponent } from './issue-pr-card.component';
 
 @NgModule({
-  imports: [SharedModule],
+  imports: [SharedModule, DragDropModule],
   declarations: [IssuePrCardComponent, IssuePrCardHeaderComponent, IssuePrCardMilestoneComponent, IssuePrCardLabelsComponent],
   exports: [IssuePrCardComponent]
 })

@@ -143,3 +143,38 @@ div.column-header .mat-card-header {
 :host ::ng-deep .pagination-hide-arrow .mat-paginator-range-actions {
   display: none !important;
 }
+
+/* This is when the card is being dragged over this list */
+.cdk-drop-list-dragging {
+  opacity: 0.5;
+}
+
+/* This is the placeholder for the card that appears in the list it is being dragged over */
+.cdk-drag-placeholder {
+  display: none;
+  opacity: 0;
+}
+
+/* This is the issue card that follows the cursor */
+.cdk-drag-preview {
+  opacity: 0.5;
+}
+.overlay {
+  display: none;
+}
+
+/* This is when the card is being dragged over this list */
+.cdk-drop-list-dragging > .overlay {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 2px dashed black;
+  border-radius: 5px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  z-index: 1000;
+}
