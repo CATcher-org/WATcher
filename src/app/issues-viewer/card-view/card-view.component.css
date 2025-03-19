@@ -144,23 +144,26 @@ div.column-header .mat-card-header {
   display: none !important;
 }
 
+/* This is when the card is being dragged over this list */
 .cdk-drop-list-dragging {
   opacity: 0.5;
 }
 
+/* This is the placeholder for the card that appears in the list it is being dragged over */
 .cdk-drag-placeholder {
   display: none;
   opacity: 0;
 }
 
+/* This is the issue card that follows the cursor */
+.cdk-drag-preview {
+  opacity: 0.5;
+}
 .overlay {
   display: none;
 }
 
-.plus-sign {
-  display: none;
-}
-
+/* This is when the card is being dragged over this list */
 .cdk-drop-list-dragging > .overlay {
   display: block;
   position: absolute;
@@ -174,12 +177,4 @@ div.column-header .mat-card-header {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   z-index: 1000;
-}
-
-.cdk-drop-list-dragging > .plus-sign {
-  display: block;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }

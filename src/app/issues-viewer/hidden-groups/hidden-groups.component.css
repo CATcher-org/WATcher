@@ -81,6 +81,7 @@
   position: sticky;
 }
 
+/* This is when the card is being dragged over this list */
 .cdk-drop-list-dragging {
   opacity: 0.5;
 }
@@ -89,10 +90,7 @@
   display: none;
 }
 
-.plus-sign {
-  display: none;
-}
-
+/* This is when the card is being dragged over this list */
 .cdk-drop-list-dragging > .overlay {
   display: block;
   position: absolute;
@@ -106,16 +104,4 @@
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   z-index: 1000;
-}
-
-.cdk-drop-list-dragging > .plus-sign {
-  display: block;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.cdk-drag-placeholder {
-  opacity: 0.2;
 }

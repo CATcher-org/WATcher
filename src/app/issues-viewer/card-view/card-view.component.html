@@ -5,7 +5,6 @@
   ></ng-container>
   <div class="scrollable-container-wrapper scroll-shadow" cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]="group">
     <div class="overlay"></div>
-    <div class="plus-sign">+</div>
 
     <div class="scrollable-container">
       <div class="issue-pr-cards" *ngFor="let issue of this.issues$ | async; index as i">

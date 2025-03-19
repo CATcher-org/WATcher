@@ -99,11 +99,8 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
       this.issuesLengthSubscription = this.issues$.subscribe(() => {
         this.issueLength = this.issues.count;
         this.issueLengthChange.emit(this.issueLength);
-      });
-
-      // Emit event when loading state changes
-      this.issuesLoadingStateSubscription = this.issues.isLoading.subscribe((isLoadingUpdate) => {
-        this.isLoading = isLoadingUpdate;
+        // Set loading to false when issues change
+        this.isLoading = false;
       });
     });
   }
@@ -147,7 +144,6 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
       return;
     }
     const issue: Issue = event.item.data;
-
     // If the item is being dropped in the same container, do nothing
     if (event.previousContainer === event.container) {
       return;

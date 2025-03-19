@@ -74,9 +74,10 @@ export class IssueService {
   }
 
   updateIssue(issue: Issue, assignees: GithubUser[], milestone: Milestone): Observable<Issue> {
+    this.deleteIssuesFromLocalStore([issue.id]);
+
     return this.githubService.updateIssueAssignees(issue, assignees, milestone).pipe(
       map((response: GithubIssue) => {
-        console.log('ISSUE', response);
         this.createAndSaveIssueModels([response]);
         return this.issues[issue.id];
       }),

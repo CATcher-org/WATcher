@@ -1,7 +1,7 @@
 import { DataSource } from '@angular/cdk/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { GithubUser } from '../../core/models/github-user.model';
 import { Group } from '../../core/models/github/group.interface';
 import { Issue } from '../../core/models/issue.model';
@@ -23,9 +23,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
   private issuesSubject = new BehaviorSubject<Issue[]>([]);
   private issueSubscription: Subscription;
 
-  private isLoading$ = new BehaviorSubject<boolean>(false);
-  private isLoadingSubscription: Subscription;
-  public isLoading = this.isLoading$.asObservable();
+  public isLoading$ = this.issueService.isLoading.asObservable();
 
   private static isGroupInFilter(group: Group, filter: Filter): boolean {
     const groupFilterAsGithubUser = filter.assignees.map((selectedAssignee) => {
@@ -57,10 +55,6 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
   }
 
   connect(): Observable<Issue[]> {
-    this.isLoadingSubscription = this.issueService.isLoading.subscribe((isLoading) => {
-      this.isLoading$.next(isLoading);
-    });
-
     return this.issuesSubject.asObservable();
   }
 
@@ -70,10 +64,6 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
     if (this.issueSubscription) {
       this.issueSubscription.unsubscribe();
     }
-    if (this.isLoadingSubscription) {
-      this.isLoadingSubscription.unsubscribe();
-    }
-
     this.issueService.stopPollIssues();
   }
 
@@ -114,11 +104,14 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
             data = paginateData(this.paginator, data);
           }
           return data;
-        })
+        }),
+        // Only emit if the issues are different to avoid triggering isLoading for unaffected columns
+        distinctUntilChanged(
+          (issues1, issues2) => issues1.length === issues2.length && issues1.every((issue, index) => issue.id === issues2[index].id)
+        )
       )
       .subscribe((issues) => {
         this.issuesSubject.next(issues);
-        this.isLoading$.next(false);
       });
   }
 
