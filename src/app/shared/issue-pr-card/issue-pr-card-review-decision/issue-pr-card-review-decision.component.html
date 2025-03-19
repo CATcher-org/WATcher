@@ -1,1 +1,6 @@
-{{ reviewDecision }}
+<div *ngIf="this.reviewDecision" style="display: flex; align-items: center; gap: 3px">
+  <span class="octicon" [octicon]="getOcticon()" [color]="getOcticonColor()"></span>
+  <div>
+    {{ this.reviewDecisionText() }}
+  </div>
+</div>
