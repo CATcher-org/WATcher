@@ -5,15 +5,15 @@ import { GithubLabel } from './github/github-label.model';
 import { HiddenData } from './hidden-data.model';
 import { Milestone } from './milestone.model';
 
-export type ReviewDecisionType = typeof Issue.ReviewDecision[keyof typeof Issue.ReviewDecision];
+export const ReviewDecision = {
+  CHANGES_REQUESTED: 'CHANGES_REQUESTED',
+  APPROVED: 'APPROVED',
+  REVIEW_REQUIRED: 'REVIEW_REQUIRED'
+};
+
+export type ReviewDecisionType = typeof ReviewDecision[keyof typeof ReviewDecision];
 
 export class Issue {
-  static readonly ReviewDecision = {
-    CHANGES_REQUESTED: 'CHANGES_REQUESTED',
-    APPROVED: 'APPROVED',
-    REVIEW_REQUIRED: 'REVIEW_REQUIRED'
-  } as const;
-
   /** Basic Fields */
   readonly globalId: string;
   readonly id: number;
