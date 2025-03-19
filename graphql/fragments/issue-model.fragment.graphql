@@ -23,4 +23,5 @@ fragment issueModel on Issue {
     }
   }
   isDraft
+  reviewDecision
 }

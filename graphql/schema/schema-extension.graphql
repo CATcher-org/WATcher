@@ -1,3 +1,4 @@
 extend type Issue {
   isDraft: Boolean
+  reviewDecision: String
 }
