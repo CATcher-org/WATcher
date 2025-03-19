@@ -102,7 +102,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
       });
 
       // Emit event when loading state changes
-      this.issuesLoadingStateSubscription = this.issues.isLoading$.subscribe((isLoadingUpdate) => {
+      this.issuesLoadingStateSubscription = this.issues.isLoading.subscribe((isLoadingUpdate) => {
         this.isLoading = isLoadingUpdate;
       });
     });
@@ -142,10 +142,42 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   }
 
   drop(event: CdkDragDrop<Group>) {
-    if (event.container.data instanceof GithubUser) {
+    // Enforce that the item being dragged is an issue
+    if (!(event.item.data instanceof Issue)) {
+      return;
+    }
+    const issue: Issue = event.item.data;
+
+    // If the item is being dropped in the same container, do nothing
+    if (event.previousContainer === event.container) {
+      return;
+    }
+
+    this.isLoading = true;
+
+    if (event.container.data instanceof GithubUser && event.previousContainer.data instanceof GithubUser) {
       const assigneeToRemove = event.previousContainer.data;
       const assigneeToAdd = event.container.data;
+      const assignees = this.assigneeService.assignees.filter((assignee) => issue.assignees.includes(assignee.login));
+
+      if (assigneeToRemove !== GithubUser.NO_ASSIGNEE) {
+        const index = assignees.findIndex((assignee) => assignee.login === assigneeToRemove.login);
+        if (index !== -1) {
+          assignees.splice(index, 1);
+        }
+      }
+      if (assigneeToAdd !== GithubUser.NO_ASSIGNEE) {
+        assignees.push(assigneeToAdd);
+      }
+
+      this.issueService.updateIssue(issue, assignees, issue.milestone).subscribe();
     } else if (event.container.data instanceof Milestone) {
+      // assigneeIds is a mandatory field for the updateIssue mutation
+      const assignees = this.assigneeService.assignees.filter((assignee) => issue.assignees.includes(assignee.login));
+
+      const milestoneToAdd = event.container.data;
+
+      this.issueService.updateIssue(issue, assignees, milestoneToAdd).subscribe();
     }
   }
 }

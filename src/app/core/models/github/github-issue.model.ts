@@ -25,6 +25,7 @@ export class GithubIssue {
     number: string; // id for milestone
     title: string;
     state: string;
+    id: string;
   };
   comments?: Array<GithubComment>;
   issueOrPr?: string;

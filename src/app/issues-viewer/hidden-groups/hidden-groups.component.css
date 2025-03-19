@@ -80,3 +80,42 @@
 .scrollable-container::after {
   position: sticky;
 }
+
+.cdk-drop-list-dragging {
+  opacity: 0.5;
+}
+
+.overlay {
+  display: none;
+}
+
+.plus-sign {
+  display: none;
+}
+
+.cdk-drop-list-dragging > .overlay {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 2px dashed black;
+  border-radius: 5px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  z-index: 1000;
+}
+
+.cdk-drop-list-dragging > .plus-sign {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.2;
+}

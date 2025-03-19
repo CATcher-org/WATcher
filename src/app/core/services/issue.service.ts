@@ -8,6 +8,8 @@ import { View } from '../models/view.model';
 import { GithubService } from './github.service';
 import { UserService } from './user.service';
 import { ViewService } from './view.service';
+import { Milestone } from '../models/milestone.model';
+import { GithubUser } from '../models/github-user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -69,6 +71,19 @@ export class IssueService {
     } else {
       return of(this.issues[id]);
     }
+  }
+
+  updateIssue(issue: Issue, assignees: GithubUser[], milestone: Milestone): Observable<Issue> {
+    return this.githubService.updateIssueAssignees(issue, assignees, milestone).pipe(
+      map((response: GithubIssue) => {
+        console.log('ISSUE', response);
+        this.createAndSaveIssueModels([response]);
+        return this.issues[issue.id];
+      }),
+      catchError((err) => {
+        return of(this.issues[issue.id]);
+      })
+    );
   }
 
   getLatestIssue(id: number): Observable<Issue> {

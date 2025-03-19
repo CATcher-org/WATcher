@@ -21,7 +21,9 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
   private issuesSubject = new BehaviorSubject<Issue[]>([]);
   private issueSubscription: Subscription;
 
-  public isLoading$ = this.issueService.isLoading.asObservable();
+  private isLoading$ = new BehaviorSubject<boolean>(false);
+  private isLoadingSubscription: Subscription;
+  public isLoading = this.isLoading$.asObservable();
 
   constructor(
     private issueService: IssueService,
@@ -38,6 +40,10 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
   }
 
   connect(): Observable<Issue[]> {
+    this.isLoadingSubscription = this.issueService.isLoading.subscribe((isLoading) => {
+      this.isLoading$.next(isLoading);
+    });
+
     return this.issuesSubject.asObservable();
   }
 
@@ -47,6 +53,10 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
     if (this.issueSubscription) {
       this.issueSubscription.unsubscribe();
     }
+    if (this.isLoadingSubscription) {
+      this.isLoadingSubscription.unsubscribe();
+    }
+
     this.issueService.stopPollIssues();
   }
 
@@ -86,6 +96,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
       )
       .subscribe((issues) => {
         this.issuesSubject.next(issues);
+        this.isLoading$.next(false);
       });
   }
 

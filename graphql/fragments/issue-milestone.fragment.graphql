@@ -2,4 +2,5 @@ fragment issueMilestone on Milestone {
   number
   title
   state
+  id
 }

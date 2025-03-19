@@ -16,7 +16,7 @@ export class GithubLabel {
   };
 
   color: string;
-  // id: number;
+  id: string;
   name: string;
   category: string;
   label: string;
