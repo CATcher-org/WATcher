@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { GithubService } from '../../../core/services/github.service';
 import { Issue } from '../../../core/models/issue.model';
 
@@ -12,11 +12,10 @@ export class IssuePrCardHeaderComponent {
 
   constructor(private githubService: GithubService) {}
 
-  isNotFollowingForkingWorkflow = false;
-
-  ngOnInit() {
-    this.isNotFollowingForkingWorkflow =
-      this.issue.issueOrPr === 'PullRequest' && this.issue.headRepository?.toLowerCase() === this.githubService.getRepoURL().toLowerCase();
+  private isNotFollowingForkingWorkflow() {
+    return (
+      this.issue.issueOrPr === 'PullRequest' && this.issue.headRepository?.toLowerCase() === this.githubService.getRepoURL().toLowerCase()
+    );
   }
 
   /**
@@ -63,7 +62,7 @@ export class IssuePrCardHeaderComponent {
     const state = this.issue.state;
     const stateReason = this.issue.stateReason;
 
-    if (this.isNotFollowingForkingWorkflow) {
+    if (this.isNotFollowingForkingWorkflow()) {
       return 'This PR is not following the fork workflow';
     }
 
@@ -95,7 +94,7 @@ export class IssuePrCardHeaderComponent {
 
   /** Returns status color for issue */
   getIssueOpenOrCloseColor() {
-    if (this.isNotFollowingForkingWorkflow) {
+    if (this.isNotFollowingForkingWorkflow()) {
       return 'red';
     } else if (this.issue.state === 'OPEN') {
       if (this.issue.isDraft) {
