@@ -23,6 +23,7 @@ export class GithubGraphqlIssueOrPr extends GithubIssue {
       milestone: issue.milestone ? issue.milestone : null,
       isDraft: issue.isDraft,
       reviewDecision: issue.reviewDecision
+      // reviews: flattenEdges(issue.reviews.edges)
     });
   }
 }

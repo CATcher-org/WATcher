@@ -31,7 +31,7 @@ export class GithubIssue {
   issueOrPr?: string;
   isDraft: boolean;
 
-  reviewers?: string[];
+  reviews?: string[];
   reviewDecision?: ReviewDecisionType | null;
 
   constructor(githubIssue: {}) {
