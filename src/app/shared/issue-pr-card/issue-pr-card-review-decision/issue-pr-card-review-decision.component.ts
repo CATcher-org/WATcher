@@ -15,7 +15,8 @@ export class IssuePrCardReviewDecisionComponent implements OnInit {
   ngOnInit(): void {}
 
   /**
-   * Returns the string for the relevant icon
+   * Returns icon to display based on review decision
+   * @returns String to create icon
    */
   getOcticon(): string {
     switch (this.reviewDecision) {
@@ -28,6 +29,10 @@ export class IssuePrCardReviewDecisionComponent implements OnInit {
     }
   }
 
+  /**
+   * Returns the color of the icon based on review decision
+   * @returns String for icon color
+   */
   getOcticonColor(): string {
     switch (this.reviewDecision) {
       case ReviewDecision.APPROVED:
