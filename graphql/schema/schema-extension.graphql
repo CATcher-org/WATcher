@@ -1,4 +1,18 @@
 extend type Issue {
   isDraft: Boolean
   reviewDecision: String
+  reviews(first: Int): PullRequestReviewConnection
 }
+
+# type PullRequestReviewConnection {
+#   edges: [PullRequestReviewEdge]
+# }
+
+# type PullRequestReviewEdge {
+#   node: PullRequestReview
+# }
+
+# type PullRequestReview {
+#   state: PullRequestReviewState
+#   author: Actor
+# }

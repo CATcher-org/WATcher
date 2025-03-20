@@ -4,12 +4,13 @@ import { GithubIssue } from './github/github-issue.model';
 import { GithubLabel } from './github/github-label.model';
 import { HiddenData } from './hidden-data.model';
 import { Milestone } from './milestone.model';
+import { PullrequestReview } from './pullrequest-review.model';
 
 export const ReviewDecision = {
   CHANGES_REQUESTED: 'CHANGES_REQUESTED',
   APPROVED: 'APPROVED',
   REVIEW_REQUIRED: 'REVIEW_REQUIRED'
-};
+} as const;
 
 export type ReviewDecisionType = typeof ReviewDecision[keyof typeof ReviewDecision];
 
@@ -36,7 +37,7 @@ export class Issue {
   assignees?: string[];
   labels?: string[];
   githubLabels?: GithubLabel[];
-  reviewers?: string[];
+  reviews?: PullrequestReview[];
   reviewDecision?: ReviewDecisionType | null;
 
   /**
@@ -108,6 +109,10 @@ export class Issue {
       : this.issueOrPr === 'Issue'
       ? Milestone.IssueWithoutMilestone
       : Milestone.PRWithoutMilestone;
+
+    if (githubIssue.reviews) {
+      this.reviews = githubIssue.reviews.map((review) => new PullrequestReview(review));
+    }
   }
 
   public static createPhaseBugReportingIssue(githubIssue: GithubIssue): Issue {

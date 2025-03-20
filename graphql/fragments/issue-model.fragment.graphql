@@ -29,7 +29,9 @@ fragment issueModel on Issue {
     edges {
       node {
         state
-        ...reviewAuthor
+        author {
+          ...reviewAuthor
+        }
       }
     }
   }

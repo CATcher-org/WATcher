@@ -2,6 +2,7 @@ import { IssueState, IssueStateReason } from '../../../../../graphql/graphql-typ
 import { ReviewDecisionType } from '../issue.model';
 import { GithubComment } from './github-comment.model';
 import { GithubLabel } from './github-label.model';
+import { PullrequestReviewStateType } from '../pullrequest-review.model';
 
 export class GithubIssue {
   id: string; // Github's backend's id
@@ -31,7 +32,14 @@ export class GithubIssue {
   issueOrPr?: string;
   isDraft: boolean;
 
-  reviews?: string[];
+  reviews?: Array<{
+    state: PullrequestReviewStateType;
+    author: {
+      login: string;
+      avatarUrl: string;
+    };
+  }>;
+
   reviewDecision?: ReviewDecisionType | null;
 
   constructor(githubIssue: {}) {
