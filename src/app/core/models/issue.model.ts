@@ -28,6 +28,7 @@ export class Issue {
   assignees?: string[];
   labels?: string[];
   githubLabels?: GithubLabel[];
+  closingIssuesReferences: number[];
 
   /**
    * Formats the text to create space at the end of the user input to prevent any issues with
@@ -97,6 +98,9 @@ export class Issue {
       : this.issueOrPr === 'Issue'
       ? Milestone.IssueWithoutMilestone
       : Milestone.PRWithoutMilestone;
+    this.closingIssuesReferences = githubIssue.closingIssuesReferences
+      ? githubIssue.closingIssuesReferences.map((issue) => issue.number)
+      : [];
   }
 
   public static createPhaseBugReportingIssue(githubIssue: GithubIssue): Issue {

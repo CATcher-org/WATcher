@@ -22,6 +22,7 @@ import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
 import { FilterableComponent, FilterableSource } from '../../shared/issue-tables/filterableTypes';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
+import { CardData } from '../../core/models/card-data.model';
 
 @Component({
   selector: 'app-card-view',
@@ -43,7 +44,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   @ViewChild('milestoneHeader') milestoneHeaderTemplate: TemplateRef<any>;
 
   issues: IssuesDataTable;
-  issues$: Observable<Issue[]>;
+  cardData$: Observable<CardData[]>;
 
   private timeoutId: NodeJS.Timeout | null = null;
   private issuesLengthSubscription: Subscription;
@@ -89,11 +90,12 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   ngAfterViewInit(): void {
     this.timeoutId = setTimeout(() => {
       this.issues.loadIssues();
-      this.issues$ = this.issues.connect();
-      this.logger.debug('CardViewComponent: Issues loaded', this.issues$);
+
+      this.cardData$ = this.issues.connect();
+      this.logger.debug('CardViewComponent: Issues loaded', this.cardData$);
 
       // Emit event when issues change
-      this.issuesLengthSubscription = this.issues$.subscribe(() => {
+      this.issuesLengthSubscription = this.cardData$.subscribe(() => {
         this.issueLength = this.issues.count;
         this.issueLengthChange.emit(this.issueLength);
       });
