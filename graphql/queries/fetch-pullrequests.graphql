@@ -24,8 +24,10 @@ query FetchPullRequests($owner: String!, $name: String!, $cursor: String) {
             edges {
               node {
                 state #PENDING/COMMENTED/APPROVED/CHANGES_REQUESTED/DISMISSED
+                author {
+                  ...reviewAuthor
+                }
               }
-              ...reviewAuthor
             }
           }
         }
