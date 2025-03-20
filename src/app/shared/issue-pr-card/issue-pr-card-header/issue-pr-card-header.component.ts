@@ -94,9 +94,7 @@ export class IssuePrCardHeaderComponent {
 
   /** Returns status color for issue */
   getIssueOpenOrCloseColor() {
-    if (this.isNotFollowingForkingWorkflow()) {
-      return 'red';
-    } else if (this.issue.state === 'OPEN') {
+    if (this.issue.state === 'OPEN') {
       if (this.issue.isDraft) {
         return 'grey';
       } else {

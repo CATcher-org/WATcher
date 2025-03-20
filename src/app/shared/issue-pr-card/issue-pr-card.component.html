@@ -5,6 +5,12 @@
     </span>
   </a>
   <mat-card-content>
+    <span
+      [matTooltip]="isNotFollowingForkingWorkflow() ? 'This PR is not following the fork workflow' : ''"
+      class="octicon"
+      [octicon]="'repo-forked'"
+      [color]="isNotFollowingForkingWorkflow() ? 'red' : 'green'"
+    ></span>
     <app-issue-pr-card-milestone
       [milestone]="issue.milestone"
       [repoHasMilestones]="!milestoneService.hasNoMilestones"
