@@ -82,7 +82,7 @@ export class IssuePrCardHeaderComponent {
         if (this.issue.isDraft) {
           return 'Draft PR';
         }
-        return 'git-pull-request';
+        return 'Open PR';
       } else if (state === 'CLOSED') {
         return 'Closed PR';
       } else if (state === 'MERGED') {
