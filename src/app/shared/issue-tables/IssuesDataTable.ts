@@ -2,6 +2,7 @@ import { DataSource } from '@angular/cdk/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CardData } from '../../core/models/card-data.model';
 import { GithubUser } from '../../core/models/github-user.model';
 import { Group } from '../../core/models/github/group.interface';
 import { Issue } from '../../core/models/issue.model';
@@ -11,14 +12,13 @@ import { Filter, FiltersService } from '../../core/services/filters.service';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { IssueService } from '../../core/services/issue.service';
 import { MilestoneService } from '../../core/services/milestone.service';
+import { uniqueCount } from '../lib/array-utils';
 import { applyDropdownFilter } from './dropdownfilter';
 import { FilterableSource } from './filterableTypes';
+import { groupByPR } from './issue-group-by-pr';
 import { paginateData } from './issue-paginator';
 import { applySort } from './issue-sorter';
 import { applySearchFilter } from './search-filter';
-import { CardData } from '../../core/models/card-data.model';
-import { groupByPR } from './issue-group-by-pr';
-import { uniqueCount } from '../lib/array-utils';
 
 export class IssuesDataTable extends DataSource<CardData> implements FilterableSource {
   public count = 0;
@@ -123,7 +123,7 @@ export class IssuesDataTable extends DataSource<CardData> implements FilterableS
             data = paginateData(this.paginator, data);
           }
 
-          let cardData: CardData[] = data.map((issue) => ({
+          const cardData: CardData[] = data.map((issue) => ({
             issue: issue,
             isIndented: indentedIssues.includes(issue)
           }));

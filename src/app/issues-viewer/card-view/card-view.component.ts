@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { Observable, Subscription } from 'rxjs';
+import { CardData } from '../../core/models/card-data.model';
 import { Group } from '../../core/models/github/group.interface';
 import { Issue } from '../../core/models/issue.model';
 import { AssigneeService } from '../../core/services/assignee.service';
@@ -22,7 +23,6 @@ import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
 import { FilterableComponent, FilterableSource } from '../../shared/issue-tables/filterableTypes';
 import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
-import { CardData } from '../../core/models/card-data.model';
 
 @Component({
   selector: 'app-card-view',
