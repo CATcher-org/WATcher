@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { GithubService } from '../../../core/services/github.service';
+import { Component, Input } from '@angular/core';
 import { Issue } from '../../../core/models/issue.model';
+import { GithubService } from '../../../core/services/github.service';
 
 @Component({
   selector: 'app-issue-pr-card-header',
