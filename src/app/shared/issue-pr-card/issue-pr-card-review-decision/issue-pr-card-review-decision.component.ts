@@ -24,7 +24,8 @@ export class IssuePrCardReviewDecisionComponent implements OnInit {
         return 'check';
       case ReviewDecision.CHANGES_REQUESTED:
         return 'file-diff';
-      case ReviewDecision.REVIEW_REQUIRED:
+      default:
+        // Review required
         return 'dot-fill';
     }
   }
@@ -39,18 +40,20 @@ export class IssuePrCardReviewDecisionComponent implements OnInit {
         return '#57ab5a';
       case ReviewDecision.CHANGES_REQUESTED:
         return '#e5534b';
-      case ReviewDecision.REVIEW_REQUIRED:
+      default:
+        // Review required
         return '#c69026';
     }
   }
 
-  reviewDecisionText() {
+  reviewDecisionText(): string {
     switch (this.reviewDecision) {
       case ReviewDecision.APPROVED:
         return 'Approved';
       case ReviewDecision.CHANGES_REQUESTED:
         return 'Changes requested';
-      case ReviewDecision.REVIEW_REQUIRED:
+      default:
+        // Review required
         return 'Review required';
     }
   }
