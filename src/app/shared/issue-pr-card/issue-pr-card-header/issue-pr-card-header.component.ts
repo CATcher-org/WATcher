@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { GithubService } from '../../../core/services/github.service';
 import { Issue } from '../../../core/models/issue.model';
 
 @Component({
@@ -9,7 +10,14 @@ import { Issue } from '../../../core/models/issue.model';
 export class IssuePrCardHeaderComponent {
   @Input() issue: Issue;
 
-  constructor() {}
+  constructor(private githubService: GithubService) {}
+
+  isNotFollowingForkingWorkflow = false;
+
+  ngOnInit() {
+    this.isNotFollowingForkingWorkflow =
+      this.issue.issueOrPr === 'PullRequest' && this.issue.headRepository?.toLowerCase() === this.githubService.getRepoURL().toLowerCase();
+  }
 
   /**
    * Returns corresponding Github icon identifier for issue to display.
@@ -46,9 +54,50 @@ export class IssuePrCardHeaderComponent {
     }
   }
 
+  /**
+   * Returns tooltip for octicon.
+   * @returns string to create tooltip
+   */
+  getOcticonTooltip() {
+    const type = this.issue.issueOrPr;
+    const state = this.issue.state;
+    const stateReason = this.issue.stateReason;
+
+    if (this.isNotFollowingForkingWorkflow) {
+      return 'This PR is not following the fork workflow';
+    }
+
+    if (type === 'Issue') {
+      if (state === 'OPEN') {
+        return 'Open Issue';
+      } else if (state === 'CLOSED') {
+        if (stateReason === 'COMPLETED') {
+          return 'Completed Issue';
+        } else if (stateReason === 'NOT_PLANNED') {
+          return 'Closed Issue';
+        }
+      }
+    } else if (type === 'PullRequest') {
+      if (state === 'OPEN') {
+        if (this.issue.isDraft) {
+          return 'Draft PR';
+        }
+        return 'git-pull-request';
+      } else if (state === 'CLOSED') {
+        return 'Closed PR';
+      } else if (state === 'MERGED') {
+        return 'Merged PR';
+      }
+    } else {
+      return 'Unknown'; // unknown type and state
+    }
+  }
+
   /** Returns status color for issue */
   getIssueOpenOrCloseColor() {
-    if (this.issue.state === 'OPEN') {
+    if (this.isNotFollowingForkingWorkflow) {
+      return 'red';
+    } else if (this.issue.state === 'OPEN') {
       if (this.issue.isDraft) {
         return 'grey';
       } else {

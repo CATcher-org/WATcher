@@ -1,6 +1,6 @@
 <mat-card-header>
   <mat-card-title>
-    <span class="octicon" [octicon]="getOcticon()" [color]="getIssueOpenOrCloseColor()"></span>
+    <span [matTooltip]="getOcticonTooltip()" class="octicon" [octicon]="getOcticon()" [color]="getIssueOpenOrCloseColor()"></span>
     #{{ issue.id }}: {{ fitTitleText() }}
   </mat-card-title>
 </mat-card-header>

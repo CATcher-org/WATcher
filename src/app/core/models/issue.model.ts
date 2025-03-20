@@ -22,6 +22,7 @@ export class Issue {
   stateReason: string;
   issueOrPr: string;
   author: string;
+  headRepository: string;
   isDraft: boolean;
 
   /** Depending on the view, assignees attribute can be derived from Github's assignee feature OR from the Github's issue description */
@@ -97,6 +98,7 @@ export class Issue {
       : this.issueOrPr === 'Issue'
       ? Milestone.IssueWithoutMilestone
       : Milestone.PRWithoutMilestone;
+    this.headRepository = githubIssue.headRepository?.nameWithOwner;
   }
 
   public static createPhaseBugReportingIssue(githubIssue: GithubIssue): Issue {

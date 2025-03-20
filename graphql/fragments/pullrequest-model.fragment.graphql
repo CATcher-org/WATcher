@@ -1,0 +1,29 @@
+fragment pullRequestModel on PullRequest {
+  ...pullrequest
+  labels(first: 100) {
+    edges {
+      node {
+        ...issueLabel
+      }
+    }
+  }
+  assignees(first: 100) {
+    edges {
+      node {
+        ...issueAssignee
+      }
+    }
+  }
+  comments(first: 100) {
+    edges {
+      cursor
+      node {
+        ...issueComment
+      }
+    }
+  }
+  isDraft
+  headRepository {
+    ...issueRepository
+  }
+}

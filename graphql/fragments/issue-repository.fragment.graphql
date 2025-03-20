@@ -1,0 +1,3 @@
+fragment issueRepository on Repository {
+  nameWithOwner
+}
