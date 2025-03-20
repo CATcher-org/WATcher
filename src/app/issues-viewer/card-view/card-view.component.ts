@@ -93,8 +93,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
       this.logger.debug('CardViewComponent: Issues loaded', this.issues$);
 
       // Emit event when issues change
-      this.issuesLengthSubscription = this.issues$.subscribe((data) => {
-        console.log('LFJSDFJ', data);
+      this.issuesLengthSubscription = this.issues$.subscribe(() => {
         this.issueLength = this.issues.count;
         this.issueLengthChange.emit(this.issueLength);
       });
