@@ -1,8 +1,8 @@
 import { IssueState, IssueStateReason } from '../../../../../graphql/graphql-types';
 import { ReviewDecisionType } from '../issue.model';
+import { PullrequestReviewStateType } from '../pullrequest-review.model';
 import { GithubComment } from './github-comment.model';
 import { GithubLabel } from './github-label.model';
-import { PullrequestReviewStateType } from '../pullrequest-review.model';
 
 export class GithubIssue {
   id: string; // Github's backend's id
