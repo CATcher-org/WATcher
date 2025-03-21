@@ -15,7 +15,7 @@ export class IssuePrCardReviewDecisionComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    let octiconAndColor = this.getOcticonAndColor();
+    const octiconAndColor = this.getOcticonAndColor();
     this.icon = octiconAndColor.icon;
     this.color = octiconAndColor.color;
   }
