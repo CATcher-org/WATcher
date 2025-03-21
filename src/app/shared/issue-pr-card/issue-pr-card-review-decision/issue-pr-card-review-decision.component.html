@@ -1,5 +1,5 @@
 <div *ngIf="this.reviewDecision" style="display: flex; align-items: center; gap: 3px">
-  <span class="octicon" [octicon]="getOcticon()" [color]="getOcticonColor()" matTooltip="{{ this.reviewDecisionText() }}"></span>
+  <span class="octicon" [octicon]="this.icon" [color]="this.color" matTooltip="{{ this.reviewDecisionText() }}"></span>
   <!-- <div>
     {{ this.reviewDecisionText() }}
   </div> -->

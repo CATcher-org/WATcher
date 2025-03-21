@@ -9,40 +9,26 @@ import { ReviewDecision } from '../../../core/models/issue.model';
 })
 export class IssuePrCardReviewDecisionComponent implements OnInit {
   @Input() reviewDecision: ReviewDecisionType;
+  icon: string;
+  color: string;
 
   constructor() {}
 
-  ngOnInit(): void {}
-
-  /**
-   * Returns icon to display based on review decision
-   * @returns String to create icon
-   */
-  getOcticon(): string {
-    switch (this.reviewDecision) {
-      case ReviewDecision.APPROVED:
-        return 'check';
-      case ReviewDecision.CHANGES_REQUESTED:
-        return 'file-diff';
-      default:
-        // Review required
-        return 'dot-fill';
-    }
+  ngOnInit(): void {
+    let octiconAndColor = this.getOcticonAndColor();
+    this.icon = octiconAndColor.icon;
+    this.color = octiconAndColor.color;
   }
 
-  /**
-   * Returns the color of the icon based on review decision
-   * @returns String for icon color
-   */
-  getOcticonColor(): string {
+  getOcticonAndColor(): { icon: string; color: string } {
     switch (this.reviewDecision) {
       case ReviewDecision.APPROVED:
-        return '#57ab5a';
+        return { icon: 'check', color: '#57ab5a' };
       case ReviewDecision.CHANGES_REQUESTED:
-        return '#e5534b';
+        return { icon: 'file-diff', color: '#e5534b' };
       default:
         // Review required
-        return '#c69026';
+        return { icon: 'dot-fill', color: '#c69026' };
     }
   }
 
