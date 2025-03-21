@@ -15,8 +15,10 @@
     </div>
     <div class="review-decision">
       <app-issue-pr-card-review-decision [reviewDecision]="issue.reviewDecision"></app-issue-pr-card-review-decision>
-      <div>
-        <img *ngFor="let review of this.issue.reviews" src="{{ review.avatarUrl }}" alt="" width="20px" style="border-radius: 50%" />
+      <div *ngIf="this.issue.reviews">
+        <ng-container *ngFor="let review of this.issue.reviews">
+          <app-issue-pr-card-reviewer [review]="review"></app-issue-pr-card-reviewer>
+        </ng-container>
       </div>
     </div>
   </mat-card-content>

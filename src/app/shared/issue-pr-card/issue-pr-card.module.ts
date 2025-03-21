@@ -5,6 +5,7 @@ import { IssuePrCardLabelsComponent } from './issue-pr-card-labels/issue-pr-card
 import { IssuePrCardMilestoneComponent } from './issue-pr-card-milestone/issue-pr-card-milestone.component';
 import { IssuePrCardReviewDecisionComponent } from './issue-pr-card-review-decision/issue-pr-card-review-decision.component';
 import { IssuePrCardComponent } from './issue-pr-card.component';
+import { IssuePrCardReviewerComponent } from './issue-pr-card-reviewer/issue-pr-card-reviewer.component';
 
 @NgModule({
   imports: [SharedModule],
@@ -13,7 +14,8 @@ import { IssuePrCardComponent } from './issue-pr-card.component';
     IssuePrCardHeaderComponent,
     IssuePrCardMilestoneComponent,
     IssuePrCardLabelsComponent,
-    IssuePrCardReviewDecisionComponent
+    IssuePrCardReviewDecisionComponent,
+    IssuePrCardReviewerComponent
   ],
   exports: [IssuePrCardComponent]
 })
