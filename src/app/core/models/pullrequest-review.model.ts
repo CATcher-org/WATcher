@@ -18,4 +18,21 @@ export class PullrequestReview {
     this.reviewer = prReview.author.login;
     this.avatarUrl = prReview.author.avatarUrl;
   }
+
+  public toText() {
+    switch (this.state) {
+      case PullrequestReviewState.APPROVED:
+        return `${this.reviewer} approved`;
+      case PullrequestReviewState.CHANGES_REQUESTED:
+        return `${this.reviewer} requested changes`;
+      case PullrequestReviewState.COMMENTED:
+        return `${this.reviewer} commented`;
+      case PullrequestReviewState.DISMISSED:
+        return `${this.reviewer}'s review was dismissed`;
+      case PullrequestReviewState.PENDING:
+        return `${this.reviewer} has a pending review`;
+      default:
+        break;
+    }
+  }
 }

@@ -61,4 +61,10 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.reviewer-avatar {
+  border-radius: 50%;
+  margin-left: -15px;
 }

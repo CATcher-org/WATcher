@@ -1,0 +1,13 @@
+<div *ngIf="this.reviews" (mouseenter)="isHovered = true" (mouseleave)="isHovered = false">
+  <ng-container *ngFor="let review of this.reviews">
+    <img
+      src="{{ this.review.avatarUrl }}"
+      alt=""
+      width="22px"
+      class="reviewer-avatar"
+      [class.expanded]="isHovered === true"
+      [class.collapsed]="isHovered === false"
+      matTooltip="{{ review.toText() }}"
+    />
+  </ng-container>
+</div>

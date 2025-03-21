@@ -1,0 +1,13 @@
+.reviewer-avatar {
+  border-radius: 50%;
+  border: 2px solid white;
+  transition: all 0.3s ease-in-out;
+}
+
+.collapsed {
+  margin-left: -15px;
+}
+
+.expanded {
+  margin-left: 0px;
+}
