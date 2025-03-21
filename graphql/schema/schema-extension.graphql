@@ -1,5 +1,5 @@
 extend type Issue {
   isDraft: Boolean
   reviewDecision: String
-  reviews(first: Int): PullRequestReviewConnection
+  latestReviews(first: Int): PullRequestReviewConnection
 }

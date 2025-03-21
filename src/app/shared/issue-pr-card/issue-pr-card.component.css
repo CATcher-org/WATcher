@@ -56,3 +56,9 @@
 .milestone-labels {
   display: flex;
 }
+
+.review-decision {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}

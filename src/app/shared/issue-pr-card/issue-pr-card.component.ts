@@ -28,6 +28,10 @@ export class IssuePrCardComponent {
     this.githubService.viewIssueInBrowser(this.issue.id, event);
   }
 
+  printIssue() {
+    console.log(this.issue);
+  }
+
   /** Opens milestone in new window */
   viewMilestoneInBrowser(event: Event) {
     this.logger.info(`CardViewComponent: Opening Milestone ${this.issue.milestone.number} on Github`);

@@ -25,7 +25,7 @@ fragment issueModel on Issue {
 
   isDraft
   reviewDecision
-  reviews(first: 100) {
+  latestReviews(first: 100) {
     edges {
       node {
         state
