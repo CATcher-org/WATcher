@@ -28,10 +28,6 @@ export class IssuePrCardComponent {
     this.githubService.viewIssueInBrowser(this.issue.id, event);
   }
 
-  printIssue() {
-    console.log(this.issue);
-  }
-
   /** Opens milestone in new window */
   viewMilestoneInBrowser(event: Event) {
     this.logger.info(`CardViewComponent: Opening Milestone ${this.issue.milestone.number} on Github`);
@@ -65,5 +61,9 @@ export class IssuePrCardComponent {
     const ELLIPSES = '...';
 
     return this.issue.description.slice(0, MAX_CHARACTER_LENGTH) + ELLIPSES;
+  }
+
+  isMergedWithoutReview(issue: Issue): boolean {
+    return issue.issueOrPr === 'PullRequest' && issue.state === 'MERGED' && (!issue.reviews || issue.reviews.length === 0);
   }
 }

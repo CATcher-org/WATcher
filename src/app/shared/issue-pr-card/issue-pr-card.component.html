@@ -1,4 +1,4 @@
-<mat-card class="card" [ngClass]="getIssueOpenOrCloseColorCSSClass()" (click)="printIssue()">
+<mat-card class="card" [ngClass]="getIssueOpenOrCloseColorCSSClass()">
   <a class="no-underline link-grey-dark">
     <span [matTooltip]="this.issue.updated_at">
       <app-issue-pr-card-header [issue]="issue" (click)="viewIssueInBrowser($event)"></app-issue-pr-card-header>
@@ -15,7 +15,10 @@
     </div>
     <div class="review-decision">
       <app-issue-pr-card-review-decision [reviewDecision]="issue.reviewDecision"></app-issue-pr-card-review-decision>
-      <app-issue-pr-card-reviewers [reviews]="issue.reviews"></app-issue-pr-card-reviewers>
+      <app-issue-pr-card-reviewers
+        [reviews]="issue.reviews"
+        [isMergedWithoutReview]="this.isMergedWithoutReview(issue)"
+      ></app-issue-pr-card-reviewers>
     </div>
   </mat-card-content>
 </mat-card>

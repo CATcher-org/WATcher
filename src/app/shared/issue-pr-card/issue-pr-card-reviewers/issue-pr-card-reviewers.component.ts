@@ -8,6 +8,7 @@ import { PullrequestReview } from '../../../core/models/pullrequest-review.model
 })
 export class IssuePrCardReviewersComponent implements OnInit {
   @Input() reviews: PullrequestReview[];
+  @Input() isMergedWithoutReview: boolean;
 
   private isHovered = false;
 
