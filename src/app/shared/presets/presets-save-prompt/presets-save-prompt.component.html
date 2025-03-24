@@ -1,0 +1,21 @@
+<form (ngSubmit)="onSubmit($event)" [formGroup]="form">
+  <h1 mat-dialog-title>Save new preset</h1>
+  <mat-dialog-content>
+    <div class="content-wrapper">
+      <p>Please enter a name for your preset.</p>
+      <mat-form-field class="full-width">
+        <mat-label>Name</mat-label>
+        <input formControlName="label" name="label" matInput required />
+      </mat-form-field>
+      <p></p>
+      <mat-checkbox formControlName="isGlobal" name="isGlobal">Global preset</mat-checkbox>
+      <div>
+        <mat-hint>Global presets save all filters <b>except</b> Milestones, Assignees and Labels.</mat-hint>
+      </div>
+    </div>
+  </mat-dialog-content>
+  <div mat-dialog-actions class="footer-buttons">
+    <button mat-button [mat-dialog-close]="{ action: 'cancel' }">Cancel</button>
+    <button type="submit" mat-button>Save</button>
+  </div>
+</form>

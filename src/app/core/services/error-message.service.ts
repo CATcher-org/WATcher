@@ -83,4 +83,16 @@ export class ErrorMessageService {
   public static noDropdownOptionsErrorMessage() {
     return 'No Dropdown identification parameters supplied.';
   }
+
+  public static corruptLocalPresetMessage() {
+    return 'Local presets are corrupted and have been deleted.';
+  }
+
+  public static corruptGlobalPresetMessage() {
+    return 'Global presets are corrupted and have been deleted.';
+  }
+
+  public static corruptPresetMessage() {
+    return 'Presets are corrupted and have been deleted.';
+  }
 }
