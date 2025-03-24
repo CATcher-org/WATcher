@@ -26,7 +26,7 @@ export class PullrequestReview {
       case PullrequestReviewState.CHANGES_REQUESTED:
         return `${this.reviewer} requested changes`;
       case PullrequestReviewState.COMMENTED:
-        return `${this.reviewer} commented`;
+        return `${this.reviewer} commented in a review`;
       case PullrequestReviewState.DISMISSED:
         return `${this.reviewer}'s review was dismissed`;
       case PullrequestReviewState.PENDING:
