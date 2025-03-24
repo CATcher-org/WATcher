@@ -21,9 +21,9 @@ import { SimpleLabel } from '../models/label.model';
 import { Milestone } from '../models/milestone.model';
 import { EitherOrPreset, GlobalPreset, Preset } from '../models/preset.model';
 import { AssigneeService } from './assignee.service';
+import { ErrorMessageService } from './error-message.service';
 import { LoggingService } from './logging.service';
 import { MilestoneService } from './milestone.service';
-import { ErrorMessageService } from './error-message.service';
 
 export type Filter = {
   title: string;

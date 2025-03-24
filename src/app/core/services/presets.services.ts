@@ -2,11 +2,11 @@ import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { EitherOrPreset, GlobalPreset, LocalPreset, Preset } from '../models/preset.model';
 import { Repo } from '../models/repo.model';
+import { ErrorHandlingService } from './error-handling.service';
+import { ErrorMessageService } from './error-message.service';
 import { Filter, FiltersService } from './filters.service';
 import { GroupBy, GroupingContextService } from './grouping/grouping-context.service';
 import { LoggingService } from './logging.service';
-import { ErrorHandlingService } from './error-handling.service';
-import { ErrorMessageService } from './error-message.service';
 
 @Injectable({
   providedIn: 'root'
