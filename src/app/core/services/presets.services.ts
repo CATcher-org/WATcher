@@ -5,6 +5,8 @@ import { Repo } from '../models/repo.model';
 import { Filter, FiltersService } from './filters.service';
 import { GroupBy, GroupingContextService } from './grouping/grouping-context.service';
 import { LoggingService } from './logging.service';
+import { ErrorHandlingService } from './error-handling.service';
+import { ErrorMessageService } from './error-message.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,32 +21,50 @@ export class PresetsService {
   public availablePresets$ = new BehaviorSubject<LocalPreset[]>([]); // Repository-specific presets available for the current repo
   public globalPresets$ = new BehaviorSubject<GlobalPreset[]>([]); // Global presets available for all repos
 
-  constructor(private logger: LoggingService, private filter: FiltersService, private groupingContextService: GroupingContextService) {
+  constructor(
+    private logger: LoggingService,
+    private filter: FiltersService,
+    private groupingContextService: GroupingContextService,
+    private errorHandlingService: ErrorHandlingService
+  ) {
     // Load saved presets from local storage
     const rawRepoPresets = window.localStorage.getItem(PresetsService.KEY_NAME);
     const rawGlobalPresets = window.localStorage.getItem(PresetsService.GLOBAL_NAME);
 
     // convert the raw json into a map of presets
     if (rawRepoPresets) {
-      const mapArray = JSON.parse(rawRepoPresets);
-      const unTypedMap = new Map<string, any[]>(mapArray); // from JSON.parse(...)
-      const typedMap = new Map<string, LocalPreset[]>();
+      try {
+        const mapArray = JSON.parse(rawRepoPresets);
+        const unTypedMap = new Map<string, any[]>(mapArray); // from JSON.parse(...)
+        const typedMap = new Map<string, LocalPreset[]>();
 
-      unTypedMap.forEach((arrayOfObjs, key) => {
-        // Convert each object in the array into a Preset
-        const presetArr = arrayOfObjs.map((obj) => LocalPreset.fromObject(obj));
-        typedMap.set(key, presetArr);
-      });
+        unTypedMap.forEach((arrayOfObjs, key) => {
+          // Convert each object in the array into a Preset
+          const presetArr = arrayOfObjs.map((obj) => LocalPreset.fromObject(obj));
+          typedMap.set(key, presetArr);
+        });
 
-      this.savedPresets = typedMap;
+        this.savedPresets = typedMap;
+      } catch (e) {
+        // present an alert to the user that their presets are corrupted and delete them
+        errorHandlingService.handleError(e);
+        window.localStorage.removeItem(PresetsService.KEY_NAME);
+        this.savedPresets = new Map<string, LocalPreset[]>();
+      }
     } else {
       this.savedPresets = new Map<string, LocalPreset[]>();
     }
 
     // convert the global presets into an array of presets
     if (rawGlobalPresets) {
-      const globalPresets = JSON.parse(rawGlobalPresets).map((obj) => GlobalPreset.fromObject(obj));
-      this.globalPresets$.next(globalPresets);
+      try {
+        const globalPresets = JSON.parse(rawGlobalPresets).map((obj) => GlobalPreset.fromObject(obj));
+        this.globalPresets$.next(globalPresets);
+      } catch (e) {
+        errorHandlingService.handleError(e);
+        window.localStorage.removeItem(PresetsService.GLOBAL_NAME);
+        this.globalPresets$.next([]);
+      }
     } else {
       this.globalPresets$.next([]);
     }

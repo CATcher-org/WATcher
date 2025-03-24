@@ -45,6 +45,12 @@ export class Repo {
   }
 
   public static fromObject(object: any): Repo {
+    // validation
+    if (!object.owner || !object.name) {
+      console.log('Missing object owner, object name', { object });
+      throw new Error(ErrorMessageService.corruptPresetMessage());
+    }
+
     return new Repo(object.owner, object.name);
   }
 

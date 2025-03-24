@@ -23,6 +23,7 @@ import { EitherOrPreset, GlobalPreset, Preset } from '../models/preset.model';
 import { AssigneeService } from './assignee.service';
 import { LoggingService } from './logging.service';
 import { MilestoneService } from './milestone.service';
+import { ErrorMessageService } from './error-message.service';
 
 export type Filter = {
   title: string;
@@ -128,6 +129,11 @@ export class FiltersService {
    */
   static fromObject(object: any, isGlobal = false): Partial<Filter> | Filter {
     if (isGlobal) {
+      // required fields: status, type, sort, itemsPerPage
+      if (!object.status || !object.type || !object.sort || !object.itemsPerPage) {
+        throw new Error(ErrorMessageService.corruptPresetMessage());
+      }
+
       const filter: Partial<Filter> = {
         title: object.title,
         status: object.status,
@@ -138,17 +144,22 @@ export class FiltersService {
 
       return filter;
     } else {
+      // required fields: status, type, sort, itemsPerPage
+      if (!object.status || !object.type || !object.sort || !object.itemsPerPage) {
+        throw new Error(ErrorMessageService.corruptPresetMessage());
+      }
+
       const filter: Filter = {
         title: object.title,
         status: object.status,
         type: object.type,
         sort: object.sort,
-        labels: object.labels,
-        milestones: object.milestones,
+        labels: object.labels || [],
+        milestones: object.milestones || [],
         hiddenLabels: new Set(Object.keys(object.hiddenLabels).length ? object.hiddenLabels : undefined),
         deselectedLabels: new Set(Object.keys(object.deselectedLabels).length ? object.deselectedLabels : undefined),
         itemsPerPage: object.itemsPerPage,
-        assignees: object.assignees
+        assignees: object.assignees || []
       };
 
       return filter;

@@ -11,31 +11,10 @@ export abstract class Preset<T> {
   filter: T;
   label: string;
   id: string; // current timestamp in ms as string
-
-  // If the preset is global, it will be available for all repos, and we will not save Milestone, Assignees and Labels.
-  // isGlobal: boolean;
-
   groupBy: GroupBy;
 
   constructor({ repo, label, id = Date.now().toString(), groupBy }: { repo: Repo; label: string; id?: string; groupBy: GroupBy }) {
     this.repo = repo;
-
-    // if (isGlobal) {
-    //   // filter.milestones = [];
-    //   // filter.assignees = [];
-    //   // filter.labels = [];
-    //   // filter.hiddenLabels = new Set();
-    //   // filter.deselectedLabels = new Set();
-    //   delete filter.milestones;
-    //   delete filter.assignees;
-    //   delete filter.labels;
-    //   delete filter.hiddenLabels;
-    //   delete filter.deselectedLabels;
-    //   this.filter = filter as Partial<Filter>;
-    // } else {
-    //   this.filter = filter;
-    // }
-
     this.label = label;
     this.id = id;
     // this.isGlobal = isGlobal;
@@ -83,7 +62,7 @@ export class GlobalPreset extends Preset<Partial<Filter>> {
     this.filter = filter;
   }
 
-  static fromObject(object: any): Preset<Partial<Filter>> {
+  static fromObject(object: any): GlobalPreset {
     const repo = Repo.fromObject(object.repo);
     const filter = FiltersService.fromObject(object.filter, true);
     const label = object.label;
