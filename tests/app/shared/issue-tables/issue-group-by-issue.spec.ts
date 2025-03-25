@@ -28,30 +28,30 @@ describe('issue-group-by-pr', () => {
     it('should group the first PR that closes an issue under the issue', () => {
       const data = [pullRequestClosesOneTwo, pullRequestClosesOneThree, issueOne];
 
-      const expectedData = [pullRequestClosesOneThree, issueOne, pullRequestClosesOneTwo];
-
-      const expectedGroupedData = [pullRequestClosesOneTwo];
+      const expectedData = [
+        { issue: pullRequestClosesOneThree, isIndented: false },
+        { issue: issueOne, isIndented: false },
+        { issue: pullRequestClosesOneTwo, isIndented: true }
+      ];
 
       const groupedData = groupByIssue(data);
-      expect(groupedData).toEqual([expectedData, expectedGroupedData]);
+      expect(groupedData).toEqual(expectedData);
     });
 
     it('should group PRs under the first issue they close that does not already have a PR grouped under it', () => {
       const data = [pullRequestClosesOneTwo, pullRequestClosesOneThree, pullRequestClosesThreeFourFive, issueOne, issueThree, issueTwo];
 
       const expectedData = [
-        pullRequestClosesThreeFourFive,
-        issueOne,
-        pullRequestClosesOneTwo,
-        issueThree,
-        pullRequestClosesOneThree,
-        issueTwo
+        { issue: pullRequestClosesThreeFourFive, isIndented: false },
+        { issue: issueOne, isIndented: false },
+        { issue: pullRequestClosesOneTwo, isIndented: true },
+        { issue: issueThree, isIndented: false },
+        { issue: pullRequestClosesOneThree, isIndented: true },
+        { issue: issueTwo, isIndented: false }
       ];
 
-      const expectedGroupedData = [pullRequestClosesOneTwo, pullRequestClosesOneThree];
-
       const groupedData = groupByIssue(data);
-      expect(groupedData).toEqual([expectedData, expectedGroupedData]);
+      expect(groupedData).toEqual(expectedData);
     });
   });
 });
