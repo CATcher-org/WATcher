@@ -9,6 +9,7 @@ import { ReviewDecision } from '../../../core/models/issue.model';
 })
 export class IssuePrCardReviewDecisionComponent implements OnInit {
   @Input() reviewDecision: ReviewDecisionType;
+  @Input() isMergedWithoutReview: boolean;
   icon: string;
   color: string;
 
@@ -21,6 +22,9 @@ export class IssuePrCardReviewDecisionComponent implements OnInit {
   }
 
   getOcticonAndColor(): { icon: string; color: string } {
+    if (this.isMergedWithoutReview) {
+      return { icon: 'alert', color: '#c93c37' };
+    }
     switch (this.reviewDecision) {
       case ReviewDecision.APPROVED:
         return { icon: 'check', color: '#57ab5a' };
@@ -33,6 +37,9 @@ export class IssuePrCardReviewDecisionComponent implements OnInit {
   }
 
   reviewDecisionText(): string {
+    if (this.isMergedWithoutReview) {
+      return 'Merged without review';
+    }
     switch (this.reviewDecision) {
       case ReviewDecision.APPROVED:
         return 'Approved';

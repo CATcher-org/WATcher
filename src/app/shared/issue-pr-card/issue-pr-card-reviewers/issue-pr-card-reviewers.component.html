@@ -1,6 +1,3 @@
-<div *ngIf="this.isMergedWithoutReview">
-  <span [octicon]="'alert'" [color]="'#c93c37'" [matTooltip]="'Merged without review'"></span>
-</div>
 <div *ngIf="this.reviews" (mouseenter)="isHovered = true" (mouseleave)="isHovered = false">
   <ng-container *ngFor="let review of this.reviews">
     <img
