@@ -9,9 +9,16 @@ import { PullrequestReview } from '../../../core/models/pullrequest-review.model
 export class IssuePrCardReviewersComponent implements OnInit {
   @Input() reviews: PullrequestReview[];
 
+  AVATAR_WIDTH = 22;
+  containerWidth: number;
+
   private isHovered = false;
 
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.reviews) {
+      this.containerWidth = this.reviews.length * this.AVATAR_WIDTH + this.reviews.length * 2 * 2;
+    }
+  }
 }

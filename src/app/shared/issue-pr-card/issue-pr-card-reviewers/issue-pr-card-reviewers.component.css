@@ -11,3 +11,7 @@
 .expanded {
   margin-left: 0px;
 }
+
+.reviewers {
+  border: 1px solid blue;
+}

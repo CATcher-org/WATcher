@@ -47,9 +47,11 @@
 }
 
 .content {
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
   gap: 6px;
 }
 
@@ -57,9 +59,10 @@
   display: flex;
 }
 
-.review-decision {
-  width: 100%;
+.reviews {
+  margin-left: auto;
+  width: auto;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
 }
