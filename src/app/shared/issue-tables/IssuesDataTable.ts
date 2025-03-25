@@ -15,7 +15,7 @@ import { MilestoneService } from '../../core/services/milestone.service';
 import { uniqueCount } from '../lib/array-utils';
 import { applyDropdownFilter } from './dropdownfilter';
 import { FilterableSource } from './filterableTypes';
-import { groupByPR } from './issue-group-by-pr';
+import { groupByIssue } from './issue-group-by-issue';
 import { paginateData } from './issue-paginator';
 import { applySort } from './issue-sorter';
 import { applySearchFilter } from './search-filter';
@@ -89,44 +89,28 @@ export class IssuesDataTable extends DataSource<CardData> implements FilterableS
           }
 
           let data = <Issue[]>Object.values(this.issueService.issues$.getValue()).reverse();
-          let filteredData = data;
           if (this.defaultFilter) {
-            filteredData = data.filter(this.defaultFilter);
+            data = data.filter(this.defaultFilter);
           }
 
           // Apply Filters
-          filteredData = applyDropdownFilter(
-            this.filter,
-            filteredData,
-            !this.milestoneService.hasNoMilestones,
-            !this.assigneeService.hasNoAssignees
-          );
+          data = applyDropdownFilter(this.filter, data, !this.milestoneService.hasNoMilestones, !this.assigneeService.hasNoAssignees);
 
-          filteredData = applySearchFilter(this.filter.title, this.displayedColumn, this.issueService, filteredData);
+          data = applySearchFilter(this.filter.title, this.displayedColumn, this.issueService, data);
 
-          filteredData = applySort(this.filter.sort, filteredData);
+          data = applySort(this.filter.sort, data);
 
           // Filter by assignee of issue
-          data = this.groupingContextService.getDataForGroup(filteredData, this.group);
+          data = this.groupingContextService.getDataForGroup(data, this.group);
 
-          // Grouping by PRs
-          let indentedIssues: Issue[] = [];
-          if (true || this.groupingContextService.currGroupBy === GroupBy.Assignee) {
-            // We pass in filteredData to find issues that are assigned to other users, but fixed by this user's PR
-            [data, indentedIssues] = groupByPR(data, filteredData);
-          }
+          // Sorting PRs under the issue they close
+          let cardData = groupByIssue(data);
 
-          // Grouping will cause duplicates when multiple PRs fix the same issue, so we need to count unique issues
-          this.count = uniqueCount(data);
+          this.count = cardData.length;
 
           if (this.paginator !== undefined) {
-            data = paginateData(this.paginator, data);
+            cardData = paginateData(this.paginator, cardData);
           }
-
-          const cardData: CardData[] = data.map((issue) => ({
-            issue: issue,
-            isIndented: indentedIssues.includes(issue)
-          }));
 
           return cardData;
         })
