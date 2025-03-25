@@ -1,16 +1,14 @@
 import { Issue } from '../../../../src/app/core/models/issue.model';
 import { groupByIssue } from '../../../../src/app/shared/issue-tables/issue-group-by-issue';
 import {
+  generateIssueWithRandomData,
   PULL_REQUEST_ONE,
-  PULL_REQUEST_TWO,
   PULL_REQUEST_THREE,
-  generateIssueWithRandomData
+  PULL_REQUEST_TWO
 } from '../../../constants/githubissue.constants';
 
 describe('issue-group-by-pr', () => {
   describe('groupByIssue()', () => {
-    let dataSet: Issue[];
-
     // This may fail if the random issues generate with the same number
     const issueOne: Issue = Issue.createPhaseBugReportingIssue(generateIssueWithRandomData());
     const issueTwo: Issue = Issue.createPhaseBugReportingIssue(generateIssueWithRandomData());

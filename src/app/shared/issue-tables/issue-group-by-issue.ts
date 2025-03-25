@@ -20,7 +20,7 @@ export function groupByIssue(data: Issue[]): CardData[] {
       continue;
     }
     /*
-    Note: in the case of a PR closing multiple issues, the order of sorting matters 
+    Note: in the case of a PR closing multiple issues, the order of sorting matters
           in which issue the PR is grouped under. Each PR in the order they are present
           in data will be grouped under the first issue it closes that does not already
           have a PR grouped under it.
