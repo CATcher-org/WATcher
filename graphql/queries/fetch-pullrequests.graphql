@@ -20,6 +20,13 @@ query FetchPullRequests($owner: String!, $name: String!, $cursor: String) {
               }
             }
           }
+          closingIssuesReferences(first: 10) {
+            edges {
+              node {
+                number
+              }
+            }
+          }
         }
       }
     }

@@ -2,25 +2,28 @@ import { DataSource } from '@angular/cdk/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CardData } from '../../core/models/card-data.model';
 import { GithubUser } from '../../core/models/github-user.model';
 import { Group } from '../../core/models/github/group.interface';
 import { Issue } from '../../core/models/issue.model';
 import { Milestone } from '../../core/models/milestone.model';
 import { AssigneeService } from '../../core/services/assignee.service';
 import { Filter, FiltersService } from '../../core/services/filters.service';
-import { GroupingContextService } from '../../core/services/grouping/grouping-context.service';
+import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { IssueService } from '../../core/services/issue.service';
 import { MilestoneService } from '../../core/services/milestone.service';
+import { uniqueCount } from '../lib/array-utils';
 import { applyDropdownFilter } from './dropdownfilter';
 import { FilterableSource } from './filterableTypes';
+import { groupByIssue } from './issue-group-by-issue';
 import { paginateData } from './issue-paginator';
 import { applySort } from './issue-sorter';
 import { applySearchFilter } from './search-filter';
 
-export class IssuesDataTable extends DataSource<Issue> implements FilterableSource {
+export class IssuesDataTable extends DataSource<CardData> implements FilterableSource {
   public count = 0;
   private filterChange = new BehaviorSubject(this.filtersService.defaultFilter);
-  private issuesSubject = new BehaviorSubject<Issue[]>([]);
+  private issuesSubject = new BehaviorSubject<CardData[]>([]);
   private issueSubscription: Subscription;
 
   public isLoading$ = this.issueService.isLoading.asObservable();
@@ -54,7 +57,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
     super();
   }
 
-  connect(): Observable<Issue[]> {
+  connect(): Observable<CardData[]> {
     return this.issuesSubject.asObservable();
   }
 
@@ -89,25 +92,31 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
           if (this.defaultFilter) {
             data = data.filter(this.defaultFilter);
           }
-          // Filter by assignee of issue
-          data = this.groupingContextService.getDataForGroup(data, this.group);
 
           // Apply Filters
           data = applyDropdownFilter(this.filter, data, !this.milestoneService.hasNoMilestones, !this.assigneeService.hasNoAssignees);
 
           data = applySearchFilter(this.filter.title, this.displayedColumn, this.issueService, data);
-          this.count = data.length;
 
           data = applySort(this.filter.sort, data);
 
+          // Filter by assignee of issue
+          data = this.groupingContextService.getDataForGroup(data, this.group);
+
+          // Sorting PRs under the issue they close
+          let cardData = groupByIssue(data);
+
+          this.count = cardData.length;
+
           if (this.paginator !== undefined) {
-            data = paginateData(this.paginator, data);
+            cardData = paginateData(this.paginator, cardData);
           }
-          return data;
+
+          return cardData;
         })
       )
-      .subscribe((issues) => {
-        this.issuesSubject.next(issues);
+      .subscribe((cardData) => {
+        this.issuesSubject.next(cardData);
       });
   }
 

@@ -12,8 +12,8 @@ import {
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { Observable, Subscription } from 'rxjs';
+import { CardData } from '../../core/models/card-data.model';
 import { Group } from '../../core/models/github/group.interface';
-import { Issue } from '../../core/models/issue.model';
 import { AssigneeService } from '../../core/services/assignee.service';
 import { FiltersService } from '../../core/services/filters.service';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
@@ -43,7 +43,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   @ViewChild('milestoneHeader') milestoneHeaderTemplate: TemplateRef<any>;
 
   issues: IssuesDataTable;
-  issues$: Observable<Issue[]>;
+  cardData$: Observable<CardData[]>;
 
   private timeoutId: NodeJS.Timeout | null = null;
   private issuesLengthSubscription: Subscription;
@@ -89,11 +89,12 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   ngAfterViewInit(): void {
     this.timeoutId = setTimeout(() => {
       this.issues.loadIssues();
-      this.issues$ = this.issues.connect();
-      this.logger.debug('CardViewComponent: Issues loaded', this.issues$);
+
+      this.cardData$ = this.issues.connect();
+      this.logger.debug('CardViewComponent: Issues loaded', this.cardData$);
 
       // Emit event when issues change
-      this.issuesLengthSubscription = this.issues$.subscribe(() => {
+      this.issuesLengthSubscription = this.cardData$.subscribe(() => {
         this.issueLength = this.issues.count;
         this.issueLengthChange.emit(this.issueLength);
       });
