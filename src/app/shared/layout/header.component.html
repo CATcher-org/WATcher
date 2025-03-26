@@ -1,21 +1,7 @@
 <mat-toolbar color="primary" style="position: sticky; position: -webkit-sticky; top: 0; z-index: 1000">
   <div class="toolbar-wrapper">
     <div class="left">
-      <button
-        *ngIf="isBackButtonShown()"
-        mat-icon-button
-        class="mat-toolbar mat-primary back-button"
-        style="transform: scale(0.9)"
-        (click)="goBack()"
-      >
-        <mat-icon>arrow_back_ios</mat-icon>
-      </button>
-      <a
-        class="mat-toolbar mat-primary"
-        style="text-decoration: none"
-        [routerLink]="viewService.isRepoSet() ? viewService.currentView : null"
-        >WATcher v{{ this.getVersion() }}</a
-      >
+      <div class="mat-toolbar mat-primary">WATcher v{{ this.getVersion() }}</div>
       <div *ngIf="viewService.isRepoSet()" style="margin-left: 20px">
         <button mat-button [matMenuTriggerFor]="menu">
           <span class="header-main-text">
