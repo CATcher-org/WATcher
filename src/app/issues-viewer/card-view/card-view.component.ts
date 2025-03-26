@@ -14,7 +14,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { Observable, Subscription } from 'rxjs';
 import { CardData } from '../../core/models/card-data.model';
 import { Group } from '../../core/models/github/group.interface';
-import { Issue } from '../../core/models/issue.model';
 import { AssigneeService } from '../../core/services/assignee.service';
 import { FiltersService } from '../../core/services/filters.service';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
