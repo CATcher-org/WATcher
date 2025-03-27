@@ -19,7 +19,7 @@ export class PullrequestReview {
     this.avatarUrl = prReview.author.avatarUrl;
   }
 
-  public toText() {
+  public getReviewTooltipMessage(): string {
     switch (this.state) {
       case PullrequestReviewState.APPROVED:
         return `${this.reviewer} approved`;
@@ -32,7 +32,7 @@ export class PullrequestReview {
       case PullrequestReviewState.PENDING:
         return `${this.reviewer} has a pending review`;
       default:
-        break;
+        return '';
     }
   }
 }
