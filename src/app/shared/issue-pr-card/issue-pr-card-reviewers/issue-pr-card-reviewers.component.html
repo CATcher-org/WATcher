@@ -6,14 +6,6 @@
   [style.min-width.px]="this.containerWidth"
 >
   <ng-container *ngFor="let review of this.reviews">
-    <img
-      [src]="this.review.avatarUrl"
-      alt=""
-      [width]="this.AVATAR_WIDTH"
-      class="reviewer-avatar"
-      [class.expanded]="isHovered"
-      [class.collapsed]="!isHovered"
-      [matTooltip]="review.toText()"
-    />
+    <img [src]="this.review.avatarUrl" alt="" [width]="this.AVATAR_WIDTH" class="reviewer-avatar" [matTooltip]="review.toText()" />
   </ng-container>
 </div>

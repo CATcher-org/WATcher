@@ -2,17 +2,14 @@
   border-radius: 50%;
   border: 2px solid white;
   transition: all 0.3s ease-in-out;
-}
-
-.collapsed {
   margin-left: -17px;
-}
-
-.expanded {
-  margin-left: 0px;
 }
 
 .reviewers {
   display: flex;
   flex-direction: row-reverse;
+}
+
+.reviewers:hover > .reviewer-avatar {
+  margin-left: 0px;
 }

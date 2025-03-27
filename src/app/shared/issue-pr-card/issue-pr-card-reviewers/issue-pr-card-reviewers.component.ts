@@ -12,8 +12,6 @@ export class IssuePrCardReviewersComponent implements OnInit {
   AVATAR_WIDTH = 22;
   containerWidth: number;
 
-  private isHovered = false;
-
   constructor() {}
 
   ngOnInit(): void {
