@@ -1,10 +1,4 @@
-<div
-  class="reviewers"
-  *ngIf="this.reviews"
-  (mouseenter)="isHovered = true"
-  (mouseleave)="isHovered = false"
-  [style.min-width.px]="this.containerWidth"
->
+<div class="reviewers" *ngIf="this.reviews" [style.min-width.px]="this.containerWidth">
   <ng-container *ngFor="let review of this.reviews">
     <img
       [src]="this.review.avatarUrl"
