@@ -6,13 +6,11 @@ import { HiddenData } from './hidden-data.model';
 import { Milestone } from './milestone.model';
 import { PullrequestReview } from './pullrequest-review.model';
 
-export const ReviewDecision = {
-  CHANGES_REQUESTED: 'CHANGES_REQUESTED',
-  APPROVED: 'APPROVED',
-  REVIEW_REQUIRED: 'REVIEW_REQUIRED'
-} as const;
-
-export type ReviewDecisionType = typeof ReviewDecision[keyof typeof ReviewDecision];
+export enum ReviewDecision {
+  CHANGES_REQUESTED = 'CHANGES_REQUESTED',
+  APPROVED = 'APPROVED',
+  REVIEW_REQUIRED = 'REVIEW_REQUIRED'
+}
 
 export class Issue {
   /** Basic Fields */
@@ -38,7 +36,7 @@ export class Issue {
   labels?: string[];
   githubLabels?: GithubLabel[];
   reviews?: PullrequestReview[];
-  reviewDecision?: ReviewDecisionType | null;
+  reviewDecision?: ReviewDecision | null;
 
   /**
    * Formats the text to create space at the end of the user input to prevent any issues with

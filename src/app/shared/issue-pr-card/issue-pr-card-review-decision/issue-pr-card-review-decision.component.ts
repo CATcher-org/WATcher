@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ReviewDecisionType } from '../../../core/models/issue.model';
 import { ReviewDecision } from '../../../core/models/issue.model';
 
 @Component({
@@ -8,7 +7,7 @@ import { ReviewDecision } from '../../../core/models/issue.model';
   styleUrls: ['./issue-pr-card-review-decision.component.css']
 })
 export class IssuePrCardReviewDecisionComponent implements OnInit {
-  @Input() reviewDecision: ReviewDecisionType;
+  @Input() reviewDecision: ReviewDecision;
   @Input() isMergedWithoutReview: boolean;
   icon: string;
   color: string;

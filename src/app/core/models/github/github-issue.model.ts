@@ -1,5 +1,5 @@
 import { IssueState, IssueStateReason } from '../../../../../graphql/graphql-types';
-import { ReviewDecisionType } from '../issue.model';
+import { ReviewDecision } from '../issue.model';
 import { PullrequestReviewStateType } from '../pullrequest-review.model';
 import { GithubComment } from './github-comment.model';
 import { GithubLabel } from './github-label.model';
@@ -40,7 +40,7 @@ export class GithubIssue {
     };
   }>;
 
-  reviewDecision?: ReviewDecisionType | null;
+  reviewDecision?: ReviewDecision | null;
 
   constructor(githubIssue: {}) {
     Object.assign(this, githubIssue);
