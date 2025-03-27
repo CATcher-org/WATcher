@@ -110,9 +110,7 @@ export class Issue {
       ? Milestone.IssueWithoutMilestone
       : Milestone.PRWithoutMilestone;
 
-    if (githubIssue.reviews) {
-      this.reviews = githubIssue.reviews.map((review) => new PullrequestReview(review));
-    }
+    this.reviews = githubIssue.reviews?.map((review) => new PullrequestReview(review));
   }
 
   public static createPhaseBugReportingIssue(githubIssue: GithubIssue): Issue {
