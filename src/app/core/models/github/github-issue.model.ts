@@ -1,6 +1,6 @@
 import { IssueState, IssueStateReason } from '../../../../../graphql/graphql-types';
 import { ReviewDecision } from '../issue.model';
-import { PullrequestReviewStateType } from '../pullrequest-review.model';
+import { PullrequestReviewState } from '../pullrequest-review.model';
 import { GithubComment } from './github-comment.model';
 import { GithubLabel } from './github-label.model';
 
@@ -33,7 +33,7 @@ export class GithubIssue {
   isDraft: boolean;
 
   reviews?: Array<{
-    state: PullrequestReviewStateType;
+    state: PullrequestReviewState;
     author: {
       login: string;
       avatarUrl: string;

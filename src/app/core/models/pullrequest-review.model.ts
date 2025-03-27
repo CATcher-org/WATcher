@@ -1,19 +1,17 @@
-export const PullrequestReviewState = {
-  PENDING: 'PENDING',
-  COMMENTED: 'COMMENTED',
-  APPROVED: 'APPROVED',
-  CHANGES_REQUESTED: 'CHANGES_REQUESTED',
-  DISMISSED: 'DISMISSED'
-} as const;
-
-export type PullrequestReviewStateType = typeof PullrequestReviewState[keyof typeof PullrequestReviewState];
+export enum PullrequestReviewState {
+  PENDING = 'PENDING',
+  COMMENTED = 'COMMENTED',
+  APPROVED = 'APPROVED',
+  CHANGES_REQUESTED = 'CHANGES_REQUESTED',
+  DISMISSED = 'DISMISSED'
+}
 
 export class PullrequestReview {
-  state: PullrequestReviewStateType;
+  state: PullrequestReviewState;
   reviewer: string;
   avatarUrl: string;
 
-  constructor(prReview: { state: PullrequestReviewStateType; author: { login: string; avatarUrl: string } }) {
+  constructor(prReview: { state: PullrequestReviewState; author: { login: string; avatarUrl: string } }) {
     this.state = prReview.state;
     this.reviewer = prReview.author.login;
     this.avatarUrl = prReview.author.avatarUrl;
