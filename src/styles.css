@@ -17,6 +17,12 @@ body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
+/* app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+} */
+
 /* Timeline comment style */
 .timeline-header {
   background-color: #f1f8ff;

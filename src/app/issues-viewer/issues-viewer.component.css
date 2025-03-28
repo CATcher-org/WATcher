@@ -1,3 +1,9 @@
+/* .issues-viewer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+} */
+
 .issue-table {
   width: 25%;
   min-width: 200px;
@@ -40,6 +46,7 @@
   display: flex;
   overflow-x: auto;
   /* white-space: nowrap; */
+  flex-grow: 1;
 }
 
 .loading-spinner {
@@ -75,7 +82,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 8px;
+  margin-left: 8px;
+  margin-right: 8px;
 
   cursor: pointer;
 

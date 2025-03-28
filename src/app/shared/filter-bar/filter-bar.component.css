@@ -46,7 +46,7 @@ ul {
       top: 100%;
       z-index: 10;
       background-color: #ffffff;
-
+      box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
       .filter-item {
         display: inline-block;
         margin: 8px;
