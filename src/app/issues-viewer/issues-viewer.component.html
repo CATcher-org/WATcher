@@ -4,19 +4,38 @@
   </div>
 
   <ng-template #elseBlock>
-    <app-filter-bar [views$]="views" style="flex: 0 0 auto"></app-filter-bar>
-
-    <div class="wrapper">
-      <app-card-view
-        *ngFor="let group of this.groupService.groups"
-        class="issue-table"
-        #card
-        [ngStyle]="{ display: card.isLoading || card.issueLength > 0 ? 'initial' : 'none' }"
-        [group]="group"
-        [headers]="this.displayedColumns"
-        (issueLengthChange)="this.groupService.updateHiddenGroups($event, group)"
-      ></app-card-view>
-      <app-hidden-groups [groups]="this.groupService.hiddenGroups"></app-hidden-groups>
+    <div class="container">
+      <mat-drawer-container class="drawer-container">
+        <mat-drawer #sidenav mode="side" opened>
+          <div class="left">
+            <app-filter-bar [views$]="views"></app-filter-bar>
+          </div>
+        </mat-drawer>
+        <mat-drawer-content>
+          <div class="content-container">
+            <div class="toggle-switch-container" (click)="sidenav.toggle()">
+              <mat-icon
+                [matTooltip]="sidenav.opened ? 'Hide filters' : 'Show filters'"
+                matTooltipPosition="right"
+                [style.transform]="sidenav.opened ? 'rotate(180deg)' : 'rotate(0deg)'"
+                >chevron_right</mat-icon
+              >
+            </div>
+            <div class="right">
+              <app-card-view
+                *ngFor="let group of this.groupService.groups"
+                class="issue-table"
+                #card
+                [ngStyle]="{ display: card.isLoading || card.issueLength > 0 ? 'initial' : 'none' }"
+                [group]="group"
+                [headers]="this.displayedColumns"
+                (issueLengthChange)="this.groupService.updateHiddenGroups($event, group)"
+              ></app-card-view>
+              <app-hidden-groups [groups]="this.groupService.hiddenGroups"></app-hidden-groups>
+            </div>
+          </div>
+        </mat-drawer-content>
+      </mat-drawer-container>
     </div>
   </ng-template>
 </div>
