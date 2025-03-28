@@ -47,3 +47,24 @@
   justify-content: center;
   align-items: center;
 }
+
+.container {
+  display: flex;
+  flex-direction: row;
+  height: calc(100vh - 64px);
+}
+
+.left {
+  width: 220px;
+  flex-shrink: 0;
+  /* background-color: red; */
+}
+
+.right {
+  flex-grow: 1;
+  display: flex;
+  overflow-x: auto;
+  /* background-color: blue; */
+
+  height: 100%;
+}

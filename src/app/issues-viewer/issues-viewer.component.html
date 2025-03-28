@@ -5,9 +5,10 @@
 
   <ng-template #elseBlock>
     <div class="container">
-      <app-filter-bar [views$]="views"></app-filter-bar>
-
-      <div class="wrapper">
+      <div class="left">
+        <app-filter-bar [views$]="views"></app-filter-bar>
+      </div>
+      <div class="right">
         <app-card-view
           *ngFor="let group of this.groupService.groups"
           class="issue-table"
@@ -19,6 +20,10 @@
         ></app-card-view>
         <app-hidden-groups [groups]="this.groupService.hiddenGroups"></app-hidden-groups>
       </div>
+
+      <!-- <div class="wrapper">
+        
+      </div> -->
     </div>
   </ng-template>
 </div>

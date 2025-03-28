@@ -1,6 +1,6 @@
 ul {
   margin: 8px;
-  padding: 0;
+  padding: 8px;
   display: flex;
   justify-content: space-between;
   list-style-type: none;
