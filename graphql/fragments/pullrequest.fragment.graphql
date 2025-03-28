@@ -13,4 +13,5 @@ fragment pullrequest on PullRequest {
   milestone {
     ...issueMilestone
   }
+  reviewDecision
 }

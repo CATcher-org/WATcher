@@ -45,3 +45,25 @@
   overflow: auto;
   margin: 6px 0;
 }
+
+.content {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.milestone-labels {
+  display: flex;
+}
+
+.reviews {
+  margin-left: auto;
+  width: auto;
+  display: flex;
+  gap: 3px;
+  justify-content: flex-end;
+  align-items: center;
+}
