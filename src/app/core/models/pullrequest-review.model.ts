@@ -17,6 +17,10 @@ export class PullrequestReview {
     this.avatarUrl = prReview.author.avatarUrl;
   }
 
+  /**
+   * Returns the required message to be shown in the tooltip for the review
+   * @returns Tooltip message as a string
+   */
   public getReviewTooltipMessage(): string {
     switch (this.state) {
       case PullrequestReviewState.APPROVED:

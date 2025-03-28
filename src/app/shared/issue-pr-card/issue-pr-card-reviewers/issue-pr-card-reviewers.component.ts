@@ -16,7 +16,8 @@ export class IssuePrCardReviewersComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.reviews) {
-      this.containerWidth = this.reviews.length * this.AVATAR_WIDTH + this.reviews.length * 2 * 2;
+      // Set container width to number of reviews * (width of avatar + 2 * border width)
+      this.containerWidth = this.reviews.length * (this.AVATAR_WIDTH + 2 * 2);
     }
   }
 }

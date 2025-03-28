@@ -20,6 +20,11 @@ export class IssuePrCardReviewDecisionComponent implements OnInit {
     this.color = octiconAndColor.color;
   }
 
+  /**
+   * Returns the correct octicon and color based on the review decision
+   * and whether the PR has been merged without a review
+   * @returns Javascript object containing the icon string and color string
+   */
   getOcticonAndColor(): { icon: string; color: string } {
     if (this.isMergedWithoutReview) {
       return { icon: 'alert', color: '#c93c37' };
@@ -35,7 +40,12 @@ export class IssuePrCardReviewDecisionComponent implements OnInit {
     }
   }
 
-  reviewDecisionText(): string {
+  /**
+   * Returns the appropriate message to be shown in a tooltip when
+   * users hover over the review decision icon
+   * @returns String containing the tooltip message
+   */
+  getReviewDecisionTooltipMessage(): string {
     if (this.isMergedWithoutReview) {
       return 'Merged without review';
     }
