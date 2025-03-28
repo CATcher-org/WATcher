@@ -36,26 +36,6 @@
           </div>
         </mat-drawer-content>
       </mat-drawer-container>
-
-      <!-- <div class="left">
-        
-      </div>
-      <div class="right">
-        <app-card-view
-          *ngFor="let group of this.groupService.groups"
-          class="issue-table"
-          #card
-          [ngStyle]="{ display: card.isLoading || card.issueLength > 0 ? 'initial' : 'none' }"
-          [group]="group"
-          [headers]="this.displayedColumns"
-          (issueLengthChange)="this.groupService.updateHiddenGroups($event, group)"
-        ></app-card-view>
-        <app-hidden-groups [groups]="this.groupService.hiddenGroups"></app-hidden-groups>
-      </div> -->
-
-      <!-- <div class="wrapper">
-        
-      </div> -->
     </div>
   </ng-template>
 </div>
