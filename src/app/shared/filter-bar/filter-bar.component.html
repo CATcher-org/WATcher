@@ -16,6 +16,7 @@
       <mat-select
         [value]="this.groupingContextService.currGroupBy$ | async"
         (selectionChange)="this.groupingContextService.setCurrentGroupingType($event.value)"
+        panelClass="shift-right"
       >
         <mat-option *ngFor="let option of this.groupByEnum | keyvalue" [value]="option.value">{{ option.key }}</mat-option>
       </mat-select>
@@ -109,8 +110,5 @@
       </mat-select>
     </mat-form-field>
     <app-label-filter-bar></app-label-filter-bar>
-  </li>
-  <li class="menu" (click)="toggleMenu()">
-    <i class="material-icons">{{ isMenuOpen ? 'close' : 'menu' }}</i>
   </li>
 </ul>
