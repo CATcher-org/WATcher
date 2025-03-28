@@ -10,13 +10,12 @@
     </mat-form-field>
   </li>
 
-  <li class="filters" [class.is-open]="isMenuOpen">
+  <li class="filters">
     <mat-form-field appearance="standard" class="filter-item">
       <mat-label>Group by</mat-label>
       <mat-select
         [value]="this.groupingContextService.currGroupBy$ | async"
         (selectionChange)="this.groupingContextService.setCurrentGroupingType($event.value)"
-        panelClass="shift-right"
       >
         <mat-option *ngFor="let option of this.groupByEnum | keyvalue" [value]="option.value">{{ option.key }}</mat-option>
       </mat-select>
