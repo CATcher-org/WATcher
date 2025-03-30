@@ -22,12 +22,19 @@ export class IssuePrCardComponent {
     public milestoneService: MilestoneService
   ) {}
 
-  public isNotFollowingForkingWorkflow() {
+  private isNotFollowingForkingWorkflow() {
     return (
       this.issue.issueOrPr === 'PullRequest' && this.issue.headRepository?.toLowerCase() === this.githubService.getRepoURL().toLowerCase()
     );
   }
 
+  getForkingTooltip() {
+    return this.isNotFollowingForkingWorkflow() ? 'This PR is not following the fork workflow' : 'This PR is following the fork workflow';
+  }
+
+  getForkingBadgeColor() {
+    return this.isNotFollowingForkingWorkflow() ? 'red' : 'green';
+  }
   /** Opens issue in new window */
   viewIssueInBrowser(event: Event) {
     this.logger.info(`CardViewComponent: Opening Issue ${this.issue.id} on Github`);
