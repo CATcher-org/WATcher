@@ -22,7 +22,7 @@ export class IssuePrCardComponent {
     public milestoneService: MilestoneService
   ) {}
 
-  isFollowingForkingWorkflow() {
+  isNotFollowingForkingWorkflow() {
     return (
       this.issue.issueOrPr === 'PullRequest' && this.issue.headRepository?.toLowerCase() === this.githubService.getRepoURL().toLowerCase()
     );

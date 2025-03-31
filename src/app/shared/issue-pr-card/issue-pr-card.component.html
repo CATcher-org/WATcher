@@ -5,7 +5,10 @@
     </span>
   </a>
   <mat-card-content>
-    <app-issue-pr-card-fork-badge [isFollowingForkingWorkflow]="isFollowingForkingWorkflow()"></app-issue-pr-card-fork-badge>
+    <app-issue-pr-card-fork-badge
+      *ngIf="issue.issueOrPr === 'PullRequest'"
+      [isNotFollowingForkingWorkflow]="isNotFollowingForkingWorkflow()"
+    ></app-issue-pr-card-fork-badge>
     <app-issue-pr-card-milestone
       [milestone]="issue.milestone"
       [repoHasMilestones]="!milestoneService.hasNoMilestones"

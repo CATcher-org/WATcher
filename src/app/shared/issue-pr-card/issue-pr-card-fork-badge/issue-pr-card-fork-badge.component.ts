@@ -6,15 +6,22 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./issue-pr-card-fork-badge.component.css']
 })
 export class IssuePrCardForkBadgeComponent {
-  @Input() isFollowingForkingWorkflow: boolean;
+  @Input() isNotFollowingForkingWorkflow: boolean;
 
   constructor() {}
 
   getForkingTooltip() {
-    return this.isFollowingForkingWorkflow ? 'This PR is not following the fork workflow' : 'This PR is following the fork workflow';
+    return this.isNotFollowingForkingWorkflow ? 'This PR is not following the fork workflow' : 'This PR is following the fork workflow';
   }
 
   getForkingBadgeColor() {
-    return this.isFollowingForkingWorkflow ? 'red' : 'green';
+    return this.isNotFollowingForkingWorkflow ? 'red' : 'grey';
+  }
+
+  getForkingBadgeStyle() {
+    return {
+      'text-decoration': this.isNotFollowingForkingWorkflow ? 'line-through' : 'none',
+      color: this.isNotFollowingForkingWorkflow ? 'red' : 'grey'
+    };
   }
 }
