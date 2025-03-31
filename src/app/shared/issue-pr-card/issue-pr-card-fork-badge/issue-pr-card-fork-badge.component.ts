@@ -21,7 +21,7 @@ export class IssuePrCardForkBadgeComponent {
   getForkingBadgeStyle() {
     return {
       'text-decoration': this.isNotFollowingForkingWorkflow ? 'line-through' : 'none',
-      color: this.isNotFollowingForkingWorkflow ? 'red' : 'grey'
+      color: this.getForkingBadgeColor()
     };
   }
 }
