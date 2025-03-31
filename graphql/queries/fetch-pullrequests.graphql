@@ -21,7 +21,7 @@ query FetchPullRequests($owner: String!, $name: String!, $cursor: String) {
             }
           }
           headRepository {
-            ...issueRepository
+            ...pullRequestRepository
           }
         }
       }

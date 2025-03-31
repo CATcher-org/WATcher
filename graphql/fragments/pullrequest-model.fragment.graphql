@@ -24,6 +24,6 @@ fragment pullRequestModel on PullRequest {
   }
   isDraft
   headRepository {
-    ...issueRepository
+    ...pullRequestRepository
   }
 }

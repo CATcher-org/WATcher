@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { Issue } from '../../../core/models/issue.model';
-import { GithubService } from '../../../core/services/github.service';
 
 @Component({
   selector: 'app-issue-pr-card-header',
@@ -44,41 +43,6 @@ export class IssuePrCardHeaderComponent {
       }
     } else {
       return 'circle'; // unknown type and state
-    }
-  }
-
-  /**
-   * Returns tooltip for octicon.
-   * @returns string to create tooltip
-   */
-  getOcticonTooltip() {
-    const type = this.issue.issueOrPr;
-    const state = this.issue.state;
-    const stateReason = this.issue.stateReason;
-
-    if (type === 'Issue') {
-      if (state === 'OPEN') {
-        return 'Open Issue';
-      } else if (state === 'CLOSED') {
-        if (stateReason === 'COMPLETED') {
-          return 'Completed Issue';
-        } else if (stateReason === 'NOT_PLANNED') {
-          return 'Closed Issue';
-        }
-      }
-    } else if (type === 'PullRequest') {
-      if (state === 'OPEN') {
-        if (this.issue.isDraft) {
-          return 'Draft PR';
-        }
-        return 'Open PR';
-      } else if (state === 'CLOSED') {
-        return 'Closed PR';
-      } else if (state === 'MERGED') {
-        return 'Merged PR';
-      }
-    } else {
-      return 'Unknown'; // unknown type and state
     }
   }
 
