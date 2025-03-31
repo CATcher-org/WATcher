@@ -5,7 +5,13 @@
     </span>
   </a>
   <mat-card-content>
-    <span [matTooltip]="getForkingTooltip()" class="octicon" [octicon]="'repo-forked'" [color]="getForkingBadgeColor()"></span>
+    <span
+      *ngIf="issue.issueOrPr === 'PullRequest'"
+      [matTooltip]="getForkingTooltip()"
+      class="octicon"
+      [octicon]="'repo-forked'"
+      [color]="getForkingBadgeColor()"
+    ></span>
     <app-issue-pr-card-milestone
       [milestone]="issue.milestone"
       [repoHasMilestones]="!milestoneService.hasNoMilestones"
