@@ -10,13 +10,7 @@ import { GithubService } from '../../../core/services/github.service';
 export class IssuePrCardHeaderComponent {
   @Input() issue: Issue;
 
-  constructor(private githubService: GithubService) {}
-
-  private isNotFollowingForkingWorkflow() {
-    return (
-      this.issue.issueOrPr === 'PullRequest' && this.issue.headRepository?.toLowerCase() === this.githubService.getRepoURL().toLowerCase()
-    );
-  }
+  constructor() {}
 
   /**
    * Returns corresponding Github icon identifier for issue to display.
@@ -61,10 +55,6 @@ export class IssuePrCardHeaderComponent {
     const type = this.issue.issueOrPr;
     const state = this.issue.state;
     const stateReason = this.issue.stateReason;
-
-    if (this.isNotFollowingForkingWorkflow()) {
-      return 'This PR is not following the fork workflow';
-    }
 
     if (type === 'Issue') {
       if (state === 'OPEN') {
