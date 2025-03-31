@@ -1,0 +1,8 @@
+<div
+  [matTooltip]="getForkingTooltip()"
+  class="fork-badge"
+  [ngStyle]="{ 'text-decoration': isFollowingForkingWorkflow ? 'line-through' : 'none' }"
+>
+  <span class="octicon" [octicon]="'repo-forked'" [color]="getForkingBadgeColor()" size="8"></span>
+  FW
+</div>

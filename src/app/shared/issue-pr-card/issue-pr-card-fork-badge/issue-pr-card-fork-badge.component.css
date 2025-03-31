@@ -1,0 +1,19 @@
+span.octicon {
+  margin-right: 4px;
+  display: inline-flex;
+}
+
+.fork-badge {
+  display: inline-flex;
+  margin-right: 8px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  align-items: center;
+  transition: box-shadow 0.3s ease-in-out;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.fork-badge:hover {
+  box-shadow: 2px 2px rgba(160, 160, 160, 0.2);
+}
