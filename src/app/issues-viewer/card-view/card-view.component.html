@@ -43,7 +43,9 @@
         <mat-card-title>
           {{ assignee.login }}
         </mat-card-title>
-        <div class="row-count">{{ this.issues.count }}</div>
+        <div class="row-count" matTooltip="Issue | Pull Requests" matTooltipPosition="above">
+          {{ this.issues.issueCount }} | {{ this.issues.prCount }}
+        </div>
       </mat-card-header>
     </mat-card>
   </div>
@@ -56,7 +58,7 @@
         <mat-card-title>
           {{ milestone.title }}
         </mat-card-title>
-        <div class="row-count">{{ this.issues.count }}</div>
+        <div class="row-count">{{ this.issues.issueCount }} | {{ this.issues.prCount }}</div>
       </mat-card-header>
     </mat-card>
   </div>

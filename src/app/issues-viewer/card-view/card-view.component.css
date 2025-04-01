@@ -130,6 +130,7 @@ div.column-header .mat-card-header {
   font-weight: 410;
   display: inline-flex;
   font-size: 14px;
+  flex-shrink: 0;
 }
 
 :host ::ng-deep .pagination-hide-arrow .mat-paginator-navigation-previous {
