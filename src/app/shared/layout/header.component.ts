@@ -275,11 +275,6 @@ export class HeaderComponent implements OnInit {
     this.changeRepositoryIfValid(newRepo, newRepo.toString(), this.keepFilters);
   }
 
-  toggleKeepFilters(event: MouseEvent) {
-    event.stopPropagation();
-    this.keepFilters = !this.keepFilters;
-  }
-
   openChangeRepoDialog() {
     const dialogRef = this.dialogService.openChangeRepoDialog(this.currentRepo);
 
