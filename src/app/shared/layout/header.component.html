@@ -75,15 +75,15 @@
             <mat-icon>add</mat-icon>
           </button>
 
-          <button
-            mat-icon-button
-            (click)="toggleKeepFilters($event)"
-            class="keep-filter-button"
-            matTooltip="{{ keepFilters ? 'Keep filter on' : 'Keep filter off' }}"
-            color="{{ keepFilters ? 'primary' : 'warn' }}"
+          <mat-slide-toggle
+            [(ngModel)]="keepFilters"
+            (click)="$event.stopPropagation()"
+            color="primary"
+            class="keep-filter-slider"
+            labelPosition="before"
           >
-            <mat-icon>{{ keepFilters ? 'filter_alt' : 'filter_alt_off' }}</mat-icon>
-          </button>
+            Keep current filters
+          </mat-slide-toggle>
         </div>
       </mat-menu>
     </div>
