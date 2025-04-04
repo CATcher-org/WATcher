@@ -1,0 +1,25 @@
+fragment pullRequestModel on PullRequest {
+  ...pullrequest
+  isDraft
+  labels(first: 100) {
+    edges {
+      node {
+        ...issueLabel
+      }
+    }
+  }
+  assignees(first: 100) {
+    edges {
+      node {
+        ...issueAssignee
+      }
+    }
+  }
+  closingIssuesReferences(first: 10) {
+    edges {
+      node {
+        number
+      }
+    }
+  }
+}

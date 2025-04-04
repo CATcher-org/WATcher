@@ -29,6 +29,7 @@ export class GithubIssue {
   comments?: Array<GithubComment>;
   issueOrPr?: string;
   isDraft: boolean;
+  closingIssuesReferences: Array<{ number: number }>;
 
   constructor(githubIssue: {}) {
     Object.assign(this, githubIssue);
