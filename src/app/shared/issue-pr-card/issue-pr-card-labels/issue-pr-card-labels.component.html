@@ -1,7 +1,17 @@
 <mat-chip-list aria-label="Labels">
   <ng-container *ngFor="let label of labels">
-    <mat-chip *ngIf="!labelSet?.has(label.name)" [ngStyle]="labelService.setLabelStyle(label.color)" selected>
-      {{ label.name }}
+    <mat-chip
+      *ngIf="!labelSet?.has(label.name)"
+      [ngStyle]="labelService.setLabelStyle(label.color)"
+      #tooltipRef="matTooltip"
+      [matTooltip]="tooltipLabel"
+      (mouseenter)="onMouseEnter($event, label.name, tooltipRef)"
+      (mouseleave)="onMouseLeave()"
+      selected
+    >
+      <span class="label-text">
+        {{ label.name }}
+      </span>
     </mat-chip>
   </ng-container>
 </mat-chip-list>
