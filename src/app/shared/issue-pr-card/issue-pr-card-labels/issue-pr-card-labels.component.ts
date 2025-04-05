@@ -18,7 +18,8 @@ export class IssuePrCardLabelsComponent {
 
   onMouseEnter(event: MouseEvent, labelName: string, tooltip: MatTooltip) {
     const element = event.target as HTMLElement;
-    if (element.scrollWidth > element.clientWidth) {
+    const span = element.querySelector('.label-text') as HTMLElement;
+    if (span.scrollWidth > span.clientWidth) {
       this.tooltipLabel = labelName;
 
       setTimeout(() => {
