@@ -154,14 +154,6 @@ export class HeaderComponent implements OnInit {
     return ViewDescription[openView];
   }
 
-  goBack() {
-    if (this.prevUrl === `/${this.viewService.currentView}/issues/new`) {
-      this.router.navigateByUrl(this.viewService.currentView);
-    } else {
-      this.location.back();
-    }
-  }
-
   viewBrowser() {
     const encoded_filter_params = this.filtersService.getEncodedFilter();
     window.open('https://github.com/'.concat(this.githubService.getRepoURL()).concat('/issues?q=').concat(encoded_filter_params));
