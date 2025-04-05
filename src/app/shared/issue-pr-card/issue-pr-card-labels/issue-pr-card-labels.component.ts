@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
+import { MatTooltip } from '@angular/material/tooltip';
 import { GithubLabel } from '../../../core/models/github/github-label.model';
 import { LabelService } from '../../../core/services/label.service';
-import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-issue-pr-card-labels',
