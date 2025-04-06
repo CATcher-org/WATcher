@@ -146,6 +146,16 @@ export class HeaderComponent implements OnInit {
     return this.viewService.currentView === View.issuesViewer || this.viewService.currentView === View.activityDashboard;
   }
 
+  isReviewsDashboardButtonShown(): boolean {
+    const currentView = this.viewService.currentView;
+    return Object.values(View).includes(currentView) && currentView !== View.reviewsDashboard;
+  }
+
+  isIssuesViewerButtonShown(): boolean {
+    const currentView = this.viewService.currentView;
+    return Object.values(View).includes(currentView) && currentView !== View.issuesViewer;
+  }
+
   getVersion(): string {
     return AppConfig.version;
   }
@@ -184,6 +194,16 @@ export class HeaderComponent implements OnInit {
     }
     // Open the url in user's preferred browser
     window.open('https://github.com/'.concat(this.githubService.getRepoURL()).concat(issueUrl));
+  }
+
+  openReviewsDashboard() {
+    this.viewService.currentView = View.reviewsDashboard;
+    this.router.navigate([View.reviewsDashboard]);
+  }
+
+  openIssuesViewer() {
+    this.viewService.currentView = View.issuesViewer;
+    this.router.navigate([View.issuesViewer]);
   }
 
   openIssueTracker() {

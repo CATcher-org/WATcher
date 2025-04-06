@@ -31,6 +31,7 @@ import { RepoSessionStorageService } from './core/services/repo-session-storage.
 import { UserService } from './core/services/user.service';
 import { ViewService } from './core/services/view.service';
 import { IssuesViewerModule } from './issues-viewer/issues-viewer.module';
+import { ReviewsDashboardModule } from './reviews-dashboard/reviews-dashboard.module';
 import { LabelDefinitionPopupComponent } from './shared/label-definition-popup/label-definition-popup.component';
 import { HeaderComponent } from './shared/layout';
 import { RepoChangeFormComponent } from './shared/repo-change-form/repo-change-form.component';
@@ -43,6 +44,7 @@ import { SharedModule } from './shared/shared.module';
     BrowserAnimationsModule,
     AuthModule,
     IssuesViewerModule,
+    ReviewsDashboardModule,
     ActivityDashboardModule,
     SharedModule,
     HttpClientModule,
