@@ -99,8 +99,8 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
 
           data = applySearchFilter(this.filter.title, this.displayedColumn, this.issueService, data);
           console.log(data);
-          this.issueCount = data.filter((issue) => issue.issueOrPr != 'PullRequest').length;
-          this.prCount = data.filter((issue) => issue.issueOrPr == 'PullRequest').length;
+          this.issueCount = data.filter((issue) => issue.issueOrPr !== 'PullRequest').length;
+          this.prCount = data.filter((issue) => issue.issueOrPr === 'PullRequest').length;
           this.count = data.length;
 
           data = applySort(this.filter.sort, data);

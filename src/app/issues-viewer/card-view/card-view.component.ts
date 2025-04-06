@@ -84,7 +84,6 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
       this.pageSize = filter.itemsPerPage;
       this.paginator._changePageSize(this.pageSize);
     });
-    console.log(this.issues);
   }
 
   ngAfterViewInit(): void {
