@@ -18,6 +18,7 @@ export const SESSION_AVALIABILITY_FIX_FAILED = 'Session Availability Fix failed.
  */
 export const ViewDescription = {
   [View.issuesViewer]: 'Issues Dashboard',
+  [View.reviewsDashboard]: 'Reviews Dashboard',
   [View.activityDashboard]: 'Activity Dashboard'
 };
 
@@ -27,7 +28,8 @@ export const ViewDescription = {
  */
 export const STARTING_SESSION_DATA: SessionData = {
   sessionRepo: [
-    { view: View.issuesViewer, repos: [] }
+    { view: View.issuesViewer, repos: [] },
+    { view: View.reviewsDashboard, repos: [] }
     // { view: View.activityDashboard, repos: [] }
   ]
 };
@@ -86,7 +88,7 @@ export class ViewService {
     this.sessionData.sessionRepo.find((x) => x.view === this.currentView).repos = this.getRepository();
     this.githubService.storeViewDetails(this.currentRepo.owner, this.currentRepo.name);
     localStorage.setItem('sessionData', JSON.stringify(this.sessionData));
-    this.router.navigate(['issuesViewer'], {
+    this.router.navigate([this.currentView], {
       queryParams: {
         [ViewService.REPO_QUERY_PARAM_KEY]: repo.toString()
       },
@@ -186,7 +188,7 @@ export class ViewService {
     return of(this.getViewAndRepoFromUrl(url)).pipe(
       map(([viewName, repoName]) => {
         if (!this.isViewAllowed(viewName)) {
-          throw new Error(ErrorMessageService.invalidUrlMessage());
+          throw new Error(ErrorMessageService.invalidViewMessage());
         }
 
         if (repoName === null) {
@@ -199,6 +201,7 @@ export class ViewService {
           window.localStorage.setItem(STORAGE_KEYS.DATA_REPO, newRepo.name);
           this.repoUrlCacheService.cache(newRepo.toString());
         }
+        this.changeView(viewName as View);
       })
     );
   }
@@ -216,13 +219,14 @@ export class ViewService {
 
   getViewAndRepoFromUrl(url: string): [string, string] {
     const urlObject = new URL(`${location.protocol}//${location.host}${url}`);
-    const pathname = urlObject.pathname;
-    const reponame = urlObject.searchParams.get(ViewService.REPO_QUERY_PARAM_KEY);
-    return [pathname, reponame];
+    const pathName = urlObject.pathname;
+    const viewName = pathName.startsWith('/') ? pathName.substring(1) : pathName;
+    const repoName = urlObject.searchParams.get(ViewService.REPO_QUERY_PARAM_KEY);
+    return [viewName, repoName];
   }
 
   isViewAllowed(viewName: string) {
-    return viewName === '/' + View.issuesViewer;
+    return Object.values(View).includes(viewName as View);
   }
 
   isRepoSet(): boolean {
@@ -235,9 +239,6 @@ export class ViewService {
    */
   changeView(view: View) {
     this.currentView = view;
-
-    // For now, assumes repository stays the same
-    this.githubService.storeViewDetails(this.currentRepo.owner, this.currentRepo.name);
   }
 
   public getCurrentRepositoryURL() {

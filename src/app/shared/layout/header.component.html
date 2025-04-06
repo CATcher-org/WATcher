@@ -10,12 +10,14 @@
       >
         <mat-icon>arrow_back_ios</mat-icon>
       </button>
+
       <a
         class="mat-toolbar mat-primary"
         style="text-decoration: none"
         [routerLink]="viewService.isRepoSet() ? viewService.currentView : null"
         >WATcher v{{ this.getVersion() }}</a
       >
+
       <div *ngIf="viewService.isRepoSet()" style="margin-left: 20px">
         <button mat-button [matMenuTriggerFor]="menu">
           <span class="header-main-text">
@@ -40,6 +42,24 @@
           </div>
         </mat-menu>
       </div>
+
+      <button
+        *ngIf="auth.isAuthenticated() && viewService.isRepoSet() && isReviewsDashboardButtonShown()"
+        mat-button
+        matTooltip="Open Reviews Dashboard (WIP)"
+        (click)="openReviewsDashboard()"
+      >
+        <mat-icon>rate_review</mat-icon>
+      </button>
+
+      <button
+        *ngIf="auth.isAuthenticated() && viewService.isRepoSet() && isIssuesViewerButtonShown()"
+        mat-button
+        matTooltip="Open Issues Dashboard"
+        (click)="openIssuesViewer()"
+      >
+        <mat-icon>view_day</mat-icon>
+      </button>
     </div>
     <div class="center">
       <div *ngIf="auth.isAuthenticated() && viewService.isRepoSet()">
