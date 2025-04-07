@@ -39,6 +39,63 @@ export const MILESTONE_ONE = {
   state: 'Open'
 };
 
+export const PULL_REQUEST_ONE = new GithubIssue({
+  id: '1234567890',
+  number: 1,
+  assignees: [],
+  body: '',
+  created_at: '2020-03-02T16:19:02Z',
+  labels: [],
+  state: IssueState.Open,
+  title: 'Remove unused code',
+  updated_at: '2020-03-13T13:37:32Z',
+  closed_at: '',
+  url: 'https://api.github.com/repos/CATcher-org/pe-results/pull/42',
+  user: USER_ANUBHAV_DETAILS,
+  milestone: MILESTONE_ONE,
+  comments: [],
+  issueOrPr: 'PullRequest',
+  isDraft: false
+});
+
+export const PULL_REQUEST_TWO = new GithubIssue({
+  id: '4567854448',
+  number: 2,
+  assignees: [],
+  body: '',
+  created_at: '2020-03-02T16:19:02Z',
+  labels: [],
+  state: IssueState.Open,
+  title: 'Make the UI clearer',
+  updated_at: '2020-03-13T13:37:32Z',
+  closed_at: '',
+  url: 'https://api.github.com/repos/CATcher-org/pe-results/pull/42',
+  user: USER_ANUBHAV_DETAILS,
+  milestone: MILESTONE_ONE,
+  comments: [],
+  issueOrPr: 'PullRequest',
+  isDraft: false
+});
+
+export const PULL_REQUEST_THREE = new GithubIssue({
+  id: '1501273124',
+  number: 3,
+  assignees: [],
+  body: '',
+  created_at: '2020-03-02T16:19:02Z',
+  labels: [],
+  state: IssueState.Open,
+  title: 'Implement new feature',
+  updated_at: '2020-03-13T13:37:32Z',
+  closed_at: '',
+  url: 'https://api.github.com/repos/CATcher-org/pe-results/pull/42',
+  user: USER_ANUBHAV_DETAILS,
+  milestone: MILESTONE_ONE,
+  comments: [],
+  issueOrPr: 'PullRequest',
+  isDraft: false
+});
+
 export const ISSUE_WITH_EMPTY_DESCRIPTION = new GithubIssue({
   id: '574085971',
   number: 92,
@@ -216,6 +273,7 @@ export const generateIssueWithRandomData: () => GithubIssue = () => {
     title: `Random Issue: ${issueNumber}`,
     updated_at: created_and_updated_date,
     url: `https://api.github.com/repos/CATcher-org/pe-results/issues/${issueNumber}`,
-    user: USER_ANUBHAV_DETAILS
+    user: USER_ANUBHAV_DETAILS,
+    issueOrPr: 'Issue'
   });
 };
