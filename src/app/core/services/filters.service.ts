@@ -19,7 +19,7 @@ import {
 import { GithubUser } from '../models/github-user.model';
 import { SimpleLabel } from '../models/label.model';
 import { Milestone } from '../models/milestone.model';
-import { EitherOrPreset, GlobalPreset, Preset } from '../models/preset.model';
+import { EitherOrPreset, GlobalPreset } from '../models/preset.model';
 import { AssigneeService } from './assignee.service';
 import { ErrorMessageService } from './error-message.service';
 import { LoggingService } from './logging.service';
@@ -164,16 +164,6 @@ export class FiltersService {
 
       return filter;
     }
-
-    // if (isGlobal) {
-    //   filter.milestones = [];
-    //   filter.assignees = [];
-    //   filter.labels = [];
-    //   filter.hiddenLabels = new Set();
-    //   filter.deselectedLabels = new Set();
-    // }
-
-    // return filter;
   }
 
   /**

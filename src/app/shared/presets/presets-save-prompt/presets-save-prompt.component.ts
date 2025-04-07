@@ -29,6 +29,5 @@ export class PresetsSavePromptComponent implements OnInit {
     if (this.form.valid) {
       this.dialogRef.close({ action: 'confirm', data: this.form.value });
     }
-    // this.dialogRef.close({ action: 'confirm' });
   }
 }

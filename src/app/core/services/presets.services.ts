@@ -97,35 +97,6 @@ export class PresetsService {
       // No matching preset
       this.currentPreset = undefined;
     });
-
-    // Note: I wrote the below code as I thought we need to refresh the currently active
-    // preset when the groupBy changes. However, it turns out that changing the group by
-    // pushes an update to the filter observable, which triggers the above subscription to run.
-    // Hence, the below is actually not needed.
-
-    // this.groupingContextService.currGroupBy$.subscribe((groupBy) => {
-    //   // check to see if it's a local preset first
-    //   const localPreset = this.availablePresets$.value.find((p) =>
-    //      FiltersService.isPartOfPreset(this.filter.filter$.value, p) && this.groupingContextService.currGroupBy === p.groupBy);
-    //   if (localPreset) {
-    //     this.logger.info(`PresetsService: Found a matching local preset from a change in groupBy`, localPreset);
-    //     this.currentPreset = localPreset;
-
-    //     return;
-    //   }
-
-    //   const globalPreset = this.globalPresets$.value.find((p) =>
-    //      FiltersService.isPartOfPreset(this.filter.filter$.value, p) && this.groupingContextService.currGroupBy === p.groupBy);
-    //   if (globalPreset) {
-    //     this.logger.info(`PresetsService: Found a matching global preset from a change in groupBy`, globalPreset);
-    //     this.currentPreset = globalPreset;
-
-    //     return;
-    //   }
-
-    //   // No matching preset
-    //   this.currentPreset = undefined;
-    // })
   }
 
   /**

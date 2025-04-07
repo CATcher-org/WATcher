@@ -23,7 +23,7 @@ export interface DialogData {
   templateUrl: './presets.component.html',
   styleUrls: ['./presets.component.css']
 })
-export class PresetsComponent implements OnInit, OnDestroy {
+export class PresetsComponent implements OnDestroy {
   constructor(
     private logger: LoggingService,
     public dialog: MatDialog,
@@ -37,28 +37,7 @@ export class PresetsComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
   private isMenuOpen = false;
 
-  // selectedPresetId: string;
-  /**
-   * Ask the user to save
-   */
-  // onSaveToggleClicked(event: MatSlideToggleChange) {
-  //   if (!event.checked) {
-  //     this.presetsService.deleteCurrentPreset();
-  //     // this.isChecked = false;
-  //   } else {
-  //     this.promptSave();
-  //   }
-  // }
-
   onSaveButtonClicked() {
-    // if (this.presetsService.currentPreset) {
-    //   this.presetsService.deleteCurrentPreset();
-    //   // this.isChecked = false;
-    // } else {
-    //   this.promptSave();
-    // }
-
-    // allow them to save duplicates (OR NOT?)
     this.promptSave();
   }
 
@@ -71,8 +50,6 @@ export class PresetsComponent implements OnInit, OnDestroy {
   promptSave() {
     const dialogRef = this.dialog.open(PresetsSavePromptComponent, {
       width: '400px'
-      // height: '500px'
-      // minHeight: "400px"
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -84,11 +61,6 @@ export class PresetsComponent implements OnInit, OnDestroy {
         const groupBy = this.groupingContextService.currGroupBy;
         const preset = this.presetsService.savePreset(this.viewService.currentRepo, groupBy, result.data);
         this.presetsService.changeToPreset(preset);
-        // update the dropdown to autoselect the new preset
-        // this.selectedPresetId = preset.id
-      } else {
-        // reset the label
-        // this.isChecked = false;
       }
     });
   }
@@ -99,47 +71,17 @@ export class PresetsComponent implements OnInit, OnDestroy {
     if (preset) {
       this.logger.info(`PresetComponent: Changing to preset`, preset);
       this.presetsService.changeToPreset(preset);
-      // this.isChecked = true; // NOTE: changeToPreset() calls updateFilters() which will
-      // then set isChecked to false.
-      // we override this here to keep the checkbox checked.
     } else {
       this.logger.warn(`PresetComponent: Preset not found`);
     }
-    // const changeToPresetId = event.value;
-    // // todo: handle case where deselect
-    // const preset = this.presetsService.availablePresets$.value.find((p) => p.id === changeToPresetId);
-
-    // if (preset) {
-    //   this.presetsService.changeToPreset(preset);
-    //   this.isChecked = true; // NOTE: changeToPreset() calls updateFilters() which will
-    //   // then set isChecked to false.
-    //   // we override this here to keep the checkbox checked.
-    // } else {
-    //   this.logger.warn(`PresetComponent: Preset with id ${changeToPresetId} not found`);
-    // }
   }
 
   onSelectOpened(event: boolean) {
     this.isMenuOpen = event;
   }
 
-  ngOnInit(): void {
-    // this.availablePresets = this.presetsService.getSavedPresetsForCurrentRepo(this.viewService.currentRepo);
-    // this.presetsService.availablePresets$.pipe(takeUntil(this.unsubscribe$)).subscribe((availablePresets) => {
-    //   // Optionally filter them by the current repo
-    //   this.availablePresets = availablePresets;
-    // });
-    // // For an initial fetch (in case you have data from the start)
-    // this.availablePresets = this.presetsService.getSavedPresetsForCurrentRepo(this.viewService.currentRepo);
-  }
-
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
-  }
-
-  // on any modifications, reset the selected preset
-  onFilterChange() {
-    // this.isChecked = false;
   }
 }
