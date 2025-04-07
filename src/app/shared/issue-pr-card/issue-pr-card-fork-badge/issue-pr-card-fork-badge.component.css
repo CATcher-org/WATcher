@@ -1,9 +1,9 @@
-span.octicon-milestone {
+span.octicon {
   margin-right: 1px;
   display: inline-flex;
 }
 
-.milestone {
+.fork-badge {
   display: inline-flex;
   margin-right: 8px;
   margin-bottom: 0px;
@@ -14,6 +14,6 @@ span.octicon-milestone {
   cursor: pointer;
 }
 
-.milestone:hover {
+.fork-badge:hover {
   box-shadow: 2px 2px rgba(160, 160, 160, 0.2);
 }

@@ -45,3 +45,8 @@
   overflow: auto;
   margin: 6px 0;
 }
+
+.octicon {
+  margin-right: 8px;
+  display: inline-flex;
+}
