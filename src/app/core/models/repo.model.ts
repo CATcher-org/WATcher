@@ -44,6 +44,16 @@ export class Repo {
     return formattedInput.split('/').slice(-2).join('/');
   }
 
+  public static fromObject(object: any): Repo {
+    // validation
+    if (!object.owner || !object.name) {
+      console.log('Missing object owner, object name', { object });
+      throw new Error(ErrorMessageService.corruptPresetMessage());
+    }
+
+    return new Repo(object.owner, object.name);
+  }
+
   /** String representation of a Repo. */
   public toString(): string {
     return this.owner + '/' + this.name;

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { ComponentFactoryResolver, Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, pipe } from 'rxjs';
@@ -19,7 +19,9 @@ import {
 import { GithubUser } from '../models/github-user.model';
 import { SimpleLabel } from '../models/label.model';
 import { Milestone } from '../models/milestone.model';
+import { EitherOrPreset, GlobalPreset } from '../models/preset.model';
 import { AssigneeService } from './assignee.service';
+import { ErrorMessageService } from './error-message.service';
 import { LoggingService } from './logging.service';
 import { MilestoneService } from './milestone.service';
 
@@ -36,6 +38,10 @@ export type Filter = {
   assignees: string[];
 };
 
+type QueryParams = {
+  [x: string]: any;
+};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -44,10 +50,22 @@ export type Filter = {
  * Filters are subscribed to and emitted from this service
  */
 export class FiltersService {
+  constructor(
+    private logger: LoggingService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private milestoneService: MilestoneService,
+    private assigneeService: AssigneeService
+  ) {
+    this.filter$.subscribe((filter: Filter) => {
+      this.itemsPerPage = filter.itemsPerPage;
+    });
+  }
   public static readonly PRESET_VIEW_QUERY_PARAM_KEY = 'presetview';
-  private itemsPerPage = 20;
 
-  readonly defaultFilter: Filter = {
+  private static ITEMS_PER_PAGE = 20;
+
+  static readonly DEFAULT_FILTER: Filter = {
     title: '',
     status: [StatusOptions.OpenPullRequests, StatusOptions.MergedPullRequests, StatusOptions.OpenIssues, StatusOptions.ClosedIssues],
     type: TypeOptions.All,
@@ -56,9 +74,11 @@ export class FiltersService {
     milestones: [],
     hiddenLabels: new Set<string>(),
     deselectedLabels: new Set<string>(),
-    itemsPerPage: this.itemsPerPage,
+    itemsPerPage: FiltersService.ITEMS_PER_PAGE,
     assignees: []
   };
+
+  private itemsPerPage = FiltersService.ITEMS_PER_PAGE;
 
   readonly presetViews: {
     [key: string]: () => Partial<Filter>;
@@ -91,7 +111,7 @@ export class FiltersService {
   // List of keys in the new filter change that causes current filter to not qualify to be a preset view.
   readonly presetChangingKeys = new Set<string>(['status', 'type', 'sort', 'milestones', 'labels', 'deselectedLabels', 'assignees']);
 
-  public filter$ = new BehaviorSubject<Filter>(this.defaultFilter);
+  public filter$ = new BehaviorSubject<Filter>(FiltersService.DEFAULT_FILTER);
   // Either 'currentlyActive', 'contributions', or 'custom'.
   public presetView$ = new BehaviorSubject<string>('currentlyActive');
 
@@ -99,16 +119,203 @@ export class FiltersService {
   private previousMilestonesLength = 0;
   private previousAssigneesLength = 0;
 
-  constructor(
-    private logger: LoggingService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private milestoneService: MilestoneService,
-    private assigneeService: AssigneeService
-  ) {
-    this.filter$.subscribe((filter: Filter) => {
-      this.itemsPerPage = filter.itemsPerPage;
-    });
+  /**
+   * Create a filter from a plain JSON object.
+   *
+   * TODO: https://github.com/CATcher-org/WATcher/issues/405
+   *
+   * @param object The object to create from e.g. from LocalStorage
+   * @returns
+   */
+  static fromObject(object: any, isGlobal = false): Partial<Filter> | Filter {
+    if (isGlobal) {
+      // required fields: status, type, sort, itemsPerPage
+      if (!object.status || !object.type || !object.sort || !object.itemsPerPage) {
+        throw new Error(ErrorMessageService.corruptPresetMessage());
+      }
+
+      const filter: Partial<Filter> = {
+        title: object.title,
+        status: object.status,
+        type: object.type,
+        sort: object.sort,
+        itemsPerPage: object.itemsPerPage
+      };
+
+      return filter;
+    } else {
+      // required fields: status, type, sort, itemsPerPage
+      if (!object.status || !object.type || !object.sort || !object.itemsPerPage) {
+        throw new Error(ErrorMessageService.corruptPresetMessage());
+      }
+
+      const filter: Filter = {
+        title: object.title,
+        status: object.status,
+        type: object.type,
+        sort: object.sort,
+        labels: object.labels || [],
+        milestones: object.milestones || [],
+        hiddenLabels: new Set(Object.keys(object.hiddenLabels).length ? object.hiddenLabels : undefined),
+        deselectedLabels: new Set(Object.keys(object.deselectedLabels).length ? object.deselectedLabels : undefined),
+        itemsPerPage: object.itemsPerPage,
+        assignees: object.assignees || []
+      };
+
+      return filter;
+    }
+  }
+
+  /**
+   * Checks to see if two filters are equal.
+   * TODO: https://github.com/CATcher-org/WATcher/issues/405
+   * @param a The filter that is set in the app
+   * @param b The filter that comes from saving a preset
+   * @returns
+   */
+  public static isPartOfPreset(a: Filter, preset: EitherOrPreset): boolean {
+    // only compare if both objects have the key
+    // Compare simple scalar fields
+    const b = preset.filter;
+    if (a.title !== b.title) {
+      return false;
+    }
+    if (a.type !== b.type) {
+      return false;
+    }
+    if (a.itemsPerPage !== b.itemsPerPage) {
+      return false;
+    }
+    if (!FiltersService.haveSameElements(a.status, b.status)) {
+      return false;
+    }
+    // Compare Angular Material Sort (shallow comparison is enough)
+    if (!FiltersService.compareMatSort(a.sort, b.sort)) {
+      return false;
+    }
+
+    if (preset instanceof GlobalPreset) {
+      return true;
+    }
+
+    // Compare arrays ignoring order
+    if (!FiltersService.haveSameElements(a.labels, b.labels)) {
+      return false;
+    }
+    if (!FiltersService.haveSameElements(a.milestones, b.milestones)) {
+      return false;
+    }
+    if (!FiltersService.haveSameElements(a.assignees, b.assignees)) {
+      return false;
+    }
+
+    // Compare sets
+    if (!FiltersService.areSetsEqual(a.hiddenLabels, b.hiddenLabels)) {
+      return false;
+    }
+    if (!FiltersService.areSetsEqual(a.deselectedLabels, b.deselectedLabels)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Returns true if two arrays contain exactly the same elements (ignoring order).
+   */
+  private static haveSameElements(arr1: string[], arr2: string[]): boolean {
+    if (arr1.length !== arr2.length) {
+      return false;
+    }
+    const sorted1 = [...arr1].sort();
+    const sorted2 = [...arr2].sort();
+    return sorted1.every((val, idx) => val === sorted2[idx]);
+  }
+
+  /**
+   * Returns true if two sets contain exactly the same elements.
+   *
+   * TODO: https://github.com/CATcher-org/WATcher/issues/405
+   */
+  private static areSetsEqual(set1: Set<string>, set2: Set<string>): boolean {
+    if (set1.size !== set2.size) {
+      return false;
+    }
+    for (const item of set1) {
+      if (!set2.has(item)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Compare two Angular Material Sort objects for equality.
+   *
+   * TODO: https://github.com/CATcher-org/WATcher/issues/405
+   */
+  private static compareMatSort(s1: Sort, s2: Sort): boolean {
+    // Both 'active' and 'direction' are simple scalar fields
+    return s1.active === s2.active && s1.direction === s2.direction;
+  }
+
+  /**
+   * Create a deep copy of a filter. For use when setting filters from presets.
+   *
+   * @param original
+   * @returns A deep copied version of the filter
+   */
+  public static createDeepCopy(original: Filter | Partial<Filter>): Filter | Partial<Filter> {
+    const filter: Partial<Filter> = {};
+
+    if (original.title !== undefined) {
+      // string can be empty, is falsy value
+      filter.title = original.title;
+    }
+
+    if (original.status) {
+      filter.status = [...original.status];
+    }
+
+    if (original.type) {
+      filter.type = original.type;
+    }
+
+    if (original.sort) {
+      filter.sort = { ...original.sort };
+    }
+
+    if (original.labels) {
+      filter.labels = [...original.labels];
+    }
+
+    if (original.milestones) {
+      filter.milestones = [...original.milestones];
+    }
+
+    if (original.itemsPerPage) {
+      filter.itemsPerPage = original.itemsPerPage;
+    }
+
+    if (original.assignees) {
+      filter.assignees = [...original.assignees];
+    }
+
+    if (original.hiddenLabels) {
+      filter.hiddenLabels = new Set(original.hiddenLabels);
+    }
+
+    if (original.deselectedLabels) {
+      filter.deselectedLabels = new Set(original.deselectedLabels);
+    }
+
+    const isPartial = Object.keys(original).length !== Object.keys(FiltersService.DEFAULT_FILTER).length;
+
+    if (isPartial) {
+      return filter as Partial<Filter>;
+    } else {
+      return filter as Filter;
+    }
   }
 
   private pushFiltersToUrl(): void {
@@ -168,14 +375,14 @@ export class FiltersService {
   }
 
   clearFilters(): void {
-    this.updateFilters(this.defaultFilter);
+    this.updateFilters(FiltersService.DEFAULT_FILTER);
     this.updatePresetView('currentlyActive');
     this.previousMilestonesLength = 0;
     this.previousAssigneesLength = 0;
   }
 
   initializeFromURLParams() {
-    const nextFilter: Filter = this.defaultFilter;
+    const nextFilter: Filter = FiltersService.DEFAULT_FILTER;
     const queryParams = this.route.snapshot.queryParamMap;
     try {
       for (const filterName of Object.keys(nextFilter)) {

@@ -4,7 +4,7 @@ import { MatSelectionList } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { BehaviorSubject, of } from 'rxjs';
 import { SimpleLabel } from '../../../../../src/app/core/models/label.model';
-import { FiltersService } from '../../../../../src/app/core/services/filters.service';
+import { Filter, FiltersService } from '../../../../../src/app/core/services/filters.service';
 import { LabelService } from '../../../../../src/app/core/services/label.service';
 import { LoggingService } from '../../../../../src/app/core/services/logging.service';
 import { LabelFilterBarComponent } from '../../../../../src/app/shared/filter-bar/label-filter-bar/label-filter-bar.component';
@@ -21,7 +21,9 @@ describe('LabelFilterBarComponent', () => {
   beforeEach(async () => {
     labelServiceSpy = jasmine.createSpyObj('LabelService', ['connect', 'startPollLabels', 'fetchLabels']);
     loggingServiceSpy = jasmine.createSpyObj('LoggingService', ['info', 'debug']);
-    filtersServiceSpy = jasmine.createSpyObj('FiltersService', ['updateFilters', 'sanitizeLabels']);
+    filtersServiceSpy = jasmine.createSpyObj('FiltersService', ['updateFilters', 'sanitizeLabels'], {
+      filter$: new BehaviorSubject<any>({}).asObservable()
+    });
 
     TestBed.configureTestingModule({
       providers: [

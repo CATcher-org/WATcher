@@ -24,7 +24,7 @@ export class RepoUrlCacheService {
   }
 
   removeFromSuggestions(repo: string): void {
-    this.suggestions = this.suggestions.filter(r => r !== repo);
+    this.suggestions = this.suggestions.filter((r) => r !== repo);
     window.localStorage.setItem(RepoUrlCacheService.KEY_NAME, JSON.stringify(this.suggestions));
   }
 
