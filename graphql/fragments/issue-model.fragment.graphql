@@ -22,5 +22,17 @@ fragment issueModel on Issue {
       }
     }
   }
+
   isDraft
+  reviewDecision
+  latestReviews(first: 100) {
+    edges {
+      node {
+        state
+        author {
+          ...reviewAuthor
+        }
+      }
+    }
+  }
 }
