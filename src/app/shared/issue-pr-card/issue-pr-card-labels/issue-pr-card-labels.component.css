@@ -4,6 +4,15 @@
   padding: 11px 7px;
   min-height: 16px;
   margin: 2px;
+  max-width: 100%;
+}
+
+.label-text {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  white-space: nowrap;
 }
 
 :host ::ng-deep .mat-chip-list-wrapper .mat-standard-chip,

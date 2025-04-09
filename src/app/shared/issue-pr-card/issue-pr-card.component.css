@@ -57,6 +57,7 @@
 
 .milestone-labels {
   display: flex;
+  min-width: 0;
 }
 
 .reviews {
