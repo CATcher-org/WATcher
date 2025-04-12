@@ -190,7 +190,7 @@ describe('ViewService', () => {
 
       viewService.setupFromUrl(emptyUrl).subscribe({
         error: (err) => {
-          expect(err).toEqual(new Error(ErrorMessageService.invalidUrlMessage()));
+          expect(err).toEqual(new Error(ErrorMessageService.invalidViewMessage()));
           done();
         }
       });

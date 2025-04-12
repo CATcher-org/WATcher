@@ -53,6 +53,19 @@ export class HeaderComponent implements OnInit {
     custom: 'Custom'
   };
 
+  readonly otherViews: {
+    [key: string]: string;
+  } = {
+    reviewsDashboard: 'Reviews Dashboard'
+  };
+
+  readonly allViews: {
+    [key: string]: string;
+  } = {
+    ...this.presetViews,
+    ...this.otherViews
+  };
+
   /** Model for the displayed repository name */
   currentRepo = '';
 
@@ -164,6 +177,14 @@ export class HeaderComponent implements OnInit {
     return ViewDescription[openView];
   }
 
+  getCurrentView(): string {
+    if (this.viewService.currentView === View.issuesViewer) {
+      return this.filtersService.presetView$.value;
+    } else {
+      return this.viewService.currentView;
+    }
+  }
+
   goBack() {
     if (this.prevUrl === `/${this.viewService.currentView}/issues/new`) {
       this.router.navigateByUrl(this.viewService.currentView);
@@ -194,6 +215,16 @@ export class HeaderComponent implements OnInit {
     }
     // Open the url in user's preferred browser
     window.open('https://github.com/'.concat(this.githubService.getRepoURL()).concat(issueUrl));
+  }
+
+  updateView(key) {
+    if (key in this.presetViews) {
+      this.filtersService.updatePresetView(key);
+    } else {
+      if (key === 'reviewsDashboard') {
+        this.openReviewsDashboard();
+      }
+    }
   }
 
   openReviewsDashboard() {
