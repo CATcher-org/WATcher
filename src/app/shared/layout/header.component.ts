@@ -219,6 +219,7 @@ export class HeaderComponent implements OnInit {
 
   updateView(key) {
     if (key in this.presetViews) {
+      this.viewService.changeView(View.issuesViewer);
       this.filtersService.updatePresetView(key);
     } else {
       if (key === 'reviewsDashboard') {
@@ -230,11 +231,6 @@ export class HeaderComponent implements OnInit {
   openReviewsDashboard() {
     this.viewService.currentView = View.reviewsDashboard;
     this.router.navigate([View.reviewsDashboard]);
-  }
-
-  openIssuesViewer() {
-    this.viewService.currentView = View.issuesViewer;
-    this.router.navigate([View.issuesViewer]);
   }
 
   openIssueTracker() {
