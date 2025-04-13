@@ -53,6 +53,19 @@ export class HeaderComponent implements OnInit {
     custom: 'Custom'
   };
 
+  readonly otherViews: {
+    [key: string]: string;
+  } = {
+    reviewsDashboard: 'Reviews Dashboard'
+  };
+
+  readonly allViews: {
+    [key: string]: string;
+  } = {
+    ...this.presetViews,
+    ...this.otherViews
+  };
+
   /** Model for the displayed repository name */
   currentRepo = '';
 
@@ -146,12 +159,30 @@ export class HeaderComponent implements OnInit {
     return this.viewService.currentView === View.issuesViewer || this.viewService.currentView === View.activityDashboard;
   }
 
+  isReviewsDashboardButtonShown(): boolean {
+    const currentView = this.viewService.currentView;
+    return Object.values(View).includes(currentView) && currentView !== View.reviewsDashboard;
+  }
+
+  isIssuesViewerButtonShown(): boolean {
+    const currentView = this.viewService.currentView;
+    return Object.values(View).includes(currentView) && currentView !== View.issuesViewer;
+  }
+
   getVersion(): string {
     return AppConfig.version;
   }
 
   getViewDescription(openView: string): string {
     return ViewDescription[openView];
+  }
+
+  getCurrentView(): string {
+    if (this.viewService.currentView === View.issuesViewer) {
+      return this.filtersService.presetView$.value;
+    } else {
+      return this.viewService.currentView;
+    }
   }
 
   goBack() {
@@ -184,6 +215,22 @@ export class HeaderComponent implements OnInit {
     }
     // Open the url in user's preferred browser
     window.open('https://github.com/'.concat(this.githubService.getRepoURL()).concat(issueUrl));
+  }
+
+  updateView(key) {
+    if (key in this.presetViews) {
+      this.viewService.changeView(View.issuesViewer);
+      this.filtersService.updatePresetView(key);
+    } else {
+      if (key === 'reviewsDashboard') {
+        this.openReviewsDashboard();
+      }
+    }
+  }
+
+  openReviewsDashboard() {
+    this.viewService.currentView = View.reviewsDashboard;
+    this.router.navigate([View.reviewsDashboard]);
   }
 
   openIssueTracker() {

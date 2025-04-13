@@ -232,9 +232,9 @@ export class AuthService {
   /**
    * Handles the clean up required after authentication and setting up of repository is completed.
    */
-  handleSetRepoSuccess(repoName: string) {
+  handleSetRepoSuccess(currentView: View, repoName: string) {
     this.setTitleWithViewDetail();
-    this.router.navigate([View.issuesViewer], {
+    this.router.navigate([currentView], {
       queryParams: {
         [ViewService.REPO_QUERY_PARAM_KEY]: repoName
       }
@@ -251,7 +251,7 @@ export class AuthService {
           return false;
         }
         this.githubEventService.setLatestChangeEvent();
-        this.handleSetRepoSuccess(this.viewService.currentRepo.toString());
+        this.handleSetRepoSuccess(this.viewService.currentView, this.viewService.currentRepo.toString());
         return true;
       }),
       catchError((error) => {

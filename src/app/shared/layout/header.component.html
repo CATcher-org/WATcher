@@ -19,22 +19,22 @@
       <div *ngIf="viewService.isRepoSet()" style="margin-left: 20px">
         <button mat-button [matMenuTriggerFor]="menu">
           <span class="header-main-text">
-            {{ this.presetViews[this.filtersService.presetView$.value] }}
+            {{ this.allViews[this.getCurrentView()] }}
           </span>
           <mat-icon style="color: white">expand_more</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-          <div *ngFor="let presetView of this.presetViews | keyvalue">
-            <button mat-menu-item *ngIf="presetView.key !== 'custom'" (click)="this.filtersService.updatePresetView(presetView.key)">
+          <div *ngFor="let view of this.allViews | keyvalue">
+            <button mat-menu-item *ngIf="view.key !== 'custom'" (click)="this.updateView(view.key)">
               <span>
                 <mat-icon
                   [ngStyle]="{
                     color: 'green',
-                    visibility: this.filtersService.presetView$.value === presetView.key ? 'visible' : 'hidden'
+                    visibility: this.getCurrentView() === view.key ? 'visible' : 'hidden'
                   }"
                   >done</mat-icon
                 >
-                {{ presetView.value }}
+                {{ view.value }}
               </span>
             </button>
           </div>

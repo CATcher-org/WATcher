@@ -16,6 +16,9 @@ export class ErrorMessageService {
     return 'Invalid repository name. Please provide a Github repository URL or repo name in the format <ORG/USER>/<REPO>.';
   }
 
+  public static invalidViewMessage() {
+    return 'Invalid view. Please provide a valid view name in the URL.';
+  }
   public static invalidUrlMessage() {
     return 'URL is invalid, or repository does not exist, please indicate the repository you wish to view to continue.';
   }

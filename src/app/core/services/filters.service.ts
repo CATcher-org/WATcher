@@ -19,6 +19,7 @@ import {
 import { GithubUser } from '../models/github-user.model';
 import { SimpleLabel } from '../models/label.model';
 import { Milestone } from '../models/milestone.model';
+import { View } from '../models/view.model';
 import { AssigneeService } from './assignee.service';
 import { LoggingService } from './logging.service';
 import { MilestoneService } from './milestone.service';
@@ -160,8 +161,7 @@ export class FiltersService {
     }
     queryParams[FiltersService.PRESET_VIEW_QUERY_PARAM_KEY] = this.presetView$.value;
 
-    this.router.navigate([], {
-      relativeTo: this.route,
+    this.router.navigate([View.issuesViewer], {
       queryParams,
       replaceUrl: true
     });
