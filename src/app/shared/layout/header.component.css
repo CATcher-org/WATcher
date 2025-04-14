@@ -1,7 +1,8 @@
 .repo-menu-footer {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   position: sticky;
   bottom: 0;
   z-index: 1;
@@ -10,10 +11,15 @@
 
 .new-repo-button {
   flex-grow: 1;
+  width: 100%;
 }
 
-.keep-filter-button {
-  margin-left: 2px;
+.keep-filter-slider {
+  margin-top: 15px;
+}
+
+::ng-deep .keep-filter-slider .mat-ripple {
+  display: none;
 }
 
 .repo-options {

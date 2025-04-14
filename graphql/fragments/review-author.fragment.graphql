@@ -1,0 +1,4 @@
+fragment reviewAuthor on Actor {
+  login
+  avatarUrl
+}

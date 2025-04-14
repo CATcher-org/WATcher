@@ -4,16 +4,26 @@
       <app-issue-pr-card-header [issue]="issue" (click)="viewIssueInBrowser($event)"></app-issue-pr-card-header>
     </span>
   </a>
-  <mat-card-content>
-    <app-issue-pr-card-fork-badge
-      *ngIf="issue.issueOrPr === 'PullRequest'"
-      [isNotFollowingForkingWorkflow]="isNotFollowingForkingWorkflow()"
-    ></app-issue-pr-card-fork-badge>
-    <app-issue-pr-card-milestone
-      [milestone]="issue.milestone"
-      [repoHasMilestones]="!milestoneService.hasNoMilestones"
-      (click)="viewMilestoneInBrowser($event)"
-    ></app-issue-pr-card-milestone>
-    <app-issue-pr-card-labels [labels]="issue.githubLabels" [labelSet]="filter?.hiddenLabels"></app-issue-pr-card-labels>
+  <mat-card-content class="content">
+    <div class="milestone-labels">
+      <app-issue-pr-card-fork-badge
+        *ngIf="issue.issueOrPr === 'PullRequest'"
+        [isNotFollowingForkingWorkflow]="isNotFollowingForkingWorkflow()"
+      ></app-issue-pr-card-fork-badge>
+      <app-issue-pr-card-milestone
+        [milestone]="issue.milestone"
+        [repoHasMilestones]="!milestoneService.hasNoMilestones"
+        (click)="viewMilestoneInBrowser($event)"
+      ></app-issue-pr-card-milestone>
+      <app-issue-pr-card-labels [labels]="issue.githubLabels" [labelSet]="filter?.hiddenLabels"></app-issue-pr-card-labels>
+    </div>
+    <div class="reviews">
+      <app-issue-pr-card-reviewers *ngIf="issue.reviews" [reviews]="issue.reviews"></app-issue-pr-card-reviewers>
+      <app-issue-pr-card-review-decision
+        *ngIf="issue.reviewDecision || this.isMergedWithoutReview(issue)"
+        [isMergedWithoutReview]="this.isMergedWithoutReview(issue)"
+        [reviewDecision]="issue.reviewDecision"
+      ></app-issue-pr-card-review-decision>
+    </div>
   </mat-card-content>
 </mat-card>

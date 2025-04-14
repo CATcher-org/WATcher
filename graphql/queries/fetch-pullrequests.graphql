@@ -23,6 +23,17 @@ query FetchPullRequests($owner: String!, $name: String!, $cursor: String) {
           headRepository {
             ...pullRequestRepository
           }
+          latestReviews(first: 100) {
+            edges {
+              node {
+                state #PENDING/COMMENTED/APPROVED/CHANGES_REQUESTED/DISMISSED
+                author {
+                  ...reviewAuthor
+                }
+                createdAt
+              }
+            }
+          }
         }
       }
     }

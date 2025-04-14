@@ -68,4 +68,8 @@ export class IssuePrCardComponent {
 
     return this.issue.description.slice(0, MAX_CHARACTER_LENGTH) + ELLIPSES;
   }
+
+  isMergedWithoutReview(issue: Issue): boolean {
+    return issue.issueOrPr === 'PullRequest' && issue.state === 'MERGED' && (!issue.reviews || issue.reviews.length === 0);
+  }
 }
