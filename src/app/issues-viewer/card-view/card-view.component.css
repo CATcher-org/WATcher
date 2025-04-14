@@ -1,8 +1,14 @@
+* {
+  box-sizing: border-box;
+}
+
 .card-column {
-  margin: 8px;
-  height: 100%;
+  padding: 8px;
+  /* height: 77vh; */
   display: flex;
   flex-direction: column;
+
+  height: 100%;
 }
 
 .card {

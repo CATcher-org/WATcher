@@ -39,6 +39,9 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   views = new BehaviorSubject<QueryList<CardViewComponent>>(undefined);
 
+  /** Hide or show the filter bar */
+  showFilterBar = false;
+
   constructor(
     public viewService: ViewService,
     public githubService: GithubService,
@@ -100,5 +103,9 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.groupService.resetGroups();
     this.availableGroupsSubscription = this.groupingContextService.getGroups().subscribe((x) => (this.groupService.groups = x));
+  }
+
+  private toggleSidebar() {
+    this.showFilterBar = !this.showFilterBar;
   }
 }
