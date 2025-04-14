@@ -65,7 +65,7 @@ will not close the select panel.
 
 So we are transforming the whole parent class instead.
 */
-::ng-deep .cdk-overlay-pane {
+::ng-deep .cdk-overlay-pane:has(.filter-bar-panel) {
   transform: translateX(200px) !important;
-  transform-origin: left center !important;
+  transform-origin: left !important;
 }
