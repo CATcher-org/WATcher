@@ -92,12 +92,6 @@
   }
 }
 
-.left {
-  /* width: 220px; */
-  /* flex-shrink: 0; */
-  /* background-color: red; */
-}
-
 .right {
   flex-grow: 1;
   display: flex;
