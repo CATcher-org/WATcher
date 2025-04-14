@@ -31,6 +31,9 @@ export class GithubIssue {
   comments?: Array<GithubComment>;
   issueOrPr?: string;
   isDraft: boolean;
+  headRepository?: {
+    nameWithOwner: string;
+  };
 
   reviews?: Array<{
     state: PullrequestReviewState;

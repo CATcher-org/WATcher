@@ -1,5 +1,5 @@
-fragment issueModel on Issue {
-  ...issue
+fragment pullRequestModel on PullRequest {
+  ...pullrequest
   labels(first: 100) {
     edges {
       node {
@@ -23,4 +23,7 @@ fragment issueModel on Issue {
     }
   }
   isDraft
+  headRepository {
+    ...pullRequestRepository
+  }
 }
