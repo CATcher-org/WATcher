@@ -54,3 +54,18 @@ ul {
     }
   } */
 }
+
+/*
+To fix issue: https://github.com/CATcher-org/WATcher/issues/462
+.cdk-overlay-pane is a parent class to the select panel 
+and we want to transform the panel to the right. If we directly
+translate the panel class itself, this parent class remains
+in the original position, clicking on the area covered by the parent class
+will not close the select panel. 
+
+So we are transforming the whole parent class instead.
+*/
+::ng-deep .cdk-overlay-pane {
+  transform: translateX(200px) !important;
+  transform-origin: left center !important;
+}
