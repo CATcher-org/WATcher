@@ -22,5 +22,6 @@ fragment issueModel on Issue {
       }
     }
   }
+
   isDraft
 }

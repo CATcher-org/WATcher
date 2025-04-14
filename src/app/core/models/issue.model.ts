@@ -4,6 +4,13 @@ import { GithubIssue } from './github/github-issue.model';
 import { GithubLabel } from './github/github-label.model';
 import { HiddenData } from './hidden-data.model';
 import { Milestone } from './milestone.model';
+import { PullrequestReview } from './pullrequest-review.model';
+
+export enum ReviewDecision {
+  CHANGES_REQUESTED = 'CHANGES_REQUESTED',
+  APPROVED = 'APPROVED',
+  REVIEW_REQUIRED = 'REVIEW_REQUIRED'
+}
 
 export class Issue {
   /** Basic Fields */
@@ -29,6 +36,8 @@ export class Issue {
   labels?: string[];
   githubLabels?: GithubLabel[];
   closingIssuesReferences: number[];
+  reviews?: PullrequestReview[];
+  reviewDecision?: ReviewDecision | null;
 
   /**
    * Formats the text to create space at the end of the user input to prevent any issues with
@@ -89,6 +98,7 @@ export class Issue {
     this.author = githubIssue.user.login;
     // this.githubIssue = githubIssue;
     this.isDraft = githubIssue.isDraft;
+    this.reviewDecision = githubIssue.reviewDecision;
 
     this.assignees = githubIssue.assignees.map((assignee) => assignee.login);
     this.githubLabels = githubIssue.labels;
@@ -101,6 +111,8 @@ export class Issue {
     this.closingIssuesReferences = githubIssue.closingIssuesReferences
       ? githubIssue.closingIssuesReferences.map((issue) => issue.number)
       : [];
+
+    this.reviews = githubIssue.reviews?.map((review) => new PullrequestReview(review));
   }
 
   public static createPhaseBugReportingIssue(githubIssue: GithubIssue): Issue {

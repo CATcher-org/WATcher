@@ -1,4 +1,6 @@
 import { IssueState, IssueStateReason } from '../../../../../graphql/graphql-types';
+import { ReviewDecision } from '../issue.model';
+import { PullrequestReviewState } from '../pullrequest-review.model';
 import { GithubComment } from './github-comment.model';
 import { GithubLabel } from './github-label.model';
 
@@ -30,6 +32,16 @@ export class GithubIssue {
   issueOrPr?: string;
   isDraft: boolean;
   closingIssuesReferences: Array<{ number: number }>;
+
+  reviews?: Array<{
+    state: PullrequestReviewState;
+    author: {
+      login: string;
+      avatarUrl: string;
+    };
+  }>;
+
+  reviewDecision?: ReviewDecision | null;
 
   constructor(githubIssue: {}) {
     Object.assign(this, githubIssue);
