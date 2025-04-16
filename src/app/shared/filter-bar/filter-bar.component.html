@@ -10,7 +10,7 @@
     </mat-form-field>
   </li>
 
-  <li class="filters" [class.is-open]="isMenuOpen">
+  <li class="filters">
     <mat-form-field appearance="standard" class="filter-item">
       <mat-label>Group by</mat-label>
       <mat-select
@@ -108,9 +108,12 @@
         <mat-option [value]="'Unassigned'">Unassigned</mat-option>
       </mat-select>
     </mat-form-field>
+    <mat-slide-toggle
+      (selectionChange)="this.filtersService.updateFilters({ isGroupPRUnderIssueToggled: $event.value })"
+      [checked]="this.filter.isGroupPRUnderIssueToggled"
+    >
+      Group PRs under issues
+    </mat-slide-toggle>
     <app-label-filter-bar></app-label-filter-bar>
-  </li>
-  <li class="menu" (click)="toggleMenu()">
-    <i class="material-icons">{{ isMenuOpen ? 'close' : 'menu' }}</i>
   </li>
 </ul>

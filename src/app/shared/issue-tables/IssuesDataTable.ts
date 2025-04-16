@@ -105,7 +105,9 @@ export class IssuesDataTable extends DataSource<CardData> implements FilterableS
           // Sorting PRs under the issue they close
           let cardData = data.map((issue) => ({ issue: issue, isIndented: false }));
 
-          cardData = groupByIssue(data);
+          if (this.filter.isGroupPRUnderIssueToggled) {
+            cardData = groupByIssue(data);
+          }
 
           this.count = cardData.length;
 

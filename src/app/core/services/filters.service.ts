@@ -228,7 +228,7 @@ export class FiltersService {
           case 'itemsPerPage':
             nextFilter[filterName] = Number(filterData[0]);
             break;
-          case 'isGroupPRUnderIssue':
+          case 'isGroupPRUnderIssueToggled':
             nextFilter[filterName] = Boolean(filterData[0]);
             break;
           default:
@@ -254,6 +254,7 @@ export class FiltersService {
       ...newFilters
     };
     this.filter$.next(nextDropdownFilter);
+    console.log(this.filter$.value);
     this.updatePresetViewFromFilters(newFilters);
     this.pushFiltersToUrl();
   }

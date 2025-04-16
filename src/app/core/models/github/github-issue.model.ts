@@ -32,6 +32,9 @@ export class GithubIssue {
   issueOrPr?: string;
   isDraft: boolean;
   closingIssuesReferences: Array<{ number: number }>;
+  headRepository?: {
+    nameWithOwner: string;
+  };
 
   reviews?: Array<{
     state: PullrequestReviewState;

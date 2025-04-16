@@ -3,48 +3,51 @@ import { flattenEdges } from '../../../shared/lib/graphgql-common';
 import { GithubIssue } from './github-issue.model';
 
 export class GithubGraphqlIssueOrPr extends GithubIssue {
-  constructor(issue: IssueModelFragment | PullRequestModelFragment) {
-    if (issue.__typename === 'Issue') {
+  constructor(model: IssueModelFragment | PullRequestModelFragment) {
+    if (model.__typename === 'PullRequest') {
       super({
-        issueOrPr: issue.__typename,
-        id: issue.id,
-        number: issue.number,
-        body: issue.body,
-        created_at: String(issue.createdAt),
-        updated_at: String(issue.updatedAt),
-        url: String(issue.url),
-        title: issue.title,
-        state: issue.state,
-        stateReason: issue.stateReason,
+        issueOrPr: model.__typename,
+        id: model.id,
+        number: model.number,
+        body: model.body,
+        created_at: String(model.createdAt),
+        updated_at: String(model.updatedAt),
+        url: String(model.url),
+        title: model.title,
+        state: model.state,
+        stateReason: null,
         user: {
-          login: issue.author.login
+          login: model.author.login
         },
-        assignees: flattenEdges(issue.assignees.edges),
-        labels: flattenEdges(issue.labels.edges),
-        milestone: issue.milestone ? issue.milestone : null,
-        isDraft: issue.isDraft
+        assignees: flattenEdges(model.assignees.edges),
+        labels: flattenEdges(model.labels.edges),
+        milestone: model.milestone ? model.milestone : null,
+        isDraft: model.isDraft,
+        closingIssuesReferences: flattenEdges(model.closingIssuesReferences.edges),
+        headRepository: model.headRepository,
+        reviewDecision: model.reviewDecision,
+        reviews: flattenEdges(model.latestReviews.edges)
       });
-    } else if (issue.__typename === 'PullRequest') {
+    } else if (model.__typename === 'Issue') {
       super({
-        issueOrPr: issue.__typename,
-        id: issue.id,
-        number: issue.number,
-        body: issue.body,
-        created_at: String(issue.createdAt),
-        updated_at: String(issue.updatedAt),
-        url: String(issue.url),
-        title: issue.title,
-        state: issue.state,
+        issueOrPr: model.__typename,
+        id: model.id,
+        number: model.number,
+        body: model.body,
+        created_at: String(model.createdAt),
+        updated_at: String(model.updatedAt),
+        url: String(model.url),
+        title: model.title,
+        state: model.state,
+        stateReason: model.stateReason,
         user: {
-          login: issue.author.login
+          login: model.author.login
         },
-        assignees: flattenEdges(issue.assignees.edges),
-        labels: flattenEdges(issue.labels.edges),
-        milestone: issue.milestone ? issue.milestone : null,
-        isDraft: issue.isDraft,
-        closingIssuesReferences: flattenEdges(issue.closingIssuesReferences.edges),
-        reviewDecision: issue.reviewDecision,
-        reviews: flattenEdges(issue.latestReviews.edges)
+        assignees: flattenEdges(model.assignees.edges),
+        labels: flattenEdges(model.labels.edges),
+        milestone: model.milestone ? model.milestone : null,
+        isDraft: model.isDraft,
+        headRepository: null
       });
     }
   }

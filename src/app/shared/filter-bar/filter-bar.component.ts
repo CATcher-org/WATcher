@@ -29,9 +29,6 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   filter: Filter = this.filtersService.defaultFilter;
 
   groupByEnum: typeof GroupBy = GroupBy;
-
-  isMenuOpen = false;
-
   statusOptions = StatusOptions;
   typeOptions = TypeOptions;
   sortOptions = SortOptions;
@@ -114,9 +111,5 @@ export class FilterBarComponent implements OnInit, OnDestroy {
       (err) => {},
       () => {}
     );
-  }
-
-  toggleMenu(): void {
-    this.isMenuOpen = !this.isMenuOpen;
   }
 }

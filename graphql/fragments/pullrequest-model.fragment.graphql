@@ -1,6 +1,5 @@
 fragment pullRequestModel on PullRequest {
   ...pullrequest
-  isDraft
   labels(first: 100) {
     edges {
       node {
@@ -21,5 +20,17 @@ fragment pullRequestModel on PullRequest {
         number
       }
     }
+  }
+  comments(first: 100) {
+    edges {
+      cursor
+      node {
+        ...issueComment
+      }
+    }
+  }
+  isDraft
+  headRepository {
+    ...pullRequestRepository
   }
 }
