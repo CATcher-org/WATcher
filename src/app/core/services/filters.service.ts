@@ -34,7 +34,7 @@ export type Filter = {
   deselectedLabels: Set<string>;
   itemsPerPage: number;
   assignees: string[];
-  isGroupPRUnderIssueToggled: boolean;
+  isLinkPrsToIssuesToggled: boolean;
 };
 
 @Injectable({
@@ -59,7 +59,7 @@ export class FiltersService {
     deselectedLabels: new Set<string>(),
     itemsPerPage: this.itemsPerPage,
     assignees: [],
-    isGroupPRUnderIssueToggled: true
+    isLinkPrsToIssuesToggled: true
   };
 
   readonly presetViews: {
@@ -75,7 +75,7 @@ export class FiltersService {
       deselectedLabels: new Set<string>(),
       itemsPerPage: 20,
       assignees: this.getAssigneesForCurrentlyActive().map((assignee) => assignee.login),
-      isGroupPRUnderIssueToggled: true
+      isLinkPrsToIssuesToggled: true
     }),
     contributions: () => ({
       title: '',
@@ -87,7 +87,7 @@ export class FiltersService {
       deselectedLabels: new Set<string>(),
       itemsPerPage: 20,
       assignees: this.assigneeService.assignees.map((assignee) => assignee.login),
-      isGroupPRUnderIssueToggled: true
+      isLinkPrsToIssuesToggled: true
     }),
     custom: () => ({})
   };
@@ -101,7 +101,7 @@ export class FiltersService {
     'labels',
     'deselectedLabels',
     'assignees',
-    'isGroupPRUnderIssueToggled'
+    'isLinkPrsToIssuesToggled'
   ]);
 
   public filter$ = new BehaviorSubject<Filter>(this.defaultFilter);
@@ -169,7 +169,7 @@ export class FiltersService {
           queryParams[filterName] = filterValue.toString();
           break;
         // Toggles
-        case 'isGroupPRUnderIssueToggled':
+        case 'isLinkPrsToIssuesToggled':
           queryParams[filterName] = filterValue.toString();
           break;
         default:
@@ -228,7 +228,7 @@ export class FiltersService {
           case 'itemsPerPage':
             nextFilter[filterName] = Number(filterData[0]);
             break;
-          case 'isGroupPRUnderIssueToggled':
+          case 'isLinkPrsToIssuesToggled':
             nextFilter[filterName] = Boolean(filterData[0]);
             break;
           default:
