@@ -34,6 +34,7 @@ export type Filter = {
   deselectedLabels: Set<string>;
   itemsPerPage: number;
   assignees: string[];
+  isGroupPRUnderIssueToggled: boolean;
 };
 
 @Injectable({
@@ -57,7 +58,8 @@ export class FiltersService {
     hiddenLabels: new Set<string>(),
     deselectedLabels: new Set<string>(),
     itemsPerPage: this.itemsPerPage,
-    assignees: []
+    assignees: [],
+    isGroupPRUnderIssueToggled: true
   };
 
   readonly presetViews: {
@@ -72,7 +74,8 @@ export class FiltersService {
       milestones: this.getMilestonesForCurrentlyActive().map((milestone) => milestone.title),
       deselectedLabels: new Set<string>(),
       itemsPerPage: 20,
-      assignees: this.getAssigneesForCurrentlyActive().map((assignee) => assignee.login)
+      assignees: this.getAssigneesForCurrentlyActive().map((assignee) => assignee.login),
+      isGroupPRUnderIssueToggled: true
     }),
     contributions: () => ({
       title: '',
@@ -83,13 +86,23 @@ export class FiltersService {
       milestones: this.getMilestonesForContributions().map((milestone) => milestone.title),
       deselectedLabels: new Set<string>(),
       itemsPerPage: 20,
-      assignees: this.assigneeService.assignees.map((assignee) => assignee.login)
+      assignees: this.assigneeService.assignees.map((assignee) => assignee.login),
+      isGroupPRUnderIssueToggled: true
     }),
     custom: () => ({})
   };
 
   // List of keys in the new filter change that causes current filter to not qualify to be a preset view.
-  readonly presetChangingKeys = new Set<string>(['status', 'type', 'sort', 'milestones', 'labels', 'deselectedLabels', 'assignees']);
+  readonly presetChangingKeys = new Set<string>([
+    'status',
+    'type',
+    'sort',
+    'milestones',
+    'labels',
+    'deselectedLabels',
+    'assignees',
+    'isGroupPRUnderIssueToggled'
+  ]);
 
   public filter$ = new BehaviorSubject<Filter>(this.defaultFilter);
   // Either 'currentlyActive', 'contributions', or 'custom'.
@@ -155,6 +168,10 @@ export class FiltersService {
         case 'itemsPerPage':
           queryParams[filterName] = filterValue.toString();
           break;
+        // Toggles
+        case 'isGroupPRUnderIssueToggled':
+          queryParams[filterName] = filterValue.toString();
+          break;
         default:
       }
     }
@@ -210,6 +227,9 @@ export class FiltersService {
             break;
           case 'itemsPerPage':
             nextFilter[filterName] = Number(filterData[0]);
+            break;
+          case 'isGroupPRUnderIssue':
+            nextFilter[filterName] = Boolean(filterData[0]);
             break;
           default:
         }

@@ -9,10 +9,9 @@ import { Issue } from '../../core/models/issue.model';
 import { Milestone } from '../../core/models/milestone.model';
 import { AssigneeService } from '../../core/services/assignee.service';
 import { Filter, FiltersService } from '../../core/services/filters.service';
-import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
+import { GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { IssueService } from '../../core/services/issue.service';
 import { MilestoneService } from '../../core/services/milestone.service';
-import { uniqueCount } from '../lib/array-utils';
 import { applyDropdownFilter } from './dropdownfilter';
 import { FilterableSource } from './filterableTypes';
 import { groupByIssue } from './issue-group-by-issue';
@@ -104,7 +103,9 @@ export class IssuesDataTable extends DataSource<CardData> implements FilterableS
           data = this.groupingContextService.getDataForGroup(data, this.group);
 
           // Sorting PRs under the issue they close
-          let cardData = groupByIssue(data);
+          let cardData = data.map((issue) => ({ issue: issue, isIndented: false }));
+
+          cardData = groupByIssue(data);
 
           this.count = cardData.length;
 
