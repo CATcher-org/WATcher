@@ -254,7 +254,6 @@ export class FiltersService {
       ...newFilters
     };
     this.filter$.next(nextDropdownFilter);
-    console.log(this.filter$.value);
     this.updatePresetViewFromFilters(newFilters);
     this.pushFiltersToUrl();
   }

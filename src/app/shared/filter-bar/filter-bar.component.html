@@ -109,7 +109,8 @@
       </mat-select>
     </mat-form-field>
     <mat-slide-toggle
-      (selectionChange)="this.filtersService.updateFilters({ isGroupPRUnderIssueToggled: $event.value })"
+      *ngIf="isFilterAll()"
+      (change)="this.filtersService.updateFilters({ isGroupPRUnderIssueToggled: $event.checked })"
       [checked]="this.filter.isGroupPRUnderIssueToggled"
     >
       Group PRs under issues
