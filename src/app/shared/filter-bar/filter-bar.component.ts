@@ -89,6 +89,22 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     return this.filter.type === this.typeOptions.PullRequests || this.filter.type === this.typeOptions.All;
   }
 
+  onDeselectAllClicked(event: Event) {
+    event.stopPropagation(); // required, if not the (selectionChange) event will be triggered
+
+    this.filtersService.updateFilters({
+      assignees: []
+    });
+  }
+
+  onSelectAllClicked(event: Event) {
+    event.stopPropagation(); // required, if not the (selectionChange) event will be triggered
+
+    this.filtersService.updateFilters({
+      assignees: this.assigneeService.assignees.map((assignee) => assignee.login)
+    });
+  }
+
   /**
    * Fetch and initialize all information from repository to populate Issue Dashboard.
    * Re-called when repo has changed

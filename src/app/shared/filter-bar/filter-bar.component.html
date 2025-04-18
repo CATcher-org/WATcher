@@ -102,6 +102,16 @@
         <mat-select-trigger *ngIf="this.assigneeService.hasNoAssignees">
           <span>No Assignees</span>
         </mat-select-trigger>
+
+        <mat-option class="dropdown-action">
+          <button *ngIf="this.filter.assignees.length != 0" mat-button type="button" (click)="onDeselectAllClicked($event)">
+            Deselect All
+          </button>
+          <button *ngIf="this.filter.assignees.length == 0" mat-button type="button" (click)="onSelectAllClicked($event)">
+            Select All
+          </button>
+        </mat-option>
+
         <mat-option *ngFor="let assignee of this.assigneeService.assignees" [value]="assignee.login">
           {{ assignee.login }}
         </mat-option>
