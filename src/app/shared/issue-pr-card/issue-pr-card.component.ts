@@ -22,6 +22,12 @@ export class IssuePrCardComponent {
     public milestoneService: MilestoneService
   ) {}
 
+  isNotFollowingForkingWorkflow() {
+    return (
+      this.issue.issueOrPr === 'PullRequest' && this.issue.headRepository?.toLowerCase() === this.githubService.getRepoURL().toLowerCase()
+    );
+  }
+
   /** Opens issue in new window */
   viewIssueInBrowser(event: Event) {
     this.logger.info(`CardViewComponent: Opening Issue ${this.issue.id} on Github`);
@@ -61,5 +67,9 @@ export class IssuePrCardComponent {
     const ELLIPSES = '...';
 
     return this.issue.description.slice(0, MAX_CHARACTER_LENGTH) + ELLIPSES;
+  }
+
+  isMergedWithoutReview(issue: Issue): boolean {
+    return issue.issueOrPr === 'PullRequest' && issue.state === 'MERGED' && (!issue.reviews || issue.reviews.length === 0);
   }
 }
