@@ -69,3 +69,26 @@ So we are transforming the whole parent class instead.
   transform: translateX(200px) !important;
   transform-origin: left center !important;
 }
+
+/* 
+Hides the checkbox when we have buttons in `multiselects`.
+*/
+::ng-deep .dropdown-action {
+  pointer-events: none;
+  mat-pseudo-checkbox {
+    display: none;
+  }
+
+  .mat-ripple {
+    display: none;
+  }
+
+  button {
+    pointer-events: auto;
+  }
+}
+
+/**
+Prevents the ripple effect from showing when we click on the dropdown action button.
+*/
+/* ::ng-deep .dropdown-action> */
