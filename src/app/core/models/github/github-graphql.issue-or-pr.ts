@@ -23,6 +23,7 @@ export class GithubGraphqlIssueOrPr extends GithubIssue {
         labels: flattenEdges(model.labels.edges),
         milestone: model.milestone ? model.milestone : null,
         isDraft: model.isDraft,
+        closingIssuesReferences: flattenEdges(model.closingIssuesReferences.edges),
         headRepository: model.headRepository,
         reviewDecision: model.reviewDecision,
         reviews: flattenEdges(model.latestReviews.edges)

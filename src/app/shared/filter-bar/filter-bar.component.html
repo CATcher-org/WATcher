@@ -124,6 +124,17 @@
         <mat-option [value]="'Unassigned'">Unassigned</mat-option>
       </mat-select>
     </mat-form-field>
+    <mat-form-field>
+      <mat-label>Issue and PR display</mat-label>
+      <mat-select
+        *ngIf="isFilterAll()"
+        [value]="this.filter.isLinkPrsToIssuesToggled"
+        (selectionChange)="this.filtersService.updateFilters({ isLinkPrsToIssuesToggled: $event.value })"
+      >
+        <mat-option [value]="true"> Link PRs to Issues </mat-option>
+        <mat-option [value]="false"> Separate PRs from Issues </mat-option>
+      </mat-select>
+    </mat-form-field>
     <app-label-filter-bar></app-label-filter-bar>
   </li>
 </ul>

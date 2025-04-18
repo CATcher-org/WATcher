@@ -5,8 +5,12 @@
   ></ng-container>
   <div class="scrollable-container-wrapper scroll-shadow">
     <div class="scrollable-container">
-      <div class="issue-pr-cards" *ngFor="let issue of this.issues$ | async; index as i">
-        <app-issue-pr-card [issue]="issue" [filter]="issues.filter" [milestoneService]="milestoneService"></app-issue-pr-card>
+      <div
+        class="issue-pr-cards"
+        *ngFor="let cardData of this.cardData$ | async; index as i"
+        [ngClass]="cardData.isIndented ? 'indented-card' : ''"
+      >
+        <app-issue-pr-card [issue]="cardData.issue" [filter]="issues.filter" [milestoneService]="milestoneService"></app-issue-pr-card>
       </div>
       <mat-card class="loading-spinner" *ngIf="this.issues.isLoading$ | async">
         <mat-progress-spinner color="primary" mode="indeterminate" diameter="50" strokeWidth="5"></mat-progress-spinner>

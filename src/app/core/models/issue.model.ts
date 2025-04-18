@@ -36,6 +36,7 @@ export class Issue {
   assignees?: string[];
   labels?: string[];
   githubLabels?: GithubLabel[];
+  closingIssuesReferences: number[];
   reviews?: PullrequestReview[];
   reviewDecision?: ReviewDecision | null;
 
@@ -108,6 +109,10 @@ export class Issue {
       : this.issueOrPr === 'Issue'
       ? Milestone.IssueWithoutMilestone
       : Milestone.PRWithoutMilestone;
+    this.closingIssuesReferences = githubIssue.closingIssuesReferences
+      ? githubIssue.closingIssuesReferences.map((issue) => issue.number)
+      : [];
+
     this.headRepository = githubIssue.headRepository?.nameWithOwner;
     this.reviews = githubIssue.reviews?.map((review) => new PullrequestReview(review));
   }

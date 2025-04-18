@@ -138,6 +138,10 @@ div.column-header .mat-card-header {
   font-size: 14px;
 }
 
+.indented-card {
+  margin-left: 16px;
+}
+
 :host ::ng-deep .pagination-hide-arrow .mat-paginator-navigation-previous {
   display: none !important;
 }
