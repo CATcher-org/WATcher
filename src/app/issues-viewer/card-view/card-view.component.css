@@ -54,7 +54,7 @@ div.column-header {
 div.column-header .mat-card-header {
   display: flex;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
 }
 
 .scrollable-container {
@@ -155,6 +155,10 @@ div.column-header .mat-card-header {
 }
 
 .assignee-name {
+  text-overflow: ellipsis;
+  width: 80%;
+  overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
 }
 
