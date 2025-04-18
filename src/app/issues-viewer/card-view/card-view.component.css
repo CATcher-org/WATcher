@@ -146,6 +146,12 @@ div.column-header .mat-card-header {
 
 .assignee-container {
   width: 100%;
+  text-align: left;
+  padding-left: 10px;
+}
+
+.milestone-container {
+  width: 100%;
 }
 
 .assignee-name {

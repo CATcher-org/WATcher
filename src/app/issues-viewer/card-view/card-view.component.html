@@ -45,10 +45,11 @@
             <div class="assignee-name">
               {{ assignee.login }}
             </div>
-            <div class="row-count" matTooltip="Issue | Pull Requests" matTooltipPosition="above">
+            <div class="row-count count-margins" [matTooltip]="getIssueTooltip()" matTooltipPosition="above">
               <span class="octicon count-margins" octicon="issue-opened"></span>
-              <span class="count-margins">{{ this.issues.issueCount }}</span>
-              <span class="count-margins">|</span>
+              <span class="">{{ this.issues.issueCount }}</span>
+            </div>
+            <div class="row-count" [matTooltip]="getPrTooltip()" matTooltipPosition="above">
               <span class="octicon count-margins" octicon="git-pull-request"></span>
               <span>{{ this.issues.prCount }}</span>
             </div>
@@ -64,14 +65,15 @@
     <mat-card>
       <mat-card-header [ngStyle]="{ height: '40px' }">
         <mat-card-title>
-          <div class="assignee-container">
+          <div class="milestone-container">
             <div class="assignee-name">
               {{ milestone.title }}
             </div>
-            <div class="row-count" matTooltip="Issue | Pull Requests" matTooltipPosition="above">
+            <div class="row-count count-margins" [matTooltip]="getIssueTooltip()" matTooltipPosition="above">
               <span class="octicon count-margins" octicon="issue-opened"></span>
-              <span class="count-margins">{{ this.issues.issueCount }}</span>
-              <span class="count-margins">|</span>
+              <span class="">{{ this.issues.issueCount }}</span>
+            </div>
+            <div class="row-count" [matTooltip]="getPrTooltip()" matTooltipPosition="above">
               <span class="octicon count-margins" octicon="git-pull-request"></span>
               <span>{{ this.issues.prCount }}</span>
             </div>
