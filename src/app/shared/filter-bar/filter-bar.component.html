@@ -104,10 +104,10 @@
         </mat-select-trigger>
 
         <mat-option class="dropdown-action">
-          <button *ngIf="this.filter.assignees.length != 0" mat-button type="button" (click)="onDeselectAllClicked($event)">
+          <button *ngIf="this.filter.assignees.length != 0" mat-button type="button" (click)="onDeselectAllAssigneesClicked($event)">
             Deselect All
           </button>
-          <button *ngIf="this.filter.assignees.length == 0" mat-button type="button" (click)="onSelectAllClicked($event)">
+          <button *ngIf="this.filter.assignees.length == 0" mat-button type="button" (click)="onSelectAllAssigneesClicked($event)">
             Select All
           </button>
         </mat-option>

@@ -89,7 +89,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     return this.filter.type === this.typeOptions.PullRequests || this.filter.type === this.typeOptions.All;
   }
 
-  onDeselectAllClicked(event: Event) {
+  onDeselectAllAssigneesClicked(event: Event) {
     event.stopPropagation(); // required, if not the (selectionChange) event will be triggered
 
     this.filtersService.updateFilters({
@@ -97,11 +97,11 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSelectAllClicked(event: Event) {
+  onSelectAllAssigneesClicked(event: Event) {
     event.stopPropagation(); // required, if not the (selectionChange) event will be triggered
 
     this.filtersService.updateFilters({
-      assignees: this.assigneeService.assignees.map((assignee) => assignee.login)
+      assignees: [...this.assigneeService.assignees.map((assignee) => assignee.login), 'Unassigned']
     });
   }
 
