@@ -229,7 +229,6 @@ export class FiltersService {
   }
 
   updateFilters(newFilters: Partial<Filter>): void {
-    console.log('Update filters called with, ', newFilters);
     const nextDropdownFilter: Filter = {
       ...this.filter$.value,
       ...newFilters
