@@ -32,6 +32,10 @@
   padding: 10px;
 }
 
+.count-margins {
+  margin-right: 4px;
+}
+
 :host ::ng-deep div.mat-card-header-text {
   margin: 2px;
 }
@@ -50,7 +54,7 @@ div.column-header {
 div.column-header .mat-card-header {
   display: flex;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
 }
 
 .scrollable-container {
@@ -131,11 +135,31 @@ div.column-header .mat-card-header {
   background-color: rgb(222, 222, 222);
   border-radius: 3px;
   cursor: default;
-  padding: 6px;
+  padding: 6px 8px 3px 8px;
   color: rgb(0, 0, 0);
   font-weight: 410;
   display: inline-flex;
   font-size: 14px;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.assignee-container {
+  width: 100%;
+  text-align: left;
+  padding-left: 10px;
+}
+
+.milestone-container {
+  width: 100%;
+}
+
+.assignee-name {
+  text-overflow: ellipsis;
+  width: 80%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 :host ::ng-deep .pagination-hide-arrow .mat-paginator-navigation-previous {

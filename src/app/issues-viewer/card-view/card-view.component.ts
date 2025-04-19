@@ -137,4 +137,12 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   retrieveFilterable(): FilterableSource {
     return this.issues;
   }
+
+  getIssueTooltip(): string {
+    return this.issues.issueCount + ' Issues';
+  }
+
+  getPrTooltip(): string {
+    return this.issues.prCount + ' Pull Requests';
+  }
 }
