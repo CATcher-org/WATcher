@@ -19,6 +19,8 @@ import { applySearchFilter } from './search-filter';
 
 export class IssuesDataTable extends DataSource<Issue> implements FilterableSource {
   public count = 0;
+  public issueCount = 0;
+  public prCount = 0;
   private filterChange = new BehaviorSubject(this.filtersService.defaultFilter);
   private issuesSubject = new BehaviorSubject<Issue[]>([]);
   private issueSubscription: Subscription;
@@ -96,6 +98,8 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
           data = applyDropdownFilter(this.filter, data, !this.milestoneService.hasNoMilestones, !this.assigneeService.hasNoAssignees);
 
           data = applySearchFilter(this.filter.title, this.displayedColumn, this.issueService, data);
+          this.issueCount = data.filter((issue) => issue.issueOrPr !== 'PullRequest').length;
+          this.prCount = data.filter((issue) => issue.issueOrPr === 'PullRequest').length;
           this.count = data.length;
 
           data = applySort(this.filter.sort, data);
