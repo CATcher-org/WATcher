@@ -41,9 +41,20 @@
           }"
         ></div>
         <mat-card-title>
-          {{ assignee.login }}
+          <div class="assignee-container">
+            <div class="assignee-name">
+              {{ assignee.login }}
+            </div>
+            <div class="row-count count-margins" [matTooltip]="getIssueTooltip()" matTooltipPosition="above">
+              <span class="octicon count-margins" octicon="issue-opened"></span>
+              <span class="">{{ this.issues.issueCount }}</span>
+            </div>
+            <div class="row-count" [matTooltip]="getPrTooltip()" matTooltipPosition="above">
+              <span class="octicon count-margins" octicon="git-pull-request"></span>
+              <span>{{ this.issues.prCount }}</span>
+            </div>
+          </div>
         </mat-card-title>
-        <div class="row-count">{{ this.issues.count }}</div>
       </mat-card-header>
     </mat-card>
   </div>
@@ -54,9 +65,20 @@
     <mat-card>
       <mat-card-header [ngStyle]="{ height: '40px' }">
         <mat-card-title>
-          {{ milestone.title }}
+          <div class="milestone-container">
+            <div>
+              {{ milestone.title }}
+            </div>
+            <div class="row-count count-margins" [matTooltip]="getIssueTooltip()" matTooltipPosition="above">
+              <span class="octicon count-margins" octicon="issue-opened"></span>
+              <span class="">{{ this.issues.issueCount }}</span>
+            </div>
+            <div class="row-count" [matTooltip]="getPrTooltip()" matTooltipPosition="above">
+              <span class="octicon count-margins" octicon="git-pull-request"></span>
+              <span>{{ this.issues.prCount }}</span>
+            </div>
+          </div>
         </mat-card-title>
-        <div class="row-count">{{ this.issues.count }}</div>
       </mat-card-header>
     </mat-card>
   </div>
