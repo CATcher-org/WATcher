@@ -21,7 +21,7 @@ export class IssuePrCardLabelsComponent {
     range.selectNodeContents(span);
     const textWidth = range.getBoundingClientRect().width;
     const containerWidth = span.getBoundingClientRect().width;
-    return textWidth - containerWidth > 0.15;
+    return textWidth - containerWidth > 0.01;
   }
 
   onMouseEnter(event: MouseEvent, labelName: string, tooltip: MatTooltip) {
