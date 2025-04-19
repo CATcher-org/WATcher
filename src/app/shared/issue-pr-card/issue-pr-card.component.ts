@@ -22,6 +22,12 @@ export class IssuePrCardComponent {
     public milestoneService: MilestoneService
   ) {}
 
+  isNotFollowingForkingWorkflow() {
+    return (
+      this.issue.issueOrPr === 'PullRequest' && this.issue.headRepository?.toLowerCase() === this.githubService.getRepoURL().toLowerCase()
+    );
+  }
+
   /** Opens issue in new window */
   viewIssueInBrowser(event: Event) {
     this.logger.info(`CardViewComponent: Opening Issue ${this.issue.id} on Github`);

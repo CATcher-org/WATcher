@@ -1,13 +1,18 @@
-.issues-viewer {
+/* .issues-viewer {
   display: flex;
   flex-direction: column;
   height: 100%;
-}
+} */
 
 .issue-table {
   width: 25%;
   min-width: 200px;
   max-width: 400px;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
 }
 
 .dropdown-filters .mat-form-field {
@@ -48,4 +53,53 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  height: calc(100vh - 64px);
+}
+
+.drawer-container {
+  background-color: white;
+}
+
+.content-container {
+  display: flex;
+  height: 100%;
+
+  /* Due to some library issues (?), the `content` for the sidenav is supposed to be an additional 6px, but for some reason
+  the margin-left of the container is automatically set wrongly. */
+  margin-left: 6px;
+}
+
+.toggle-switch-container {
+  width: 10px;
+  /* background-color: red; */
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 8px;
+  margin-right: 8px;
+
+  cursor: pointer;
+
+  mat-icon {
+    transition: all 0.3s ease-in-out;
+  }
+}
+
+.right {
+  flex-grow: 1;
+  display: flex;
+  overflow-x: auto;
+  /* background-color: blue; */
+
+  height: 100%;
+
+  box-sizing: border-box;
+  padding: 0.5rem 1rem 0.5rem 0;
 }

@@ -14,4 +14,14 @@ fragment pullrequest on PullRequest {
     ...issueMilestone
   }
   reviewDecision
+  latestReviews(first: 100) {
+    edges {
+      node {
+        state
+        author {
+          ...reviewAuthor
+        }
+      }
+    }
+  }
 }
