@@ -15,7 +15,11 @@
         [repoHasMilestones]="!milestoneService.hasNoMilestones"
         (click)="viewMilestoneInBrowser($event)"
       ></app-issue-pr-card-milestone>
-      <app-issue-pr-card-labels [labels]="issue.githubLabels" [labelSet]="filter?.hiddenLabels"></app-issue-pr-card-labels>
+      <app-issue-pr-card-labels
+        style="flex: 1 1 auto; min-width: 0"
+        [labels]="issue.githubLabels"
+        [labelSet]="filter?.hiddenLabels"
+      ></app-issue-pr-card-labels>
     </div>
     <div class="reviews">
       <app-issue-pr-card-reviewers *ngIf="issue.reviews" [reviews]="issue.reviews"></app-issue-pr-card-reviewers>
