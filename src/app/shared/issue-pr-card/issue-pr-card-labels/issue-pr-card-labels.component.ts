@@ -26,7 +26,7 @@ export class IssuePrCardLabelsComponent {
     console.log('containerWidth: ', containerWidth);
     console.log('text - container: ', textWidth - containerWidth);
 
-    return textWidth - containerWidth > 0.01;
+    return textWidth - containerWidth > 0.001;
   }
 
   onMouseEnter(event: MouseEvent, labelName: string, tooltip: MatTooltip) {
