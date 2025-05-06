@@ -21,6 +21,11 @@ export class IssuePrCardLabelsComponent {
     range.selectNodeContents(span);
     const textWidth = range.getBoundingClientRect().width;
     const containerWidth = span.getBoundingClientRect().width;
+
+    console.log('textWidth: ', textWidth);
+    console.log('containerWidth: ', containerWidth);
+    console.log('text - container: ', textWidth - containerWidth);
+
     return textWidth - containerWidth > 0.01;
   }
 
