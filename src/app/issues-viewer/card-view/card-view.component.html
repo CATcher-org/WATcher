@@ -30,7 +30,7 @@
 
 <ng-template #assigneeHeader let-assignee>
   <div class="column-header">
-    <mat-card>
+    <mat-card (click)="goToGithubProfile(assignee.login)" style="cursor: pointer">
       <mat-card-header [ngStyle]="{ height: '40px' }">
         <div
           mat-card-avatar
