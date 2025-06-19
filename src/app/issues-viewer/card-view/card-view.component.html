@@ -45,11 +45,11 @@
             <div class="assignee-name">
               {{ assignee.login }}
             </div>
-            <div class="row-count count-margins" [matTooltip]="getIssueTooltip()" matTooltipPosition="above">
+            <div class="issue-row-count count-margins" [matTooltip]="getIssueTooltip()" matTooltipPosition="above">
               <span class="octicon count-margins" octicon="issue-opened"></span>
               <span class="">{{ this.issues.issueCount }}</span>
             </div>
-            <div class="row-count" [matTooltip]="getPrTooltip()" matTooltipPosition="above">
+            <div class="pr-row-count" [matTooltip]="getPrTooltip()" matTooltipPosition="above">
               <span class="octicon count-margins" octicon="git-pull-request"></span>
               <span>{{ this.issues.prCount }}</span>
             </div>
@@ -69,11 +69,11 @@
             <div>
               {{ milestone.title }}
             </div>
-            <div class="row-count count-margins" [matTooltip]="getIssueTooltip()" matTooltipPosition="above">
+            <div class="issue-row-count count-margins" [matTooltip]="getIssueTooltip()" matTooltipPosition="above">
               <span class="octicon count-margins" octicon="issue-opened"></span>
               <span class="">{{ this.issues.issueCount }}</span>
             </div>
-            <div class="row-count" [matTooltip]="getPrTooltip()" matTooltipPosition="above">
+            <div class="pr-row-count" [matTooltip]="getPrTooltip()" matTooltipPosition="above">
               <span class="octicon count-margins" octicon="git-pull-request"></span>
               <span>{{ this.issues.prCount }}</span>
             </div>

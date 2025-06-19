@@ -72,4 +72,8 @@ export class IssuePrCardComponent {
   isMergedWithoutReview(issue: Issue): boolean {
     return issue.issueOrPr === 'PullRequest' && issue.state === 'MERGED' && (!issue.reviews || issue.reviews.length === 0);
   }
+
+  isIssue(): boolean {
+    return this.issue.issueOrPr === 'Issue';
+  }
 }
