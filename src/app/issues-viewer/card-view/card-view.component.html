@@ -6,7 +6,8 @@
   <div class="scrollable-container-wrapper scroll-shadow">
     <div class="scrollable-container">
       <div class="issue-pr-cards" *ngFor="let issue of this.issues$ | async; index as i">
-        <app-issue-pr-card [issue]="issue" [filter]="issues.filter" [milestoneService]="milestoneService"></app-issue-pr-card>
+        <app-issue-pr-card *ngIf="isIssueCard(issue)" [issue]="issue" [filter]="issues.filter" [milestoneService]="milestoneService">
+        </app-issue-pr-card>
       </div>
       <mat-card class="loading-spinner" *ngIf="this.issues.isLoading$ | async">
         <mat-progress-spinner color="primary" mode="indeterminate" diameter="50" strokeWidth="5"></mat-progress-spinner>
@@ -45,11 +46,25 @@
             <div class="assignee-name">
               {{ assignee.login }}
             </div>
-            <div class="row-count count-margins" [matTooltip]="getIssueTooltip()" matTooltipPosition="above">
+            <div
+              class="issue-row-count count-margins"
+              [matTooltip]="getIssueTooltip()"
+              matTooltipPosition="above"
+              (click)="filterByIssues()"
+              [class.active]="currentFilter === 'issues'"
+              style="cursor: pointer"
+            >
               <span class="octicon count-margins" octicon="issue-opened"></span>
               <span class="">{{ this.issues.issueCount }}</span>
             </div>
-            <div class="row-count" [matTooltip]="getPrTooltip()" matTooltipPosition="above">
+            <div
+              class="pr-row-count"
+              [matTooltip]="getPrTooltip()"
+              matTooltipPosition="above"
+              (click)="filterByPrs()"
+              [class.active]="currentFilter === 'prs'"
+              style="cursor: pointer"
+            >
               <span class="octicon count-margins" octicon="git-pull-request"></span>
               <span>{{ this.issues.prCount }}</span>
             </div>
@@ -69,11 +84,25 @@
             <div>
               {{ milestone.title }}
             </div>
-            <div class="row-count count-margins" [matTooltip]="getIssueTooltip()" matTooltipPosition="above">
+            <div
+              class="issue-row-count count-margins"
+              [matTooltip]="getIssueTooltip()"
+              matTooltipPosition="above"
+              (click)="filterByIssues()"
+              [class.active]="currentFilter === 'issues'"
+              style="cursor: pointer"
+            >
               <span class="octicon count-margins" octicon="issue-opened"></span>
               <span class="">{{ this.issues.issueCount }}</span>
             </div>
-            <div class="row-count" [matTooltip]="getPrTooltip()" matTooltipPosition="above">
+            <div
+              class="pr-row-count"
+              [matTooltip]="getPrTooltip()"
+              matTooltipPosition="above"
+              (click)="filterByPrs()"
+              [class.active]="currentFilter === 'prs'"
+              style="cursor: pointer"
+            >
               <span class="octicon count-margins" octicon="git-pull-request"></span>
               <span>{{ this.issues.prCount }}</span>
             </div>
