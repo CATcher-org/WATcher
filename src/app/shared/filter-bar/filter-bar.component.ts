@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, Type, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit, QueryList, Type, ViewChild, ViewChildren } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { MilestoneOptions, SortOptions, StatusOptions, TypeOptions } from '../../core/constants/filter-options.constants';
@@ -41,6 +41,10 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   @ViewChild(LabelFilterBarComponent, { static: true }) labelFilterBar: LabelFilterBarComponent;
 
   @ViewChild('milestoneSelectorRef', { static: false }) milestoneSelectorRef: MatSelect;
+
+  @ViewChildren(MatSelect) matSelects!: QueryList<MatSelect>;
+
+  @ViewChild('searchInputRef') searchInputRef: any;
 
   constructor(
     public assigneeService: AssigneeService,
@@ -111,5 +115,29 @@ export class FilterBarComponent implements OnInit, OnDestroy {
       (err) => {},
       () => {}
     );
+  }
+
+  /**
+   * Handles Escape key behavior:
+   * - Closes any open dropdown (mat-select) if present.
+   * - Unfocuses the search input if it is currently focused.
+   * Prevents propagation to avoid unwanted side effects (like closing the entire filter bar).
+   */
+  @HostListener('keydown.escape', ['$event'])
+  handleEscape(event: KeyboardEvent) {
+    const openDropdown = this.matSelects.find((select) => select.panelOpen);
+    if (openDropdown) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      openDropdown.close();
+    } else if (this.searchInputRef && document.activeElement === this.searchInputRef.nativeElement) {
+      this.searchInputRef.nativeElement.blur();
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    } else if (this.labelFilterBar && this.labelFilterBar.isOpen()) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      this.labelFilterBar.closeMenu();
+    }
   }
 }
