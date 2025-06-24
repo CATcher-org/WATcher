@@ -30,4 +30,7 @@
       ></app-issue-pr-card-review-decision>
     </div>
   </mat-card-content>
+  <mat-card-footer>
+    <span class="date-created"> Created {{ issue.created_at | date: 'dd-MM-yy' }} </span>
+  </mat-card-footer>
 </mat-card>
