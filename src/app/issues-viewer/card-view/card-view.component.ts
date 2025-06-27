@@ -145,4 +145,8 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   getPrTooltip(): string {
     return this.issues.prCount + ' Pull Requests';
   }
+
+  getUsernameTooltip(fullUsername: string): string {
+    return 'Username: ' + fullUsername;
+  }
 }
