@@ -30,7 +30,7 @@
 
 <ng-template #assigneeHeader let-assignee>
   <div class="column-header">
-    <mat-card (click)="goToGithubProfile(assignee.login)" style="cursor: pointer">
+    <mat-card>
       <mat-card-header [ngStyle]="{ height: '40px' }">
         <div
           mat-card-avatar
@@ -42,7 +42,7 @@
         ></div>
         <mat-card-title>
           <div class="assignee-container">
-            <div class="assignee-name">
+            <div class="assignee-name" [matTooltip]="assignee.login" matTooltipPosition="above" (click)="goToGithubProfile(assignee.login)">
               {{ assignee.login }}
             </div>
             <div class="row-count count-margins" [matTooltip]="getIssueTooltip()" matTooltipPosition="above">
