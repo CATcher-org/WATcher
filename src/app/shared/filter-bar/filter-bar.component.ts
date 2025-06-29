@@ -125,19 +125,24 @@ export class FilterBarComponent implements OnInit, OnDestroy {
    */
   @HostListener('keydown.escape', ['$event'])
   handleEscape(event: KeyboardEvent) {
+    let handled = false;
+
     const openDropdown = this.matSelects.find((select) => select.panelOpen);
+    
     if (openDropdown) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
       openDropdown.close();
+      handled = true;
     } else if (this.searchInputRef && document.activeElement === this.searchInputRef.nativeElement) {
       this.searchInputRef.nativeElement.blur();
-      event.preventDefault();
-      event.stopImmediatePropagation();
+      handled = true;
     } else if (this.labelFilterBar && this.labelFilterBar.isOpen()) {
+      this.labelFilterBar.closeMenu();
+      handled = true;
+    }
+    
+    if (handled) {
       event.preventDefault();
       event.stopImmediatePropagation();
-      this.labelFilterBar.closeMenu();
     }
   }
 }
