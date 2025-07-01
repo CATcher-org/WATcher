@@ -1,10 +1,13 @@
-.pr-card {
+.card {
   margin: 8px 0px 8px 0px;
+}
+
+.pr-card {
   background-color: transparent;
 }
 
+/* light purple */
 .issue-card {
-  margin: 8px 0px 8px 0px;
   background-color: #f2e9ff;
 }
 
