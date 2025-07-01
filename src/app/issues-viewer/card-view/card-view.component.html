@@ -44,7 +44,7 @@
           <div class="assignee-container">
             <div
               class="assignee-name"
-              (click)="assignee.login !== 'Unassigned' && goToGithubProfile(assignee.login)"
+              (click)="goToGithubProfile(assignee.login)"
               [ngClass]="{ clickable: assignee.login !== 'Unassigned' }"
             >
               {{ assignee.login }}

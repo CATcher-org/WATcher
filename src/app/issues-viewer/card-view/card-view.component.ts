@@ -147,7 +147,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   }
 
   goToGithubProfile(username: string): void {
-    if (username) {
+    if (username && username !== 'Unassigned') {
       const url = `https://github.com/${username}`;
       window.open(url, '_blank'); // Opens in new tab
     }
