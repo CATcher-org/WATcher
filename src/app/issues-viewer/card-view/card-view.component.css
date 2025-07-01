@@ -160,11 +160,11 @@ div.column-header .mat-card-header {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  cursor: pointer;
 }
 
-.assignee-name:hover {
+.assignee-name.clickable:hover {
   color: #1a73e8;
+  cursor: pointer;
 }
 
 :host ::ng-deep .pagination-hide-arrow .mat-paginator-navigation-previous {
