@@ -21,6 +21,7 @@ span.octicon {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  margin-right: 14px;
 }
 
 :host ::ng-deep .mat-card-header-text {

@@ -76,4 +76,45 @@ export class IssuePrCardComponent {
   isIssue(): boolean {
     return this.issue.issueOrPr === 'Issue';
   }
+
+  /**
+   * Obtains badge colour from issue state.
+   * @returns CSS class for the badge color based on the issue state.
+   */
+  getBadgeColorClass(): string {
+    if (this.issue.state === 'OPEN') {
+      if (this.issue.isDraft) {
+        return 'badge-gray';
+      } else {
+        return 'badge-green';
+      }
+    } else if (this.issue.issueOrPr === 'PullRequest' && this.issue.state === 'CLOSED') {
+      return 'badge-red';
+    } else if (this.issue.issueOrPr === 'Issue' && this.issue.stateReason === 'NOT_PLANNED') {
+      return 'badge-gray';
+    } else {
+      return 'badge-purple';
+    }
+  }
+
+  /**
+   * Gets the badge class array for CSS styling.
+   */
+  getBadgeClasses(): string[] {
+    return ['type-badge', this.isIssue() ? 'issue-badge' : 'pr-badge', this.getBadgeColorClass()];
+  }
+
+  /**
+   * Gets the badge display text.
+   */
+  getBadgeText(): string {
+    return this.isIssue() ? 'I' : 'PR';
+  }
+
+  /**
+   * Gets the tooltip text for the badge.
+   */
+  getBadgeTooltip(): string {
+    return this.isIssue() ? 'Issue' : 'Pull Request';
+  }
 }

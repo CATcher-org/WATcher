@@ -1,18 +1,71 @@
 .card {
   margin: 8px 0px 8px 0px;
+  position: relative;
 }
 
 .pr-card {
   background-color: transparent;
 }
 
-/* light purple */
 .issue-card {
-  background-color: #f2e9ff;
+  background-color: transparent;
 }
 
 .mat-card {
   padding: 10px;
+}
+
+.issue-type-indicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+}
+
+.type-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 12px;
+  color: #fff;
+  background-color: gray; /* Default fallback */
+  margin-top: 4px;
+  margin-right: 2px;
+}
+
+.issue-badge {
+  width: 22px;
+  height: 22px;
+  font-family: 'Georgia';
+  border-radius: 50%; /* Circle shape */
+  padding: 0;
+}
+
+.pr-badge {
+  width: 24px;
+  height: 20px;
+  border-radius: 20%; /* Rounded square shape */
+}
+
+.issue-badge.badge-green,
+.pr-badge.badge-green {
+  background-color: green;
+}
+
+.issue-badge.badge-purple,
+.pr-badge.badge-purple {
+  background-color: purple;
+}
+
+.issue-badge.badge-red,
+.pr-badge.badge-red {
+  background-color: red;
+}
+
+.issue-badge.badge-gray,
+.pr-badge.badge-gray {
+  background-color: gray;
 }
 
 .column-header {
