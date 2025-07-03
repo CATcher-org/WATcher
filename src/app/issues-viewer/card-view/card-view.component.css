@@ -143,14 +143,12 @@ div.column-header .mat-card-header {
   margin-top: 3px;
 }
 
-/* white */
 .pr-row-count {
   background-color: rgb(222, 222, 222);
 }
 
-/* light purple */
 .issue-row-count {
-  background-color: #f2e9ff;
+  background-color: rgb(222, 222, 222);
 }
 
 .assignee-container {
