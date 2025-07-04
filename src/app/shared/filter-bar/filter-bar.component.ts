@@ -10,6 +10,7 @@ import { MilestoneService } from '../../core/services/milestone.service';
 import { ViewService } from '../../core/services/view.service';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
+import { EventEmitter, Output} from '@angular/core';
 
 /**
  * This component is abstracted out filterbar used by both detailed-viewer page
@@ -117,32 +118,36 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     );
   }
 
+  @Output() escapePressed = new EventEmitter<void>();
   /**
-   * Handles Escape key behavior:
-   * - Closes any open dropdown (mat-select) if present.
-   * - Unfocuses the search input if it is currently focused.
-   * Prevents propagation to avoid unwanted side effects (like closing the entire filter bar).
+   * Handles Escape key interactions within the filter bar:
+   *
+   * Priority of actions:
+   * 1. Closes the first open dropdown (`mat-select`) if any are open.
+   * 2. Blurs the search input if it's currently focused.
+   * 3. Closes the label filter bar if it's open.
+   * 4. Emits `escapePressed` to notify the parent to close the filter drawer.
+   *
+   * Always prevents default and stops propagation to avoid:
+   * - Window minimizing (especially in Electron/desktop wrappers)
+   * - Accidental closure of unrelated components
    */
-  @HostListener('keydown.escape', ['$event'])
-  handleEscape(event: KeyboardEvent) {
-    let handled = false;
-
+  @HostListener('document:keydown.escape', ['$event'])
+  handleEscape(event: KeyboardEvent) {    
     const openDropdown = this.matSelects.find((select) => select.panelOpen);
-    
+
     if (openDropdown) {
       openDropdown.close();
-      handled = true;
     } else if (this.searchInputRef && document.activeElement === this.searchInputRef.nativeElement) {
       this.searchInputRef.nativeElement.blur();
-      handled = true;
-    } else if (this.labelFilterBar && this.labelFilterBar.isOpen()) {
+    } else if (this.labelFilterBar?.isOpen()) {
       this.labelFilterBar.closeMenu();
-      handled = true;
+    } else {
+      this.escapePressed.emit();
     }
-    
-    if (handled) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-    }
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
   }
 }
+
