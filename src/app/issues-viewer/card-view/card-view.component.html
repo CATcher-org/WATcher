@@ -46,6 +46,8 @@
               class="assignee-name"
               (click)="goToGithubProfile(assignee.login)"
               [ngClass]="{ clickable: assignee.login !== 'Unassigned' }"
+              [matTooltip]="getAssigneeTooltip(assignee)"
+              matTooltipPosition="above"
             >
               {{ assignee.login }}
             </div>
