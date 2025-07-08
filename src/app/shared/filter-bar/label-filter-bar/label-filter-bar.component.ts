@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { Observable, Subscription } from 'rxjs';
 import { SimpleLabel } from '../../../core/models/label.model';
 import { FiltersService } from '../../../core/services/filters.service';
@@ -25,6 +26,8 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
   isDefault = true;
 
   labelSubscription: Subscription;
+
+  @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
 
   constructor(private labelService: LabelService, private logger: LoggingService, private filtersService: FiltersService) {}
 
@@ -136,5 +139,14 @@ export class LabelFilterBarComponent implements OnInit, AfterViewInit, OnDestroy
 
     this.isDefault = true;
     this.updateSelection();
+  }
+
+
+  isOpen(): boolean {
+    return this.menuTrigger?.menuOpen || false;
+  }
+
+  closeMenu(): void {
+    this.menuTrigger.closeMenu();
   }
 }

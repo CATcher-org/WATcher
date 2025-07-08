@@ -1,129 +1,132 @@
-<ul>
-  <li>
-    <mat-form-field class="search-bar">
-      <input
-        matInput
-        value="{{ this.filtersService.filter$.value.title }}"
-        (keyup)="this.filtersService.updateFilters({ title: $event.target.value })"
-        placeholder="Search"
-      />
-    </mat-form-field>
-  </li>
+<div tabindex="0" (keydown.escape)="handleEscape($event)">
+  <ul>
+    <li>
+      <mat-form-field class="search-bar">
+        <input
+          #searchInputRef
+          matInput
+          value="{{ this.filtersService.filter$.value.title }}"
+          (keyup)="this.filtersService.updateFilters({ title: $event.target.value })"
+          placeholder="Search"
+        />
+      </mat-form-field>
+    </li>
 
-  <li class="filters">
-    <mat-form-field appearance="standard" class="filter-item">
-      <mat-label>Group by</mat-label>
-      <mat-select
-        [value]="this.groupingContextService.currGroupBy$ | async"
-        panelClass="filter-bar-panel"
-        (selectionChange)="this.groupingContextService.setCurrentGroupingType($event.value)"
-      >
-        <mat-option *ngFor="let option of this.groupByEnum | keyvalue" [value]="option.value">{{ option.key }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="standard" class="filter-item">
-      <mat-label>Status</mat-label>
-      <mat-select
-        [value]="this.filter.status"
-        panelClass="filter-bar-panel"
-        (selectionChange)="this.filtersService.updateFilters({ status: $event.value })"
-        multiple
-      >
-        <mat-option *ngIf="isFilterPullRequest()" [value]="statusOptions.OpenPullRequests">Open Pull Requests</mat-option>
-        <mat-option *ngIf="isFilterPullRequest()" [value]="statusOptions.MergedPullRequests">Merged Pull Requests</mat-option>
-        <mat-option *ngIf="isFilterPullRequest()" [value]="statusOptions.ClosedPullRequests">Closed Pull Request</mat-option>
-        <mat-option *ngIf="isFilterIssue()" [value]="statusOptions.OpenIssues">Open Issues</mat-option>
-        <mat-option *ngIf="isFilterIssue()" [value]="statusOptions.ClosedIssues">Closed Issues</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="standard" class="filter-item">
-      <mat-label>Type</mat-label>
-      <mat-select
-        [value]="this.filter.type"
-        panelClass="filter-bar-panel"
-        (selectionChange)="this.filtersService.updateFilters({ type: $event.value })"
-      >
-        <mat-option [value]="typeOptions.All">All</mat-option>
-        <mat-option [value]="typeOptions.Issue">Issue</mat-option>
-        <mat-option [value]="typeOptions.PullRequests">Pull Request</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field
-      appearance="standard"
-      matSort
-      [matSortDisableClear]="true"
-      (matSortChange)="this.filtersService.updateFilters({ sort: $event })"
-      class="filter-item"
-    >
-      <mat-label>Sort</mat-label>
-      <mat-select [value]="this.filter.sort.active" panelClass="filter-bar-panel">
-        <mat-option [value]="sortOptions.Id">
-          <span mat-sort-header="id">ID</span>
-        </mat-option>
-        <mat-option [value]="sortOptions.Title">
-          <span mat-sort-header="title">Title</span>
-        </mat-option>
-        <mat-option [value]="sortOptions.Date">
-          <span mat-sort-header="date">Date Updated</span>
-        </mat-option>
-        <mat-option [value]="sortOptions.Status">
-          <span mat-sort-header="status">Status</span>
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="standard" class="filter-item">
-      <mat-label>Milestone</mat-label>
-      <mat-select
-        #milestoneSelectorRef
-        [value]="this.filter.milestones"
-        panelClass="filter-bar-panel"
-        (selectionChange)="this.filtersService.updateFilters({ milestones: $event.value })"
-        [disabled]="this.milestoneService.hasNoMilestones"
-        multiple
-      >
-        <mat-select-trigger *ngIf="this.milestoneService.hasNoMilestones">
-          <span>No Milestones</span>
-        </mat-select-trigger>
-        <mat-option *ngFor="let milestone of this.milestoneService.milestones" [value]="milestone.title">
-          {{ milestone.title }}
-        </mat-option>
-        <mat-option *ngIf="isFilterIssue()" [value]="milestoneOptions.IssueWithoutMilestone">Issues without a milestone</mat-option>
-        <mat-option *ngIf="isFilterPullRequest()" [value]="milestoneOptions.PullRequestWithoutMilestone"
-          >PRs without a milestone</mat-option
+    <li class="filters">
+      <mat-form-field appearance="standard" class="filter-item">
+        <mat-label>Group by</mat-label>
+        <mat-select
+          [value]="this.groupingContextService.currGroupBy$ | async"
+          panelClass="filter-bar-panel"
+          (selectionChange)="this.groupingContextService.setCurrentGroupingType($event.value)"
         >
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="standard" class="filter-item">
-      <mat-label>Items per page</mat-label>
-      <mat-select
-        [value]="this.filter.itemsPerPage"
-        panelClass="filter-bar-panel"
-        (selectionChange)="this.filtersService.updateFilters({ itemsPerPage: $event.value })"
+          <mat-option *ngFor="let option of this.groupByEnum | keyvalue" [value]="option.value">{{ option.key }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="standard" class="filter-item">
+        <mat-label>Status</mat-label>
+        <mat-select
+          [value]="this.filter.status"
+          panelClass="filter-bar-panel"
+          (selectionChange)="this.filtersService.updateFilters({ status: $event.value })"
+          multiple
+        >
+          <mat-option *ngIf="isFilterPullRequest()" [value]="statusOptions.OpenPullRequests">Open Pull Requests</mat-option>
+          <mat-option *ngIf="isFilterPullRequest()" [value]="statusOptions.MergedPullRequests">Merged Pull Requests</mat-option>
+          <mat-option *ngIf="isFilterPullRequest()" [value]="statusOptions.ClosedPullRequests">Closed Pull Request</mat-option>
+          <mat-option *ngIf="isFilterIssue()" [value]="statusOptions.OpenIssues">Open Issues</mat-option>
+          <mat-option *ngIf="isFilterIssue()" [value]="statusOptions.ClosedIssues">Closed Issues</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="standard" class="filter-item">
+        <mat-label>Type</mat-label>
+        <mat-select
+          [value]="this.filter.type"
+          panelClass="filter-bar-panel"
+          (selectionChange)="this.filtersService.updateFilters({ type: $event.value })"
+        >
+          <mat-option [value]="typeOptions.All">All</mat-option>
+          <mat-option [value]="typeOptions.Issue">Issue</mat-option>
+          <mat-option [value]="typeOptions.PullRequests">Pull Request</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field
+        appearance="standard"
+        matSort
+        [matSortDisableClear]="true"
+        (matSortChange)="this.filtersService.updateFilters({ sort: $event })"
+        class="filter-item"
       >
-        <mat-option [value]="10">10</mat-option>
-        <mat-option [value]="20">20</mat-option>
-        <mat-option [value]="50">50</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="standard">
-      <mat-label>Assigned to</mat-label>
-      <mat-select
-        #assigneeSelectorRef
-        [value]="this.filter.assignees"
-        panelClass="filter-bar-panel"
-        (selectionChange)="this.filtersService.updateFilters({ assignees: $event.value })"
-        [disabled]="this.assigneeService.hasNoAssignees"
-        multiple
-      >
-        <mat-select-trigger *ngIf="this.assigneeService.hasNoAssignees">
-          <span>No Assignees</span>
-        </mat-select-trigger>
-        <mat-option *ngFor="let assignee of this.assigneeService.assignees" [value]="assignee.login">
-          {{ assignee.login }}
-        </mat-option>
-        <mat-option [value]="'Unassigned'">Unassigned</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <app-label-filter-bar></app-label-filter-bar>
-  </li>
-</ul>
+        <mat-label>Sort</mat-label>
+        <mat-select [value]="this.filter.sort.active" panelClass="filter-bar-panel">
+          <mat-option [value]="sortOptions.Id">
+            <span mat-sort-header="id">ID</span>
+          </mat-option>
+          <mat-option [value]="sortOptions.Title">
+            <span mat-sort-header="title">Title</span>
+          </mat-option>
+          <mat-option [value]="sortOptions.Date">
+            <span mat-sort-header="date">Date Updated</span>
+          </mat-option>
+          <mat-option [value]="sortOptions.Status">
+            <span mat-sort-header="status">Status</span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="standard" class="filter-item">
+        <mat-label>Milestone</mat-label>
+        <mat-select
+          #milestoneSelectorRef
+          [value]="this.filter.milestones"
+          panelClass="filter-bar-panel"
+          (selectionChange)="this.filtersService.updateFilters({ milestones: $event.value })"
+          [disabled]="this.milestoneService.hasNoMilestones"
+          multiple
+        >
+          <mat-select-trigger *ngIf="this.milestoneService.hasNoMilestones">
+            <span>No Milestones</span>
+          </mat-select-trigger>
+          <mat-option *ngFor="let milestone of this.milestoneService.milestones" [value]="milestone.title">
+            {{ milestone.title }}
+          </mat-option>
+          <mat-option *ngIf="isFilterIssue()" [value]="milestoneOptions.IssueWithoutMilestone">Issues without a milestone</mat-option>
+          <mat-option *ngIf="isFilterPullRequest()" [value]="milestoneOptions.PullRequestWithoutMilestone"
+            >PRs without a milestone</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="standard" class="filter-item">
+        <mat-label>Items per page</mat-label>
+        <mat-select
+          [value]="this.filter.itemsPerPage"
+          panelClass="filter-bar-panel"
+          (selectionChange)="this.filtersService.updateFilters({ itemsPerPage: $event.value })"
+        >
+          <mat-option [value]="10">10</mat-option>
+          <mat-option [value]="20">20</mat-option>
+          <mat-option [value]="50">50</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="standard">
+        <mat-label>Assigned to</mat-label>
+        <mat-select
+          #assigneeSelectorRef
+          [value]="this.filter.assignees"
+          panelClass="filter-bar-panel"
+          (selectionChange)="this.filtersService.updateFilters({ assignees: $event.value })"
+          [disabled]="this.assigneeService.hasNoAssignees"
+          multiple
+        >
+          <mat-select-trigger *ngIf="this.assigneeService.hasNoAssignees">
+            <span>No Assignees</span>
+          </mat-select-trigger>
+          <mat-option *ngFor="let assignee of this.assigneeService.assignees" [value]="assignee.login">
+            {{ assignee.login }}
+          </mat-option>
+          <mat-option [value]="'Unassigned'">Unassigned</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <app-label-filter-bar></app-label-filter-bar>
+    </li>
+  </ul>
+</div>
