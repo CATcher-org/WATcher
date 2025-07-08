@@ -1,4 +1,17 @@
-import { AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit, QueryList, Type, ViewChild, ViewChildren } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  QueryList,
+  Type,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
 import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { MilestoneOptions, SortOptions, StatusOptions, TypeOptions } from '../../core/constants/filter-options.constants';
@@ -10,7 +23,6 @@ import { MilestoneService } from '../../core/services/milestone.service';
 import { ViewService } from '../../core/services/view.service';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
-import { EventEmitter, Output} from '@angular/core';
 
 /**
  * This component is abstracted out filterbar used by both detailed-viewer page
@@ -46,6 +58,8 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   @ViewChildren(MatSelect) matSelects!: QueryList<MatSelect>;
 
   @ViewChild('searchInputRef') searchInputRef: any;
+
+  @Output() escapePressed = new EventEmitter<void>();
 
   constructor(
     public assigneeService: AssigneeService,
@@ -118,7 +132,6 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     );
   }
 
-  @Output() escapePressed = new EventEmitter<void>();
   /**
    * Handles Escape key interactions within the filter bar:
    *
@@ -133,7 +146,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
    * - Accidental closure of unrelated components
    */
   @HostListener('document:keydown.escape', ['$event'])
-  handleEscape(event: KeyboardEvent) {    
+  handleEscape(event: KeyboardEvent) {
     const openDropdown = this.matSelects.find((select) => select.panelOpen);
 
     if (openDropdown) {

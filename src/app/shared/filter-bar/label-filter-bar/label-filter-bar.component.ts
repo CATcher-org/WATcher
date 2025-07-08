@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { Observable, Subscription } from 'rxjs';
 import { SimpleLabel } from '../../../core/models/label.model';
 import { FiltersService } from '../../../core/services/filters.service';
 import { LabelService } from '../../../core/services/label.service';
 import { LoggingService } from '../../../core/services/logging.service';
-import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-label-filter-bar',
