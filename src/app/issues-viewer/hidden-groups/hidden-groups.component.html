@@ -31,7 +31,11 @@
           'background-size': '30px'
         }"
       ></div>
-      <mat-card-title>{{ assignee.login }}</mat-card-title>
+      <mat-card-title>
+        <div class="assignee-name" (click)="goToGithubProfile(assignee.login)">
+          {{ assignee.login }}
+        </div>
+      </mat-card-title>
     </mar-card-header>
   </mat-card>
 </ng-template>

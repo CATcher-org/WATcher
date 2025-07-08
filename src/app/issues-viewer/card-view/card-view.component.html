@@ -42,7 +42,13 @@
         ></div>
         <mat-card-title>
           <div class="assignee-container">
-            <div class="assignee-name">
+            <div
+              class="assignee-name"
+              (click)="goToGithubProfile(assignee.login)"
+              [ngClass]="{ clickable: assignee.login !== 'Unassigned' }"
+              [matTooltip]="getAssigneeTooltip(assignee)"
+              matTooltipPosition="above"
+            >
               {{ assignee.login }}
             </div>
             <div class="row-count count-margins" [matTooltip]="getIssueTooltip()" matTooltipPosition="above">
