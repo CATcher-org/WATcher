@@ -149,4 +149,11 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   getAssigneeTooltip(assignee: any): string {
     return assignee.login;
   }
+
+  goToGithubProfile(username: string): void {
+    if (username && username !== 'Unassigned') {
+      const url = `https://github.com/${username}`;
+      window.open(url, '_blank'); // Opens in new tab
+    }
+  }
 }
