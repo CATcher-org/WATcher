@@ -46,10 +46,10 @@
               class="assignee-name"
               (click)="goToGithubProfile(assignee.login)"
               [ngClass]="{ clickable: assignee.login !== 'Unassigned' }"
-              [matTooltip]="getAssigneeTooltip(assignee)"
-              matTooltipPosition="above"
             >
-              {{ assignee.login }}
+              <span class="" [matTooltip]="getAssigneeTooltip(assignee)" matTooltipPosition="above">
+                {{ assignee.login }}
+              </span>
             </div>
             <div class="row-count count-margins" [matTooltip]="getIssueTooltip()" matTooltipPosition="above">
               <span class="octicon count-margins" octicon="issue-opened"></span>
