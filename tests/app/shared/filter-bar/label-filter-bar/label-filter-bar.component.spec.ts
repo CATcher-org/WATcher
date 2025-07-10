@@ -7,8 +7,8 @@ import { Filter, FiltersService } from '../../../../../src/app/core/services/fil
 import { LabelService } from '../../../../../src/app/core/services/label.service';
 import { LoggingService } from '../../../../../src/app/core/services/logging.service';
 import { LabelFilterBarComponent } from '../../../../../src/app/shared/filter-bar/label-filter-bar/label-filter-bar.component';
-import { LABEL_NAME_SEVERITY_HIGH, LABEL_NAME_SEVERITY_LOW, SEVERITY_SIMPLE_LABELS } from '../../../../constants/label.constants';
 import { DEFAULT_FILTER } from '../../../../constants/filter.constants';
+import { LABEL_NAME_SEVERITY_HIGH, LABEL_NAME_SEVERITY_LOW, SEVERITY_SIMPLE_LABELS } from '../../../../constants/label.constants';
 
 describe('LabelFilterBarComponent', () => {
   let component: LabelFilterBarComponent;
