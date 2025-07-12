@@ -35,4 +35,11 @@ export class HiddenGroupsComponent implements AfterViewInit {
         return this.defaultCardTemplate;
     }
   }
+
+  goToGithubProfile(username: string): void {
+    if (username) {
+      const url = `https://github.com/${username}`;
+      window.open(url, '_blank'); // Opens in new tab
+    }
+  }
 }
