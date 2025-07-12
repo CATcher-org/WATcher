@@ -41,6 +41,14 @@
   word-break: break-word;
 }
 
+.assignee-name {
+  cursor: pointer;
+}
+
+.assignee-name:hover {
+  color: #1a73e8;
+}
+
 .mat-card-avatar {
   height: 30px;
   width: 30px;
