@@ -46,6 +46,19 @@
   margin: 6px 0;
 }
 
+mat-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 8px 8px;
+  margin-top: 4px;
+  margin-right: -6px;
+}
+
+.date-created {
+  font-size: 10px;
+  color: #6c757d;
+}
+
 .content {
   width: 100%;
   display: flex;
