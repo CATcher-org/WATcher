@@ -86,17 +86,39 @@ import { SharedModule } from './shared/shared.module';
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor(private apollo: Apollo, private httpLink: HttpLink, private authService: AuthService, private logger: LoggingService) {
+  constructor(
+    private apollo: Apollo,
+    private httpLink: HttpLink,
+    private authService: AuthService,
+    private logger: LoggingService,
+    private errorHandler: ErrorHandlingService
+  ) {
     const URI = 'https://api.github.com/graphql';
     const log = new ApolloLink((operation, forward) => {
-      operation.setContext({ start: performance.now() });
+      const start = performance.now();
+      operation.setContext({ start });
+
       this.logger.info('AppModule: GraphQL request', operation.getContext());
+
       return forward(operation).map((result) => {
-        const time = performance.now() - operation.getContext().start;
-        this.logger.info('AppModule: GraphQL response', operation.getContext(), `in ${Math.round(time)}ms`);
-        const repo = operation.getContext().response.body.data.repository;
+        const time = Math.round(performance.now() - start);
+        const context = operation.getContext();
+
+        this.logger.info('AppModule: GraphQL response', context, `in ${time}ms`);
+
+        const repo = context.response?.body?.data?.repository;
+        if (!repo) {
+          this.logger.warn('AppModule: GraphQL response missing repository', {
+            context: context.name,
+            operation: operation.operationName
+          });
+          return result;
+        }
+
         const item = Object.keys(repo)[0];
-        this.logger.debug('AppModule: GraphQL response body', item, repo[item].edges.length, repo[item].edges);
+        const edges = repo[item]?.edges ?? [];
+        this.logger.debug('AppModule: GraphQL response body', item, edges.length, edges);
+
         return result;
       });
     });
