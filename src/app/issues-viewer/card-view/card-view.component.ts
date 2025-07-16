@@ -149,21 +149,14 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   }
 
   filterByIssues(): void {
-    this.currentFilter = this.currentFilter === 'issues' ? 'all' : 'issues';
+    const issueFilter = this.currentFilter === 'issues' ? 'all' : 'issues';
+    this.currentFilter = issueFilter;
+    this.issues.setIssueTypeFilter(issueFilter);
   }
 
   filterByPrs(): void {
-    this.currentFilter = this.currentFilter === 'prs' ? 'all' : 'prs';
-  }
-
-  isIssueCard(issue: Issue): boolean {
-    switch (this.currentFilter) {
-      case 'issues':
-        return issue.issueOrPr === 'Issue';
-      case 'prs':
-        return issue.issueOrPr === 'PullRequest';
-      default:
-        return true;
-    }
+    const issueFilter = this.currentFilter === 'prs' ? 'all' : 'prs';
+    this.currentFilter = issueFilter;
+    this.issues.setIssueTypeFilter(issueFilter);
   }
 }

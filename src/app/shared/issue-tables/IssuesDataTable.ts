@@ -24,6 +24,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
   private filterChange = new BehaviorSubject(this.filtersService.defaultFilter);
   private issuesSubject = new BehaviorSubject<Issue[]>([]);
   private issueSubscription: Subscription;
+  private issueTypeFilter: 'all' | 'issues' | 'prs' = 'all';
 
   public isLoading$ = this.issueService.isLoading.asObservable();
 
@@ -69,6 +70,15 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
     this.issueService.stopPollIssues();
   }
 
+  setIssueTypeFilter(filter: 'all' | 'issues' | 'prs') {
+    this.issueTypeFilter = filter;
+    this.loadIssues();
+  }
+
+  getIssueTypeFilter(): 'all' | 'issues' | 'prs' {
+    return this.issueTypeFilter;
+  }
+
   loadIssues() {
     let page;
     if (this.paginator !== undefined) {
@@ -98,8 +108,22 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
           data = applyDropdownFilter(this.filter, data, !this.milestoneService.hasNoMilestones, !this.assigneeService.hasNoAssignees);
 
           data = applySearchFilter(this.filter.title, this.displayedColumn, this.issueService, data);
+
           this.issueCount = data.filter((issue) => issue.issueOrPr !== 'PullRequest').length;
           this.prCount = data.filter((issue) => issue.issueOrPr === 'PullRequest').length;
+
+          // Apply Issue Type Filter for header component
+          switch (this.issueTypeFilter) {
+            case 'issues':
+              data = data.filter((issue) => issue.issueOrPr === 'Issue');
+              break;
+            case 'prs':
+              data = data.filter((issue) => issue.issueOrPr === 'PullRequest');
+              break;
+            default:
+              break;
+          }
+
           this.count = data.length;
 
           data = applySort(this.filter.sort, data);
