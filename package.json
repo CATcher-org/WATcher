@@ -56,11 +56,11 @@
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^20.1.0",
+    "@angular-devkit/build-angular": "^0.1002.1",
     "@angular/cli": "^20.1.0",
     "@angular/compiler-cli": "^11.2.14",
     "@angular/language-service": "^11.2.14",
-    "@graphql-codegen/cli": "^1.21.8",
+    "@graphql-codegen/cli": "^5.0.7",
     "@graphql-codegen/typescript": "^1.23.0",
     "@graphql-codegen/typescript-document-nodes": "^1.17.16",
     "@graphql-codegen/typescript-operations": "^1.18.4",
