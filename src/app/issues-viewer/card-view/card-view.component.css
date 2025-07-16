@@ -181,6 +181,11 @@ div.column-header .mat-card-header {
   color: white;
 }
 
+.issue-row-count.inactive,
+.pr-row-count.inactive {
+  background-color: rgb(222, 222, 222);
+}
+
 .assignee-container {
   width: 100%;
   text-align: left;

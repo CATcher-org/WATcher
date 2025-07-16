@@ -47,22 +47,24 @@
             </div>
             <div
               class="issue-row-count count-margins"
+              [class.inactive]="!this.issues.hasIssue"
               [matTooltip]="getIssueTooltip()"
               matTooltipPosition="above"
-              (click)="filterByIssues()"
+              (click)="this.issues.hasIssue && filterByIssues()"
               [class.active]="currentFilter === 'issues'"
-              style="cursor: pointer"
+              [style.cursor]="this.issues.hasIssue ? 'pointer' : 'default'"
             >
               <span class="octicon count-margins" octicon="issue-opened"></span>
               <span class="">{{ this.issues.issueCount }}</span>
             </div>
             <div
               class="pr-row-count"
+              [class.inactive]="!this.issues.hasPR"
               [matTooltip]="getPrTooltip()"
               matTooltipPosition="above"
-              (click)="filterByPrs()"
+              (click)="this.issues.hasPR && filterByPrs()"
               [class.active]="currentFilter === 'prs'"
-              style="cursor: pointer"
+              [style.cursor]="this.issues.hasPR ? 'pointer' : 'default'"
             >
               <span class="octicon count-margins" octicon="git-pull-request"></span>
               <span>{{ this.issues.prCount }}</span>
@@ -85,22 +87,24 @@
             </div>
             <div
               class="issue-row-count count-margins"
+              [class.inactive]="!this.issues.hasIssue"
               [matTooltip]="getIssueTooltip()"
               matTooltipPosition="above"
-              (click)="filterByIssues()"
+              (click)="this.issues.hasIssue && filterByIssues()"
               [class.active]="currentFilter === 'issues'"
-              style="cursor: pointer"
+              [style.cursor]="this.issues.hasIssue ? 'pointer' : 'default'"
             >
               <span class="octicon count-margins" octicon="issue-opened"></span>
               <span class="">{{ this.issues.issueCount }}</span>
             </div>
             <div
               class="pr-row-count"
+              [class.inactive]="!this.issues.hasPR"
               [matTooltip]="getPrTooltip()"
               matTooltipPosition="above"
-              (click)="filterByPrs()"
+              (click)="this.issues.hasPR && filterByPrs()"
               [class.active]="currentFilter === 'prs'"
-              style="cursor: pointer"
+              [style.cursor]="this.issues.hasPR ? 'pointer' : 'default'"
             >
               <span class="octicon count-margins" octicon="git-pull-request"></span>
               <span>{{ this.issues.prCount }}</span>

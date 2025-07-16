@@ -21,10 +21,12 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
   public count = 0;
   public issueCount = 0;
   public prCount = 0;
+  public hasIssue = false;
+  public hasPR = false;
   private filterChange = new BehaviorSubject(this.filtersService.defaultFilter);
   private issuesSubject = new BehaviorSubject<Issue[]>([]);
   private issueSubscription: Subscription;
-  private issueTypeFilter: 'all' | 'issues' | 'prs' = 'all';
+  private issueTypeFilter: 'all' | 'issues' | 'prs' = 'all'; // initialise as 'all'
 
   public isLoading$ = this.issueService.isLoading.asObservable();
 
@@ -111,16 +113,25 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
 
           this.issueCount = data.filter((issue) => issue.issueOrPr !== 'PullRequest').length;
           this.prCount = data.filter((issue) => issue.issueOrPr === 'PullRequest').length;
+          this.hasIssue = this.issueCount > 0;
+          this.hasPR = this.prCount > 0;
 
           // Apply Issue Type Filter for header component
           switch (this.issueTypeFilter) {
             case 'issues':
               data = data.filter((issue) => issue.issueOrPr === 'Issue');
+              if (data.length === 0) {
+                this.issueTypeFilter = 'all'; // Reset to 'all' if no issues found
+              }
               break;
             case 'prs':
               data = data.filter((issue) => issue.issueOrPr === 'PullRequest');
+              if (data.length === 0) {
+                this.issueTypeFilter = 'all'; // Reset to 'all' if no PRs found
+              }
               break;
             default:
+              this.issueTypeFilter = 'all';
               break;
           }
 
