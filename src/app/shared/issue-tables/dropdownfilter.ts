@@ -1,5 +1,7 @@
+import { PullRequest } from '../../core/models/pull-request.model';
 import { Issue } from '../../core/models/issue.model';
 import { Filter } from '../../core/services/filters.service';
+import { RepoItem } from '../../core/models/repo-item.model';
 
 type StatusInfo = {
   type: string;
@@ -22,11 +24,11 @@ const infoFromStatus = (statusString: string): StatusInfo => {
  */
 export function applyDropdownFilter(
   filter: Filter,
-  data: Issue[],
+  data: RepoItem[],
   isFilteringByMilestone: boolean,
   isFilteringByAssignee: boolean
-): Issue[] {
-  const filteredData: Issue[] = data.filter((issue) => {
+): RepoItem[] {
+  const filteredData: RepoItem[] = data.filter((datum) => {
     let ret = true;
 
     // status can either be 'open', 'closed', or 'merged'
@@ -34,32 +36,32 @@ export function applyDropdownFilter(
       ret &&
       filter.status.some((item) => {
         const statusInfo = infoFromStatus(item);
-        return statusInfo.status === issue.state.toLowerCase() && statusInfo.type === issue.issueOrPr.toLowerCase();
+        return statusInfo.status === datum.state.toLowerCase() && statusInfo.type === datum.constructor.name.toLowerCase();
       });
 
     if (filter.type === 'issue') {
-      ret = ret && issue.issueOrPr === 'Issue';
+      ret = ret && datum instanceof Issue;
     } else if (filter.type === 'pullrequest') {
-      ret = ret && issue.issueOrPr === 'PullRequest';
+      ret = ret && datum instanceof PullRequest;
     }
 
-    ret = ret && (!isFilteringByMilestone || filter.milestones.some((milestone) => issue.milestone.title === milestone));
-    ret = ret && (!isFilteringByAssignee || isFilteredByAssignee(filter, issue));
-    ret = ret && issue.labels.every((label) => !filter.deselectedLabels.has(label));
-    return ret && filter.labels.every((label) => issue.labels.includes(label));
+    ret = ret && (!isFilteringByMilestone || filter.milestones.some((milestone) => datum.milestone.title === milestone));
+    ret = ret && (!isFilteringByAssignee || isFilteredByAssignee(filter, datum));
+    ret = ret && datum.labels.every((label) => !filter.deselectedLabels.has(label));
+    return ret && filter.labels.every((label) => datum.labels.includes(label));
   });
   return filteredData;
 }
 
-function isFilteredByAssignee(filter: Filter, issue: Issue): boolean {
-  if (issue.issueOrPr === 'Issue') {
+function isFilteredByAssignee(filter: Filter, data: RepoItem): boolean {
+  if (data instanceof Issue) {
     return (
-      filter.assignees.some((assignee) => issue.assignees.includes(assignee)) ||
-      (filter.assignees.includes('Unassigned') && issue.assignees.length === 0)
+      filter.assignees.some((assignee) => data.assignees.includes(assignee)) ||
+      (filter.assignees.includes('Unassigned') && data.assignees.length === 0)
     );
-  } else if (issue.issueOrPr === 'PullRequest') {
+  } else if (data instanceof PullRequest) {
     return (
-      filter.assignees.some((assignee) => issue.author === assignee) || (filter.assignees.includes('Unassigned') && issue.author === null)
+      filter.assignees.some((assignee) => data.author === assignee) || (filter.assignees.includes('Unassigned') && data.author === null)
     );
     // note that issue.author is never == null for PRs, but is left for semantic reasons
   } else {

@@ -5,6 +5,8 @@ import { GithubService } from '../../core/services/github.service';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
+import { RepoItem } from '../../core/models/repo-item.model';
+import { PullRequest } from '../../core/models/pull-request.model';
 
 @Component({
   selector: 'app-issue-pr-card',
@@ -12,7 +14,7 @@ import { MilestoneService } from '../../core/services/milestone.service';
   styleUrls: ['./issue-pr-card.component.css']
 })
 export class IssuePrCardComponent {
-  @Input() issue: Issue;
+  @Input() repoItem: RepoItem;
   @Input() filter?: Filter;
 
   constructor(
@@ -24,33 +26,33 @@ export class IssuePrCardComponent {
 
   isNotFollowingForkingWorkflow() {
     return (
-      this.issue.issueOrPr === 'PullRequest' && this.issue.headRepository?.toLowerCase() === this.githubService.getRepoURL().toLowerCase()
+      this.repoItem instanceof PullRequest && this.repoItem.headRepository?.toLowerCase() === this.githubService.getRepoURL().toLowerCase()
     );
   }
 
-  /** Opens issue in new window */
+  /** Opens repo item in new window */
   viewIssueInBrowser(event: Event) {
-    this.logger.info(`CardViewComponent: Opening Issue ${this.issue.id} on Github`);
-    this.githubService.viewIssueInBrowser(this.issue.id, event);
+    this.logger.info(`CardViewComponent: Opening Issue ${this.repoItem.id} on Github`);
+    this.githubService.viewIssueInBrowser(this.repoItem.id, event);
   }
 
   /** Opens milestone in new window */
   viewMilestoneInBrowser(event: Event) {
-    this.logger.info(`CardViewComponent: Opening Milestone ${this.issue.milestone.number} on Github`);
-    this.githubService.viewMilestoneInBrowser(this.issue.milestone.number, event);
+    this.logger.info(`CardViewComponent: Opening Milestone ${this.repoItem.milestone.number} on Github`);
+    this.githubService.viewMilestoneInBrowser(this.repoItem.milestone.number, event);
   }
 
   /** Returns CSS class for border color */
   getIssueOpenOrCloseColorCSSClass() {
-    if (this.issue.state === 'OPEN') {
-      if (this.issue.isDraft) {
+    if (this.repoItem.state === 'OPEN') {
+      if (this.repoItem.isDraft) {
         return 'border-gray';
       } else {
         return 'border-green';
       }
-    } else if (this.issue.issueOrPr === 'PullRequest' && this.issue.state === 'CLOSED') {
+    } else if (this.repoItem instanceof PullRequest && this.repoItem.state === 'CLOSED') {
       return 'border-red';
-    } else if (this.issue.issueOrPr === 'Issue' && this.issue.stateReason === 'NOT_PLANNED') {
+    } else if (this.repoItem instanceof Issue && this.repoItem.stateReason === 'NOT_PLANNED') {
       return 'border-gray';
     } else {
       return 'border-purple';
@@ -66,10 +68,10 @@ export class IssuePrCardComponent {
     const MAX_CHARACTER_LENGTH = 72;
     const ELLIPSES = '...';
 
-    return this.issue.description.slice(0, MAX_CHARACTER_LENGTH) + ELLIPSES;
+    return this.repoItem.description.slice(0, MAX_CHARACTER_LENGTH) + ELLIPSES;
   }
 
-  isMergedWithoutReview(issue: Issue): boolean {
-    return issue.issueOrPr === 'PullRequest' && issue.state === 'MERGED' && (!issue.reviews || issue.reviews.length === 0);
+  isMergedWithoutReview(repoItem: RepoItem): boolean {
+    return repoItem instanceof PullRequest && repoItem.state === 'MERGED' && (!repoItem.reviews || repoItem.reviews.length === 0);
   }
 }

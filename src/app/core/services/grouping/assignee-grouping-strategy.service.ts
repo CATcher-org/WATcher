@@ -5,6 +5,7 @@ import { GithubUser } from '../../models/github-user.model';
 import { Issue } from '../../models/issue.model';
 import { GithubService } from '../github.service';
 import { GroupingStrategy } from './grouping-strategy.interface';
+import { PullRequest } from '../../models/pull-request.model';
 
 /**
  * A GroupingStrategy that groups issues/prs based on their assignees.
@@ -20,11 +21,11 @@ export class AssigneeGroupingStrategy implements GroupingStrategy {
    * If it is the "No Assignee" group, unassigned issues are returned.
    * Otherwise, issues assigned to the specified user are returned.
    */
-  getDataForGroup(issues: Issue[], key: GithubUser): Issue[] {
+  getDataForGroup(items: Issue[] | PullRequest[], key: GithubUser): Issue[] | PullRequest[] {
     if (key === GithubUser.NO_ASSIGNEE) {
-      return this.getUnassignedData(issues);
+      return this.getUnassignedData(items);
     }
-    return this.getDataAssignedToUser(issues, key);
+    return this.getDataAssignedToUser(items, key);
   }
 
   /**
@@ -48,24 +49,24 @@ export class AssigneeGroupingStrategy implements GroupingStrategy {
     return group !== GithubUser.NO_ASSIGNEE;
   }
 
-  private getDataAssignedToUser(issues: Issue[], user: GithubUser): Issue[] {
-    const filteredIssues = issues.filter((issue) => {
-      if (this.isPullRequest(issue)) {
-        return this.isPullRequestCreatedByTarget(issue, user);
+  private getDataAssignedToUser(items: Issue[] | PullRequest[], user: GithubUser): Issue[] | PullRequest[] {
+    const filteredIssues = items.filter((item) => {
+      if (this.isPullRequest(item)) {
+        return this.isPullRequestCreatedByTarget(item, user);
       }
 
-      return this.isIssueAssignedToTarget(issue, user);
+      return this.isIssueAssignedToTarget(item, user);
     });
 
     return filteredIssues;
   }
 
-  private getUnassignedData(issues: Issue[]): Issue[] {
-    return issues.filter((issue) => !this.isPullRequest(issue) && issue.assignees.length === 0);
+  private getUnassignedData(items: Issue[] | PullRequest[]): Issue[] | PullRequest[] {
+    return items.filter((item) => !this.isPullRequest(item) && item.assignees.length === 0);
   }
 
-  private isPullRequest(issue: Issue): boolean {
-    return issue.issueOrPr === 'PullRequest';
+  private isPullRequest(item: Issue | PullRequest): boolean {
+    return item instanceof PullRequest;
   }
 
   private isPullRequestCreatedByTarget(issue: Issue, target: GithubUser): boolean {

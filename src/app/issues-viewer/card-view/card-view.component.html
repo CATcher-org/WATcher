@@ -5,10 +5,10 @@
   ></ng-container>
   <div class="scrollable-container-wrapper scroll-shadow">
     <div class="scrollable-container">
-      <div class="issue-pr-cards" *ngFor="let issue of this.issues$ | async; index as i">
-        <app-issue-pr-card [issue]="issue" [filter]="issues.filter" [milestoneService]="milestoneService"></app-issue-pr-card>
+      <div class="issue-pr-cards" *ngFor="let repoItem of this.repoItems$ | async; index as i">
+        <app-issue-pr-card [issue]="repoItem" [filter]="repoItem.filter" [milestoneService]="milestoneService"></app-issue-pr-card>
       </div>
-      <mat-card class="loading-spinner" *ngIf="this.issues.isLoading$ | async">
+      <mat-card class="loading-spinner" *ngIf="this.repoItems.isLoading$ | async">
         <mat-progress-spinner color="primary" mode="indeterminate" diameter="50" strokeWidth="5"></mat-progress-spinner>
       </mat-card>
     </div>
@@ -17,7 +17,7 @@
     [pageSize]="pageSize"
     [hidePageSize]="true"
     [pageSizeOptions]="[10, 20, 50]"
-    [class]="pageSize >= issueLength ? 'pagination-hide-arrow' : ''"
+    [class]="pageSize >= repoItemLength ? 'pagination-hide-arrow' : ''"
   ></mat-paginator>
 </div>
 
@@ -53,11 +53,11 @@
             </div>
             <div class="row-count count-margins" [matTooltip]="getIssueTooltip()" matTooltipPosition="above">
               <span class="octicon count-margins" octicon="issue-opened"></span>
-              <span class="">{{ this.issues.issueCount }}</span>
+              <span class="">{{ this.repoItems.issueCount }}</span>
             </div>
             <div class="row-count" [matTooltip]="getPrTooltip()" matTooltipPosition="above">
               <span class="octicon count-margins" octicon="git-pull-request"></span>
-              <span>{{ this.issues.prCount }}</span>
+              <span>{{ this.repoItems.prCount }}</span>
             </div>
           </div>
         </mat-card-title>
@@ -77,11 +77,11 @@
             </div>
             <div class="row-count count-margins" [matTooltip]="getIssueTooltip()" matTooltipPosition="above">
               <span class="octicon count-margins" octicon="issue-opened"></span>
-              <span class="">{{ this.issues.issueCount }}</span>
+              <span class="">{{ this.repoItems.issueCount }}</span>
             </div>
             <div class="row-count" [matTooltip]="getPrTooltip()" matTooltipPosition="above">
               <span class="octicon count-margins" octicon="git-pull-request"></span>
-              <span>{{ this.issues.prCount }}</span>
+              <span>{{ this.repoItems.prCount }}</span>
             </div>
           </div>
         </mat-card-title>

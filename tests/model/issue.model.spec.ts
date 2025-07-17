@@ -15,6 +15,7 @@ import {
   GITHUB_LABEL_TEAM_LABEL,
   GITHUB_LABEL_TUTORIAL_LABEL
 } from '../constants/githublabel.constants';
+import { RepoItem } from '../../src/app/core/models/repo-item.model';
 
 describe('Issue model class', () => {
   describe('.createPhaseBugReportIssue(githubIssue)', () => {
@@ -31,7 +32,7 @@ describe('Issue model class', () => {
       expect(issue.milestone).toEqual(new Milestone(MILESTONE_ONE));
       expect(issue.state).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.state);
       expect(issue.stateReason).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.stateReason);
-      expect(issue.issueOrPr).toEqual('Issue');
+      expect(issue instanceof Issue).toEqual(true);
       expect(issue.author).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.user.login);
       expect(issue.isDraft).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.isDraft);
       expect(issue.assignees).toEqual([]);
@@ -66,14 +67,14 @@ describe('Issue model class', () => {
   describe('.updateDescription(description)', () => {
     it('correctly clean strings obtained from users', () => {
       const noDetailsFromBugReporter = 'No details provided by bug reporter.';
-      expect(Issue.updateDescription('')).toBe(noDetailsFromBugReporter);
-      expect(Issue.updateDescription(null)).toBe(noDetailsFromBugReporter);
+      expect(RepoItem.updateDescription('')).toBe(noDetailsFromBugReporter);
+      expect(RepoItem.updateDescription(null)).toBe(noDetailsFromBugReporter);
 
       const typicalDescription = 'The app crashes after parsing config files.';
-      expect(Issue.updateDescription(typicalDescription)).toBe(typicalDescription + '\n\n');
+      expect(RepoItem.updateDescription(typicalDescription)).toBe(typicalDescription + '\n\n');
 
       const inputWithSpecialChars = '$%^!@&-_test';
-      expect(Issue.updateDescription(inputWithSpecialChars)).toBe(inputWithSpecialChars + '\n\n');
+      expect(RepoItem.updateDescription(inputWithSpecialChars)).toBe(inputWithSpecialChars + '\n\n');
     });
   });
 });

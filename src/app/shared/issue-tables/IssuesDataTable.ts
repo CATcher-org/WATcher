@@ -9,23 +9,25 @@ import { Milestone } from '../../core/models/milestone.model';
 import { AssigneeService } from '../../core/services/assignee.service';
 import { Filter, FiltersService } from '../../core/services/filters.service';
 import { GroupingContextService } from '../../core/services/grouping/grouping-context.service';
-import { IssueService } from '../../core/services/issue.service';
+import { RepoItemService } from '../../core/services/issue.service';
 import { MilestoneService } from '../../core/services/milestone.service';
 import { applyDropdownFilter } from './dropdownfilter';
 import { FilterableSource } from './filterableTypes';
 import { paginateData } from './issue-paginator';
 import { applySort } from './issue-sorter';
 import { applySearchFilter } from './search-filter';
+import { PullRequest } from '../../core/models/pull-request.model';
+import { RepoItem } from '../../core/models/repo-item.model';
 
-export class IssuesDataTable extends DataSource<Issue> implements FilterableSource {
+export class IssuesDataTable extends DataSource<RepoItem> implements FilterableSource {
   public count = 0;
   public issueCount = 0;
   public prCount = 0;
   private filterChange = new BehaviorSubject(this.filtersService.defaultFilter);
-  private issuesSubject = new BehaviorSubject<Issue[]>([]);
+  private issuesSubject = new BehaviorSubject<RepoItem[]>([]);
   private issueSubscription: Subscription;
 
-  public isLoading$ = this.issueService.isLoading.asObservable();
+  public isLoading$ = this.repoItemService.isLoading.asObservable();
 
   private static isGroupInFilter(group: Group, filter: Filter): boolean {
     const groupFilterAsGithubUser = filter.assignees.map((selectedAssignee) => {
@@ -43,7 +45,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
   }
 
   constructor(
-    private issueService: IssueService,
+    private repoItemService: RepoItemService,
     private groupingContextService: GroupingContextService,
     private filtersService: FiltersService,
     private assigneeService: AssigneeService,
@@ -56,7 +58,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
     super();
   }
 
-  connect(): Observable<Issue[]> {
+  connect(): Observable<RepoItem[]> {
     return this.issuesSubject.asObservable();
   }
 
@@ -66,18 +68,18 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
     if (this.issueSubscription) {
       this.issueSubscription.unsubscribe();
     }
-    this.issueService.stopPollIssues();
+    this.repoItemService.stopPollRepoItems();
   }
 
-  loadIssues() {
+  loadRepoItems() {
     let page;
     if (this.paginator !== undefined) {
       page = this.paginator.page;
     }
 
-    const displayDataChanges = [this.issueService.issues$, page, this.filterChange].filter((x) => x !== undefined);
+    const displayDataChanges = [this.repoItemService.repoItem$, page, this.filterChange].filter((x) => x !== undefined);
 
-    this.issueService.startPollIssues();
+    this.repoItemService.startPollRepoItems();
     this.issueSubscription = merge(...displayDataChanges)
       .pipe(
         // maps each change in display value to new issue ordering or filtering
@@ -87,7 +89,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
             return [];
           }
 
-          let data = <Issue[]>Object.values(this.issueService.issues$.getValue()).reverse();
+          let data = <RepoItem[]>Object.values(this.repoItemService.repoItem$.getValue()).reverse();
           if (this.defaultFilter) {
             data = data.filter(this.defaultFilter);
           }
@@ -97,9 +99,9 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
           // Apply Filters
           data = applyDropdownFilter(this.filter, data, !this.milestoneService.hasNoMilestones, !this.assigneeService.hasNoAssignees);
 
-          data = applySearchFilter(this.filter.title, this.displayedColumn, this.issueService, data);
-          this.issueCount = data.filter((issue) => issue.issueOrPr !== 'PullRequest').length;
-          this.prCount = data.filter((issue) => issue.issueOrPr === 'PullRequest').length;
+          data = applySearchFilter(this.filter.title, this.displayedColumn, this.repoItemService, data);
+          this.issueCount = data.filter((datum) => datum instanceof Issue).length;
+          this.prCount = data.filter((datum) => datum instanceof PullRequest).length;
           this.count = data.length;
 
           data = applySort(this.filter.sort, data);

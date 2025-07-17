@@ -6,7 +6,7 @@ import { FiltersService } from '../core/services/filters.service';
 import { GithubService } from '../core/services/github.service';
 import { GroupService } from '../core/services/grouping/group.service';
 import { GroupingContextService } from '../core/services/grouping/grouping-context.service';
-import { IssueService } from '../core/services/issue.service';
+import { RepoItemService } from '../core/services/issue.service';
 import { LabelService } from '../core/services/label.service';
 import { MilestoneService } from '../core/services/milestone.service';
 import { ViewService } from '../core/services/view.service';
@@ -45,7 +45,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public viewService: ViewService,
     public githubService: GithubService,
-    public issueService: IssueService,
+    public repoItemService: RepoItemService,
     public labelService: LabelService,
     public milestoneService: MilestoneService,
     public groupService: GroupService,
@@ -54,7 +54,7 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     private filtersService: FiltersService
   ) {
     this.repoChangeSubscription = this.viewService.repoChanged$.subscribe((newRepo) => {
-      this.issueService.reset(false);
+      this.repoItemService.reset(false);
       this.labelService.reset();
       this.initialize();
     });

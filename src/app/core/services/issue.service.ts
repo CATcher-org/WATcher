@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, Subscription, throwError, timer } from 'rxjs';
 import { catchError, exhaustMap, finalize, map } from 'rxjs/operators';
-import RestGithubIssueFilter from '../models/github/github-issue-filter.model';
+import RestGithubRepoItemFilter from '../models/github/github-issue-filter.model';
 import { GithubIssue } from '../models/github/github-issue.model';
-import { Issue, Issues, IssuesFilter } from '../models/issue.model';
+import { RepoItem, RepoItems, RepoItemFilter } from '../models/repo-item.model';
 import { View } from '../models/view.model';
 import { GithubService } from './github.service';
 import { UserService } from './user.service';
@@ -17,32 +17,32 @@ import { ViewService } from './view.service';
  * Responsible for creating and updating issues, and periodically fetching issues
  * using GitHub.
  */
-export class IssueService {
+export class RepoItemService {
   static readonly POLL_INTERVAL = 20000; // 20 seconds
 
-  issues: Issues;
-  issues$: BehaviorSubject<Issue[]>;
+  repoItem: RepoItems;
+  repoItem$: BehaviorSubject<RepoItem[]>;
 
   private sessionId: string;
   private issueTeamFilter = 'All Teams';
   private issuesPollSubscription: Subscription;
-  /** Whether the IssueService is downloading the data from Github*/
+  /** Whether the RepoItemService is downloading the repoItem from Github*/
   public isLoading = new BehaviorSubject<boolean>(false);
 
   constructor(private githubService: GithubService, private userService: UserService, private viewService: ViewService) {
-    this.issues$ = new BehaviorSubject(new Array<Issue>());
+    this.repoItem$ = new BehaviorSubject(new Array<RepoItem>());
   }
 
-  startPollIssues() {
+  startPollRepoItems() {
     if (this.issuesPollSubscription === undefined) {
-      if (this.issues$.getValue().length === 0) {
+      if (this.repoItem$.getValue().length === 0) {
         this.isLoading.next(true);
       }
 
-      this.issuesPollSubscription = timer(0, IssueService.POLL_INTERVAL)
+      this.issuesPollSubscription = timer(0, RepoItemService.POLL_INTERVAL)
         .pipe(
           exhaustMap(() => {
-            return this.reloadAllIssues().pipe(
+            return this.reloadAllRepoItems().pipe(
               catchError((err) => throwError(err)),
               finalize(() => this.isLoading.next(false))
             );
@@ -52,33 +52,33 @@ export class IssueService {
     }
   }
 
-  stopPollIssues() {
+  stopPollRepoItems() {
     if (this.issuesPollSubscription) {
       this.issuesPollSubscription.unsubscribe();
       this.issuesPollSubscription = undefined;
     }
   }
 
-  reloadAllIssues() {
+  reloadAllRepoItems() {
     return this.initializeData();
   }
 
-  getIssue(id: number): Observable<Issue> {
-    if (this.issues === undefined) {
-      return this.getLatestIssue(id);
+  getRepoItem(id: number): Observable<RepoItem> {
+    if (this.repoItem === undefined) {
+      return this.getLatestRepoItem(id);
     } else {
-      return of(this.issues[id]);
+      return of(this.repoItem[id]);
     }
   }
 
-  getLatestIssue(id: number): Observable<Issue> {
+  getLatestRepoItem(id: number): Observable<RepoItem> {
     return this.githubService.fetchIssueGraphql(id).pipe(
       map((response: GithubIssue) => {
-        this.createAndSaveIssueModels([response]);
-        return this.issues[id];
+        this.createAndSaveRepoItemModels([response]);
+        return this.repoItem[id];
       }),
       catchError((err) => {
-        return of(this.issues[id]);
+        return of(this.repoItem[id]);
       })
     );
   }
@@ -88,14 +88,14 @@ export class IssueService {
    *
    * @params issuesToUpdate - An array of issues to update the state of the application with.
    */
-  private updateLocalStore(issuesToUpdate: Issue[]) {
-    const newIssues = { ...this.issues };
-    issuesToUpdate.forEach((issue) => {
-      newIssues[issue.id] = issue;
+  private updateLocalStore(dataToUpdate: RepoItem[]) {
+    const newData = { ...this.repoItem };
+    dataToUpdate.forEach((datum) => {
+      newData[datum.id] = datum;
     });
-    this.issues = newIssues;
+    this.repoItem = newData;
 
-    this.issues$.next(Object.values(this.issues));
+    this.repoItem$.next(Object.values(this.repoItem));
   }
 
   reset(resetSessionId: boolean) {
@@ -103,107 +103,107 @@ export class IssueService {
       this.sessionId = undefined;
     }
 
-    this.issues = undefined;
-    this.issues$.next(new Array<Issue>());
+    this.repoItem = undefined;
+    this.repoItem$.next(new Array<RepoItem>());
 
-    this.stopPollIssues();
+    this.stopPollRepoItems();
   }
 
-  private initializeData(): Observable<Issue[]> {
+  private initializeData(): Observable<RepoItem[]> {
     let issuesAPICallsByFilter: Observable<Array<GithubIssue>>;
 
-    switch (IssuesFilter[this.viewService.currentView][this.userService.currentUser.role]) {
+    switch (RepoItemFilter[this.viewService.currentView][this.userService.currentUser.role]) {
       case 'FILTER_BY_CREATOR':
         issuesAPICallsByFilter = this.githubService.fetchIssuesGraphql(
-          new RestGithubIssueFilter({ creator: this.userService.currentUser.loginId })
+          new RestGithubRepoItemFilter({ creator: this.userService.currentUser.loginId })
         );
         break;
       case 'NO_FILTER':
-        issuesAPICallsByFilter = this.githubService.fetchIssuesGraphql(new RestGithubIssueFilter({}));
+        issuesAPICallsByFilter = this.githubService.fetchIssuesGraphql(new RestGithubRepoItemFilter({}));
         break;
       case 'NO_ACCESS':
       default:
         return of([]);
     }
 
-    const fetchedIssueIds: number[] = [];
+    const fetchedRepoItemIds: number[] = [];
 
     return issuesAPICallsByFilter.pipe(
-      map((githubIssues: GithubIssue[]) => {
-        const issues = this.createAndSaveIssueModels(githubIssues);
-        for (const issue of issues) {
-          fetchedIssueIds.push(issue.id);
+      map((githubRepoItems: GithubIssue[]) => {
+        const repoItems = this.createAndSaveRepoItemModels(githubRepoItems);
+        for (const repoItem of repoItems) {
+          fetchedRepoItemIds.push(repoItem.id);
         }
 
-        const outdatedIssueIds: number[] = this.getOutdatedIssueIds(fetchedIssueIds);
-        this.deleteIssuesFromLocalStore(outdatedIssueIds);
+        const outdatedRepoItemIds: number[] = this.getOutdatedRepoItemIds(fetchedRepoItemIds);
+        this.deleteRepoItemsFromLocalStore(outdatedRepoItemIds);
 
-        if (this.issues === undefined) {
+        if (this.repoItem === undefined) {
           return [];
         }
-        return Object.values(this.issues);
+        return Object.values(this.repoItem);
       })
     );
   }
 
-  private createAndSaveIssueModels(githubIssues: GithubIssue[]): Issue[] {
-    const issues: Issue[] = [];
+  private createAndSaveRepoItemModels(githubIssues: GithubIssue[]): RepoItem[] {
+    const repoItems: RepoItem[] = [];
 
-    for (const githubIssue of githubIssues) {
-      const issue = this.createIssueModel(githubIssue);
-      issues.push(issue);
+    for (const githubissue of githubIssues) {
+      const repoItem = this.createRepoItemModel(githubissue);
+      repoItems.push(repoItem);
     }
-    this.updateLocalStore(issues);
+    this.updateLocalStore(repoItems);
 
-    return issues;
+    return repoItems;
   }
 
-  private deleteIssuesFromLocalStore(ids: number[]): void {
-    const withoutIssuesToRemove = { ...this.issues };
+  private deleteRepoItemsFromLocalStore(ids: number[]): void {
+    const withoutDataToRemove = { ...this.repoItem };
     for (const id of ids) {
-      delete withoutIssuesToRemove[id];
+      delete withoutDataToRemove[id];
     }
 
-    this.issues = withoutIssuesToRemove;
+    this.repoItem = withoutDataToRemove;
 
-    this.issues$.next(Object.values(this.issues));
+    this.repoItem$.next(Object.values(this.repoItem));
   }
 
   /**
    * Returns an array of outdated issue ids by comparing the ids of the recently
    * fetched issues with the current issue ids in the local store
    */
-  private getOutdatedIssueIds(fetchedIssueIds: number[]): number[] {
+  private getOutdatedRepoItemIds(fetchedRepoItemIds: number[]): number[] {
     /*
       Ignore for first fetch or ignore if there is no fetch result
 
       We also have to ignore for no fetch result as the cache might return a
-      304 reponse with no differences in issues, resulting in the fetchIssueIds
+      304 reponse with no differences in issues, resulting in the fetchRepoItemIds
       to be empty
     */
-    if (this.issues === undefined || !fetchedIssueIds.length) {
+    if (this.repoItem === undefined || !fetchedRepoItemIds.length) {
       return [];
     }
 
-    const fetchedIssueIdsSet = new Set<number>(fetchedIssueIds);
+    const fetchedRepoItemIdsSet = new Set<number>(fetchedRepoItemIds);
 
-    const result = Object.keys(this.issues)
+    const result = Object.keys(this.repoItem)
       .map((x) => +x)
-      .filter((issueId) => !fetchedIssueIdsSet.has(issueId));
+      .filter((issueId) => !fetchedRepoItemIdsSet.has(issueId));
 
     return result;
   }
 
-  private createIssueModel(githubIssue: GithubIssue): Issue {
+  private createRepoItemModel(githubIssue: GithubIssue): RepoItem {
     switch (this.viewService.currentView) {
-      case View.issuesViewer:
-        return Issue.createPhaseBugReportingIssue(githubIssue);
+      case View.repoItemsViewer:
+        return RepoItem.createPhaseBugReportingRepoItem(githubIssue);
       default:
         return;
     }
   }
 
-  setIssueTeamFilter(filterValue: string) {
+  setRepoItemTeamFilter(filterValue: string) {
     if (filterValue) {
       this.issueTeamFilter = filterValue;
     }
@@ -213,7 +213,7 @@ export class IssueService {
     this.sessionId = sessionId;
   }
 
-  getIssueTeamFilter(): string {
+  getRepoItemTeamFilter(): string {
     return this.issueTeamFilter;
   }
 }

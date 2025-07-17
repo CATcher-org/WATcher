@@ -6,6 +6,7 @@ import { Issue } from '../../models/issue.model';
 import { AssigneeGroupingStrategy } from './assignee-grouping-strategy.service';
 import { GroupingStrategy } from './grouping-strategy.interface';
 import { MilestoneGroupingStrategy } from './milestone-grouping-strategy.service';
+import { PullRequest } from '../../models/pull-request.model';
 
 export enum GroupBy {
   Assignee = 'assignee',
@@ -75,13 +76,13 @@ export class GroupingContextService {
 
   /**
    * Retrieves data for a specific group.
-   * @param issues - An array of issues to be grouped.
-   * @param group - The group by which issues are to be grouped.
-   * @returns An array of issues belonging to the specified group.
+   * @param items - An array of items to be grouped.
+   * @param group - The group by which items are to be grouped.
+   * @returns An array of items belonging to the specified group.
    */
-  getDataForGroup(issues: Issue[], group: Group): Issue[] {
+  getDataForGroup(items: Issue[] | PullRequest[], group: Group): Issue[] | PullRequest[] {
     const strategy = this.groupingStrategyMap.get(this.currGroupBy);
-    return strategy.getDataForGroup(issues, group);
+    return strategy.getDataForGroup(items, group);
   }
 
   /**

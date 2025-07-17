@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs';
 import { Group } from '../../models/github/group.interface';
 import { Issue } from '../../models/issue.model';
+import { PullRequest } from '../../models/pull-request.model';
 
 /**
  * Represent a strategy for grouping issues/prs.
@@ -14,7 +15,7 @@ export interface GroupingStrategy {
    * @param key - The group by which issues are to be grouped.
    * @returns An array of issues belonging to the specified group.
    */
-  getDataForGroup(issues: Issue[], key: Group): Issue[];
+  getDataForGroup(items: Issue[] | PullRequest[], key: Group): Issue[] | PullRequest[];
 
   /**
    * Retrieves observable emitting groups available for the grouping strategy.

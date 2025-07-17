@@ -1,8 +1,8 @@
 import { Sort } from '@angular/material/sort';
 import * as moment from 'moment';
-import { Issue } from '../../core/models/issue.model';
+import { RepoItem } from '../../core/models/repo-item.model';
 
-export function applySort(sort: Sort, data: Issue[]): Issue[] {
+export function applySort(sort: Sort, data: RepoItem[]): RepoItem[] {
   if (!sort.active) {
     return data;
   }
@@ -36,7 +36,7 @@ function compareByDateValue(valueA: string, valueB: string): number {
   return moment(valueA).isBefore(valueB) ? -1 : 1;
 }
 
-function compareByIssueType(valueA: Issue, valueB: Issue): number {
+function compareByIssueType(valueA: RepoItem, valueB: RepoItem): number {
   const sortOrder = {
     'OPEN PullRequest': 0,
     'OPEN Issue': 1,
@@ -45,8 +45,8 @@ function compareByIssueType(valueA: Issue, valueB: Issue): number {
     'CLOSED PullRequest': 4
   };
 
-  const aOrder = sortOrder[valueA.state + ' ' + valueA.issueOrPr] || -1;
-  const bOrder = sortOrder[valueB.state + ' ' + valueB.issueOrPr] || -1;
+  const aOrder = sortOrder[valueA.state + ' ' + valueA.constructor.name] || -1;
+  const bOrder = sortOrder[valueB.state + ' ' + valueB.constructor.name] || -1;
 
   if (aOrder === bOrder) {
     return compareByStringValue(valueA.title, valueB.title);

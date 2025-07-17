@@ -5,6 +5,7 @@ import { Issue } from '../../models/issue.model';
 import { Milestone } from '../../models/milestone.model';
 import { MilestoneService } from '../milestone.service';
 import { GroupingStrategy } from './grouping-strategy.interface';
+import { PullRequest } from '../../models/pull-request.model';
 
 /**
  * A GroupingStrategy that groups issues/prs based on their milestones.
@@ -18,8 +19,8 @@ export class MilestoneGroupingStrategy implements GroupingStrategy {
   /**
    * Retrieves data for a milestone.
    */
-  getDataForGroup(issues: Issue[], key: Milestone): Issue[] {
-    return issues.filter((issue) => issue.milestone.equals(key));
+  getDataForGroup(items: Issue[] | PullRequest[], key: Milestone): Issue[] | PullRequest[] {
+    return items.filter((issue) => issue.milestone.equals(key));
   }
 
   /**

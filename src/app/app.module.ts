@@ -21,10 +21,10 @@ import { ErrorHandlingService } from './core/services/error-handling.service';
 import { ErrorMessageService } from './core/services/error-message.service';
 import { AuthServiceFactory } from './core/services/factories/factory.auth.service';
 import { GithubServiceFactory } from './core/services/factories/factory.github.service';
-import { IssueServiceFactory } from './core/services/factories/factory.issue.service';
+import { RepoItemServiceFactory } from './core/services/factories/factory.issue.service';
 import { GithubService } from './core/services/github.service';
 import { GithubEventService } from './core/services/githubevent.service';
-import { IssueService } from './core/services/issue.service';
+import { RepoItemService } from './core/services/issue.service';
 import { LabelService } from './core/services/label.service';
 import { LoggingService } from './core/services/logging.service';
 import { RepoSessionStorageService } from './core/services/repo-session-storage.service';
@@ -62,7 +62,7 @@ import { SharedModule } from './shared/shared.module';
         NgZone,
         GithubService,
         UserService,
-        IssueService,
+        RepoItemService,
         LabelService,
         ViewService,
         GithubEventService,
@@ -72,8 +72,8 @@ import { SharedModule } from './shared/shared.module';
       ]
     },
     {
-      provide: IssueService,
-      useFactory: IssueServiceFactory,
+      provide: RepoItemService,
+      useFactory: RepoItemServiceFactory,
       deps: [GithubService, UserService, ViewService]
     },
     {

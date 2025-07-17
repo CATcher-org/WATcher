@@ -1,32 +1,32 @@
 <mat-card class="card" [ngClass]="getIssueOpenOrCloseColorCSSClass()">
   <a class="no-underline link-grey-dark">
-    <span [matTooltip]="this.issue.updated_at">
-      <app-issue-pr-card-header [issue]="issue" (click)="viewIssueInBrowser($event)"></app-issue-pr-card-header>
+    <span [matTooltip]="this.repoItem.updated_at">
+      <app-issue-pr-card-header [repoItem]="repoItem" (click)="viewIssueInBrowser($event)"></app-issue-pr-card-header>
     </span>
   </a>
   <mat-card-content class="content">
     <div class="milestone-labels">
       <app-issue-pr-card-fork-badge
-        *ngIf="issue.issueOrPr === 'PullRequest'"
+        *ngIf="repoItem; instanceof: PullRequest"
         [isNotFollowingForkingWorkflow]="isNotFollowingForkingWorkflow()"
       ></app-issue-pr-card-fork-badge>
       <app-issue-pr-card-milestone
-        [milestone]="issue.milestone"
+        [milestone]="repoItem.milestone"
         [repoHasMilestones]="!milestoneService.hasNoMilestones"
         (click)="viewMilestoneInBrowser($event)"
       ></app-issue-pr-card-milestone>
       <app-issue-pr-card-labels
         style="flex: 1 1 auto; min-width: 0"
-        [labels]="issue.githubLabels"
+        [labels]="repoItem.githubLabels"
         [labelSet]="filter?.hiddenLabels"
       ></app-issue-pr-card-labels>
     </div>
     <div class="reviews">
-      <app-issue-pr-card-reviewers *ngIf="issue.reviews" [reviews]="issue.reviews"></app-issue-pr-card-reviewers>
+      <app-issue-pr-card-reviewers *ngIf="repoItem.reviews" [reviews]="repoItem.reviews"></app-issue-pr-card-reviewers>
       <app-issue-pr-card-review-decision
-        *ngIf="issue.reviewDecision || this.isMergedWithoutReview(issue)"
-        [isMergedWithoutReview]="this.isMergedWithoutReview(issue)"
-        [reviewDecision]="issue.reviewDecision"
+        *ngIf="repoItem.reviewDecision || this.isMergedWithoutReview(repoItem)"
+        [isMergedWithoutReview]="this.isMergedWithoutReview(repoItem)"
+        [reviewDecision]="repoItem.reviewDecision"
       ></app-issue-pr-card-review-decision>
     </div>
   </mat-card-content>

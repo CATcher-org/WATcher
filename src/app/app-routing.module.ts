@@ -8,8 +8,8 @@ import { IssuesViewerModule } from './issues-viewer/issues-viewer.module';
 
 const routes: Routes = [
   { path: '', loadChildren: () => AuthModule },
-  { path: 'issuesViewer/:org/:repo', canActivate: [ParseUrlParamsGuard], children: [] },
-  { path: 'issuesViewer', loadChildren: () => IssuesViewerModule, canLoad: [AuthGuard] },
+  { path: 'repoItemsViewer/:org/:repo', canActivate: [ParseUrlParamsGuard], children: [] },
+  { path: 'repoItemsViewer', loadChildren: () => IssuesViewerModule, canLoad: [AuthGuard] },
   { path: 'activityDashboard', loadChildren: () => ActivityDashboardModule, canLoad: [AuthGuard] }
 ];
 

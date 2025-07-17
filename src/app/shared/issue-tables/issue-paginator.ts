@@ -1,7 +1,7 @@
 import { MatPaginator } from '@angular/material/paginator';
-import { Issue } from '../../core/models/issue.model';
+import { RepoItem } from '../../core/models/repo-item.model';
 
-export function paginateData(paginator: MatPaginator, data: Issue[]): Issue[] {
+export function paginateData(paginator: MatPaginator, data: RepoItem[]): RepoItem[] {
   paginator.length = data.length;
   let result = getDataForPage(paginator.pageIndex, paginator.pageSize, data);
   if (result.length === 0) {
@@ -11,7 +11,7 @@ export function paginateData(paginator: MatPaginator, data: Issue[]): Issue[] {
   return result;
 }
 
-function getDataForPage(pageIndex: number, pageSize: number, data: Issue[]): Issue[] {
+function getDataForPage(pageIndex: number, pageSize: number, data: RepoItem[]): RepoItem[] {
   const startIndex = pageIndex * pageSize;
   return data.splice(startIndex, pageSize);
 }
