@@ -1,14 +1,14 @@
 import { of } from 'rxjs';
+import { MilestoneAnomaliesStatus } from '../../src/app/core/constants/milestone-anomalies.constants';
+import { MilestoneAnomaly } from '../../src/app/core/models/milestone-anomaly.model';
 import { Milestone } from '../../src/app/core/models/milestone.model';
 import { GithubService } from '../../src/app/core/services/github.service';
 import { MilestoneService } from '../../src/app/core/services/milestone.service';
 import {
+  MILESTONE_WITHOUT_DEADLINE_DATA,
   MILESTONE_WITH_FUTURE_DEADLINE_DATA,
-  MILESTONE_WITH_PAST_DEADLINE_DATA,
-  MILESTONE_WITHOUT_DEADLINE_DATA
+  MILESTONE_WITH_PAST_DEADLINE_DATA
 } from '../constants/milestone.constants';
-import { MilestoneAnomaly } from '../../src/app/core/models/milestone-anomaly.model';
-import { MilestoneAnomaliesStatus } from '../../src/app/core/constants/milestone-anomalies.constants';
 
 let milestoneService: MilestoneService;
 let githubServiceSpy: jasmine.SpyObj<GithubService>;

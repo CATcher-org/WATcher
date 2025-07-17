@@ -15,6 +15,7 @@ import {
 import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { MilestoneOptions, SortOptions, StatusOptions, TypeOptions } from '../../core/constants/filter-options.constants';
+import { MilestoneAnomaly } from '../../core/models/milestone-anomaly.model';
 import { AssigneeService } from '../../core/services/assignee.service';
 import { Filter, FiltersService } from '../../core/services/filters.service';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
@@ -23,7 +24,6 @@ import { MilestoneService } from '../../core/services/milestone.service';
 import { ViewService } from '../../core/services/view.service';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
-import { MilestoneAnomaly } from '../../core/models/milestone-anomaly.model';
 
 /**
  * This component is abstracted out filterbar used by both detailed-viewer page

@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
+import { MilestoneAnomaliesStatus } from '../constants/milestone-anomalies.constants';
+import { MilestoneAnomaly } from '../models/milestone-anomaly.model';
 import { Milestone } from '../models/milestone.model';
 import { GithubService } from './github.service';
-import { MilestoneAnomaly } from '../models/milestone-anomaly.model';
-import { MilestoneAnomaliesStatus } from '../constants/milestone-anomalies.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -102,7 +103,7 @@ export class MilestoneService {
   }
 
   getMilestoneAnomalies(): MilestoneAnomaly[] {
-    let milestoneAnomalies: MilestoneAnomaly[] = [];
+    const milestoneAnomalies: MilestoneAnomaly[] = [];
 
     for (const milestone of this.milestones) {
       if (!milestone.deadline) {
