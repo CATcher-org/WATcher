@@ -2,6 +2,13 @@ import { of } from 'rxjs';
 import { Milestone } from '../../src/app/core/models/milestone.model';
 import { GithubService } from '../../src/app/core/services/github.service';
 import { MilestoneService } from '../../src/app/core/services/milestone.service';
+import {
+  MILESTONE_WITH_FUTURE_DEADLINE_DATA,
+  MILESTONE_WITH_PAST_DEADLINE_DATA,
+  MILESTONE_WITHOUT_DEADLINE_DATA
+} from '../constants/milestone.constants';
+import { MilestoneAnomaly } from '../../src/app/core/models/milestone-anomaly.model';
+import { MilestoneAnomaliesStatus } from '../../src/app/core/constants/milestone-anomalies.constants';
 
 let milestoneService: MilestoneService;
 let githubServiceSpy: jasmine.SpyObj<GithubService>;
@@ -49,6 +56,44 @@ describe('MilestoneService', () => {
 
       expect(parsedMilestones.length).toBe(2);
       expect(parsedMilestones[0].title).toBe('Milestone 1');
+    });
+  });
+
+  describe('MilestoneService: getMilestoneAnomalies()', () => {
+    it('should return milestones with no deadline as anomalies', (done) => {
+      const mockMilestones = [MILESTONE_WITHOUT_DEADLINE_DATA, MILESTONE_WITH_FUTURE_DEADLINE_DATA];
+      githubServiceSpy.fetchAllMilestones.and.returnValue(of(mockMilestones));
+
+      const expectedAnomaly: MilestoneAnomaly = new MilestoneAnomaly(
+        milestoneService.parseMilestoneData([MILESTONE_WITHOUT_DEADLINE_DATA])[0],
+        MilestoneAnomaliesStatus.NoDeadline
+      );
+
+      milestoneService.fetchMilestones().subscribe((response) => {
+        expect(githubServiceSpy.fetchAllMilestones).toHaveBeenCalled();
+        expect(milestoneService.milestones.length).toBe(2);
+        expect(milestoneService.getMilestoneAnomalies()).toEqual([expectedAnomaly]);
+
+        done();
+      });
+    });
+
+    it('should return milestones that have gone past deadline', (done) => {
+      const mockMilestones = [MILESTONE_WITH_PAST_DEADLINE_DATA, MILESTONE_WITH_FUTURE_DEADLINE_DATA];
+      githubServiceSpy.fetchAllMilestones.and.returnValue(of(mockMilestones));
+
+      const expectedAnomaly: MilestoneAnomaly = new MilestoneAnomaly(
+        milestoneService.parseMilestoneData([MILESTONE_WITH_PAST_DEADLINE_DATA])[0],
+        MilestoneAnomaliesStatus.PastDeadLine
+      );
+
+      milestoneService.fetchMilestones().subscribe((response) => {
+        expect(githubServiceSpy.fetchAllMilestones).toHaveBeenCalled();
+        expect(milestoneService.milestones.length).toBe(2);
+        expect(milestoneService.getMilestoneAnomalies()).toEqual([expectedAnomaly]);
+
+        done();
+      });
     });
   });
 });

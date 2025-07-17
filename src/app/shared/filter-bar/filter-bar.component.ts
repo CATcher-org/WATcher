@@ -23,6 +23,7 @@ import { MilestoneService } from '../../core/services/milestone.service';
 import { ViewService } from '../../core/services/view.service';
 import { FilterableComponent } from '../issue-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
+import { MilestoneAnomaly } from '../../core/models/milestone-anomaly.model';
 
 /**
  * This component is abstracted out filterbar used by both detailed-viewer page
@@ -37,6 +38,8 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   @Input() views$: BehaviorSubject<QueryList<FilterableComponent>>;
 
   repoChangeSubscription: Subscription;
+  milestoneAnomalies: MilestoneAnomaly[];
+  dismissedAnomalies = new Set<string>();
 
   /** Selected dropdown filter value */
   filter: Filter = this.filtersService.defaultFilter;
@@ -78,6 +81,9 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     // One-time initializations
     this.filtersService.filter$.subscribe((filter) => {
       this.filter = filter;
+      this.milestoneAnomalies = this.milestoneService
+        .getMilestoneAnomalies()
+        .filter((milestoneAnomaly) => filter.milestones.includes(milestoneAnomaly.milestone.title));
       this.applyFilter();
     });
 
@@ -162,5 +168,19 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     event.preventDefault();
     event.stopImmediatePropagation();
   }
-}
 
+  handleUpdateMilestoneFilter({ milestones }: { milestones: string[] }) {
+    this.updateMilestoneAnomalies(milestones);
+    this.filtersService.updateFilters({ milestones: milestones });
+  }
+
+  /**
+   * Updates the milestones anomalies to be displayed.
+   * @param {string[]} milestoneTitles - Array of selected milestone titles
+   */
+  updateMilestoneAnomalies(milestoneTitles: string[]) {
+    this.milestoneAnomalies = this.milestoneService
+      .getMilestoneAnomalies()
+      .filter((milestoneAnomaly) => milestoneTitles.includes(milestoneAnomaly.milestone.title));
+  }
+}

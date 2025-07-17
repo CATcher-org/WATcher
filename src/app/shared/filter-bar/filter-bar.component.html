@@ -73,13 +73,31 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+
+      <div class="anomaly-list">
+        <ng-container *ngFor="let milestoneAnomaly of milestoneAnomalies">
+          <div *ngIf="!dismissedAnomalies.has(milestoneAnomaly.getMilestoneTitle())">
+            <mat-card class="anomaly-card">
+              <div>
+                {{ milestoneAnomaly.milestone.title }}
+                <br />
+                {{ milestoneAnomaly.anomaly }}
+              </div>
+              <button mat-icon-button (click)="this.dismissedAnomalies.add(milestoneAnomaly.getMilestoneTitle())">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-card>
+          </div>
+        </ng-container>
+      </div>
+
       <mat-form-field appearance="standard" class="filter-item">
         <mat-label>Milestone</mat-label>
         <mat-select
           #milestoneSelectorRef
           [value]="this.filter.milestones"
           panelClass="filter-bar-panel"
-          (selectionChange)="this.filtersService.updateFilters({ milestones: $event.value })"
+          (selectionChange)="handleUpdateMilestoneFilter({ milestones: $event.value })"
           [disabled]="this.milestoneService.hasNoMilestones"
           multiple
         >
