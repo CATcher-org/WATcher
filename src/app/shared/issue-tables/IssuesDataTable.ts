@@ -121,7 +121,11 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
             const issueType = this.issueTypeFilter === 'issues' ? 'Issue' : 'PullRequest';
             const filteredData = data.filter((issue) => issue.issueOrPr === issueType);
 
-            data = filteredData;
+            if (filteredData.length === 0) {
+              this.issueTypeFilter = 'all';
+            } else {
+              data = filteredData;
+            }
           }
 
           this.count = data.length;
