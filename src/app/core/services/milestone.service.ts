@@ -112,7 +112,7 @@ export class MilestoneService {
         milestoneAnomalies.push(newAnomaly);
       } else if (milestone.deadline < new Date()) {
         // Milestone deadline has past
-        const newAnomaly = new MilestoneAnomaly(milestone, MilestoneAnomaliesStatus.PastDeadLine);
+        const newAnomaly = new MilestoneAnomaly(milestone, MilestoneAnomaliesStatus.PastDeadline);
         milestoneAnomalies.push(newAnomaly);
       }
     }

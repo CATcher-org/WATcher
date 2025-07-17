@@ -84,7 +84,7 @@ describe('MilestoneService', () => {
 
       const expectedAnomaly: MilestoneAnomaly = new MilestoneAnomaly(
         milestoneService.parseMilestoneData([MILESTONE_WITH_PAST_DEADLINE_DATA])[0],
-        MilestoneAnomaliesStatus.PastDeadLine
+        MilestoneAnomaliesStatus.PastDeadline
       );
 
       milestoneService.fetchMilestones().subscribe((response) => {
