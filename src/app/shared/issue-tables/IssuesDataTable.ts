@@ -117,22 +117,11 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
           this.hasPR = this.prCount > 0;
 
           // Apply Issue Type Filter for header component
-          switch (this.issueTypeFilter) {
-            case 'issues':
-              data = data.filter((issue) => issue.issueOrPr === 'Issue');
-              if (data.length === 0) {
-                this.issueTypeFilter = 'all'; // Reset to 'all' if no issues found
-              }
-              break;
-            case 'prs':
-              data = data.filter((issue) => issue.issueOrPr === 'PullRequest');
-              if (data.length === 0) {
-                this.issueTypeFilter = 'all'; // Reset to 'all' if no PRs found
-              }
-              break;
-            default:
-              this.issueTypeFilter = 'all';
-              break;
+          if (this.issueTypeFilter !== 'all') {
+            const issueType = this.issueTypeFilter === 'issues' ? 'Issue' : 'PullRequest';
+            const filteredData = data.filter((issue) => issue.issueOrPr === issueType);
+
+            data = filteredData;
           }
 
           this.count = data.length;
