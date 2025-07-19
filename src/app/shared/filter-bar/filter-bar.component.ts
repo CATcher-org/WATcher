@@ -21,7 +21,7 @@ import { GroupBy, GroupingContextService } from '../../core/services/grouping/gr
 import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
 import { ViewService } from '../../core/services/view.service';
-import { FilterableComponent } from '../issue-tables/filterableTypes';
+import { FilterableComponent } from '../repo-item-tables/filterableTypes';
 import { LabelFilterBarComponent } from './label-filter-bar/label-filter-bar.component';
 
 /**
@@ -163,4 +163,3 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     event.stopImmediatePropagation();
   }
 }
-

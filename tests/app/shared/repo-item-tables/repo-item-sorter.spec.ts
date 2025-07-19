@@ -1,6 +1,6 @@
 import { MatSort } from '@angular/material/sort';
 import { Issue } from '../../../../src/app/core/models/issue.model';
-import { applySort } from '../../../../src/app/shared/issue-tables/issue-sorter';
+import { applySort } from '../../../../src/app/shared/repo-item-tables/repo-item-sorter';
 import {
   ISSUE_UPDATED_EARLIER,
   ISSUE_UPDATED_LATER,

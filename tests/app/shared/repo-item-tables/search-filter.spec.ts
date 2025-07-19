@@ -1,8 +1,7 @@
 import { Issue } from '../../../../src/app/core/models/issue.model';
-import { RepoItem } from '../../../../src/app/core/models/repo-item.model';
-import { RepoItemService } from '../../../../src/app/core/services/issue.service';
-import { TABLE_COLUMNS } from '../../../../src/app/shared/issue-tables/issue-tables-columns';
-import { applySearchFilter } from '../../../../src/app/shared/issue-tables/search-filter';
+import { RepoItemService } from '../../../../src/app/core/services/repo-item.service';
+import { TABLE_COLUMNS } from '../../../../src/app/shared/repo-item-tables/repo-item-tables-columns';
+import { applySearchFilter } from '../../../../src/app/shared/repo-item-tables/search-filter';
 import { USER_ANUBHAV } from '../../../constants/data.constants';
 import {
   ISSUE_WITH_ASSIGNEES,

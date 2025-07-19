@@ -3,7 +3,7 @@ import { BehaviorSubject, EMPTY, Observable, of, Subscription, timer } from 'rxj
 import { catchError, exhaustMap, finalize, flatMap, map } from 'rxjs/operators';
 import { GithubEvent } from '../models/github/github-event.model';
 import { GithubService } from './github.service';
-import { RepoItemService } from './issue.service';
+import { RepoItemService } from './repo-item.service';
 
 @Injectable({
   providedIn: 'root'

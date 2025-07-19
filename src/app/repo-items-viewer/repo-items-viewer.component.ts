@@ -6,19 +6,19 @@ import { FiltersService } from '../core/services/filters.service';
 import { GithubService } from '../core/services/github.service';
 import { GroupService } from '../core/services/grouping/group.service';
 import { GroupingContextService } from '../core/services/grouping/grouping-context.service';
-import { RepoItemService } from '../core/services/issue.service';
+import { RepoItemService } from '../core/services/repo-item.service';
 import { LabelService } from '../core/services/label.service';
 import { MilestoneService } from '../core/services/milestone.service';
 import { ViewService } from '../core/services/view.service';
-import { TABLE_COLUMNS } from '../shared/issue-tables/issue-tables-columns';
+import { TABLE_COLUMNS } from '../shared/repo-item-tables/repo-item-tables-columns';
 import { CardViewComponent } from './card-view/card-view.component';
 
 @Component({
-  selector: 'app-issues-viewer',
-  templateUrl: './issues-viewer.component.html',
-  styleUrls: ['./issues-viewer.component.css']
+  selector: 'app-repo-items-viewer',
+  templateUrl: './repo-items-viewer.component.html',
+  styleUrls: ['./repo-items-viewer.component.css']
 })
-export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
+export class RepoItemsViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly displayedColumns = [TABLE_COLUMNS.ID, TABLE_COLUMNS.TITLE, TABLE_COLUMNS.ASSIGNEE, TABLE_COLUMNS.LABEL];
 
   /** Observes for any change in repo*/

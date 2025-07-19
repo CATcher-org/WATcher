@@ -17,11 +17,11 @@ import { RepoItem } from '../../core/models/repo-item.model';
 import { AssigneeService } from '../../core/services/assignee.service';
 import { FiltersService } from '../../core/services/filters.service';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
-import { RepoItemService } from '../../core/services/issue.service';
+import { RepoItemService } from '../../core/services/repo-item.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
-import { FilterableComponent, FilterableSource } from '../../shared/issue-tables/filterableTypes';
-import { IssuesDataTable } from '../../shared/issue-tables/IssuesDataTable';
+import { FilterableComponent, FilterableSource } from '../../shared/repo-item-tables/filterableTypes';
+import { RepoItemsDataTable } from '../../shared/repo-item-tables/RepoItemsDataTable';
 
 @Component({
   selector: 'app-card-view',
@@ -42,7 +42,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   @ViewChild('assigneeHeader') assigneeHeaderTemplate: TemplateRef<any>;
   @ViewChild('milestoneHeader') milestoneHeaderTemplate: TemplateRef<any>;
 
-  repoItems: IssuesDataTable;
+  repoItems: RepoItemsDataTable;
   repoItems$: Observable<RepoItem[]>;
 
   private timeoutId: NodeJS.Timeout | null = null;
@@ -68,7 +68,7 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   ) {}
 
   ngOnInit() {
-    this.repoItems = new IssuesDataTable(
+    this.repoItems = new RepoItemsDataTable(
       this.repoItemService,
       this.groupingContextService,
       this.filtersService,

@@ -61,7 +61,7 @@ export class IssuePrCardComponent {
 
   /**
    * Truncates description to fit in card content.
-   * @param description - Description of Issue that is to be displayed.
+   * @param description - Description of Repo Item that is to be displayed.
    */
   fitDescriptionText(): string {
     // Arbitrary Length of Characters beyond which an overflow occurs.

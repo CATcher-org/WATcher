@@ -1,6 +1,6 @@
 import { MatPaginator } from '@angular/material/paginator';
 import { Issue } from '../../../../src/app/core/models/issue.model';
-import { paginateData } from '../../../../src/app/shared/issue-tables/issue-paginator';
+import { paginateData } from '../../../../src/app/shared/repo-item-tables/repo-item-paginator';
 import {
   ISSUE_WITH_ASSIGNEES,
   ISSUE_WITH_EMPTY_DESCRIPTION,

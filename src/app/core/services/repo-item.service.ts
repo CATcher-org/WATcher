@@ -16,7 +16,7 @@ import { ViewService } from './view.service';
 })
 
 /**
- * Responsible for creating and updating issues, and periodically fetching issues
+ * Responsible for creating and updating repo items, and periodically fetching issues
  * using GitHub.
  */
 export class RepoItemService {
@@ -86,9 +86,9 @@ export class RepoItemService {
   }
 
   /**
-   * This function will update the issue's state of the application. This function needs to be called whenever a issue is added/updated.
+   * This function will update the repo item's state of the application. This function needs to be called whenever a repo item is added/updated.
    *
-   * @params issuesToUpdate - An array of issues to update the state of the application with.
+   * @params dataToUpdate - An array of data (repo items) to update the state of the application with.
    */
   private updateLocalStore(dataToUpdate: RepoItem[]) {
     const newData = { ...this.repoItem };
@@ -173,8 +173,8 @@ export class RepoItemService {
   }
 
   /**
-   * Returns an array of outdated issue ids by comparing the ids of the recently
-   * fetched issues with the current issue ids in the local store
+   * Returns an array of outdated repo item ids by comparing the ids of the recently
+   * fetched repo items with the current repo item ids in the local store
    */
   private getOutdatedRepoItemIds(fetchedRepoItemIds: number[]): number[] {
     /*

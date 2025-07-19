@@ -15,7 +15,7 @@ import { FiltersService } from '../../core/services/filters.service';
 import { GithubService } from '../../core/services/github.service';
 import { GithubEventService } from '../../core/services/githubevent.service';
 import { GroupingContextService } from '../../core/services/grouping/grouping-context.service';
-import { RepoItemService } from '../../core/services/issue.service';
+import { RepoItemService } from '../../core/services/repo-item.service';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
@@ -124,7 +124,7 @@ export class HeaderComponent implements OnInit {
     // Replace Current View Data.
     this.viewService.changeView(View[selectedView]);
 
-    // Remove current view issues and load selected view issues.
+    // Remove current view issues and load selected view repo items.
     this.githubService.reset();
     this.repoItemService.reset(false);
     this.labelService.reset();

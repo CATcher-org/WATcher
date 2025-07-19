@@ -10,7 +10,7 @@ import { View } from '../models/view.model';
 import { ErrorHandlingService } from './error-handling.service';
 import { GithubService } from './github.service';
 import { GithubEventService } from './githubevent.service';
-import { RepoItemService } from './issue.service';
+import { RepoItemService } from './repo-item.service';
 import { LabelService } from './label.service';
 import { LoggingService } from './logging.service';
 import { UserService } from './user.service';

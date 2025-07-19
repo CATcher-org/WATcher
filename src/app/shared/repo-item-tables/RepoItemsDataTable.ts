@@ -11,7 +11,7 @@ import { RepoItem } from '../../core/models/repo-item.model';
 import { AssigneeService } from '../../core/services/assignee.service';
 import { Filter, FiltersService } from '../../core/services/filters.service';
 import { GroupingContextService } from '../../core/services/grouping/grouping-context.service';
-import { RepoItemService } from '../../core/services/issue.service';
+import { RepoItemService } from '../../core/services/repo-item.service';
 import { MilestoneService } from '../../core/services/milestone.service';
 import { applyDropdownFilter } from './dropdownfilter';
 import { FilterableSource } from './filterableTypes';
@@ -19,7 +19,7 @@ import { paginateData } from './issue-paginator';
 import { applySort } from './issue-sorter';
 import { applySearchFilter } from './search-filter';
 
-export class IssuesDataTable extends DataSource<RepoItem> implements FilterableSource {
+export class RepoItemsDataTable extends DataSource<RepoItem> implements FilterableSource {
   public count = 0;
   public issueCount = 0;
   public prCount = 0;
@@ -82,9 +82,9 @@ export class IssuesDataTable extends DataSource<RepoItem> implements FilterableS
     this.repoItemService.startPollRepoItems();
     this.repoItemSubscription = merge(...displayDataChanges)
       .pipe(
-        // maps each change in display value to new issue ordering or filtering
+        // maps each change in display value to new repo item ordering or filtering
         map(() => {
-          if (!IssuesDataTable.isGroupInFilter(this.group, this.filter)) {
+          if (!RepoItemsDataTable.isGroupInFilter(this.group, this.filter)) {
             this.count = 0;
             return [];
           }

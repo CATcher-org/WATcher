@@ -1,6 +1,6 @@
 // import { AppConfig } from '../../../../environments/environment';
 import { GithubService } from '../github.service';
-import { RepoItemService } from '../issue.service';
+import { RepoItemService } from '../repo-item.service';
 // import { MockIssueService } from '../mocks/mock.issue.service';
 import { UserService } from '../user.service';
 import { ViewService } from '../view.service';
