@@ -15,10 +15,10 @@ import { GITHUB_LABEL_FEATURE_FLAW } from '../../../constants/githublabel.consta
 describe('search-filter', () => {
   describe('applySearchFilter()', () => {
     let searchKey: string;
-    const mediumSeverityIssueWithResponse: Issue = Issue.createPhaseBugReportingRepoItem(ISSUE_WITH_EMPTY_DESCRIPTION);
-    const mediumSeverityIssueWithAssigneee: Issue = Issue.createPhaseBugReportingRepoItem(ISSUE_WITH_ASSIGNEES);
-    const lowSeverityFeatureFlawIssue: Issue = Issue.createPhaseBugReportingRepoItem(ISSUE_WITH_EMPTY_DESCRIPTION_LOW_SEVERITY);
-    const highSeverityDocumentationBugIssue: Issue = Issue.createPhaseBugReportingRepoItem(ISSUE_WITH_EMPTY_DESCRIPTION_HIGH_SEVERITY);
+    const mediumSeverityIssueWithResponse: Issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
+    const mediumSeverityIssueWithAssigneee: Issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_ASSIGNEES);
+    const lowSeverityFeatureFlawIssue: Issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_EMPTY_DESCRIPTION_LOW_SEVERITY);
+    const highSeverityDocumentationBugIssue: Issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_EMPTY_DESCRIPTION_HIGH_SEVERITY);
 
     const issuesList: Issue[] = [
       mediumSeverityIssueWithResponse,
