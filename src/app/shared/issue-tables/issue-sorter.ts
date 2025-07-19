@@ -15,7 +15,7 @@ export function applySort(sort: Sort, data: RepoItem[]): RepoItem[] {
     case 'date':
       return data.sort((a, b) => direction * compareByDateValue(a.updated_at, b.updated_at));
     case 'status':
-      return data.sort((a, b) => direction * compareByIssueType(a, b));
+      return data.sort((a, b) => direction * compareByRepoItemType(a, b));
     default:
       // title, responseTag are string values
       return data.sort((a, b) => direction * compareByStringValue(a[sort.active], b[sort.active]));
@@ -36,7 +36,7 @@ function compareByDateValue(valueA: string, valueB: string): number {
   return moment(valueA).isBefore(valueB) ? -1 : 1;
 }
 
-function compareByIssueType(valueA: RepoItem, valueB: RepoItem): number {
+function compareByRepoItemType(valueA: RepoItem, valueB: RepoItem): number {
   const sortOrder = {
     'OPEN PullRequest': 0,
     'OPEN Issue': 1,

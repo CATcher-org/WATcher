@@ -26,8 +26,8 @@ export class RepoItemService {
   repoItem$: BehaviorSubject<RepoItem[]>;
 
   private sessionId: string;
-  private issueTeamFilter = 'All Teams';
-  private issuesPollSubscription: Subscription;
+  private repoItemTeamFilter = 'All Teams';
+  private repoItemPollSubscription: Subscription;
   /** Whether the RepoItemService is downloading the repoItem from Github*/
   public isLoading = new BehaviorSubject<boolean>(false);
 
@@ -36,12 +36,12 @@ export class RepoItemService {
   }
 
   startPollRepoItems() {
-    if (this.issuesPollSubscription === undefined) {
+    if (this.repoItemPollSubscription === undefined) {
       if (this.repoItem$.getValue().length === 0) {
         this.isLoading.next(true);
       }
 
-      this.issuesPollSubscription = timer(0, RepoItemService.POLL_INTERVAL)
+      this.repoItemPollSubscription = timer(0, RepoItemService.POLL_INTERVAL)
         .pipe(
           exhaustMap(() => {
             return this.reloadAllRepoItems().pipe(
@@ -55,9 +55,9 @@ export class RepoItemService {
   }
 
   stopPollRepoItems() {
-    if (this.issuesPollSubscription) {
-      this.issuesPollSubscription.unsubscribe();
-      this.issuesPollSubscription = undefined;
+    if (this.repoItemPollSubscription) {
+      this.repoItemPollSubscription.unsubscribe();
+      this.repoItemPollSubscription = undefined;
     }
   }
 
@@ -220,7 +220,7 @@ export class RepoItemService {
 
   setRepoItemTeamFilter(filterValue: string) {
     if (filterValue) {
-      this.issueTeamFilter = filterValue;
+      this.repoItemTeamFilter = filterValue;
     }
   }
 
@@ -229,6 +229,6 @@ export class RepoItemService {
   }
 
   getRepoItemTeamFilter(): string {
-    return this.issueTeamFilter;
+    return this.repoItemTeamFilter;
   }
 }

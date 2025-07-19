@@ -19,7 +19,6 @@ export class MilestoneGroupingStrategy implements GroupingStrategy {
    * Retrieves data for a milestone.
    */
   getDataForGroup(items: RepoItem[], key: Milestone): RepoItem[] {
-    console.log('data: ' + JSON.stringify(items));
     return items.filter((item) => item.milestone.equals(key));
   }
 

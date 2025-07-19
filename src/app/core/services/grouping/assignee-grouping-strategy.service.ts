@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GithubUser } from '../../models/github-user.model';
-import { Issue } from '../../models/issue.model';
 import { GithubService } from '../github.service';
 import { GroupingStrategy } from './grouping-strategy.interface';
 import { PullRequest } from '../../models/pull-request.model';
+import { RepoItem } from '../../models/repo-item.model';
 
 /**
  * A GroupingStrategy that groups issues/prs based on their assignees.
@@ -21,7 +21,7 @@ export class AssigneeGroupingStrategy implements GroupingStrategy {
    * If it is the "No Assignee" group, unassigned issues are returned.
    * Otherwise, issues assigned to the specified user are returned.
    */
-  getDataForGroup(items: Issue[] | PullRequest[], key: GithubUser): Issue[] | PullRequest[] {
+  getDataForGroup(items: RepoItem[], key: GithubUser): RepoItem[] {
     if (key === GithubUser.NO_ASSIGNEE) {
       return this.getUnassignedData(items);
     }
@@ -49,33 +49,33 @@ export class AssigneeGroupingStrategy implements GroupingStrategy {
     return group !== GithubUser.NO_ASSIGNEE;
   }
 
-  private getDataAssignedToUser(items: Issue[] | PullRequest[], user: GithubUser): Issue[] | PullRequest[] {
+  private getDataAssignedToUser(items: RepoItem[], user: GithubUser): RepoItem[] {
     const filteredIssues = items.filter((item) => {
       if (this.isPullRequest(item)) {
-        return this.isPullRequestCreatedByTarget(item, user);
+        return this.isRepoItemCreatedByTarget(item, user);
       }
 
-      return this.isIssueAssignedToTarget(item, user);
+      return this.isRepoItemAssignedToTarget(item, user);
     });
 
     return filteredIssues;
   }
 
-  private getUnassignedData(items: Issue[] | PullRequest[]): Issue[] | PullRequest[] {
+  private getUnassignedData(items: RepoItem[]): RepoItem[] {
     return items.filter((item) => !this.isPullRequest(item) && item.assignees.length === 0);
   }
 
-  private isPullRequest(item: Issue | PullRequest): boolean {
+  private isPullRequest(item: RepoItem): boolean {
     return item instanceof PullRequest;
   }
 
-  private isPullRequestCreatedByTarget(issue: Issue, target: GithubUser): boolean {
-    return issue.author === target.login;
+  private isRepoItemCreatedByTarget(item: RepoItem, target: GithubUser): boolean {
+    return item.author === target.login;
   }
 
-  private isIssueAssignedToTarget(issue: Issue, target: GithubUser): boolean {
-    const isAssigneesFieldDefined = !!issue.assignees;
+  private isRepoItemAssignedToTarget(item: RepoItem, target: GithubUser): boolean {
+    const isAssigneesFieldDefined = !!item.assignees;
 
-    return isAssigneesFieldDefined && issue.assignees.includes(target.login);
+    return isAssigneesFieldDefined && item.assignees.includes(target.login);
   }
 }

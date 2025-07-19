@@ -2,12 +2,6 @@ import { GithubIssue } from './github/github-issue.model';
 import { Milestone } from './milestone.model';
 import { RepoItem } from './repo-item.model';
 
-export enum ReviewDecision {
-  CHANGES_REQUESTED = 'CHANGES_REQUESTED',
-  APPROVED = 'APPROVED',
-  REVIEW_REQUIRED = 'REVIEW_REQUIRED'
-}
-
 export class Issue extends RepoItem {
   protected constructor(githubIssue: GithubIssue) {
     super(githubIssue);

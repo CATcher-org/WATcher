@@ -12,7 +12,7 @@ export enum ReviewDecision {
   REVIEW_REQUIRED = 'REVIEW_REQUIRED'
 }
 
-export class RepoItem {
+export abstract class RepoItem {
   /** Basic Fields */
   readonly globalId: string;
   readonly id: number;
