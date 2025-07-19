@@ -17,7 +17,7 @@ const infoFromStatus = (statusString: string): StatusInfo => {
 };
 
 /**
- * This module serves to improve separation of concerns in IssuesDataTable.ts and IssueList.ts module by containing the logic for
+ * This module serves to improve separation of concerns in RepoItemsDataTable.ts and IssueList.ts module by containing the logic for
  * applying dropdownFilter to the issues data table in this module.
  * This module exports a single function applyDropDownFilter which is called by IssueList.
  * This functions returns the data passed in after all the filters of dropdownFilters are applied

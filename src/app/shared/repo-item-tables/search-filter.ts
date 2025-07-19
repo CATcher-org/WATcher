@@ -3,11 +3,11 @@ import { RepoItemService } from '../../core/services/repo-item.service';
 import { TABLE_COLUMNS } from './repo-item-tables-columns';
 
 /**
- * This module serves to improve separation of concerns in IssuesDataTable.ts module by containing the logic for
- * applying search filter to the issues data table in this module.
+ * This module serves to improve separation of concerns in RepoItemsDataTable.ts module by containing the logic for
+ * applying search filter to the repo items data table in this module.
  * This module exports a 2 function applySearchFilter and searchFilter
- * SearchFilter returns a function to test if an Issue matches
- * applySearchFilter applies searchfilter to a list of issues.
+ * SearchFilter returns a function to test if a RepoItem matches
+ * applySearchFilter applies searchfilter to a list of repo items.
  */
 
 export function searchFilter(filter: string, displayedColumn: string[]): (a: RepoItem) => boolean {

@@ -21,7 +21,7 @@ export class Milestone implements Group {
   /*
   This method is used to enable comparisons between
   a Group and the filtering criteria, which is stored
-  as a string, in IssuesDataTable.ts
+  as a string, in RepoItemsDataTable.ts
   */
   static fromTitle(title: string): Milestone {
     return new Milestone({ title, state: '' });

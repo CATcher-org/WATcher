@@ -91,7 +91,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Signals to IssuesDataTable that a change has occurred in filter.
+   * Signals to RepoItemsDataTable that a change has occurred in filter.
    */
   applyFilter() {
     this.views$?.value?.forEach((v) => (v.retrieveFilterable().filter = this.filter));
