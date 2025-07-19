@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Issue } from '../../models/issue.model';
 import { Milestone } from '../../models/milestone.model';
 import { MilestoneService } from '../milestone.service';
 import { GroupingStrategy } from './grouping-strategy.interface';
-import { PullRequest } from '../../models/pull-request.model';
+import { RepoItem } from '../../models/repo-item.model';
 
 /**
  * A GroupingStrategy that groups issues/prs based on their milestones.
@@ -19,8 +18,9 @@ export class MilestoneGroupingStrategy implements GroupingStrategy {
   /**
    * Retrieves data for a milestone.
    */
-  getDataForGroup(items: Issue[] | PullRequest[], key: Milestone): Issue[] | PullRequest[] {
-    return items.filter((issue) => issue.milestone.equals(key));
+  getDataForGroup(items: RepoItem[], key: Milestone): RepoItem[] {
+    console.log('data: ' + JSON.stringify(items));
+    return items.filter((item) => item.milestone.equals(key));
   }
 
   /**

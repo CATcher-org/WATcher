@@ -8,6 +8,8 @@ import { View } from '../models/view.model';
 import { GithubService } from './github.service';
 import { UserService } from './user.service';
 import { ViewService } from './view.service';
+import { Issue } from '../models/issue.model';
+import { PullRequest } from '../models/pull-request.model';
 
 @Injectable({
   providedIn: 'root'
@@ -112,7 +114,8 @@ export class RepoItemService {
   private initializeData(): Observable<RepoItem[]> {
     let issuesAPICallsByFilter: Observable<Array<GithubIssue>>;
 
-    switch (RepoItemFilter[this.viewService.currentView][this.userService.currentUser.role]) {
+    const filter = RepoItemFilter[this.viewService.currentView][this.userService.currentUser.role];
+    switch (filter) {
       case 'FILTER_BY_CREATOR':
         issuesAPICallsByFilter = this.githubService.fetchIssuesGraphql(
           new RestGithubRepoItemFilter({ creator: this.userService.currentUser.loginId })
@@ -197,7 +200,19 @@ export class RepoItemService {
   private createRepoItemModel(githubIssue: GithubIssue): RepoItem {
     switch (this.viewService.currentView) {
       case View.repoItemsViewer:
-        return RepoItem.createPhaseBugReportingRepoItem(githubIssue);
+        return this.createRepoItemInViewer(githubIssue);
+      default:
+        return;
+    }
+  }
+
+  private createRepoItemInViewer(githubIssue: GithubIssue): RepoItem {
+    const type = githubIssue.issueOrPr;
+    switch (type) {
+      case 'Issue':
+        return Issue.createPhaseBugReportingIssue(githubIssue);
+      case 'PullRequest':
+        return PullRequest.createPhaseBugReportingPullRequest(githubIssue);
       default:
         return;
     }

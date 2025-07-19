@@ -24,8 +24,8 @@ export class IssuesDataTable extends DataSource<RepoItem> implements FilterableS
   public issueCount = 0;
   public prCount = 0;
   private filterChange = new BehaviorSubject(this.filtersService.defaultFilter);
-  private issuesSubject = new BehaviorSubject<RepoItem[]>([]);
-  private issueSubscription: Subscription;
+  private repoItemsSubject = new BehaviorSubject<RepoItem[]>([]);
+  private repoItemSubscription: Subscription;
 
   public isLoading$ = this.repoItemService.isLoading.asObservable();
 
@@ -53,20 +53,20 @@ export class IssuesDataTable extends DataSource<RepoItem> implements FilterableS
     private paginator: MatPaginator,
     private displayedColumn: string[],
     private group?: Group,
-    private defaultFilter?: (issue: Issue) => boolean
+    private defaultFilter?: (repoItem: RepoItem) => boolean
   ) {
     super();
   }
 
   connect(): Observable<RepoItem[]> {
-    return this.issuesSubject.asObservable();
+    return this.repoItemsSubject.asObservable();
   }
 
   disconnect() {
     this.filterChange.complete();
-    this.issuesSubject.complete();
-    if (this.issueSubscription) {
-      this.issueSubscription.unsubscribe();
+    this.repoItemsSubject.complete();
+    if (this.repoItemSubscription) {
+      this.repoItemSubscription.unsubscribe();
     }
     this.repoItemService.stopPollRepoItems();
   }
@@ -80,7 +80,7 @@ export class IssuesDataTable extends DataSource<RepoItem> implements FilterableS
     const displayDataChanges = [this.repoItemService.repoItem$, page, this.filterChange].filter((x) => x !== undefined);
 
     this.repoItemService.startPollRepoItems();
-    this.issueSubscription = merge(...displayDataChanges)
+    this.repoItemSubscription = merge(...displayDataChanges)
       .pipe(
         // maps each change in display value to new issue ordering or filtering
         map(() => {
@@ -112,8 +112,8 @@ export class IssuesDataTable extends DataSource<RepoItem> implements FilterableS
           return data;
         })
       )
-      .subscribe((issues) => {
-        this.issuesSubject.next(issues);
+      .subscribe((items) => {
+        this.repoItemsSubject.next(items);
       });
   }
 

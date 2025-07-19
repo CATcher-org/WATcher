@@ -105,10 +105,6 @@ export class RepoItem {
     this.reviews = githubIssue.reviews?.map((review) => new PullrequestReview(review));
   }
 
-  public static createPhaseBugReportingRepoItem(githubIssue: GithubIssue): RepoItem {
-    return new RepoItem(githubIssue);
-  }
-
   createGithubIssueDescription(): string {
     return `${this.description}\n${this.hiddenDataInDescription.toString()}`;
   }
@@ -119,7 +115,7 @@ export interface RepoItems {
 }
 
 export const RepoItemFilter = {
-  repoItemViewer: {
+  repoItemsViewer: {
     Student: 'NO_FILTER',
     Tutor: 'NO_FILTER',
     Admin: 'NO_FILTER'

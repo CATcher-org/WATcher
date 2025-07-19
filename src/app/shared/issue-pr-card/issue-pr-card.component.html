@@ -7,7 +7,7 @@
   <mat-card-content class="content">
     <div class="milestone-labels">
       <app-issue-pr-card-fork-badge
-        *ngIf="repoItem; instanceof: PullRequest"
+        *ngIf="this.isPullRequest(repoItem)"
         [isNotFollowingForkingWorkflow]="isNotFollowingForkingWorkflow()"
       ></app-issue-pr-card-fork-badge>
       <app-issue-pr-card-milestone

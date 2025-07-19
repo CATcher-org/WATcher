@@ -2,11 +2,10 @@ import { Injectable, Injector } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Group } from '../../models/github/group.interface';
-import { Issue } from '../../models/issue.model';
 import { AssigneeGroupingStrategy } from './assignee-grouping-strategy.service';
 import { GroupingStrategy } from './grouping-strategy.interface';
 import { MilestoneGroupingStrategy } from './milestone-grouping-strategy.service';
-import { PullRequest } from '../../models/pull-request.model';
+import { RepoItem } from '../../models/repo-item.model';
 
 export enum GroupBy {
   Assignee = 'assignee',
@@ -80,7 +79,7 @@ export class GroupingContextService {
    * @param group - The group by which items are to be grouped.
    * @returns An array of items belonging to the specified group.
    */
-  getDataForGroup(items: Issue[] | PullRequest[], group: Group): Issue[] | PullRequest[] {
+  getDataForGroup(items: RepoItem[], group: Group): RepoItem[] {
     const strategy = this.groupingStrategyMap.get(this.currGroupBy);
     return strategy.getDataForGroup(items, group);
   }

@@ -74,4 +74,8 @@ export class IssuePrCardComponent {
   isMergedWithoutReview(repoItem: RepoItem): boolean {
     return repoItem instanceof PullRequest && repoItem.state === 'MERGED' && (!repoItem.reviews || repoItem.reviews.length === 0);
   }
+
+  isPullRequest(repoItem: RepoItem): boolean {
+    return repoItem instanceof PullRequest;
+  }
 }
