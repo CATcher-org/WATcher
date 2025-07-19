@@ -24,9 +24,9 @@ import { GithubServiceFactory } from './core/services/factories/factory.github.s
 import { RepoItemServiceFactory } from './core/services/factories/factory.issue.service';
 import { GithubService } from './core/services/github.service';
 import { GithubEventService } from './core/services/githubevent.service';
-import { RepoItemService } from './core/services/repo-item.service';
 import { LabelService } from './core/services/label.service';
 import { LoggingService } from './core/services/logging.service';
+import { RepoItemService } from './core/services/repo-item.service';
 import { RepoSessionStorageService } from './core/services/repo-session-storage.service';
 import { UserService } from './core/services/user.service';
 import { ViewService } from './core/services/view.service';

@@ -86,7 +86,8 @@ export class RepoItemService {
   }
 
   /**
-   * This function will update the repo item's state of the application. This function needs to be called whenever a repo item is added/updated.
+   * This function will update the repo item's state of the application.
+   * This function needs to be called whenever a repo item is added/updated.
    *
    * @params dataToUpdate - An array of data (repo items) to update the state of the application with.
    */

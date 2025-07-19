@@ -17,9 +17,9 @@ import { RepoItem } from '../../core/models/repo-item.model';
 import { AssigneeService } from '../../core/services/assignee.service';
 import { FiltersService } from '../../core/services/filters.service';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
-import { RepoItemService } from '../../core/services/repo-item.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
+import { RepoItemService } from '../../core/services/repo-item.service';
 import { FilterableComponent, FilterableSource } from '../../shared/repo-item-tables/filterableTypes';
 import { RepoItemsDataTable } from '../../shared/repo-item-tables/RepoItemsDataTable';
 
