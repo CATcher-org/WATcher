@@ -15,9 +15,9 @@ import { FiltersService } from '../../core/services/filters.service';
 import { GithubService } from '../../core/services/github.service';
 import { GithubEventService } from '../../core/services/githubevent.service';
 import { GroupingContextService } from '../../core/services/grouping/grouping-context.service';
-import { IssueService } from '../../core/services/issue.service';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
+import { RepoItemService } from '../../core/services/repo-item.service';
 import { RepoSessionStorageService } from '../../core/services/repo-session-storage.service';
 import { RepoUrlCacheService } from '../../core/services/repo-url-cache.service';
 import { UserService } from '../../core/services/user.service';
@@ -67,7 +67,7 @@ export class HeaderComponent implements OnInit {
     public repoUrlCacheService: RepoUrlCacheService,
     private location: Location,
     private githubEventService: GithubEventService,
-    private issueService: IssueService,
+    private repoItemService: RepoItemService,
     private labelService: LabelService,
     private errorHandlingService: ErrorHandlingService,
     private githubService: GithubService,
@@ -105,7 +105,7 @@ export class HeaderComponent implements OnInit {
       this.initializeRepoNameInTitle();
     });
 
-    this.isLoading$ = this.issueService.isLoading.asObservable();
+    this.isLoading$ = this.repoItemService.isLoading.asObservable();
   }
 
   ngOnInit() {}
@@ -124,9 +124,9 @@ export class HeaderComponent implements OnInit {
     // Replace Current View Data.
     this.viewService.changeView(View[selectedView]);
 
-    // Remove current view issues and load selected view issues.
+    // Remove current view issues and load selected view repo items.
     this.githubService.reset();
-    this.issueService.reset(false);
+    this.repoItemService.reset(false);
     this.labelService.reset();
     this.reload();
 
@@ -143,7 +143,7 @@ export class HeaderComponent implements OnInit {
   }
 
   isOpenUrlButtonShown(): boolean {
-    return this.viewService.currentView === View.issuesViewer || this.viewService.currentView === View.activityDashboard;
+    return this.viewService.currentView === View.repoItemsViewer || this.viewService.currentView === View.activityDashboard;
   }
 
   getVersion(): string {

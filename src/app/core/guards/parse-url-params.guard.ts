@@ -14,7 +14,7 @@ export class ParseUrlParamsGuard implements CanActivate {
   /**
    * Saves org/repo url parameters to session storage
    * Redirects to '/' as login session not persistant
-   * This keeps /issuesViewer route protected
+   * This keeps /repoItemsViewer route protected
    * @return false
    */
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {

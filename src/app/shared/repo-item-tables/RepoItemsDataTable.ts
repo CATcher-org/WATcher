@@ -6,26 +6,28 @@ import { GithubUser } from '../../core/models/github-user.model';
 import { Group } from '../../core/models/github/group.interface';
 import { Issue } from '../../core/models/issue.model';
 import { Milestone } from '../../core/models/milestone.model';
+import { PullRequest } from '../../core/models/pull-request.model';
+import { RepoItem } from '../../core/models/repo-item.model';
 import { AssigneeService } from '../../core/services/assignee.service';
 import { Filter, FiltersService } from '../../core/services/filters.service';
 import { GroupingContextService } from '../../core/services/grouping/grouping-context.service';
-import { IssueService } from '../../core/services/issue.service';
 import { MilestoneService } from '../../core/services/milestone.service';
+import { RepoItemService } from '../../core/services/repo-item.service';
 import { applyDropdownFilter } from './dropdownfilter';
 import { FilterableSource } from './filterableTypes';
-import { paginateData } from './issue-paginator';
-import { applySort } from './issue-sorter';
+import { paginateData } from './repo-item-paginator';
+import { applySort } from './repo-item-sorter';
 import { applySearchFilter } from './search-filter';
 
-export class IssuesDataTable extends DataSource<Issue> implements FilterableSource {
+export class RepoItemsDataTable extends DataSource<RepoItem> implements FilterableSource {
   public count = 0;
   public issueCount = 0;
   public prCount = 0;
   private filterChange = new BehaviorSubject(this.filtersService.defaultFilter);
-  private issuesSubject = new BehaviorSubject<Issue[]>([]);
-  private issueSubscription: Subscription;
+  private repoItemsSubject = new BehaviorSubject<RepoItem[]>([]);
+  private repoItemSubscription: Subscription;
 
-  public isLoading$ = this.issueService.isLoading.asObservable();
+  public isLoading$ = this.repoItemService.isLoading.asObservable();
 
   private static isGroupInFilter(group: Group, filter: Filter): boolean {
     const groupFilterAsGithubUser = filter.assignees.map((selectedAssignee) => {
@@ -43,7 +45,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
   }
 
   constructor(
-    private issueService: IssueService,
+    private repoItemService: RepoItemService,
     private groupingContextService: GroupingContextService,
     private filtersService: FiltersService,
     private assigneeService: AssigneeService,
@@ -51,43 +53,43 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
     private paginator: MatPaginator,
     private displayedColumn: string[],
     private group?: Group,
-    private defaultFilter?: (issue: Issue) => boolean
+    private defaultFilter?: (repoItem: RepoItem) => boolean
   ) {
     super();
   }
 
-  connect(): Observable<Issue[]> {
-    return this.issuesSubject.asObservable();
+  connect(): Observable<RepoItem[]> {
+    return this.repoItemsSubject.asObservable();
   }
 
   disconnect() {
     this.filterChange.complete();
-    this.issuesSubject.complete();
-    if (this.issueSubscription) {
-      this.issueSubscription.unsubscribe();
+    this.repoItemsSubject.complete();
+    if (this.repoItemSubscription) {
+      this.repoItemSubscription.unsubscribe();
     }
-    this.issueService.stopPollIssues();
+    this.repoItemService.stopPollRepoItems();
   }
 
-  loadIssues() {
+  loadRepoItems() {
     let page;
     if (this.paginator !== undefined) {
       page = this.paginator.page;
     }
 
-    const displayDataChanges = [this.issueService.issues$, page, this.filterChange].filter((x) => x !== undefined);
+    const displayDataChanges = [this.repoItemService.repoItem$, page, this.filterChange].filter((x) => x !== undefined);
 
-    this.issueService.startPollIssues();
-    this.issueSubscription = merge(...displayDataChanges)
+    this.repoItemService.startPollRepoItems();
+    this.repoItemSubscription = merge(...displayDataChanges)
       .pipe(
-        // maps each change in display value to new issue ordering or filtering
+        // maps each change in display value to new repo item ordering or filtering
         map(() => {
-          if (!IssuesDataTable.isGroupInFilter(this.group, this.filter)) {
+          if (!RepoItemsDataTable.isGroupInFilter(this.group, this.filter)) {
             this.count = 0;
             return [];
           }
 
-          let data = <Issue[]>Object.values(this.issueService.issues$.getValue()).reverse();
+          let data = <RepoItem[]>Object.values(this.repoItemService.repoItem$.getValue()).reverse();
           if (this.defaultFilter) {
             data = data.filter(this.defaultFilter);
           }
@@ -97,9 +99,9 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
           // Apply Filters
           data = applyDropdownFilter(this.filter, data, !this.milestoneService.hasNoMilestones, !this.assigneeService.hasNoAssignees);
 
-          data = applySearchFilter(this.filter.title, this.displayedColumn, this.issueService, data);
-          this.issueCount = data.filter((issue) => issue.issueOrPr !== 'PullRequest').length;
-          this.prCount = data.filter((issue) => issue.issueOrPr === 'PullRequest').length;
+          data = applySearchFilter(this.filter.title, this.displayedColumn, this.repoItemService, data);
+          this.issueCount = data.filter((datum) => datum instanceof Issue).length;
+          this.prCount = data.filter((datum) => datum instanceof PullRequest).length;
           this.count = data.length;
 
           data = applySort(this.filter.sort, data);
@@ -110,8 +112,8 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
           return data;
         })
       )
-      .subscribe((issues) => {
-        this.issuesSubject.next(issues);
+      .subscribe((items) => {
+        this.repoItemsSubject.next(items);
       });
   }
 

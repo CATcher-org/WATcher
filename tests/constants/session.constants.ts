@@ -6,7 +6,7 @@ export const WATCHER_REPO: Repo = Repo.of('CATcher-org/WATcher');
 export const CATCHER_REPO: Repo = Repo.of('CATcher-org/CATcher');
 
 const ISSUES_VIEWER_SESSION_REPO: SessionRepo = {
-  view: View.issuesViewer,
+  view: View.repoItemsViewer,
   repos: [WATCHER_REPO]
 };
 

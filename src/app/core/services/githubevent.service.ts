@@ -3,7 +3,7 @@ import { BehaviorSubject, EMPTY, Observable, of, Subscription, timer } from 'rxj
 import { catchError, exhaustMap, finalize, flatMap, map } from 'rxjs/operators';
 import { GithubEvent } from '../models/github/github-event.model';
 import { GithubService } from './github.service';
-import { IssueService } from './issue.service';
+import { RepoItemService } from './repo-item.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class GithubEventService {
   private lastModified: string; // The timestamp when the title or label of an issue is changed
   private lastModifiedComment: string; // The timestamp when the comment of an issue is changed
 
-  constructor(private githubService: GithubService, private issueService: IssueService) {
+  constructor(private githubService: GithubService, private repoItemService: RepoItemService) {
     this.events$ = new BehaviorSubject(new Array<GithubEvent>());
   }
 
@@ -58,7 +58,7 @@ export class GithubEventService {
         if (eventResponse['created_at'] !== this.lastModified || eventResponse['issue']['updated_at'] !== this.lastModifiedComment) {
           this.setLastModifiedTime(eventResponse['created_at']);
           this.setLastModifiedCommentTime(eventResponse['issue']['updated_at']);
-          return this.issueService.reloadAllIssues().pipe(map((response: any[]) => true));
+          return this.repoItemService.reloadAllRepoItems().pipe(map((response: any[]) => true));
         }
         return of(false);
       })
@@ -97,7 +97,7 @@ export class GithubEventService {
       }
     }
 
-    this.eventsPollSubscription = timer(0, IssueService.POLL_INTERVAL)
+    this.eventsPollSubscription = timer(0, RepoItemService.POLL_INTERVAL)
       .pipe(
         exhaustMap(() => {
           return this.getEvents().pipe(
