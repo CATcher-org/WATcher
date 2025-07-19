@@ -15,8 +15,8 @@ import { RepoItemService } from '../../core/services/repo-item.service';
 import { MilestoneService } from '../../core/services/milestone.service';
 import { applyDropdownFilter } from './dropdownfilter';
 import { FilterableSource } from './filterableTypes';
-import { paginateData } from './issue-paginator';
-import { applySort } from './issue-sorter';
+import { paginateData } from './repo-item-paginator';
+import { applySort } from './repo-item-sorter';
 import { applySearchFilter } from './search-filter';
 
 export class RepoItemsDataTable extends DataSource<RepoItem> implements FilterableSource {
