@@ -1,6 +1,7 @@
 import * as moment from 'moment';
 import { Issue } from '../../src/app/core/models/issue.model';
 import { Milestone } from '../../src/app/core/models/milestone.model';
+import { RepoItem } from '../../src/app/core/models/repo-item.model';
 import { USER_ANUBHAV } from '../constants/data.constants';
 import {
   CLOSED_ISSUE_WITH_EMPTY_DESCRIPTION,
@@ -15,7 +16,6 @@ import {
   GITHUB_LABEL_TEAM_LABEL,
   GITHUB_LABEL_TUTORIAL_LABEL
 } from '../constants/githublabel.constants';
-import { RepoItem } from '../../src/app/core/models/repo-item.model';
 
 describe('Issue model class', () => {
   describe('.createPhaseBugReportIssue(githubIssue)', () => {

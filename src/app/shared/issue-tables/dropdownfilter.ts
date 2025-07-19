@@ -1,7 +1,7 @@
-import { PullRequest } from '../../core/models/pull-request.model';
 import { Issue } from '../../core/models/issue.model';
-import { Filter } from '../../core/services/filters.service';
+import { PullRequest } from '../../core/models/pull-request.model';
 import { RepoItem } from '../../core/models/repo-item.model';
+import { Filter } from '../../core/services/filters.service';
 
 type StatusInfo = {
   type: string;

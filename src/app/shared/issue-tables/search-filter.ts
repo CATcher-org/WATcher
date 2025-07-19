@@ -1,6 +1,6 @@
+import { RepoItem } from '../../core/models/repo-item.model';
 import { RepoItemService } from '../../core/services/issue.service';
 import { TABLE_COLUMNS } from './issue-tables-columns';
-import { RepoItem } from '../../core/models/repo-item.model';
 
 /**
  * This module serves to improve separation of concerns in IssuesDataTable.ts module by containing the logic for

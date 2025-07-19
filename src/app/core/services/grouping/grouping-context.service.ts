@@ -2,10 +2,10 @@ import { Injectable, Injector } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Group } from '../../models/github/group.interface';
+import { RepoItem } from '../../models/repo-item.model';
 import { AssigneeGroupingStrategy } from './assignee-grouping-strategy.service';
 import { GroupingStrategy } from './grouping-strategy.interface';
 import { MilestoneGroupingStrategy } from './milestone-grouping-strategy.service';
-import { RepoItem } from '../../models/repo-item.model';
 
 export enum GroupBy {
   Assignee = 'assignee',

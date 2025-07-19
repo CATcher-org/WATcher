@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { GithubUser } from '../../models/github-user.model';
 import { GithubService } from '../github.service';
-import { GroupingStrategy } from './grouping-strategy.interface';
+import { GithubUser } from '../../models/github-user.model';
 import { PullRequest } from '../../models/pull-request.model';
 import { RepoItem } from '../../models/repo-item.model';
+import { GroupingStrategy } from './grouping-strategy.interface';
 
 /**
  * A GroupingStrategy that groups issues/prs based on their assignees.

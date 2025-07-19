@@ -1,12 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { Issue } from '../../core/models/issue.model';
+import { PullRequest } from '../../core/models/pull-request.model';
+import { RepoItem } from '../../core/models/repo-item.model';
 import { Filter } from '../../core/services/filters.service';
 import { GithubService } from '../../core/services/github.service';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
-import { RepoItem } from '../../core/models/repo-item.model';
-import { PullRequest } from '../../core/models/pull-request.model';
 
 @Component({
   selector: 'app-issue-pr-card',

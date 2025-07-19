@@ -1,6 +1,6 @@
 import { IssueState, IssueStateReason } from '../../../../../graphql/graphql-types';
-import { ReviewDecision } from '../repo-item.model';
 import { PullrequestReviewState } from '../pullrequest-review.model';
+import { ReviewDecision } from '../repo-item.model';
 import { GithubComment } from './github-comment.model';
 import { GithubLabel } from './github-label.model';
 

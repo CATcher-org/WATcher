@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Milestone } from '../../models/milestone.model';
+import { RepoItem } from '../../models/repo-item.model';
 import { MilestoneService } from '../milestone.service';
 import { GroupingStrategy } from './grouping-strategy.interface';
-import { RepoItem } from '../../models/repo-item.model';
 
 /**
  * A GroupingStrategy that groups issues/prs based on their milestones.
