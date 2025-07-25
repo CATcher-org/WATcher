@@ -3,19 +3,19 @@ import { GithubEventService } from '../../src/app/core/services/githubevent.serv
 import { ADD_LABEL_EVENT, CHANGE_TITLE_EVENT, EVENTS } from '../constants/githubevent.constants';
 
 let githubService: any;
-let issueService: any;
+let repoItemService: any;
 
 describe('GithubEventService', () => {
   beforeAll(() => {
     githubService = jasmine.createSpyObj('GithubService', ['fetchEventsForRepo']);
-    issueService = jasmine.createSpyObj('IssueService', ['reloadAllIssues']);
-    issueService.reloadAllIssues.and.returnValue(of([]));
+    repoItemService = jasmine.createSpyObj('RepoItemService', ['reloadAllRepoItems']);
+    repoItemService.reloadAllRepoItems.and.returnValue(of([]));
   });
 
   describe('.setLatestChangeEvent()', () => {
     it('stores the time of the most recent issue event and most recent issue update.', async () => {
       githubService.fetchEventsForRepo.and.returnValue(of(EVENTS));
-      const githubEventService: GithubEventService = new GithubEventService(githubService, issueService);
+      const githubEventService: GithubEventService = new GithubEventService(githubService, repoItemService);
       await githubEventService.setLatestChangeEvent().toPromise();
       githubEventService.reloadPage().subscribe((result) => expect(result).toBe(false));
     });
@@ -23,26 +23,26 @@ describe('GithubEventService', () => {
 
   describe('.reloadPage()', () => {
     afterEach(() => {
-      issueService.reloadAllIssues.calls.reset();
+      repoItemService.reloadAllRepoItems.calls.reset();
     });
 
-    it('triggers the IssueService to re-initialise the issue list if there are new events', async () => {
+    it('triggers the RepoItemService to re-initialise the repo item list if there are new events', async () => {
       const FIRST_EVENT = [ADD_LABEL_EVENT];
       const SECOND_EVENT = [CHANGE_TITLE_EVENT];
       githubService.fetchEventsForRepo.and.returnValue(of(FIRST_EVENT));
-      const githubEventService: GithubEventService = new GithubEventService(githubService, issueService);
+      const githubEventService: GithubEventService = new GithubEventService(githubService, repoItemService);
       githubEventService.reloadPage().subscribe((result) => expect(result).toBe(true));
 
       githubService.fetchEventsForRepo.and.returnValue(of(SECOND_EVENT));
       githubEventService.reloadPage().subscribe((result) => expect(result).toBe(true));
     });
 
-    it('does not trigger the IssueService to re-initialise the issue list, if there are no new events', () => {
+    it('does not trigger the RepoItemService to re-initialise the issue list, if there are no new events', () => {
       githubService.fetchEventsForRepo.and.returnValue(of(EVENTS));
-      const githubEventService: GithubEventService = new GithubEventService(githubService, issueService);
+      const githubEventService: GithubEventService = new GithubEventService(githubService, repoItemService);
       githubEventService.reloadPage().subscribe((result) => expect(result).toBe(true));
 
-      // issueService.reloadAllIssues must not have been called again
+      // repoItemService.reloadAllRepoItems must not have been called again
       githubEventService.reloadPage().subscribe((result) => expect(result).toBe(false));
     });
   });
@@ -50,7 +50,7 @@ describe('GithubEventService', () => {
   describe('.reset()', () => {
     it('clears the details of the most recent event', async () => {
       githubService.fetchEventsForRepo.and.returnValue(of(EVENTS));
-      const githubEventService: GithubEventService = new GithubEventService(githubService, issueService);
+      const githubEventService: GithubEventService = new GithubEventService(githubService, repoItemService);
       await githubEventService.setLatestChangeEvent().toPromise();
       githubEventService.reset();
 

@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Issue } from '../../../core/models/issue.model';
+import { PullRequest } from '../../../core/models/pull-request.model';
+import { RepoItem } from '../../../core/models/repo-item.model';
 
 @Component({
   selector: 'app-issue-pr-card-header',
@@ -7,7 +9,7 @@ import { Issue } from '../../../core/models/issue.model';
   styleUrls: ['./issue-pr-card-header.component.css']
 })
 export class IssuePrCardHeaderComponent {
-  @Input() issue: Issue;
+  @Input() repoItem: RepoItem;
 
   constructor() {}
 
@@ -16,9 +18,9 @@ export class IssuePrCardHeaderComponent {
    * @returns string to create icon
    */
   getOcticon() {
-    const type = this.issue.issueOrPr;
-    const state = this.issue.state;
-    const stateReason = this.issue.stateReason;
+    const type = this.repoItem.constructor.name;
+    const state = this.repoItem.state;
+    const stateReason = this.repoItem.stateReason;
 
     if (type === 'Issue') {
       if (state === 'OPEN') {
@@ -32,7 +34,7 @@ export class IssuePrCardHeaderComponent {
       }
     } else if (type === 'PullRequest') {
       if (state === 'OPEN') {
-        if (this.issue.isDraft) {
+        if (this.repoItem.isDraft) {
           return 'git-pull-request-draft';
         }
         return 'git-pull-request';
@@ -46,17 +48,17 @@ export class IssuePrCardHeaderComponent {
     }
   }
 
-  /** Returns status color for issue */
-  getIssueOpenOrCloseColor() {
-    if (this.issue.state === 'OPEN') {
-      if (this.issue.isDraft) {
+  /** Returns status color for repoItem */
+  getRepoItemOpenOrCloseColor() {
+    if (this.repoItem.state === 'OPEN') {
+      if (this.repoItem.isDraft) {
         return 'grey';
       } else {
         return 'green';
       }
-    } else if (this.issue.issueOrPr === 'PullRequest' && this.issue.state === 'CLOSED') {
+    } else if (this.repoItem instanceof PullRequest && this.repoItem.state === 'CLOSED') {
       return 'red';
-    } else if (this.issue.issueOrPr === 'Issue' && this.issue.stateReason === 'NOT_PLANNED') {
+    } else if (this.repoItem instanceof Issue && this.repoItem.stateReason === 'NOT_PLANNED') {
       return 'gray';
     } else {
       return 'purple';
@@ -73,7 +75,7 @@ export class IssuePrCardHeaderComponent {
     const SPLITTER_TEXT = ' ';
     const ELLIPSES = '...';
 
-    return this.issue.title
+    return this.repoItem.title
       .split(SPLITTER_TEXT)
       .map((word) => {
         if (word.length > MAX_WORD_LENGTH) {

@@ -55,7 +55,7 @@ export class GithubUser implements RawGithubUser, Group {
   /*
   This method is used to enable comparisons between
   a Group and the filtering criteria, which is stored
-  as a string, in IssuesDataTable.ts
+  as a string, in RepoItemsDataTable.ts
   */
   static fromUsername(username: string) {
     return new GithubUser({

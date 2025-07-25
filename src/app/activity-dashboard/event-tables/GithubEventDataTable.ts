@@ -12,7 +12,7 @@ import { EventWeek } from '../event-week.model';
 import { paginateData } from './event-paginator';
 
 /**
- * Adapted from IssuesDataTable for Events.
+ * Adapted from RepoItemsDataTable for Events.
  */
 export class GithubEventDataTable extends DataSource<EventWeek> {
   private startDate = new BehaviorSubject('');

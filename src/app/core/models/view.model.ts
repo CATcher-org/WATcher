@@ -1,4 +1,4 @@
 export enum View {
-  issuesViewer = 'issuesViewer',
+  repoItemsViewer = 'repoItemsViewer',
   activityDashboard = 'activityDashboard'
 }

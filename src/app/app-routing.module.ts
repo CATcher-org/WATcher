@@ -4,12 +4,12 @@ import { ActivityDashboardModule } from './activity-dashboard/activity-dashboard
 import { AuthModule } from './auth/auth.module';
 import { AuthGuard } from './core/guards/auth.guard';
 import { ParseUrlParamsGuard } from './core/guards/parse-url-params.guard';
-import { IssuesViewerModule } from './issues-viewer/issues-viewer.module';
+import { RepoItemsViewerModule } from './repo-items-viewer/repo-items-viewer.module';
 
 const routes: Routes = [
   { path: '', loadChildren: () => AuthModule },
-  { path: 'issuesViewer/:org/:repo', canActivate: [ParseUrlParamsGuard], children: [] },
-  { path: 'issuesViewer', loadChildren: () => IssuesViewerModule, canLoad: [AuthGuard] },
+  { path: 'repoItemsViewer/:org/:repo', canActivate: [ParseUrlParamsGuard], children: [] },
+  { path: 'repoItemsViewer', loadChildren: () => RepoItemsViewerModule, canLoad: [AuthGuard] },
   { path: 'activityDashboard', loadChildren: () => ActivityDashboardModule, canLoad: [AuthGuard] }
 ];
 
