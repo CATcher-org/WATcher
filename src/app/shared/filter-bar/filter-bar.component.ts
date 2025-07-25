@@ -38,8 +38,6 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   @Input() views$: BehaviorSubject<QueryList<FilterableComponent>>;
 
   repoChangeSubscription: Subscription;
-  milestoneAnomalies: MilestoneAnomaly[];
-  dismissedAnomalies = new Set<string>();
 
   /** Selected dropdown filter value */
   filter: Filter = this.filtersService.defaultFilter;
@@ -81,7 +79,6 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     // One-time initializations
     this.filtersService.filter$.subscribe((filter) => {
       this.filter = filter;
-      this.updateMilestoneAnomalies(filter.milestones);
       this.applyFilter();
     });
 
@@ -168,19 +165,6 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   }
 
   handleUpdateMilestoneFilter({ milestones }: { milestones: string[] }) {
-    this.updateMilestoneAnomalies(milestones);
     this.filtersService.updateFilters({ milestones: milestones });
-  }
-
-  /**
-   * Updates the MilestonesAnomalies to be displayed.
-   * Check the MilestoneAnomalies' title against the filter's milestones.
-   * Only keep the MilestoneAnomalies of the selected milestones.
-   * @param {string[]} milestoneTitles - Array of selected milestone titles
-   */
-  updateMilestoneAnomalies(milestoneTitles: string[]) {
-    this.milestoneAnomalies = this.milestoneService
-      .getMilestoneAnomalies()
-      .filter((milestoneAnomaly) => milestoneTitles.includes(milestoneAnomaly.milestone.title));
   }
 }
