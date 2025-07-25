@@ -9,10 +9,13 @@
   flex-direction: column;
 
   height: 100%;
+  width: 100%;
 }
 
 .card {
   margin: 8px 0px 8px 0px;
+  height: 100px;
+  width: 100%;
 }
 
 .mat-card-title {
