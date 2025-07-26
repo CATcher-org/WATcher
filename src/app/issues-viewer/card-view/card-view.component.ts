@@ -53,6 +53,8 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
   isLoading = true;
   issueLength = 0;
 
+  currentFilter: 'all' | 'issues' | 'prs' = 'all';
+
   pageSize = 20;
 
   @Output() issueLengthChange: EventEmitter<Number> = new EventEmitter<Number>();
@@ -144,6 +146,18 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
 
   getPrTooltip(): string {
     return this.issues.prCount + ' Pull Requests';
+  }
+
+  filterByIssues(): void {
+    const issueFilter = this.currentFilter === 'issues' ? 'all' : 'issues';
+    this.currentFilter = issueFilter;
+    this.issues.setIssueTypeFilter(issueFilter);
+  }
+
+  filterByPrs(): void {
+    const issueFilter = this.currentFilter === 'prs' ? 'all' : 'prs';
+    this.currentFilter = issueFilter;
+    this.issues.setIssueTypeFilter(issueFilter);
   }
 
   getAssigneeTooltip(assignee: any): string {

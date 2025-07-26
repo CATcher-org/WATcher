@@ -22,6 +22,10 @@ export class IssuePrCardComponent {
     public milestoneService: MilestoneService
   ) {}
 
+  isIssue(): boolean {
+    return this.issue.issueOrPr === 'Issue';
+  }
+
   isNotFollowingForkingWorkflow() {
     return (
       this.issue.issueOrPr === 'PullRequest' && this.issue.headRepository?.toLowerCase() === this.githubService.getRepoURL().toLowerCase()
