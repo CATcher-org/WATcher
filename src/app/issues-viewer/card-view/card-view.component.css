@@ -176,5 +176,20 @@ div.column-header .mat-card-header {
 }
 
 :host ::ng-deep .pagination-hide-arrow .mat-paginator-range-actions {
-  display: none !important;
+  display: flex !important;
+}
+
+:host ::ng-deep .show-only-range-label .mat-paginator-range-label {
+  display: block !important;
+  margin: 0 32px 0 24px;
+}
+
+:host ::ng-deep .mat-paginator-container {
+  display: flex;
+  min-height: 56px;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 8px;
+  flex-wrap: wrap-reverse;
+  width: 100%;
 }

@@ -17,7 +17,9 @@
     [pageSize]="pageSize"
     [hidePageSize]="true"
     [pageSizeOptions]="[10, 20, 50]"
-    [class]="pageSize >= issueLength ? 'pagination-hide-arrow' : ''"
+    [class.pagination-hide-arrow]="pageSize >= issueLength"
+    [class.show-only-range-label]="true"
+    [length]="issueLength"
   ></mat-paginator>
 </div>
 
