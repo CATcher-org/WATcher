@@ -75,23 +75,20 @@
 }
 
 .toggle-switch-container {
-  width: 15px;
-  height: 95%;
-  background-color: #f0f0f0;
+  width: 16px;
+  background-color: transparent;
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 20px;
   margin-bottom: 20px;
-  margin-left: 6px;
+  margin-left: 4px;
   margin-right: 2px;
   border-radius: 5px;
   cursor: pointer;
-  border: 1px solid #ccc;
 
   &:hover {
-    background-color: #e0e0e0;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    background-color: #f0f0f0;
   }
 
   mat-icon {
