@@ -43,7 +43,7 @@
         <mat-card-title>
           <div class="assignee-container">
             <div
-              class="assignee-name"
+              class="assignee-name no-select"
               (click)="goToGithubProfile(assignee.login)"
               [ngClass]="{ clickable: assignee.login !== 'Unassigned' }"
             >
@@ -61,7 +61,7 @@
               [style.cursor]="this.issues.hasIssue ? 'pointer' : 'default'"
             >
               <span class="octicon count-margins" octicon="issue-opened"></span>
-              <span class="">{{ this.issues.issueCount }}</span>
+              <span class="no-select">{{ this.issues.issueCount }}</span>
             </div>
             <div
               class="pr-row-count"
@@ -73,7 +73,7 @@
               [style.cursor]="this.issues.hasPR ? 'pointer' : 'default'"
             >
               <span class="octicon count-margins" octicon="git-pull-request"></span>
-              <span>{{ this.issues.prCount }}</span>
+              <span class="no-select">{{ this.issues.prCount }}</span>
             </div>
           </div>
         </mat-card-title>
@@ -88,7 +88,7 @@
       <mat-card-header [ngStyle]="{ height: '40px' }">
         <mat-card-title>
           <div class="milestone-container">
-            <div>
+            <div class="no-select">
               {{ milestone.title }}
             </div>
             <div
@@ -101,7 +101,7 @@
               [style.cursor]="this.issues.hasIssue ? 'pointer' : 'default'"
             >
               <span class="octicon count-margins" octicon="issue-opened"></span>
-              <span class="">{{ this.issues.issueCount }}</span>
+              <span class="no-select">{{ this.issues.issueCount }}</span>
             </div>
             <div
               class="pr-row-count"
@@ -113,7 +113,7 @@
               [style.cursor]="this.issues.hasPR ? 'pointer' : 'default'"
             >
               <span class="octicon count-margins" octicon="git-pull-request"></span>
-              <span>{{ this.issues.prCount }}</span>
+              <span class="no-select">{{ this.issues.prCount }}</span>
             </div>
           </div>
         </mat-card-title>
