@@ -42,6 +42,9 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Hide or show the filter bar */
   showFilterBar = false;
 
+  // Hide or display milestone anomalies
+  showMilestoneAnomalies = true;
+
   constructor(
     public viewService: ViewService,
     public githubService: GithubService,
@@ -103,9 +106,19 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.groupService.resetGroups();
     this.availableGroupsSubscription = this.groupingContextService.getGroups().subscribe((x) => (this.groupService.groups = x));
+    this.showMilestoneAnomalies = true;
+    this.milestoneService.checkMilestoneIssuesAnomalies(this.issueService);
   }
 
   private toggleSidebar() {
     this.showFilterBar = !this.showFilterBar;
+  }
+
+  private dismissMilestoneAnomalies() {
+    this.showMilestoneAnomalies = false;
+  }
+
+  private isDisplayAnomalies(): boolean {
+    return this.showMilestoneAnomalies && this.milestoneService.hasMilestoneAnomalies();
   }
 }

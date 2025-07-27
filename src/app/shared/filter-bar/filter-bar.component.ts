@@ -15,6 +15,7 @@ import {
 import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { MilestoneOptions, SortOptions, StatusOptions, TypeOptions } from '../../core/constants/filter-options.constants';
+import { MilestoneAnomaly } from '../../core/models/milestone-anomaly.model';
 import { AssigneeService } from '../../core/services/assignee.service';
 import { Filter, FiltersService } from '../../core/services/filters.service';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
@@ -162,5 +163,8 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     event.preventDefault();
     event.stopImmediatePropagation();
   }
-}
 
+  handleUpdateMilestoneFilter({ milestones }: { milestones: string[] }) {
+    this.filtersService.updateFilters({ milestones: milestones });
+  }
+}

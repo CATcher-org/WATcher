@@ -8,11 +8,7 @@
       <mat-drawer-container class="drawer-container">
         <mat-drawer #sidenav mode="side" opened>
           <div class="left">
-            <app-filter-bar
-              [views$]="views"
-              (escapePressed)="sidenav.close()"
-              >
-            </app-filter-bar>
+            <app-filter-bar [views$]="views" (escapePressed)="sidenav.close()"> </app-filter-bar>
           </div>
         </mat-drawer>
         <mat-drawer-content>
@@ -25,17 +21,25 @@
                 >chevron_right</mat-icon
               >
             </div>
-            <div class="right">
-              <app-card-view
-                *ngFor="let group of this.groupService.groups"
-                class="issue-table"
-                #card
-                [ngStyle]="{ display: card.isLoading || card.issueLength > 0 ? 'initial' : 'none' }"
-                [group]="group"
-                [headers]="this.displayedColumns"
-                (issueLengthChange)="this.groupService.updateHiddenGroups($event, group)"
-              ></app-card-view>
-              <app-hidden-groups [groups]="this.groupService.hiddenGroups"></app-hidden-groups>
+            <div class="main-content">
+              <mat-card class="anomaly-card" *ngIf="this.isDisplayAnomalies()">
+                <div [innerHTML]="this.milestoneService.getConsolidatedAnomaliesMessageHTML()"></div>
+                <button mat-icon-button (click)="dismissMilestoneAnomalies()">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </mat-card>
+              <div class="right">
+                <app-card-view
+                  *ngFor="let group of this.groupService.groups"
+                  class="issue-table"
+                  #card
+                  [ngStyle]="{ display: card.isLoading || card.issueLength > 0 ? 'initial' : 'none' }"
+                  [group]="group"
+                  [headers]="this.displayedColumns"
+                  (issueLengthChange)="this.groupService.updateHiddenGroups($event, group)"
+                ></app-card-view>
+                <app-hidden-groups [groups]="this.groupService.hiddenGroups"></app-hidden-groups>
+              </div>
             </div>
           </div>
         </mat-drawer-content>
