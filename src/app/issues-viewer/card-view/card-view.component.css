@@ -178,7 +178,7 @@ div.column-header .mat-card-header {
 }
 
 :host ::ng-deep .mat-paginator-range-label {
-  position: absolute;
+  position: static;
   left: 50%;
   transform: translateX(-50%);
   margin: 0;
