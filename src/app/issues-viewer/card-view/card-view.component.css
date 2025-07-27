@@ -167,29 +167,37 @@ div.column-header .mat-card-header {
   cursor: pointer;
 }
 
-:host ::ng-deep .pagination-hide-arrow .mat-paginator-navigation-previous {
-  display: none !important;
-}
-
-:host ::ng-deep .pagination-hide-arrow .mat-paginator-navigation-next {
-  display: none !important;
-}
-
-:host ::ng-deep .pagination-hide-arrow .mat-paginator-range-actions {
-  display: flex !important;
-}
-
-:host ::ng-deep .show-only-range-label .mat-paginator-range-label {
-  display: block !important;
-  margin: 0 32px 0 24px;
-}
-
 :host ::ng-deep .mat-paginator-container {
   display: flex;
   min-height: 56px;
   align-items: center;
-  justify-content: flex-end;
   padding: 0 8px;
   flex-wrap: wrap-reverse;
   width: 100%;
+  position: relative;
+}
+
+:host ::ng-deep .mat-paginator-range-label {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  flex: none;
+  display: block !important;
+}
+
+:host ::ng-deep .mat-paginator-range-actions {
+  margin-left: auto;
+  display: flex !important;
+}
+
+:host ::ng-deep .pagination-hide-arrow .mat-paginator-navigation-previous,
+:host ::ng-deep .pagination-hide-arrow .mat-paginator-navigation-next {
+  visibility: hidden !important;
+}
+
+:host ::ng-deep .pagination-hide-arrow .mat-paginator-range-actions {
+  display: flex !important;
+  justify-content: flex-end;
+  width: auto;
 }
