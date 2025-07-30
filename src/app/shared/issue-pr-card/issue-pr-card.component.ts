@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { Issue } from '../../core/models/issue.model';
 import { PullRequest } from '../../core/models/pull-request.model';
 import { RepoItem } from '../../core/models/repo-item.model';
 import { Filter } from '../../core/services/filters.service';
@@ -50,9 +49,9 @@ export class IssuePrCardComponent {
       } else {
         return 'border-green';
       }
-    } else if (this.repoItem instanceof PullRequest && this.repoItem.state === 'CLOSED') {
+    } else if (this.repoItem.type === 'PullRequest' && this.repoItem.state === 'CLOSED') {
       return 'border-red';
-    } else if (this.repoItem instanceof Issue && this.repoItem.stateReason === 'NOT_PLANNED') {
+    } else if (this.repoItem.type === 'Issue' && this.repoItem.stateReason === 'NOT_PLANNED') {
       return 'border-gray';
     } else {
       return 'border-purple';

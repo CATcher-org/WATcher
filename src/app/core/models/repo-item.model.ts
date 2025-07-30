@@ -14,6 +14,7 @@ export enum ReviewDecision {
 
 export abstract class RepoItem {
   /** Basic Fields */
+  readonly type: string;
   readonly globalId: string;
   readonly id: number;
   readonly created_at: string;
@@ -81,8 +82,9 @@ export abstract class RepoItem {
     return stringA.length !== 0 ? stringA : def;
   }
 
-  protected constructor(githubIssue: GithubIssue) {
+  protected constructor(githubIssue: GithubIssue, type: string = 'RepoItem') {
     /** Basic Fields */
+    this.type = type;
     this.globalId = githubIssue.id;
     this.id = +githubIssue.number;
     this.created_at = moment(githubIssue.created_at).format('lll');

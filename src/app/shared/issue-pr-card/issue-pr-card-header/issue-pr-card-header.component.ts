@@ -1,6 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { Issue } from '../../../core/models/issue.model';
-import { PullRequest } from '../../../core/models/pull-request.model';
 import { RepoItem } from '../../../core/models/repo-item.model';
 
 @Component({
@@ -56,9 +54,9 @@ export class IssuePrCardHeaderComponent {
       } else {
         return 'green';
       }
-    } else if (this.repoItem instanceof PullRequest && this.repoItem.state === 'CLOSED') {
+    } else if (this.repoItem.type === 'PullRequest' && this.repoItem.state === 'CLOSED') {
       return 'red';
-    } else if (this.repoItem instanceof Issue && this.repoItem.stateReason === 'NOT_PLANNED') {
+    } else if (this.repoItem.type === 'Issue' && this.repoItem.stateReason === 'NOT_PLANNED') {
       return 'gray';
     } else {
       return 'purple';

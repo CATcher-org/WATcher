@@ -4,7 +4,7 @@ import { RepoItem } from './repo-item.model';
 
 export class Issue extends RepoItem {
   protected constructor(githubIssue: GithubIssue) {
-    super(githubIssue);
+    super(githubIssue, 'Issue');
     this.milestone = githubIssue.milestone ? new Milestone(githubIssue.milestone) : Milestone.IssueWithoutMilestone;
   }
 

@@ -1,5 +1,3 @@
-import { Issue } from '../../core/models/issue.model';
-import { PullRequest } from '../../core/models/pull-request.model';
 import { RepoItem } from '../../core/models/repo-item.model';
 import { Filter } from '../../core/services/filters.service';
 
@@ -40,9 +38,9 @@ export function applyDropdownFilter(
       });
 
     if (filter.type === 'issue') {
-      ret = ret && datum instanceof Issue;
+      ret = ret && datum.type === 'Issue';
     } else if (filter.type === 'pullrequest') {
-      ret = ret && datum instanceof PullRequest;
+      ret = ret && datum.type === 'PullRequest';
     }
 
     ret = ret && (!isFilteringByMilestone || filter.milestones.some((milestone) => datum.milestone.title === milestone));
@@ -54,12 +52,12 @@ export function applyDropdownFilter(
 }
 
 function isFilteredByAssignee(filter: Filter, data: RepoItem): boolean {
-  if (data instanceof Issue) {
+  if (data.type === 'Issue') {
     return (
       filter.assignees.some((assignee) => data.assignees.includes(assignee)) ||
       (filter.assignees.includes('Unassigned') && data.assignees.length === 0)
     );
-  } else if (data instanceof PullRequest) {
+  } else if (data.type === 'PullRequest') {
     return (
       filter.assignees.some((assignee) => data.author === assignee) || (filter.assignees.includes('Unassigned') && data.author === null)
     );

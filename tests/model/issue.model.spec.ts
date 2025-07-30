@@ -32,7 +32,7 @@ describe('Issue model class', () => {
       expect(issue.milestone).toEqual(new Milestone(MILESTONE_ONE));
       expect(issue.state).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.state);
       expect(issue.stateReason).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.stateReason);
-      expect(issue instanceof Issue).toEqual(true);
+      expect(issue.type === 'Issue').toEqual(true);
       expect(issue.author).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.user.login);
       expect(issue.isDraft).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.isDraft);
       expect(issue.assignees).toEqual([]);

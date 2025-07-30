@@ -4,9 +4,7 @@ import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GithubUser } from '../../core/models/github-user.model';
 import { Group } from '../../core/models/github/group.interface';
-import { Issue } from '../../core/models/issue.model';
 import { Milestone } from '../../core/models/milestone.model';
-import { PullRequest } from '../../core/models/pull-request.model';
 import { RepoItem } from '../../core/models/repo-item.model';
 import { AssigneeService } from '../../core/services/assignee.service';
 import { Filter, FiltersService } from '../../core/services/filters.service';
@@ -100,8 +98,8 @@ export class RepoItemsDataTable extends DataSource<RepoItem> implements Filterab
           data = applyDropdownFilter(this.filter, data, !this.milestoneService.hasNoMilestones, !this.assigneeService.hasNoAssignees);
 
           data = applySearchFilter(this.filter.title, this.displayedColumn, this.repoItemService, data);
-          this.issueCount = data.filter((datum) => datum instanceof Issue).length;
-          this.prCount = data.filter((datum) => datum instanceof PullRequest).length;
+          this.issueCount = data.filter((datum) => datum.type === 'Issue').length;
+          this.prCount = data.filter((datum) => datum.type === 'PullRequest').length;
           this.count = data.length;
 
           data = applySort(this.filter.sort, data);
