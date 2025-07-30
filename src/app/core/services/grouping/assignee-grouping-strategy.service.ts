@@ -66,7 +66,7 @@ export class AssigneeGroupingStrategy implements GroupingStrategy {
   }
 
   private isPullRequest(item: RepoItem): boolean {
-    return item instanceof PullRequest;
+    return item.type === 'PullRequest';
   }
 
   private isRepoItemCreatedByTarget(item: RepoItem, target: GithubUser): boolean {

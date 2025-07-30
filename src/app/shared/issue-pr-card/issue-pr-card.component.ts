@@ -25,7 +25,7 @@ export class IssuePrCardComponent {
 
   isNotFollowingForkingWorkflow() {
     return (
-      this.repoItem instanceof PullRequest && this.repoItem.headRepository?.toLowerCase() === this.githubService.getRepoURL().toLowerCase()
+      this.isPullRequest(this.repoItem) && this.repoItem.headRepository?.toLowerCase() === this.githubService.getRepoURL().toLowerCase()
     );
   }
 
@@ -49,9 +49,9 @@ export class IssuePrCardComponent {
       } else {
         return 'border-green';
       }
-    } else if (this.repoItem.type === 'PullRequest' && this.repoItem.state === 'CLOSED') {
+    } else if (this.isPullRequest(this.repoItem) && this.repoItem.state === 'CLOSED') {
       return 'border-red';
-    } else if (this.repoItem.type === 'Issue' && this.repoItem.stateReason === 'NOT_PLANNED') {
+    } else if (this.isIssue(this.repoItem) && this.repoItem.stateReason === 'NOT_PLANNED') {
       return 'border-gray';
     } else {
       return 'border-purple';
@@ -71,10 +71,14 @@ export class IssuePrCardComponent {
   }
 
   isMergedWithoutReview(repoItem: RepoItem): boolean {
-    return repoItem instanceof PullRequest && repoItem.state === 'MERGED' && (!repoItem.reviews || repoItem.reviews.length === 0);
+    return this.isPullRequest(repoItem) && repoItem.state === 'MERGED' && (!repoItem.reviews || repoItem.reviews.length === 0);
   }
 
   isPullRequest(repoItem: RepoItem): boolean {
-    return repoItem instanceof PullRequest;
+    return repoItem.type === 'PullRequest';
+  }
+
+  isIssue(repoItem: RepoItem): boolean {
+    return repoItem.type === 'Issue';
   }
 }
