@@ -10,12 +10,12 @@ import {
 
 describe('issuer-sorter', () => {
   describe('applySort()', () => {
-    const dummyIssue: Issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
-    const otherDummyIssue: Issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_ASSIGNEES);
+    const dummyIssue: Issue = Issue.createIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
+    const otherDummyIssue: Issue = Issue.createIssue(ISSUE_WITH_ASSIGNEES);
     const issuesList: Issue[] = [dummyIssue, otherDummyIssue];
 
-    const issueUpdatedEarlier: Issue = Issue.createPhaseBugReportingIssue(ISSUE_UPDATED_EARLIER);
-    const issueUpdatedLater: Issue = Issue.createPhaseBugReportingIssue(ISSUE_UPDATED_LATER);
+    const issueUpdatedEarlier: Issue = Issue.createIssue(ISSUE_UPDATED_EARLIER);
+    const issueUpdatedLater: Issue = Issue.createIssue(ISSUE_UPDATED_LATER);
     const issuesWithDifferentUpdatedDate: Issue[] = [issueUpdatedEarlier, issueUpdatedLater];
 
     const matSort: MatSort = new MatSort();

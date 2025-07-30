@@ -8,7 +8,7 @@ export class PullRequest extends RepoItem {
     this.milestone = githubIssue.milestone ? new Milestone(githubIssue.milestone) : Milestone.PRWithoutMilestone;
   }
 
-  public static createPhaseBugReportingPullRequest(githubIssue: GithubIssue): RepoItem {
+  public static createPullRequest(githubIssue: GithubIssue): RepoItem {
     return new PullRequest(githubIssue);
   }
 }

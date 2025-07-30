@@ -20,7 +20,7 @@ import {
 describe('Issue model class', () => {
   describe('.createPhaseBugReportIssue(githubIssue)', () => {
     it('should correctly create a issue that has an empty description', async () => {
-      const issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
+      const issue = Issue.createIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
 
       expect(issue.globalId).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.id);
       expect(issue.id).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.number);
@@ -46,19 +46,19 @@ describe('Issue model class', () => {
     });
 
     it('should set close date correctly for closed issue', () => {
-      const issue = Issue.createPhaseBugReportingIssue(CLOSED_ISSUE_WITH_EMPTY_DESCRIPTION);
+      const issue = Issue.createIssue(CLOSED_ISSUE_WITH_EMPTY_DESCRIPTION);
 
       expect(issue.closed_at).toEqual(moment(CLOSED_ISSUE_WITH_EMPTY_DESCRIPTION.closed_at).format('lll'));
     });
 
     it('should set milestone to default milestone for issue without milestone', () => {
-      const issue = Issue.createPhaseBugReportingIssue(ISSUE_WITHOUT_MILESTONE);
+      const issue = Issue.createIssue(ISSUE_WITHOUT_MILESTONE);
 
       expect(issue.milestone).toEqual(Milestone.IssueWithoutMilestone);
     });
 
     it('should set assignees correctly for issue with assignees', () => {
-      const issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_ASSIGNEES);
+      const issue = Issue.createIssue(ISSUE_WITH_ASSIGNEES);
 
       expect(issue.assignees).toEqual([USER_ANUBHAV.loginId]);
     });
@@ -80,8 +80,8 @@ describe('Issue model class', () => {
 });
 
 describe('Issue', () => {
-  const dummyIssue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
-  const otherDummyIssue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_ASSIGNEES);
+  const dummyIssue = Issue.createIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
+  const otherDummyIssue = Issue.createIssue(ISSUE_WITH_ASSIGNEES);
 
   const noReportedDescriptionString = 'No details provided by bug reporter.\n';
 

@@ -211,9 +211,9 @@ export class RepoItemService {
     const type = githubIssue.issueOrPr;
     switch (type) {
       case 'Issue':
-        return Issue.createPhaseBugReportingIssue(githubIssue);
+        return Issue.createIssue(githubIssue);
       case 'PullRequest':
-        return PullRequest.createPhaseBugReportingPullRequest(githubIssue);
+        return PullRequest.createPullRequest(githubIssue);
       default:
         return;
     }

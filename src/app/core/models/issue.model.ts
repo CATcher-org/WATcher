@@ -8,7 +8,7 @@ export class Issue extends RepoItem {
     this.milestone = githubIssue.milestone ? new Milestone(githubIssue.milestone) : Milestone.IssueWithoutMilestone;
   }
 
-  public static createPhaseBugReportingIssue(githubIssue: GithubIssue): Issue {
+  public static createIssue(githubIssue: GithubIssue): Issue {
     return new Issue(githubIssue);
   }
 
