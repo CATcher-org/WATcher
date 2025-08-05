@@ -17,7 +17,7 @@ export class GithubGraphqlIssueOrPr extends GithubIssue {
         state: model.state,
         stateReason: null,
         user: {
-          login: model.author.login
+          login: model.author?.login || 'ghost'
         },
         assignees: flattenEdges(model.assignees.edges),
         labels: flattenEdges(model.labels.edges),
@@ -40,7 +40,7 @@ export class GithubGraphqlIssueOrPr extends GithubIssue {
         state: model.state,
         stateReason: model.stateReason,
         user: {
-          login: model.author.login
+          login: model.author?.login || 'ghost'
         },
         assignees: flattenEdges(model.assignees.edges),
         labels: flattenEdges(model.labels.edges),
