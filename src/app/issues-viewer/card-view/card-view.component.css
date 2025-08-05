@@ -132,7 +132,6 @@ div.column-header .mat-card-header {
 }
 
 .row-count {
-  background-color: rgb(222, 222, 222);
   border-radius: 3px;
   cursor: default;
   padding: 6px 8px 3px 8px;
@@ -142,6 +141,14 @@ div.column-header .mat-card-header {
   font-size: 14px;
   flex-shrink: 0;
   margin-top: 3px;
+}
+
+.pr-row-count {
+  background-color: rgb(222, 222, 222);
+}
+
+.issue-row-count {
+  background-color: rgb(222, 222, 222);
 }
 
 .assignee-container {

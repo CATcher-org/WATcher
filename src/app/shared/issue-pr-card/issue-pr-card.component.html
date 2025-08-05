@@ -1,4 +1,9 @@
-<mat-card class="card" [ngClass]="getIssueOpenOrCloseColorCSSClass()">
+<mat-card class="card" [class.issue-card]="isIssue()" [class.pr-card]="!isIssue()" [ngClass]="getIssueOpenOrCloseColorCSSClass()">
+  <div class="issue-type-indicator">
+    <span [ngClass]="getBadgeClasses()" [matTooltip]="getBadgeTooltip()">
+      {{ getBadgeText() }}
+    </span>
+  </div>
   <a class="no-underline link-grey-dark">
     <span [matTooltip]="this.issue.updated_at">
       <app-issue-pr-card-header [issue]="issue" (click)="viewIssueInBrowser($event)"></app-issue-pr-card-header>
