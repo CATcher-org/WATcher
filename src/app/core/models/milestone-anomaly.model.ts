@@ -1,17 +1,15 @@
-import { milestone } from '@primer/octicons';
+import { Anomaly } from './anomaly.model';
 import { Milestone } from './milestone.model';
 
-export abstract class MilestoneAnomaly {
-  anomaly: string;
+export abstract class MilestoneAnomaly extends Anomaly {
+  readonly anomalyType = 'MilestoneAnomaly';
 
   constructor(anomaly: string) {
-    this.anomaly = anomaly;
+    super(anomaly);
   }
-
-  abstract getDescription(): string;
 }
 
-// Represents anomalies related to a single milestone.
+// Represents an anomaly that is related to a single milestone
 export class SingleMilestoneAnomaly extends MilestoneAnomaly {
   milestone: Milestone;
 
@@ -25,6 +23,7 @@ export class SingleMilestoneAnomaly extends MilestoneAnomaly {
   }
 }
 
+// Represents an anomaly that is related to multiple milestones
 export class GeneralMilestoneAnomaly extends MilestoneAnomaly {
   milestones: Milestone[];
 
