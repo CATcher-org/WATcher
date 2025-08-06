@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ReviewDecision } from '../../../core/models/issue.model';
+import { ReviewDecision } from '../../../core/models/repo-item.model';
 
 @Component({
   selector: 'app-issue-pr-card-review-decision',

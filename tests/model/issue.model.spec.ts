@@ -1,6 +1,7 @@
 import * as moment from 'moment';
 import { Issue } from '../../src/app/core/models/issue.model';
 import { Milestone } from '../../src/app/core/models/milestone.model';
+import { RepoItem } from '../../src/app/core/models/repo-item.model';
 import { USER_ANUBHAV } from '../constants/data.constants';
 import {
   CLOSED_ISSUE_WITH_EMPTY_DESCRIPTION,
@@ -19,7 +20,7 @@ import {
 describe('Issue model class', () => {
   describe('.createPhaseBugReportIssue(githubIssue)', () => {
     it('should correctly create a issue that has an empty description', async () => {
-      const issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
+      const issue = Issue.createIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
 
       expect(issue.globalId).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.id);
       expect(issue.id).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.number);
@@ -31,7 +32,7 @@ describe('Issue model class', () => {
       expect(issue.milestone).toEqual(new Milestone(MILESTONE_ONE));
       expect(issue.state).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.state);
       expect(issue.stateReason).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.stateReason);
-      expect(issue.issueOrPr).toEqual('Issue');
+      expect(issue.type === 'Issue').toEqual(true);
       expect(issue.author).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.user.login);
       expect(issue.isDraft).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.isDraft);
       expect(issue.assignees).toEqual([]);
@@ -45,19 +46,19 @@ describe('Issue model class', () => {
     });
 
     it('should set close date correctly for closed issue', () => {
-      const issue = Issue.createPhaseBugReportingIssue(CLOSED_ISSUE_WITH_EMPTY_DESCRIPTION);
+      const issue = Issue.createIssue(CLOSED_ISSUE_WITH_EMPTY_DESCRIPTION);
 
       expect(issue.closed_at).toEqual(moment(CLOSED_ISSUE_WITH_EMPTY_DESCRIPTION.closed_at).format('lll'));
     });
 
     it('should set milestone to default milestone for issue without milestone', () => {
-      const issue = Issue.createPhaseBugReportingIssue(ISSUE_WITHOUT_MILESTONE);
+      const issue = Issue.createIssue(ISSUE_WITHOUT_MILESTONE);
 
       expect(issue.milestone).toEqual(Milestone.IssueWithoutMilestone);
     });
 
     it('should set assignees correctly for issue with assignees', () => {
-      const issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_ASSIGNEES);
+      const issue = Issue.createIssue(ISSUE_WITH_ASSIGNEES);
 
       expect(issue.assignees).toEqual([USER_ANUBHAV.loginId]);
     });
@@ -66,21 +67,21 @@ describe('Issue model class', () => {
   describe('.updateDescription(description)', () => {
     it('correctly clean strings obtained from users', () => {
       const noDetailsFromBugReporter = 'No details provided by bug reporter.';
-      expect(Issue.updateDescription('')).toBe(noDetailsFromBugReporter);
-      expect(Issue.updateDescription(null)).toBe(noDetailsFromBugReporter);
+      expect(RepoItem.updateDescription('')).toBe(noDetailsFromBugReporter);
+      expect(RepoItem.updateDescription(null)).toBe(noDetailsFromBugReporter);
 
       const typicalDescription = 'The app crashes after parsing config files.';
-      expect(Issue.updateDescription(typicalDescription)).toBe(typicalDescription + '\n\n');
+      expect(RepoItem.updateDescription(typicalDescription)).toBe(typicalDescription + '\n\n');
 
       const inputWithSpecialChars = '$%^!@&-_test';
-      expect(Issue.updateDescription(inputWithSpecialChars)).toBe(inputWithSpecialChars + '\n\n');
+      expect(RepoItem.updateDescription(inputWithSpecialChars)).toBe(inputWithSpecialChars + '\n\n');
     });
   });
 });
 
 describe('Issue', () => {
-  const dummyIssue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
-  const otherDummyIssue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_ASSIGNEES);
+  const dummyIssue = Issue.createIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
+  const otherDummyIssue = Issue.createIssue(ISSUE_WITH_ASSIGNEES);
 
   const noReportedDescriptionString = 'No details provided by bug reporter.\n';
 

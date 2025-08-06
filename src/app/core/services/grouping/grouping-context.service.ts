@@ -2,7 +2,7 @@ import { Injectable, Injector } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Group } from '../../models/github/group.interface';
-import { Issue } from '../../models/issue.model';
+import { RepoItem } from '../../models/repo-item.model';
 import { AssigneeGroupingStrategy } from './assignee-grouping-strategy.service';
 import { GroupingStrategy } from './grouping-strategy.interface';
 import { MilestoneGroupingStrategy } from './milestone-grouping-strategy.service';
@@ -75,13 +75,13 @@ export class GroupingContextService {
 
   /**
    * Retrieves data for a specific group.
-   * @param issues - An array of issues to be grouped.
-   * @param group - The group by which issues are to be grouped.
-   * @returns An array of issues belonging to the specified group.
+   * @param items - An array of items to be grouped.
+   * @param group - The group by which items are to be grouped.
+   * @returns An array of items belonging to the specified group.
    */
-  getDataForGroup(issues: Issue[], group: Group): Issue[] {
+  getDataForGroup(items: RepoItem[], group: Group): RepoItem[] {
     const strategy = this.groupingStrategyMap.get(this.currGroupBy);
-    return strategy.getDataForGroup(issues, group);
+    return strategy.getDataForGroup(items, group);
   }
 
   /**
