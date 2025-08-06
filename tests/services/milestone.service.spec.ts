@@ -5,7 +5,7 @@ import { GeneralMilestoneAnomaly, MilestoneAnomaly, SingleMilestoneAnomaly } fro
 import { Milestone } from '../../src/app/core/models/milestone.model';
 import { GithubService } from '../../src/app/core/services/github.service';
 import { MilestoneService } from '../../src/app/core/services/milestone.service';
-import { OPEN_ISSUE_WITH_CLOSED_MMILESTONE } from '../constants/githubissue.constants';
+import { OPEN_ISSUE_WITH_CLOSED_MILESTONE } from '../constants/githubissue.constants';
 import {
   ACTIVE_MILESTONE_ONE,
   ACTIVE_MILESTONE_TWO,
@@ -121,9 +121,9 @@ describe('MilestoneService', () => {
 
   describe('MilestoneService: updateClosedMilestoneWithOpenIssueOrPR(issues: Issue[])', () => {
     it('should detect anomalies for closed milestones with open issues or unmerged PRs', () => {
-      const issues = Issue.createPhaseBugReportingIssue(OPEN_ISSUE_WITH_CLOSED_MMILESTONE);
+      const issues = Issue.createPhaseBugReportingIssue(OPEN_ISSUE_WITH_CLOSED_MILESTONE);
       const expectedAnomaly: MilestoneAnomaly = new SingleMilestoneAnomaly(
-        milestoneService.parseMilestoneData([OPEN_ISSUE_WITH_CLOSED_MMILESTONE.milestone])[0],
+        milestoneService.parseMilestoneData([OPEN_ISSUE_WITH_CLOSED_MILESTONE.milestone])[0],
         MilestoneAnomaliesStatus.ClosedMilestoneAnomaly
       );
       milestoneService.updateClosedMilestoneWithOpenIssueOrPR([issues]);

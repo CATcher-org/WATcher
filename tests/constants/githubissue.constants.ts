@@ -203,7 +203,7 @@ export const ISSUE_WITH_ASSIGNEES = new GithubIssue({
   isDraft: false
 });
 
-export const OPEN_ISSUE_WITH_CLOSED_MMILESTONE = new GithubIssue({
+export const OPEN_ISSUE_WITH_CLOSED_MILESTONE = new GithubIssue({
   id: '551732011',
   number: 91,
   assignees: [USER_ANUBHAV_DETAILS],
