@@ -8,7 +8,7 @@
       <mat-drawer-container class="drawer-container">
         <mat-drawer #sidenav mode="side" opened>
           <div class="left">
-            <app-filter-bar [views$]="views"></app-filter-bar>
+            <app-filter-bar [views$]="views" (escapePressed)="sidenav.close()"> </app-filter-bar>
           </div>
         </mat-drawer>
         <mat-drawer-content>

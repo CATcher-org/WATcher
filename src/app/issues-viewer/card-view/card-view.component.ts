@@ -146,6 +146,17 @@ export class CardViewComponent implements OnInit, AfterViewInit, OnDestroy, Filt
     return this.issues.prCount + ' Pull Requests';
   }
 
+  getAssigneeTooltip(fullUsername: string): string {
+    return 'Username: ' + fullUsername;
+  }
+
+  goToGithubProfile(username: string): void {
+    if (username && username !== 'Unassigned') {
+      const url = `https://github.com/${username}`;
+      window.open(url, '_blank'); // Opens in new tab
+    }
+  }
+
   getUsernameTooltip(fullUsername: string): string {
     return 'Username: ' + fullUsername;
   }

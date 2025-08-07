@@ -16,10 +16,19 @@ export class IssuePrCardLabelsComponent {
 
   constructor(public labelService: LabelService) {}
 
+  hasOverflow(span: HTMLElement): boolean {
+    const range = document.createRange();
+    range.selectNodeContents(span);
+    const textWidth = range.getBoundingClientRect().width;
+    const containerWidth = span.getBoundingClientRect().width;
+
+    return textWidth - containerWidth > 0.001;
+  }
+
   onMouseEnter(event: MouseEvent, labelName: string, tooltip: MatTooltip) {
     const element = event.target as HTMLElement;
     const span = element.querySelector('.label-text') as HTMLElement;
-    if (span.scrollWidth > span.clientWidth) {
+    if (this.hasOverflow(span)) {
       this.tooltipLabel = labelName;
 
       setTimeout(() => {
