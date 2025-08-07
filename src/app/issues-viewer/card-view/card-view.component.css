@@ -67,8 +67,8 @@ div.column-header .mat-card-header {
   background:
     /* Shadow covers */ linear-gradient(white 30%, rgba(255, 255, 255, 0)),
     linear-gradient(rgba(255, 255, 255, 0), white 70%) 0 100%,
-    /* Shadows */ radial-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
-    radial-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0 100%;
+    /* Shadows */ radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
+    radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0 100%;
   background:
     /* Shadow covers */ linear-gradient(white 30%, rgba(255, 255, 255, 0)),
     linear-gradient(rgba(255, 255, 255, 0), white 70%) 0 100%,
@@ -184,14 +184,25 @@ div.column-header .mat-card-header {
   cursor: pointer;
 }
 
-:host ::ng-deep .pagination-hide-arrow .mat-paginator-navigation-previous {
-  display: none !important;
+:host ::ng-deep .mat-paginator-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 8px;
+  flex-wrap: wrap-reverse;
+  width: 100%;
 }
 
+.mat-paginator-range-label {
+  margin: 0 32px 0 24px;
+}
+
+.mat-paginator-range-actions {
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .pagination-hide-arrow .mat-paginator-navigation-previous,
 :host ::ng-deep .pagination-hide-arrow .mat-paginator-navigation-next {
-  display: none !important;
-}
-
-:host ::ng-deep .pagination-hide-arrow .mat-paginator-range-actions {
-  display: none !important;
+  visibility: absolute !important;
 }
