@@ -34,7 +34,7 @@
       <mat-card-header [ngStyle]="{ height: '40px' }">
         <div
           mat-card-avatar
-          *ngIf="assignee"
+          *ngIf="assignee && assignee.login !== 'Unassigned'"
           [ngStyle]="{
             background: 'url(' + assignee.avatar_url + ')',
             'background-size': '40px'
