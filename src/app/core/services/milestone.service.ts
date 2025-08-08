@@ -211,7 +211,7 @@ export class MilestoneService {
     }
 
     const milestoneAnomalies = this.getMilestoneAnomalies();
-    message = `Milestone Anomalies: \n` + milestoneAnomalies.map((milestoneAnomaly) => `${milestoneAnomaly.getDescription()}`).join('\n');
+    message = milestoneAnomalies.map((milestoneAnomaly) => `${milestoneAnomaly.getDescription()}`).join('\n');
     return message;
   }
 

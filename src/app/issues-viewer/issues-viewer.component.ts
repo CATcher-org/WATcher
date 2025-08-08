@@ -5,7 +5,7 @@ import { filter } from 'rxjs/operators';
 import { FiltersService } from '../core/services/filters.service';
 import { GithubService } from '../core/services/github.service';
 import { GroupService } from '../core/services/grouping/group.service';
-import { GroupingContextService } from '../core/services/grouping/grouping-context.service';
+import { GroupBy, GroupingContextService } from '../core/services/grouping/grouping-context.service';
 import { IssueService } from '../core/services/issue.service';
 import { LabelService } from '../core/services/label.service';
 import { MilestoneService } from '../core/services/milestone.service';
@@ -119,6 +119,10 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private isDisplayAnomalies(): boolean {
-    return this.showMilestoneAnomalies && this.milestoneService.hasMilestoneAnomalies();
+    return (
+      this.showMilestoneAnomalies &&
+      this.milestoneService.hasMilestoneAnomalies() &&
+      this.groupingContextService.currGroupBy === GroupBy.Milestone
+    );
   }
 }
