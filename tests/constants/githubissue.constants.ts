@@ -39,6 +39,11 @@ export const MILESTONE_ONE = {
   state: 'Open'
 };
 
+export const CLOSED_MILESTONE = {
+  title: 'Closed Milestone',
+  state: 'CLOSED'
+};
+
 export const ISSUE_WITH_EMPTY_DESCRIPTION = new GithubIssue({
   id: '574085971',
   number: 92,
@@ -193,6 +198,26 @@ export const ISSUE_WITH_ASSIGNEES = new GithubIssue({
   url: 'https://api.github.com/repos/CATcher-org/pe-results/issues/91',
   user: USER_ANUBHAV_DETAILS,
   milestone: MILESTONE_ONE,
+  comments: [EMPTY_TEAM_RESPONSE],
+  issueOrPr: 'Issue',
+  isDraft: false
+});
+
+export const OPEN_ISSUE_WITH_CLOSED_MILESTONE = new GithubIssue({
+  id: '551732011',
+  number: 91,
+  assignees: [USER_ANUBHAV_DETAILS],
+  body: 'Screen freezes every few minutes',
+  created_at: '2020-01-18T07:01:45Z',
+  labels: [GITHUB_LABEL_TEAM_LABEL, GITHUB_LABEL_TUTORIAL_LABEL, GITHUB_LABEL_FUNCTIONALITY_BUG, GITHUB_LABEL_MEDIUM_SEVERITY],
+  state: IssueState.Open,
+  stateReason: IssueStateReason.Reopened,
+  title: 'Screen freezes',
+  updated_at: '2020-03-02T12:50:02Z',
+  closed_at: '',
+  url: 'https://api.github.com/repos/CATcher-org/pe-results/issues/91',
+  user: USER_ANUBHAV_DETAILS,
+  milestone: CLOSED_MILESTONE,
   comments: [EMPTY_TEAM_RESPONSE],
   issueOrPr: 'Issue',
   isDraft: false

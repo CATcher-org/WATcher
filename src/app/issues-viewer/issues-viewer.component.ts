@@ -5,7 +5,7 @@ import { filter } from 'rxjs/operators';
 import { FiltersService } from '../core/services/filters.service';
 import { GithubService } from '../core/services/github.service';
 import { GroupService } from '../core/services/grouping/group.service';
-import { GroupingContextService } from '../core/services/grouping/grouping-context.service';
+import { GroupBy, GroupingContextService } from '../core/services/grouping/grouping-context.service';
 import { IssueService } from '../core/services/issue.service';
 import { LabelService } from '../core/services/label.service';
 import { MilestoneService } from '../core/services/milestone.service';
@@ -41,6 +41,9 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** Hide or show the filter bar */
   showFilterBar = false;
+
+  // Hide or display milestone anomalies
+  showMilestoneAnomalies = true;
 
   constructor(
     public viewService: ViewService,
@@ -103,9 +106,29 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.groupService.resetGroups();
     this.availableGroupsSubscription = this.groupingContextService.getGroups().subscribe((x) => (this.groupService.groups = x));
+    this.showMilestoneAnomalies = true;
+    this.milestoneService.checkMilestoneIssuesAnomalies(this.issueService);
   }
 
   private toggleSidebar() {
     this.showFilterBar = !this.showFilterBar;
+  }
+
+  private dismissMilestoneAnomalies() {
+    this.showMilestoneAnomalies = false;
+  }
+
+  /**
+   * Checks if the current GroupBy is by milestone.
+   */
+  private isGroupByMilestone() {
+    return this.groupingContextService.currGroupBy === GroupBy.Milestone;
+  }
+
+  /**
+   * Checks if the conditions to display the milestone anomalies warning card is met.
+   */
+  private isDisplayMilestoneAnomalies(): boolean {
+    return this.showMilestoneAnomalies && this.milestoneService.hasMilestoneAnomalies() && this.isGroupByMilestone();
   }
 }
