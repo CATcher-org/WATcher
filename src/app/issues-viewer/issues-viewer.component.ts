@@ -118,11 +118,17 @@ export class IssuesViewerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.showMilestoneAnomalies = false;
   }
 
-  private isDisplayAnomalies(): boolean {
-    return (
-      this.showMilestoneAnomalies &&
-      this.milestoneService.hasMilestoneAnomalies() &&
-      this.groupingContextService.currGroupBy === GroupBy.Milestone
-    );
+  /**
+   * Checks if the current GroupBy is by milestone.
+   */
+  private isGroupByMilestone() {
+    return this.groupingContextService.currGroupBy === GroupBy.Milestone;
+  }
+
+  /**
+   * Checks if the conditions to display the milestone anomalies warning card is met.
+   */
+  private isDisplayMilestoneAnomalies(): boolean {
+    return this.showMilestoneAnomalies && this.milestoneService.hasMilestoneAnomalies() && this.isGroupByMilestone();
   }
 }

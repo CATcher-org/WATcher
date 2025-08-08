@@ -22,14 +22,7 @@
               >
             </div>
             <div class="main-content">
-              <!-- <mat-card class="anomaly-card" *ngIf="this.isDisplayAnomalies()">
-                <div [innerHTML]="this.milestoneService.getConsolidatedAnomaliesMessageHTML()"></div>
-                <button mat-icon-button (click)="dismissMilestoneAnomalies()">
-                  <mat-icon>cancel</mat-icon>
-                </button>
-              </mat-card> -->
-
-              <mat-card class="warning-card" *ngIf="this.isDisplayAnomalies()">
+              <mat-card class="warning-card" *ngIf="this.isDisplayMilestoneAnomalies()">
                 <div class="header">
                   <mat-icon color="warn">warning</mat-icon>
                   <div class="title">Milestone Anomalies:</div>
