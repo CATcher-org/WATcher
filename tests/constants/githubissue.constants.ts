@@ -198,6 +198,26 @@ export const ISSUE_WITH_ASSIGNEES = new GithubIssue({
   isDraft: false
 });
 
+export const ISSUE_WITH_MOCK_DATA = new GithubIssue({
+  id: '987654321',
+  number: 201,
+  assignees: [],
+  body: 'This is a mock issue description',
+  created_at: '2025-01-10T09:00:00Z',
+  updated_at: '2025-01-11T10:30:00Z',
+  closed_at: '',
+  labels: [GITHUB_LABEL_TEAM_LABEL],
+  state: IssueState.Open,
+  stateReason: null,
+  title: 'Bug report example',
+  url: 'https://github.com/CATcher-org/WATcher-test/issues/201',
+  user: { login: 'bugReporter' },
+  milestone: MILESTONE_ONE,
+  comments: [],
+  issueOrPr: 'Issue',
+  isDraft: false
+});
+
 export const generateIssueWithRandomData: () => GithubIssue = () => {
   const created_and_updated_date: string = randomISODate();
   const issueNumber: number = randomIssueNumber();
