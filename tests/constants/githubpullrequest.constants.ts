@@ -3,13 +3,13 @@ import { IssueState } from '../../graphql/graphql-types';
 import { ReviewDecision } from '../../src/app/core/models/issue.model';
 import { PullrequestReviewState } from '../../src/app/core/models/pullrequest-review.model';
 import { USER_ANUBHAV, USER_JUNWEI } from './data.constants';
-import { MILESTONE_ONE } from './githubissue.constants';
+import { MILESTONE_ONE, USER_ANUBHAV_DETAILS } from './githubissue.constants';
 import { GITHUB_LABEL_TEAM_LABEL, GITHUB_LABEL_FUNCTIONALITY_BUG } from './githublabel.constants';
 
 export const MOCK_PR_DATA = new GithubIssue({
   id: '123456789',
   number: 101,
-  assignees: [USER_ANUBHAV],
+  assignees: [USER_ANUBHAV_DETAILS],
   body: 'This is a mock PR description',
   created_at: '2025-01-15T10:30:00Z',
   updated_at: '2025-01-16T14:45:00Z',

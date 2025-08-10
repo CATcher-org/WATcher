@@ -29,7 +29,7 @@ const randomISODate: (startDate?: Date, endDate?: Date) => string = (
   return new Date(startDate.getTime() + Math.random() * (startDate.getTime() - endDate.getTime())).toISOString();
 };
 
-const USER_ANUBHAV_DETAILS = {
+export const USER_ANUBHAV_DETAILS = {
   login: USER_ANUBHAV.loginId
 };
 
