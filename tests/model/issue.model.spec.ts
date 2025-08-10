@@ -1,9 +1,8 @@
 import * as moment from 'moment';
-import { Issue, ReviewDecision } from '../../src/app/core/models/issue.model';
 import { GithubIssue } from '../../src/app/core/models/github/github-issue.model';
+import { Issue, ReviewDecision } from '../../src/app/core/models/issue.model';
 import { Milestone } from '../../src/app/core/models/milestone.model';
 import { USER_ANUBHAV } from '../constants/data.constants';
-import { MOCK_PR_DATA, MOCK_DRAFT_PR_DATA, MOCK_MERGED_PR_DATA } from '../constants/githubpullrequest.constants';
 import {
   CLOSED_ISSUE_WITH_EMPTY_DESCRIPTION,
   ISSUE_WITHOUT_MILESTONE,
@@ -17,6 +16,7 @@ import {
   GITHUB_LABEL_TEAM_LABEL,
   GITHUB_LABEL_TUTORIAL_LABEL
 } from '../constants/githublabel.constants';
+import { MOCK_DRAFT_PR_DATA, MOCK_MERGED_PR_DATA, MOCK_PR_DATA } from '../constants/githubpullrequest.constants';
 
 describe('Issue model class', () => {
   describe('.createPhaseBugReportIssue(githubIssue)', () => {

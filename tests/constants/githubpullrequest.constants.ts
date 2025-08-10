@@ -1,10 +1,10 @@
-import { GithubIssue } from '../../src/app/core/models/github/github-issue.model';
 import { IssueState } from '../../graphql/graphql-types';
+import { GithubIssue } from '../../src/app/core/models/github/github-issue.model';
 import { ReviewDecision } from '../../src/app/core/models/issue.model';
 import { PullrequestReviewState } from '../../src/app/core/models/pullrequest-review.model';
 import { USER_ANUBHAV, USER_JUNWEI } from './data.constants';
 import { MILESTONE_ONE, USER_ANUBHAV_DETAILS } from './githubissue.constants';
-import { GITHUB_LABEL_TEAM_LABEL, GITHUB_LABEL_FUNCTIONALITY_BUG } from './githublabel.constants';
+import { GITHUB_LABEL_FUNCTIONALITY_BUG, GITHUB_LABEL_TEAM_LABEL } from './githublabel.constants';
 
 export const MOCK_PR_DATA = new GithubIssue({
   id: '123456789',
