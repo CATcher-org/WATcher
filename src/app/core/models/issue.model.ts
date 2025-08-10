@@ -112,7 +112,7 @@ export class Issue {
     this.reviews = githubIssue.reviews?.map((review) => new PullrequestReview(review));
   }
 
-  public static createPhaseBugReportingIssue(githubIssue: GithubIssue): Issue {
+  public static createFromGithubIssue(githubIssue: GithubIssue): Issue {
     return new Issue(githubIssue);
   }
 
