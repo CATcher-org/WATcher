@@ -95,7 +95,7 @@ export class Issue {
     this.state = githubIssue.state;
     this.stateReason = githubIssue.stateReason;
     this.issueOrPr = githubIssue.issueOrPr;
-    this.author = githubIssue.user.login;
+    this.author = githubIssue.user?.login || 'ghost';
     // this.githubIssue = githubIssue;
     this.isDraft = githubIssue.isDraft;
     this.reviewDecision = githubIssue.reviewDecision;
