@@ -67,7 +67,7 @@ export class Issue {
    * Processes and cleans a raw issue description obtained from user input.
    */
   static updateDescription(description: string): string {
-    const defaultString = 'No details provided by bug reporter.';
+    const defaultString = '';
     return Issue.orDefaultString(Issue.formatText(description), defaultString);
   }
 
