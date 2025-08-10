@@ -1,7 +1,9 @@
 import * as moment from 'moment';
-import { Issue } from '../../src/app/core/models/issue.model';
+import { Issue, ReviewDecision } from '../../src/app/core/models/issue.model';
+import { GithubIssue } from '../../src/app/core/models/github/github-issue.model';
 import { Milestone } from '../../src/app/core/models/milestone.model';
 import { USER_ANUBHAV } from '../constants/data.constants';
+import { MOCK_PR_DATA, MOCK_DRAFT_PR_DATA, MOCK_MERGED_PR_DATA } from '../constants/githubpullrequest.constants';
 import {
   CLOSED_ISSUE_WITH_EMPTY_DESCRIPTION,
   ISSUE_WITHOUT_MILESTONE,
@@ -19,13 +21,13 @@ import {
 describe('Issue model class', () => {
   describe('.createPhaseBugReportIssue(githubIssue)', () => {
     it('should correctly create a issue that has an empty description', async () => {
-      const issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
+      const issue = Issue.createFromGithubIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
 
       expect(issue.globalId).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.id);
       expect(issue.id).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.number);
       expect(issue.created_at).toEqual(moment(ISSUE_WITH_EMPTY_DESCRIPTION.created_at).format('lll'));
       expect(issue.title).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.title);
-      expect(issue.description).toEqual('No details provided by bug reporter.');
+      expect(issue.description).toEqual(ISSUE_WITH_EMPTY_DESCRIPTION.body || '');
       expect(issue.updated_at).toEqual(moment(ISSUE_WITH_EMPTY_DESCRIPTION.updated_at).format('lll'));
       expect(issue.closed_at).toEqual('Invalid date');
       expect(issue.milestone).toEqual(new Milestone(MILESTONE_ONE));
@@ -45,29 +47,28 @@ describe('Issue model class', () => {
     });
 
     it('should set close date correctly for closed issue', () => {
-      const issue = Issue.createPhaseBugReportingIssue(CLOSED_ISSUE_WITH_EMPTY_DESCRIPTION);
+      const issue = Issue.createFromGithubIssue(CLOSED_ISSUE_WITH_EMPTY_DESCRIPTION);
 
       expect(issue.closed_at).toEqual(moment(CLOSED_ISSUE_WITH_EMPTY_DESCRIPTION.closed_at).format('lll'));
     });
 
     it('should set milestone to default milestone for issue without milestone', () => {
-      const issue = Issue.createPhaseBugReportingIssue(ISSUE_WITHOUT_MILESTONE);
+      const issue = Issue.createFromGithubIssue(ISSUE_WITHOUT_MILESTONE);
 
       expect(issue.milestone).toEqual(Milestone.IssueWithoutMilestone);
     });
 
     it('should set assignees correctly for issue with assignees', () => {
-      const issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_ASSIGNEES);
+      const issue = Issue.createFromGithubIssue(ISSUE_WITH_ASSIGNEES);
 
       expect(issue.assignees).toEqual([USER_ANUBHAV.loginId]);
     });
   });
 
   describe('.updateDescription(description)', () => {
-    it('correctly clean strings obtained from users', () => {
-      const noDetailsFromBugReporter = 'No details provided by bug reporter.';
-      expect(Issue.updateDescription('')).toBe(noDetailsFromBugReporter);
-      expect(Issue.updateDescription(null)).toBe(noDetailsFromBugReporter);
+    it('correctly cleans strings obtained from users', () => {
+      expect(Issue.updateDescription('')).toBe('');
+      expect(Issue.updateDescription(null)).toBe('');
 
       const typicalDescription = 'The app crashes after parsing config files.';
       expect(Issue.updateDescription(typicalDescription)).toBe(typicalDescription + '\n\n');
@@ -78,15 +79,65 @@ describe('Issue model class', () => {
   });
 });
 
-describe('Issue', () => {
-  const dummyIssue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
-  const otherDummyIssue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_ASSIGNEES);
+describe('Pull Request functionality', () => {
+  it('should correctly create a pull request', () => {
+    const pr = Issue.createFromGithubIssue(MOCK_PR_DATA);
 
-  const noReportedDescriptionString = 'No details provided by bug reporter.\n';
+    expect(pr.globalId).toEqual(MOCK_PR_DATA.id);
+    expect(pr.id).toEqual(MOCK_PR_DATA.number);
+    expect(pr.title).toEqual(MOCK_PR_DATA.title);
+    expect(pr.issueOrPr).toEqual('PullRequest');
+    expect(pr.isDraft).toEqual(false);
+    expect(pr.headRepository).toEqual(MOCK_PR_DATA.headRepository?.nameWithOwner);
+    expect(pr.reviewDecision).toEqual(ReviewDecision.REVIEW_REQUIRED);
+    expect(pr.author).toEqual(MOCK_PR_DATA.user.login);
+    expect(pr.labels).toEqual([GITHUB_LABEL_TEAM_LABEL.name, GITHUB_LABEL_FUNCTIONALITY_BUG.name]);
+    expect(pr.githubLabels).toEqual(MOCK_PR_DATA.labels);
+    expect(pr.assignees).toEqual([USER_ANUBHAV.loginId]);
+  });
 
-  it('.createGithubIssueDescription() forms the correct GitHub Issue description for the issue', () => {
-    expect(dummyIssue.createGithubIssueDescription()).toEqual(noReportedDescriptionString);
+  it('should handle closed pull requests correctly', () => {
+    const pr = Issue.createFromGithubIssue(MOCK_MERGED_PR_DATA);
 
-    expect(otherDummyIssue.createGithubIssueDescription()).toEqual(`${otherDummyIssue.description}\n`);
+    expect(pr.state).toEqual('CLOSED');
+    expect(pr.closed_at).toEqual(moment(MOCK_MERGED_PR_DATA.closed_at).format('lll'));
+    expect(pr.reviewDecision).toEqual(ReviewDecision.APPROVED);
+  });
+
+  it('should handle draft pull requests correctly', () => {
+    const pr = Issue.createFromGithubIssue(MOCK_PR_DATA);
+    const draftPr = Issue.createFromGithubIssue(MOCK_DRAFT_PR_DATA);
+
+    expect(pr.isDraft).toEqual(false);
+    expect(pr.reviewDecision).toEqual(ReviewDecision.REVIEW_REQUIRED);
+    expect(draftPr.isDraft).toEqual(true);
+    expect(draftPr.reviewDecision).toBeNull();
+    expect(draftPr.issueOrPr).toEqual('PullRequest');
+  });
+
+  it('should identify pull requests correctly', () => {
+    const pr = Issue.createFromGithubIssue(MOCK_PR_DATA);
+    const draftPr = Issue.createFromGithubIssue(MOCK_DRAFT_PR_DATA);
+    const issue = Issue.createFromGithubIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
+
+    expect(pr.issueOrPr).toEqual('PullRequest');
+    expect(draftPr.issueOrPr).toEqual('PullRequest');
+    expect(issue.issueOrPr).toEqual('Issue');
+  });
+
+  it('should handle review decisions correctly', () => {
+    const reviewRequiredPr = Issue.createFromGithubIssue(MOCK_PR_DATA);
+    const approvedPr = Issue.createFromGithubIssue(MOCK_MERGED_PR_DATA);
+
+    expect(reviewRequiredPr.reviewDecision).toEqual(ReviewDecision.REVIEW_REQUIRED);
+    expect(approvedPr.reviewDecision).toEqual(ReviewDecision.APPROVED);
+  });
+
+  it('should handle head repository information correctly', () => {
+    const pr = Issue.createFromGithubIssue(MOCK_PR_DATA);
+    const issue = Issue.createFromGithubIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
+
+    expect(pr.headRepository).toEqual('testuser/WATcher-test');
+    expect(issue.headRepository).toBeUndefined();
   });
 });
