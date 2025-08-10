@@ -24,7 +24,9 @@ export const MOCK_PR_DATA = new GithubIssue({
   comments: [],
   issueOrPr: 'PullRequest',
   isDraft: false,
-  headRepository: 'testuser/WATcher-test',
+  headRepository: {
+    nameWithOwner: 'testuser/WATcher-test'
+  },
   reviewDecision: ReviewDecision.REVIEW_REQUIRED,
   reviews: [
     {
