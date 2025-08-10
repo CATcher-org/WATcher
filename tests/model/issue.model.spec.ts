@@ -141,3 +141,92 @@ describe('Pull Request functionality', () => {
     expect(issue.headRepository).toBeUndefined();
   });
 });
+
+describe('GitHub issue description creation', () => {
+  it('forms the correct GitHub Issue description for the issue', () => {
+    const dummyIssue = Issue.createFromGithubIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
+    const otherDummyIssue = Issue.createFromGithubIssue(ISSUE_WITH_ASSIGNEES);
+
+    expect(dummyIssue.createGithubIssueDescription()).toEqual(`\n${dummyIssue.hiddenDataInDescription.toString()}`);
+    expect(otherDummyIssue.createGithubIssueDescription()).toEqual(
+      `${otherDummyIssue.description}\n${otherDummyIssue.hiddenDataInDescription.toString()}`
+    );
+  });
+
+  it('should create the correct GitHub issue description with hidden data', () => {
+    const issue = Issue.createFromGithubIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
+    const result = issue.createGithubIssueDescription();
+
+    expect(result).toEqual(`${issue.description}\n${issue.hiddenDataInDescription.toString()}`);
+  });
+
+  it('should handle the issue with non-empty description correctly', () => {
+    const issue = Issue.createFromGithubIssue(ISSUE_WITH_ASSIGNEES);
+    const result = issue.createGithubIssueDescription();
+
+    expect(result).toContain(issue.description);
+    expect(result).toContain(issue.hiddenDataInDescription.toString());
+    expect(result).toEqual(`${issue.description}\n${issue.hiddenDataInDescription.toString()}`);
+  });
+
+  it('should handle the pull request description correctly', () => {
+    const pr = Issue.createFromGithubIssue(MOCK_PR_DATA);
+    const result = pr.createGithubIssueDescription();
+
+    expect(result).toEqual(`${pr.description}\n${pr.hiddenDataInDescription.toString()}`);
+  });
+
+  it('should handle the closed issue description correctly', () => {
+    const closedIssue = Issue.createFromGithubIssue(CLOSED_ISSUE_WITH_EMPTY_DESCRIPTION);
+    const result = closedIssue.createGithubIssueDescription();
+
+    expect(result).toEqual(`${closedIssue.description}\n${closedIssue.hiddenDataInDescription.toString()}`);
+  });
+
+  it('should maintain a consistent format across different issue types', () => {
+    const issue = Issue.createFromGithubIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
+    const pr = Issue.createFromGithubIssue(MOCK_PR_DATA);
+    const draftPr = Issue.createFromGithubIssue(MOCK_DRAFT_PR_DATA);
+
+    const issueResult = issue.createGithubIssueDescription();
+    const prResult = pr.createGithubIssueDescription();
+    const draftPrResult = draftPr.createGithubIssueDescription();
+
+    expect(issueResult.includes('\n')).toBe(true);
+    expect(prResult.includes('\n')).toBe(true);
+    expect(draftPrResult.includes('\n')).toBe(true);
+  });
+
+  it('should handle null/undefined GithubIssue gracefully', () => {
+    expect(() => Issue.createFromGithubIssue(null)).toThrow();
+    expect(() => Issue.createFromGithubIssue(undefined)).toThrow();
+  });
+
+  it('should handle invalid dates', () => {
+    const malformedIssue = new GithubIssue({
+      ...ISSUE_WITH_EMPTY_DESCRIPTION,
+      created_at: 'invalid-date',
+      updated_at: 'invalid-date'
+    });
+    const issue = Issue.createFromGithubIssue(malformedIssue);
+
+    expect(issue.created_at).toEqual('Invalid date');
+    expect(issue.updated_at).toEqual('Invalid date');
+  });
+
+  it('should handle missing user information', () => {
+    const issueWithNullUser = new GithubIssue({
+      ...ISSUE_WITH_EMPTY_DESCRIPTION,
+      user: null
+    });
+    const issueWithUndefinedUser = new GithubIssue({
+      ...ISSUE_WITH_EMPTY_DESCRIPTION,
+      user: undefined
+    });
+    const issueNull = Issue.createFromGithubIssue(issueWithNullUser);
+    const issueUndefined = Issue.createFromGithubIssue(issueWithUndefinedUser);
+
+    expect(issueNull.author).toEqual('ghost');
+    expect(issueUndefined.author).toEqual('ghost');
+  });
+});
