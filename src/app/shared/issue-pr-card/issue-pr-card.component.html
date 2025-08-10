@@ -1,4 +1,4 @@
-<mat-card class="card" [ngClass]="getIssueOpenOrCloseColorCSSClass()">
+<mat-card class="card" [class.issue-card]="isIssue()" [ngClass]="getIssueOpenOrCloseColorCSSClass()">
   <a class="no-underline link-grey-dark">
     <span [matTooltip]="this.issue.updated_at">
       <app-issue-pr-card-header [issue]="issue" (click)="viewIssueInBrowser($event)"></app-issue-pr-card-header>
