@@ -19,7 +19,7 @@ import {
 import { MOCK_DRAFT_PR_DATA, MOCK_MERGED_PR_DATA, MOCK_PR_DATA } from '../constants/githubpullrequest.constants';
 
 describe('Issue model class', () => {
-  describe('.createPhaseBugReportIssue(githubIssue)', () => {
+  describe('.createFromGithubIssue(githubIssue)', () => {
     it('should correctly create a issue that has an empty description', async () => {
       const issue = Issue.createFromGithubIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
 
@@ -155,9 +155,12 @@ describe('GitHub issue description creation', () => {
 
   it('should create the correct GitHub issue description with hidden data', () => {
     const issue = Issue.createFromGithubIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
-    const result = issue.createGithubIssueDescription();
+    const issueResult = issue.createGithubIssueDescription();
+    const pr = Issue.createFromGithubIssue(MOCK_PR_DATA);
+    const prResult = pr.createGithubIssueDescription();
 
-    expect(result).toEqual(`${issue.description}\n${issue.hiddenDataInDescription.toString()}`);
+    expect(prResult).toEqual(`${pr.description}\n${pr.hiddenDataInDescription.toString()}`);
+    expect(issueResult).toEqual(`${issue.description}\n${issue.hiddenDataInDescription.toString()}`);
   });
 
   it('should handle the issue with non-empty description correctly', () => {
