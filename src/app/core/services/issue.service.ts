@@ -197,7 +197,7 @@ export class IssueService {
   private createIssueModel(githubIssue: GithubIssue): Issue {
     switch (this.viewService.currentView) {
       case View.issuesViewer:
-        return Issue.createPhaseBugReportingIssue(githubIssue);
+        return Issue.createFromGithubIssue(githubIssue);
       default:
         return;
     }

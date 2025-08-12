@@ -67,7 +67,7 @@ export class Issue {
    * Processes and cleans a raw issue description obtained from user input.
    */
   static updateDescription(description: string): string {
-    const defaultString = 'No details provided by bug reporter.';
+    const defaultString = '';
     return Issue.orDefaultString(Issue.formatText(description), defaultString);
   }
 
@@ -95,7 +95,7 @@ export class Issue {
     this.state = githubIssue.state;
     this.stateReason = githubIssue.stateReason;
     this.issueOrPr = githubIssue.issueOrPr;
-    this.author = githubIssue.user.login;
+    this.author = githubIssue.user?.login || 'ghost';
     // this.githubIssue = githubIssue;
     this.isDraft = githubIssue.isDraft;
     this.reviewDecision = githubIssue.reviewDecision;
@@ -112,7 +112,7 @@ export class Issue {
     this.reviews = githubIssue.reviews?.map((review) => new PullrequestReview(review));
   }
 
-  public static createPhaseBugReportingIssue(githubIssue: GithubIssue): Issue {
+  public static createFromGithubIssue(githubIssue: GithubIssue): Issue {
     return new Issue(githubIssue);
   }
 

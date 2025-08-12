@@ -12,10 +12,10 @@ describe('issue-paginator', () => {
   describe('paginateData()', () => {
     let dataSet_7: Issue[];
     let paginator: MatPaginator;
-    const mediumSeverityIssueWithResponse: Issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
-    const mediumSeverityIssueWithAssigneee: Issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_ASSIGNEES);
-    const lowSeverityFeatureFlawIssue: Issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_EMPTY_DESCRIPTION_LOW_SEVERITY);
-    const highSeverityDocumentationBugIssue: Issue = Issue.createPhaseBugReportingIssue(ISSUE_WITH_EMPTY_DESCRIPTION_HIGH_SEVERITY);
+    const mediumSeverityIssueWithResponse: Issue = Issue.createFromGithubIssue(ISSUE_WITH_EMPTY_DESCRIPTION);
+    const mediumSeverityIssueWithAssigneee: Issue = Issue.createFromGithubIssue(ISSUE_WITH_ASSIGNEES);
+    const lowSeverityFeatureFlawIssue: Issue = Issue.createFromGithubIssue(ISSUE_WITH_EMPTY_DESCRIPTION_LOW_SEVERITY);
+    const highSeverityDocumentationBugIssue: Issue = Issue.createFromGithubIssue(ISSUE_WITH_EMPTY_DESCRIPTION_HIGH_SEVERITY);
 
     beforeEach(() => {
       dataSet_7 = [
