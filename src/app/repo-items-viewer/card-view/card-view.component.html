@@ -43,7 +43,7 @@
         <mat-card-title>
           <div class="assignee-container">
             <div
-              class="assignee-name"
+              class="assignee-name no-select"
               (click)="goToGithubProfile(assignee.login)"
               [ngClass]="{ clickable: assignee.login !== 'Unassigned' }"
             >
@@ -51,13 +51,29 @@
                 {{ assignee.login }}
               </span>
             </div>
-            <div class="row-count count-margins" [matTooltip]="getIssueTooltip()" matTooltipPosition="above">
+            <div
+              class="issue-row-count count-margins"
+              [class.inactive]="!this.repoItems.hasIssue"
+              [matTooltip]="getIssueTooltip()"
+              matTooltipPosition="above"
+              (click)="this.repoItems.hasIssue && filterByIssues()"
+              [class.active]="currentFilter === 'issues'"
+              [style.cursor]="this.repoItems.hasIssue ? 'pointer' : 'default'"
+            >
               <span class="octicon count-margins" octicon="issue-opened"></span>
               <span class="">{{ this.repoItems.issueCount }}</span>
             </div>
-            <div class="row-count" [matTooltip]="getPrTooltip()" matTooltipPosition="above">
+            <div
+              class="pr-row-count"
+              [class.inactive]="!this.repoItems.hasPR"
+              [matTooltip]="getPrTooltip()"
+              matTooltipPosition="above"
+              (click)="this.repoItems.hasPR && filterByPrs()"
+              [class.active]="currentFilter === 'prs'"
+              [style.cursor]="this.repoItems.hasPR ? 'pointer' : 'default'"
+            >
               <span class="octicon count-margins" octicon="git-pull-request"></span>
-              <span>{{ this.repoItems.prCount }}</span>
+              <span class="no-select">{{ this.repoItems.prCount }}</span>
             </div>
           </div>
         </mat-card-title>
@@ -72,16 +88,32 @@
       <mat-card-header [ngStyle]="{ height: '40px' }">
         <mat-card-title>
           <div class="milestone-container">
-            <div>
+            <div class="no-select">
               {{ milestone.title }}
             </div>
-            <div class="row-count count-margins" [matTooltip]="getIssueTooltip()" matTooltipPosition="above">
+            <div
+              class="issue-row-count count-margins"
+              [class.inactive]="!this.repoItems.hasIssue"
+              [matTooltip]="getIssueTooltip()"
+              matTooltipPosition="above"
+              (click)="this.repoItems.hasIssue && filterByIssues()"
+              [class.active]="currentFilter === 'issues'"
+              [style.cursor]="this.repoItems.hasIssue ? 'pointer' : 'default'"
+            >
               <span class="octicon count-margins" octicon="issue-opened"></span>
-              <span class="">{{ this.repoItems.issueCount }}</span>
+              <span class="no-select">{{ this.repoItems.issueCount }}</span>
             </div>
-            <div class="row-count" [matTooltip]="getPrTooltip()" matTooltipPosition="above">
+            <div
+              class="pr-row-count"
+              [class.inactive]="!this.repoItems.hasPR"
+              [matTooltip]="getPrTooltip()"
+              matTooltipPosition="above"
+              (click)="this.repoItems.hasPR && filterByPrs()"
+              [class.active]="currentFilter === 'prs'"
+              [style.cursor]="this.repoItems.hasPR ? 'pointer' : 'default'"
+            >
               <span class="octicon count-margins" octicon="git-pull-request"></span>
-              <span>{{ this.repoItems.prCount }}</span>
+              <span class="no-select">{{ this.repoItems.prCount }}</span>
             </div>
           </div>
         </mat-card-title>

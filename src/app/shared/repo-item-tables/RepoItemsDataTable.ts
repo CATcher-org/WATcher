@@ -21,9 +21,12 @@ export class RepoItemsDataTable extends DataSource<RepoItem> implements Filterab
   public count = 0;
   public issueCount = 0;
   public prCount = 0;
+  public hasIssue = false;
+  public hasPR = false;
   private filterChange = new BehaviorSubject(this.filtersService.defaultFilter);
   private repoItemsSubject = new BehaviorSubject<RepoItem[]>([]);
   private repoItemSubscription: Subscription;
+  private repoItemTypeFilter: 'all' | 'issues' | 'prs' = 'all'; // initialise as 'all'
 
   public isLoading$ = this.repoItemService.isLoading.asObservable();
 
@@ -69,6 +72,15 @@ export class RepoItemsDataTable extends DataSource<RepoItem> implements Filterab
     this.repoItemService.stopPollRepoItems();
   }
 
+  setRepoItemTypeFilter(filter: 'all' | 'issues' | 'prs') {
+    this.repoItemTypeFilter = filter;
+    this.loadRepoItems();
+  }
+
+  getRepoItemTypeFilter(): 'all' | 'issues' | 'prs' {
+    return this.repoItemTypeFilter;
+  }
+
   loadRepoItems() {
     let page;
     if (this.paginator !== undefined) {
@@ -100,6 +112,22 @@ export class RepoItemsDataTable extends DataSource<RepoItem> implements Filterab
           data = applySearchFilter(this.filter.title, this.displayedColumn, this.repoItemService, data);
           this.issueCount = data.filter((datum) => datum.type === 'Issue').length;
           this.prCount = data.filter((datum) => datum.type === 'PullRequest').length;
+
+          this.hasIssue = this.issueCount > 0;
+          this.hasPR = this.prCount > 0;
+
+          // Apply Issue Type Filter for header component
+          if (this.repoItemTypeFilter !== 'all') {
+            const issueType = this.repoItemTypeFilter === 'issues' ? 'Issue' : 'PullRequest';
+            const filteredData = data.filter((datum) => datum.type === issueType);
+
+            if (filteredData.length === 0) {
+              this.repoItemTypeFilter = 'all';
+            } else {
+              data = filteredData;
+            }
+          }
+
           this.count = data.length;
 
           data = applySort(this.filter.sort, data);
