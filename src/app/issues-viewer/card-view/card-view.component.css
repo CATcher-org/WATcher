@@ -134,10 +134,11 @@ div.column-header .mat-card-header {
   margin: 6px 0;
 }
 
-.row-count {
+.issue-row-count,
+.pr-row-count {
   background-color: rgb(222, 222, 222);
   border-radius: 3px;
-  cursor: default;
+  cursor: pointer;
   padding: 6px 8px 3px 8px;
   color: rgb(0, 0, 0);
   font-weight: 410;
@@ -145,6 +146,22 @@ div.column-header .mat-card-header {
   font-size: 14px;
   flex-shrink: 0;
   margin-top: 3px;
+  user-select: none;
+}
+
+.issue-row-count:hover,
+.pr-row-count:hover {
+  background-color: rgb(200, 200, 200);
+}
+
+.issue-row-count.active,
+.pr-row-count.active {
+  background-color: #b8b8b8;
+}
+
+.issue-row-count.inactive,
+.pr-row-count.inactive {
+  background-color: rgb(222, 222, 222);
 }
 
 .assignee-container {
