@@ -10,9 +10,9 @@ import { View } from '../models/view.model';
 import { ErrorHandlingService } from './error-handling.service';
 import { GithubService } from './github.service';
 import { GithubEventService } from './githubevent.service';
-import { IssueService } from './issue.service';
 import { LabelService } from './label.service';
 import { LoggingService } from './logging.service';
+import { RepoItemService } from './repo-item.service';
 import { UserService } from './user.service';
 import { ViewService } from './view.service';
 
@@ -47,7 +47,7 @@ export class AuthService {
     private ngZone: NgZone,
     private githubService: GithubService,
     private userService: UserService,
-    private issueService: IssueService,
+    private repoItemService: RepoItemService,
     private labelService: LabelService,
     private viewService: ViewService,
     private githubEventService: GithubEventService,
@@ -153,13 +153,13 @@ export class AuthService {
   logOut(): void {
     this.githubService.reset();
     this.userService.reset();
-    this.issueService.reset(true);
+    this.repoItemService.reset(true);
     this.labelService.reset();
     this.viewService.reset();
     this.githubEventService.reset();
     this.logger.reset();
     this.setLandingPageTitle();
-    this.issueService.setIssueTeamFilter('All Teams');
+    this.repoItemService.setRepoItemTeamFilter('All Teams');
     this.reset();
   }
 
@@ -184,7 +184,7 @@ export class AuthService {
   changeAuthState(newAuthState: AuthState) {
     if (newAuthState === AuthState.Authenticated) {
       const sessionId = generateSessionId();
-      this.issueService.setSessionId(sessionId);
+      this.repoItemService.setSessionId(sessionId);
       this.logger.info(`AuthService: Successfully authenticated with session: ${sessionId}`);
     }
     this.authStateSource.next(newAuthState);
@@ -234,7 +234,7 @@ export class AuthService {
    */
   handleSetRepoSuccess(repoName: string) {
     this.setTitleWithViewDetail();
-    this.router.navigate([View.issuesViewer], {
+    this.router.navigate([View.repoItemsViewer], {
       queryParams: {
         [ViewService.REPO_QUERY_PARAM_KEY]: repoName
       }

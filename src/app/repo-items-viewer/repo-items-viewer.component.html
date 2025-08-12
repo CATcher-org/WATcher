@@ -8,11 +8,7 @@
       <mat-drawer-container class="drawer-container">
         <mat-drawer #sidenav mode="side" opened>
           <div class="left">
-            <app-filter-bar
-              [views$]="views"
-              (escapePressed)="sidenav.close()"
-              >
-            </app-filter-bar>
+            <app-filter-bar [views$]="views" (escapePressed)="sidenav.close()"> </app-filter-bar>
           </div>
         </mat-drawer>
         <mat-drawer-content>
@@ -30,7 +26,7 @@
                 *ngFor="let group of this.groupService.groups"
                 class="issue-table"
                 #card
-                [ngStyle]="{ display: card.isLoading || card.issueLength > 0 ? 'initial' : 'none' }"
+                [ngStyle]="{ display: card.isLoading || card.repoItemLength > 0 ? 'initial' : 'none' }"
                 [group]="group"
                 [headers]="this.displayedColumns"
                 (issueLengthChange)="this.groupService.updateHiddenGroups($event, group)"

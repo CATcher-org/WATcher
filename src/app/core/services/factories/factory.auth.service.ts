@@ -6,9 +6,9 @@ import { AuthService } from '../auth.service';
 import { ErrorHandlingService } from '../error-handling.service';
 import { GithubService } from '../github.service';
 import { GithubEventService } from '../githubevent.service';
-import { IssueService } from '../issue.service';
 import { LabelService } from '../label.service';
 import { LoggingService } from '../logging.service';
+import { RepoItemService } from '../repo-item.service';
 // import { MockAuthService } from '../mocks/mock.auth.service';
 import { UserService } from '../user.service';
 import { ViewService } from '../view.service';
@@ -18,7 +18,7 @@ export function AuthServiceFactory(
   ngZone: NgZone,
   githubService: GithubService,
   userService: UserService,
-  issueService: IssueService,
+  repoItemService: RepoItemService,
   labelService: LabelService,
   viewService: ViewService,
   githubEventService: GithubEventService,
@@ -33,7 +33,7 @@ export function AuthServiceFactory(
   //     ngZone,
   //     githubService,
   //     userService,
-  //     issueService,
+  //     repoItemService,
   //     labelService,
   //     viewService,
   //     githubEventService,
@@ -46,7 +46,7 @@ export function AuthServiceFactory(
     ngZone,
     githubService,
     userService,
-    issueService,
+    repoItemService,
     labelService,
     viewService,
     githubEventService,

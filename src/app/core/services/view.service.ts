@@ -17,7 +17,7 @@ export const SESSION_AVALIABILITY_FIX_FAILED = 'Session Availability Fix failed.
  * The title of each view that appears in the header bar.
  */
 export const ViewDescription = {
-  [View.issuesViewer]: 'Issues Dashboard',
+  [View.repoItemsViewer]: 'Repository Items Dashboard',
   [View.activityDashboard]: 'Activity Dashboard'
 };
 
@@ -27,12 +27,12 @@ export const ViewDescription = {
  */
 export const STARTING_SESSION_DATA: SessionData = {
   sessionRepo: [
-    { view: View.issuesViewer, repos: [] }
+    { view: View.repoItemsViewer, repos: [] }
     // { view: View.activityDashboard, repos: [] }
   ]
 };
 
-export const STARTING_VIEW = View.issuesViewer;
+export const STARTING_VIEW = View.repoItemsViewer;
 
 @Injectable({
   providedIn: 'root'
@@ -86,7 +86,7 @@ export class ViewService {
     this.sessionData.sessionRepo.find((x) => x.view === this.currentView).repos = this.getRepository();
     this.githubService.storeViewDetails(this.currentRepo.owner, this.currentRepo.name);
     localStorage.setItem('sessionData', JSON.stringify(this.sessionData));
-    this.router.navigate(['issuesViewer'], {
+    this.router.navigate(['repoItemsViewer'], {
       queryParams: {
         [ViewService.REPO_QUERY_PARAM_KEY]: repo.toString()
       },
@@ -101,7 +101,7 @@ export class ViewService {
   private changeCurrentRepository(repo: Repo): void {
     this.logger.info(`ViewService: Changing current repository to '${repo}'`);
 
-    if (this.currentView === View.issuesViewer) {
+    if (this.currentView === View.repoItemsViewer) {
       /** Adds past repositories to view */
       (this.otherRepos || []).push(this.currentRepo);
     }
@@ -180,7 +180,7 @@ export class ViewService {
   /**
    * Set items in the local storage corresponding to the next URL.
    * This includes checking if the view is valid, and if the repo is of the correct format.
-   * @param url The partial URL without the host, e.g. `/issuesViewer?repo=CATcher%2FWATcher.
+   * @param url The partial URL without the host, e.g. `/repoItemsViewer?repo=CATcher%2FWATcher.
    */
   setupFromUrl(url: string): Observable<void> {
     return of(this.getViewAndRepoFromUrl(url)).pipe(
@@ -222,7 +222,7 @@ export class ViewService {
   }
 
   isViewAllowed(viewName: string) {
-    return viewName === '/' + View.issuesViewer;
+    return viewName === '/' + View.repoItemsViewer;
   }
 
   isRepoSet(): boolean {

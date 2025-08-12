@@ -51,25 +51,25 @@ describe('Session Model', () => {
     });
 
     it('should throw error on session data with invalid repo', () => {
-      of({ sessionRepo: [{ view: View.issuesViewer, repo: undefined }] })
+      of({ sessionRepo: [{ view: View.repoItemsViewer, repo: undefined }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
           error: (err) => expect(err).toEqual(new Error(OPENED_VIEW_REPO_UNDEFINED))
         });
-      of({ sessionRepo: [{ view: View.issuesViewer, repo: null }] })
+      of({ sessionRepo: [{ view: View.repoItemsViewer, repo: null }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
           error: (err) => expect(err).toEqual(new Error(OPENED_VIEW_REPO_UNDEFINED))
         });
-      of({ sessionRepo: [{ view: View.issuesViewer, repo: '' }] })
+      of({ sessionRepo: [{ view: View.repoItemsViewer, repo: '' }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),
           error: (err) => expect(err).toEqual(new Error(OPENED_VIEW_REPO_UNDEFINED))
         });
-      of({ sessionRepo: [{ view: View.issuesViewer, repo: [] }] })
+      of({ sessionRepo: [{ view: View.repoItemsViewer, repo: [] }] })
         .pipe(assertSessionDataIntegrity())
         .subscribe({
           next: () => fail(),

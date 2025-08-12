@@ -57,7 +57,7 @@ describe('ViewService', () => {
     it('should navigate to the new repository', () => {
       viewService.setRepository(WATCHER_REPO);
 
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['issuesViewer'], {
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['repoItemsViewer'], {
         queryParams: { repo: WATCHER_REPO.toString() },
         queryParamsHandling: 'merge'
       });
@@ -99,7 +99,7 @@ describe('ViewService', () => {
 
       expect(loggingServiceSpy.info).toHaveBeenCalledWith(`ViewService: Changing current repository to '${WATCHER_REPO}'`);
       expect(viewService.currentRepo).toEqual(WATCHER_REPO);
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['issuesViewer'], {
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['repoItemsViewer'], {
         queryParams: { repo: WATCHER_REPO.toString() },
         queryParamsHandling: 'merge'
       });
@@ -128,7 +128,7 @@ describe('ViewService', () => {
 
       expect(loggingServiceSpy.info).toHaveBeenCalledWith(`ViewService: Repo is ${WATCHER_REPO}`);
       expect(viewService.currentRepo).toEqual(WATCHER_REPO);
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['issuesViewer'], {
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['repoItemsViewer'], {
         queryParams: { repo: WATCHER_REPO.toString() },
         queryParamsHandling: 'merge'
       });
@@ -147,7 +147,7 @@ describe('ViewService', () => {
     it('should set current view', () => {
       viewService.setRepository(WATCHER_REPO);
 
-      expect(viewService.currentView).toEqual(View.issuesViewer);
+      expect(viewService.currentView).toEqual(View.repoItemsViewer);
 
       viewService.changeView(View.activityDashboard);
 
@@ -159,13 +159,13 @@ describe('ViewService', () => {
     it('should reset the currentView of the ViewService', () => {
       viewService.currentView = View.activityDashboard;
       viewService.reset();
-      expect(viewService.currentView).toBe(View.issuesViewer);
+      expect(viewService.currentView).toBe(View.repoItemsViewer);
     });
   });
 
   describe('setupFromUrl(url)', () => {
     it('should set items in local storage if url is valid', async () => {
-      const validUrl = `/issuesViewer?repo=${WATCHER_REPO.owner}%2F${WATCHER_REPO.name}`;
+      const validUrl = `/repoItemsViewer?repo=${WATCHER_REPO.owner}%2F${WATCHER_REPO.name}`;
       const localStorageSetItemSpy = spyOn(window.localStorage, 'setItem');
 
       await viewService.setupFromUrl(validUrl).toPromise();
@@ -175,7 +175,7 @@ describe('ViewService', () => {
     });
 
     it('should throw error for url without repo paramater', (done) => {
-      const urlWithoutRepo = '/issuesViewer';
+      const urlWithoutRepo = '/repoItemsViewer';
 
       viewService.setupFromUrl(urlWithoutRepo).subscribe({
         error: (err) => {
@@ -197,7 +197,7 @@ describe('ViewService', () => {
     });
 
     it('should throw error for url with invalid repo format', (done) => {
-      const urlWithInvalidRepoFormat = '/issuesViewer?repo=InvalidRepo';
+      const urlWithInvalidRepoFormat = '/repoItemsViewer?repo=InvalidRepo';
 
       viewService.setupFromUrl(urlWithInvalidRepoFormat).subscribe({
         error: (err) => {
