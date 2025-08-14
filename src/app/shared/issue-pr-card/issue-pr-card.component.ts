@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
+import { Filter } from '../../core/models/github/filters.model';
 import { Issue } from '../../core/models/issue.model';
-import { Filter } from '../../core/services/filters.service';
 import { GithubService } from '../../core/services/github.service';
 import { LabelService } from '../../core/services/label.service';
 import { LoggingService } from '../../core/services/logging.service';
