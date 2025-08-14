@@ -3,11 +3,12 @@ import { MatPaginator } from '@angular/material/paginator';
 import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GithubUser } from '../../core/models/github-user.model';
+import { Filter } from '../../core/models/github/filters.model';
 import { Group } from '../../core/models/github/group.interface';
 import { Issue } from '../../core/models/issue.model';
 import { Milestone } from '../../core/models/milestone.model';
 import { AssigneeService } from '../../core/services/assignee.service';
-import { Filter, FiltersService } from '../../core/services/filters.service';
+import { FiltersService } from '../../core/services/filters.service';
 import { GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { IssueService } from '../../core/services/issue.service';
 import { MilestoneService } from '../../core/services/milestone.service';
@@ -23,7 +24,7 @@ export class IssuesDataTable extends DataSource<Issue> implements FilterableSour
   public prCount = 0;
   public hasIssue = false;
   public hasPR = false;
-  private filterChange = new BehaviorSubject(this.filtersService.defaultFilter);
+  private filterChange = new BehaviorSubject(Filter.createDefault());
   private issuesSubject = new BehaviorSubject<Issue[]>([]);
   private issueSubscription: Subscription;
   private issueTypeFilter: 'all' | 'issues' | 'prs' = 'all'; // initialise as 'all'

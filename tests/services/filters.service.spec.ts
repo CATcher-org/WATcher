@@ -1,4 +1,5 @@
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
+import { MilestoneOptions } from '../../src/app/core/constants/filter-options.constants';
 import { AssigneeService } from '../../src/app/core/services/assignee.service';
 import { FiltersService } from '../../src/app/core/services/filters.service';
 import { LoggingService } from '../../src/app/core/services/logging.service';
@@ -50,7 +51,8 @@ describe('FiltersService', () => {
       filtersService.updateFilters(CHANGED_FILTER);
       filtersService.clearFilters();
       filtersService.filter$.subscribe((filter) => {
-        expect(filter).toEqual(DEFAULT_FILTER);
+        expect(filter.milestones).toEqual([MilestoneOptions.PullRequestWithoutMilestone]);
+        expect(filter.assignees).toEqual(['Unassigned']);
         done();
       });
     });

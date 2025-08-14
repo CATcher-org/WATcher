@@ -2,7 +2,7 @@
  * This module aims to abstract out classes that can be filtered
  */
 
-import { Filter } from '../../core/services/filters.service';
+import { Filter } from '../../core/models/github/filters.model';
 
 /**
  * FilterableSource is an interface that contains a source that can be filtered

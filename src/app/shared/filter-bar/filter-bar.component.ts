@@ -15,8 +15,9 @@ import {
 import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { MilestoneOptions, SortOptions, StatusOptions, TypeOptions } from '../../core/constants/filter-options.constants';
+import { Filter } from '../../core/models/github/filters.model';
 import { AssigneeService } from '../../core/services/assignee.service';
-import { Filter, FiltersService } from '../../core/services/filters.service';
+import { FiltersService } from '../../core/services/filters.service';
 import { GroupBy, GroupingContextService } from '../../core/services/grouping/grouping-context.service';
 import { LoggingService } from '../../core/services/logging.service';
 import { MilestoneService } from '../../core/services/milestone.service';
@@ -39,7 +40,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   repoChangeSubscription: Subscription;
 
   /** Selected dropdown filter value */
-  filter: Filter = this.filtersService.defaultFilter;
+  filter: Filter = Filter.createDefault();
 
   groupByEnum: typeof GroupBy = GroupBy;
   statusOptions = StatusOptions;
